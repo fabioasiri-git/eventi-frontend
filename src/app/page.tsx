@@ -7,9 +7,24 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVud3F5cWd1eGl1bWtybmx4YXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5MzQxMDAsImV4cCI6MjA2ODUxMDEwMH0.rr2by4ydY5u87t-eDhnzGfrUcx51qUC-arBFIYNFimw"
 );
 
+type Evento = {
+  id?: number;
+  nome_evento?: string;
+  data_evento?: string;
+  luogo?: string;
+  nome_responsabile?: string;
+  telefono?: string;
+  email?: string;
+  sito_provenienza?: string;
+  tipo_evento?: string;
+  stato_contatto?: string;
+  data_email_inviata?: string;
+  note?: string;
+};
+
 export default function Home() {
-  const [eventi, setEventi] = useState([]);
-  const [form, setForm] = useState({
+  const [eventi, setEventi] = useState([] as Evento[]);
+  const [form, setForm] = useState<Evento>({
     nome_evento: "",
     data_evento: "",
     luogo: "",
@@ -25,15 +40,17 @@ export default function Home() {
 
   useEffect(() => {
     fetchEventi();
-    // eslint-disable-next-line
   }, []);
 
   async function fetchEventi() {
-    const { data } = await supabase.from("eventi").select("*").order("data_evento", { ascending: true });
-    setEventi(data || []);
+    const { data } = await supabase
+      .from("eventi")
+      .select("*")
+      .order("data_evento", { ascending: true });
+    setEventi((data as Evento[]) || []);
   }
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     await supabase.from("eventi").insert([form]);
     setForm({
