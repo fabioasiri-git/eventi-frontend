@@ -23,7 +23,7 @@ type Evento = {
 };
 
 export default function Home() {
-  const [eventi, setEventi] = useState([] as Evento[]);
+  const [eventi, setEventi] = useState<Evento[]>([]);
   const [form, setForm] = useState<Evento>({
     nome_evento: "",
     data_evento: "",
@@ -47,7 +47,7 @@ export default function Home() {
       .from("eventi")
       .select("*")
       .order("data_evento", { ascending: true });
-    setEventi((data as Evento[]) || []);
+       setEventi((data as Evento[]) || []);
   }
 
   async function handleSubmit(e: React.FormEvent) {
