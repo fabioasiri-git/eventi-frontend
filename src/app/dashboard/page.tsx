@@ -40,6 +40,23 @@ interface Contratto {
   dettagli: string;
 }
 
+interface KanbanCard {
+  id: string;
+  azienda: string;
+  stato: 'preventivo' | 'attivo' | 'concluso' | 'radar';
+  score: number;
+  importo: number;
+  dettagli_prodotto: string;
+  localita: string;
+  dettagli_extra?: string;
+}
+
+interface QuoteItem {
+  id: string;
+  prodotto: string;
+  qty: number;
+}
+
 // Storico contratti estratti dal desktop (Dati reali offline)
 const STORICO_CONTRATTI_DEFAULT: Contratto[] = [
   {
@@ -121,10 +138,65 @@ const STORICO_CONTRATTI_DEFAULT: Contratto[] = [
   }
 ];
 
+// Dati iniziali della Pipeline Kanban
+const KANBAN_DEFAULT: KanbanCard[] = [
+  {
+    id: 'k-1',
+    azienda: 'TINGHI MOTORS SRL',
+    stato: 'preventivo',
+    score: 88,
+    importo: 1165.00,
+    dettagli_prodotto: 'Spot 20" + Primo di Barra',
+    localita: 'Empoli (FI)',
+    dettagli_extra: 'Trattativa in corso'
+  },
+  {
+    id: 'k-2',
+    azienda: 'Pro Loco Sagra del Tordello',
+    stato: 'preventivo',
+    score: 82,
+    importo: 617.50,
+    dettagli_prodotto: 'Spot 20" + 5 Citazioni Live',
+    localita: 'Camaiore (LU)',
+    dettagli_extra: 'In attesa di approvazione'
+  },
+  {
+    id: 'k-3',
+    azienda: 'TINGHI MOTORS SRL',
+    stato: 'attivo',
+    score: 95,
+    importo: 1450.00,
+    dettagli_prodotto: '72 Spot Programmati',
+    localita: 'Empoli (FI)',
+    dettagli_extra: 'In onda dal 23 al 31 Luglio 2026'
+  },
+  {
+    id: 'k-4',
+    azienda: 'ETRURIA LUCE E GAS SPA',
+    stato: 'concluso',
+    score: 90,
+    importo: 3400.00,
+    dettagli_prodotto: 'Spot 20" + Citazioni',
+    localita: 'Firenze (FI)',
+    dettagli_extra: 'Contratto Giugno 2026'
+  },
+  {
+    id: 'k-5',
+    azienda: 'Pro Loco Sagra del Tordello (Autunno)',
+    stato: 'radar',
+    score: 82,
+    importo: 617.50,
+    dettagli_prodotto: 'Pianificazione Autunnale',
+    localita: 'Camaiore (LU)',
+    dettagli_extra: '⏰ Sveglia Settembre per recall'
+  }
+];
+
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<'contratti' | 'eventi'>('contratti');
+  const [activeTab, setActiveTab] = useState<'kanban' | 'contratti' | 'eventi'>('kanban');
   const [eventi, setEventi] = useState<EventoDashboard[]>([]);
   const [contratti, setContratti] = useState<Contratto[]>(STORICO_CONTRATTI_DEFAULT);
+  const [kanbanCards, setKanbanCards] = useState<KanbanCard[]>(KANBAN_DEFAULT);
   
   // Stati di caricamento ed errori
   const [loading, setLoading] = useState(true);
@@ -135,26 +207,21 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filtroStato, setFiltroStato] = useState<string>('tutti');
 
-  // Calcoli finanziari basati sullo storico contratti
+  // Stato Modale Preventivatore Multi-Riga
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  const [quoteCliente, setQuoteCliente] = useState('');
+  const [quoteLocalita, setQuoteLocalita] = useState('');
+  const [quoteArea, setQuoteArea] = useState<'FI' | 'PI' | 'SI' | 'RETE'>('FI');
+  const [quoteSconto, setQuoteSconto] = useState(15);
+  const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([{ id: '1', prodotto: 'spot20', qty: 100 }]);
+
+  // Calcoli finanziari basati su contratti e pipeline
   const totaleFatturato = contratti.reduce((sum, c) => sum + c.importo, 0);
   const valoreMedioContratto = contratti.length > 0 ? (totaleFatturato / contratti.length) : 0;
-  const pipelineAttesa = 3450.00; // Valore stimato preventivi aperti
+  const pipelineAttesa = kanbanCards
+    .filter(c => c.stato === 'preventivo')
+    .reduce((sum, c) => sum + c.importo, 0);
   const cambioMerceValore = 2000.00; // Es. contratto GDM Italiana (Barter)
-
-  // Calcoli statistiche generali degli eventi
-  const statistiche = eventi.reduce((acc, evento) => ({
-    totaleEventi: acc.totaleEventi + 1,
-    totaleContatti: acc.totaleContatti + (evento.totale_contatti || 0),
-    daContattare: acc.daContattare + (evento.da_contattare || 0),
-    interessati: acc.interessati + (evento.interessati || 0),
-    followUpScaduti: acc.followUpScaduti + (evento.follow_up_scaduti || 0)
-  }), {
-    totaleEventi: 0,
-    totaleContatti: 0,
-    daContattare: 0,
-    interessati: 0,
-    followUpScaduti: 0
-  });
 
   useEffect(() => {
     verificaEcaricaDati();
@@ -170,16 +237,15 @@ export default function Dashboard() {
       const { error: pingError } = await supabase.from('eventi').select('id').limit(1);
       
       if (pingError) {
-        // Se c'è errore di rete o DNS, assumiamo che il DB sia sospeso/paused
         setDbStatus('paused');
-        setErrorMsg("Il database Supabase (unwqyqguxiumkrnlxatz) sembra Sospeso o Inattivo. La Dashboard è stata avviata in Modalità Offline mostrando lo Storico Contratti estratto dal desktop.");
+        setErrorMsg("Il database Supabase (unwqyqguxiumkrnlxatz) sembra Sospeso o Inattivo. La Dashboard è stata avviata in Modalità Offline mostrando lo Storico Contratti e la Pipeline Kanban interattiva.");
         setLoading(false);
         return;
       }
 
       setDbStatus('online');
 
-      // Carica dati reali da Supabase (se il database è online)
+      // Carica dati reali da Supabase
       const { data: dashboardData, error } = await supabase
         .from('dashboard_eventi_completa')
         .select('*')
@@ -229,6 +295,129 @@ export default function Dashboard() {
       default: return 'bg-zinc-800 text-zinc-400 border border-zinc-700';
     }
   };
+
+  // Calcolo prezzi del Preventivatore Multi-Riga
+  const calculateQuotePrice = () => {
+    let baseSpotArea = 9.0;
+    if (quoteArea === 'PI') baseSpotArea = 5.5;
+    if (quoteArea === 'SI') baseSpotArea = 4.5;
+    if (quoteArea === 'RETE') baseSpotArea = 13.0;
+
+    let totalListino = 0;
+    let nonDiscountableTotal = 0;
+
+    quoteItems.forEach(item => {
+      let linePrice = 0;
+      const qty = item.qty;
+
+      if (item.prodotto === 'spot20') linePrice = baseSpotArea * qty;
+      else if (item.prodotto === 'spot30') linePrice = (baseSpotArea * 1.2) * qty;
+      else if (item.prodotto === 'primo_barra') linePrice = 600.0;
+      else if (item.prodotto === 'citazione') linePrice = 30.0 * qty;
+      else if (item.prodotto === 'pillola1') linePrice = 150.0 * qty;
+      else if (item.prodotto === 'pillola2') linePrice = 100.0 * qty;
+      else if (item.prodotto === 'djset') linePrice = 500.0 * qty;
+      else if (item.prodotto === 'segnale') linePrice = 650.0 * qty;
+      else if (item.prodotto === 'prod') {
+        linePrice = 100.0 * qty;
+        nonDiscountableTotal += linePrice;
+      }
+
+      totalListino += linePrice;
+    });
+
+    const discountableAmount = totalListino - nonDiscountableTotal;
+    const totalRiservato = (discountableAmount * (1 - (quoteSconto / 100))) + nonDiscountableTotal;
+
+    return { totalListino, totalRiservato };
+  };
+
+  const { totalListino, totalRiservato } = calculateQuotePrice();
+
+  const handleAddQuoteItem = () => {
+    setQuoteItems([...quoteItems, { id: Date.now().toString(), prodotto: 'citazione', qty: 5 }]);
+  };
+
+  const handleRemoveQuoteItem = (id: string) => {
+    setQuoteItems(quoteItems.filter(item => item.id !== id));
+  };
+
+  const handleUpdateQuoteItem = (id: string, field: 'prodotto' | 'qty', value: any) => {
+    setQuoteItems(quoteItems.map(item => {
+      if (item.id === id) {
+        return { ...item, [field]: value };
+      }
+      return item;
+    }));
+  };
+
+  const handleSaveQuote = () => {
+    if (!quoteCliente.trim()) {
+      alert("Inserire il nome cliente!");
+      return;
+    }
+    const newCard: KanbanCard = {
+      id: `k-${Date.now()}`,
+      azienda: quoteCliente,
+      stato: 'preventivo',
+      score: 85,
+      importo: totalRiservato,
+      dettagli_prodotto: quoteItems.map(i => `${i.prodotto} x${i.qty}`).join(', '),
+      localita: quoteLocalita || 'Firenze',
+      dettagli_extra: `Multi-Riga (Sconto ${quoteSconto}%)`
+    };
+    setKanbanCards([newCard, ...kanbanCards]);
+    setIsQuoteModalOpen(false);
+    // Reset form
+    setQuoteCliente('');
+    setQuoteLocalita('');
+    setQuoteItems([{ id: '1', prodotto: 'spot20', qty: 100 }]);
+  };
+
+  const convertToContract = (cardId: string) => {
+    setKanbanCards(kanbanCards.map(c => {
+      if (c.id === cardId) {
+        return { ...c, stato: 'attivo' as const, dettagli_extra: 'In onda ORA' };
+      }
+      return c;
+    }));
+    alert("🎉 Convertito in CONTRATTO ATTIVO!");
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, targetStatus: KanbanCard['stato']) => {
+    const cardId = e.dataTransfer.getData('cardId');
+    if (cardId) {
+      setKanbanCards(kanbanCards.map(c => {
+        if (c.id === cardId) {
+          return { ...c, stato: targetStatus };
+        }
+        return c;
+      }));
+    }
+  };
+
+  const handleDragStart = (e: React.DragEvent, cardId: string) => {
+    e.dataTransfer.setData('cardId', cardId);
+  };
+
+  // Calcoli statistiche generali degli eventi
+  const statistiche = eventi.reduce((acc, evento) => ({
+    totaleEventi: acc.totaleEventi + 1,
+    totaleContatti: acc.totaleContatti + (evento.totale_contatti || 0),
+    daContattare: acc.daContattare + (evento.da_contattare || 0),
+    interessati: acc.interessati + (evento.interessati || 0),
+    followUpScaduti: acc.followUpScaduti + (evento.follow_up_scaduti || 0)
+  }), {
+    totaleEventi: 0,
+    totaleContatti: 0,
+    daContattare: 0,
+    interessati: 0,
+    followUpScaduti: 0
+  });
 
   // Filtro Eventi
   const eventiFiltrati = eventi.filter(evento => {
@@ -280,36 +469,56 @@ export default function Dashboard() {
               </span>
               <span className={`w-2.5 h-2.5 rounded-full ${dbStatus === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`}></span>
               <span className="text-xs text-zinc-400 font-mono">
-                {dbStatus === 'online' ? 'Database Online' : 'Database Offline'}
+                {dbStatus === 'online' ? 'Database Realtime OK' : 'Database Offline'}
               </span>
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-zinc-100 to-zinc-400 bg-clip-text text-transparent mt-1">
-              Dashboard Commerciale & Contratti
+              Radio Toscana Commerciale
             </h1>
           </div>
           
-          {/* Tabs */}
-          <div className="flex bg-zinc-950 p-1.5 rounded-xl border border-zinc-850">
+          {/* Pulsanti Header */}
+          <div className="flex items-center gap-4">
             <button
-              onClick={() => setActiveTab('contratti')}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                activeTab === 'contratti'
-                  ? 'bg-zinc-800 text-zinc-100 shadow-md'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
+              onClick={() => setIsQuoteModalOpen(true)}
+              className="px-4 py-2 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold rounded-xl text-sm transition shadow-lg shadow-rose-950/40 flex items-center gap-2"
             >
-              📂 Storico Contratti
+              <span>➕</span> Nuovo Preventivo Multi-Riga (Sez. 16)
             </button>
-            <button
-              onClick={() => setActiveTab('eventi')}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                activeTab === 'eventi'
-                  ? 'bg-zinc-800 text-zinc-100 shadow-md'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              📥 Lead & Eventi
-            </button>
+
+            {/* Tabs */}
+            <div className="flex bg-zinc-950 p-1.5 rounded-xl border border-zinc-850">
+              <button
+                onClick={() => setActiveTab('kanban')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'kanban'
+                    ? 'bg-zinc-800 text-zinc-100 shadow-md'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                📋 Pipeline Kanban
+              </button>
+              <button
+                onClick={() => setActiveTab('contratti')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'contratti'
+                    ? 'bg-zinc-800 text-zinc-100 shadow-md'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                📂 Storico Contratti
+              </button>
+              <button
+                onClick={() => setActiveTab('eventi')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'eventi'
+                    ? 'bg-zinc-800 text-zinc-100 shadow-md'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                📥 Lead & Eventi
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -327,10 +536,10 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* 1. SEZIONE FINANZIARIA (Sempre visibile - Cuore del business) */}
+        {/* 1. SEZIONE FINANZIARIA (Sempre visibile - Sezione 19) */}
         <section className="mb-10">
           <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-400 mb-4 flex items-center gap-2">
-            <span>📈</span> Metriche Finanziarie RT
+            <span>📈</span> Metriche Finanziarie RT (Sezione 19)
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             
@@ -341,7 +550,7 @@ export default function Dashboard() {
               <h3 className="text-3xl font-extrabold text-emerald-400 mt-2 font-mono">
                 €{totaleFatturato.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
               </h3>
-              <p className="text-xs text-zinc-500 mt-1">Totale di 7 contratti attivi o storici</p>
+              <p className="text-xs text-zinc-500 mt-1">Somma contratti attivi/storici</p>
             </div>
 
             {/* Pipeline Attesa */}
@@ -377,7 +586,185 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* 2. TAB CONTENUTO - STORICO CONTRATTI */}
+        {/* 2. TAB CONTENUTO - PIPELINE KANBAN (Dall'app Vercel) */}
+        {activeTab === 'kanban' && (
+          <section className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-zinc-100">Pipeline Commerciale (Semaforo SLA Sez. 17)</h3>
+                <p className="text-xs text-zinc-400">Trascina le schede tra le colonne per aggiornare lo stato di avanzamento</p>
+              </div>
+            </div>
+
+            {/* Griglia Kanban */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              
+              {/* Colonna 1: Preventivi in Trattativa */}
+              <div 
+                className="bg-zinc-900/60 p-4 rounded-3xl border border-zinc-850 flex flex-col gap-4 min-h-[500px]"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'preventivo')}
+              >
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-800">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">1. Preventivi in Trattativa</span>
+                  <span className="px-2 py-0.5 bg-zinc-800 rounded-full text-xs font-mono">
+                    {kanbanCards.filter(c => c.stato === 'preventivo').length}
+                  </span>
+                </div>
+                
+                <div className="flex flex-col gap-3">
+                  {kanbanCards.filter(c => c.stato === 'preventivo').map(c => (
+                    <div 
+                      key={c.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, c.id)}
+                      className="bg-zinc-950 p-4 rounded-2xl border border-zinc-850 hover:border-zinc-700 transition cursor-grab active:cursor-grabbing shadow-lg"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-zinc-200 text-sm">{c.azienda}</h4>
+                        <span className="px-2 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-md text-[10px] font-bold">
+                          🔴 {c.score} pts
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 mb-3">{c.dettagli_prodotto}</p>
+                      
+                      <div className="flex justify-between items-center text-xs text-zinc-500 border-t border-zinc-900 pt-3">
+                        <span>{c.localita}</span>
+                        <span className="font-bold text-zinc-300 font-mono">€{c.importo.toFixed(2)}</span>
+                      </div>
+                      
+                      <button 
+                        onClick={() => convertToContract(c.id)}
+                        className="w-full mt-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-bold rounded-lg text-xs transition"
+                      >
+                        🎉 Passa a Contratto
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Colonna 2: Contratto Attivo */}
+              <div 
+                className="bg-zinc-900/60 p-4 rounded-3xl border border-zinc-850 flex flex-col gap-4 min-h-[500px]"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'attivo')}
+              >
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-800">
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">2. Contratto Attivo (In Onda)</span>
+                  <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-mono">
+                    {kanbanCards.filter(c => c.stato === 'attivo').length}
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  {kanbanCards.filter(c => c.stato === 'attivo').map(c => (
+                    <div 
+                      key={c.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, c.id)}
+                      className="bg-zinc-950 p-4 rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition cursor-grab shadow-lg"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-zinc-200 text-sm">{c.azienda}</h4>
+                        <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-md text-[10px] font-bold">
+                          🟢 IN ONDA ORA
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 mb-2">{c.dettagli_prodotto}</p>
+                      <p className="text-[10px] text-zinc-500 italic mb-3">{c.dettagli_extra}</p>
+                      
+                      <div className="flex justify-between items-center text-xs text-zinc-500 border-t border-zinc-900 pt-3">
+                        <span>{c.localita}</span>
+                        <span className="font-bold text-emerald-400 font-mono">€{c.importo.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Colonna 3: Contratti Conclusi */}
+              <div 
+                className="bg-zinc-900/60 p-4 rounded-3xl border border-zinc-850 flex flex-col gap-4 min-h-[500px]"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'concluso')}
+              >
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-800">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">3. Contratti Conclusi (Storico)</span>
+                  <span className="px-2 py-0.5 bg-zinc-800 rounded-full text-xs font-mono">
+                    {kanbanCards.filter(c => c.stato === 'concluso').length}
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-3 opacity-80">
+                  {kanbanCards.filter(c => c.stato === 'concluso').map(c => (
+                    <div 
+                      key={c.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, c.id)}
+                      className="bg-zinc-950 p-4 rounded-2xl border border-zinc-850 hover:border-zinc-800 transition cursor-grab shadow-lg"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-zinc-300 text-sm">{c.azienda}</h4>
+                        <span className="px-2 py-0.5 bg-zinc-800 text-zinc-400 rounded-md text-[10px] font-bold">
+                          Concluso
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-500 mb-2">{c.dettagli_prodotto}</p>
+                      
+                      <div className="flex justify-between items-center text-xs text-zinc-650 border-t border-zinc-900 pt-3">
+                        <span>{c.localita}</span>
+                        <span className="font-bold text-zinc-400 font-mono">€{c.importo.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Colonna 4: Memory Lock Radar */}
+              <div 
+                className="bg-zinc-900/60 p-4 rounded-3xl border border-zinc-850 flex flex-col gap-4 min-h-[500px]"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'radar')}
+              >
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-800">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">4. Memory Lock Radar</span>
+                  <span className="px-2 py-0.5 bg-zinc-800 rounded-full text-xs font-mono">
+                    {kanbanCards.filter(c => c.stato === 'radar').length}
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  {kanbanCards.filter(c => c.stato === 'radar').map(c => (
+                    <div 
+                      key={c.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, c.id)}
+                      className="bg-zinc-950 p-4 rounded-2xl border border-zinc-850 hover:border-zinc-800 transition cursor-grab shadow-lg"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-zinc-200 text-sm">{c.azienda}</h4>
+                        <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 rounded-md text-[10px] font-bold">
+                          ⏰ Recall
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 mb-2">{c.dettagli_prodotto}</p>
+                      <p className="text-[10px] text-yellow-400/80 font-semibold mb-3">{c.dettagli_extra}</p>
+                      
+                      <div className="flex justify-between items-center text-xs text-zinc-500 border-t border-zinc-900 pt-3">
+                        <span>{c.localita}</span>
+                        <span className="font-bold text-zinc-300 font-mono">€{c.importo.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </section>
+        )}
+
+        {/* 3. TAB CONTENUTO - STORICO CONTRATTI */}
         {activeTab === 'contratti' && (
           <section className="bg-zinc-900 p-6 rounded-3xl border border-zinc-850 shadow-2xl">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
@@ -445,7 +832,7 @@ export default function Dashboard() {
           </section>
         )}
 
-        {/* 3. TAB CONTENUTO - LEAD E OUTREACH DA DATABASE */}
+        {/* 4. TAB CONTENUTO - LEAD E OUTREACH DA DATABASE */}
         {activeTab === 'eventi' && (
           <section className="space-y-6">
             
@@ -556,6 +943,159 @@ export default function Dashboard() {
         )}
 
       </main>
+
+      {/* 5. MODALE INTERATTIVO PREVENTIVATORE MULTI-RIGA (Sezione 16) */}
+      {isQuoteModalOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <button 
+              onClick={() => setIsQuoteModalOpen(false)}
+              className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-200 text-xl font-bold"
+            >
+              ✕
+            </button>
+            
+            <h3 className="text-xl font-bold text-zinc-100 mb-6 flex items-center gap-2">
+              <span>📋</span> Crea Preventivo Multi-Riga (Sezione 16)
+            </h3>
+
+            <div className="space-y-4">
+              {/* Cliente */}
+              <div>
+                <label className="block text-xs font-semibold text-zinc-400 uppercase mb-1">Nome Cliente / Azienda</label>
+                <input 
+                  type="text" 
+                  value={quoteCliente}
+                  onChange={(e) => setQuoteCliente(e.target.value)}
+                  placeholder="es. Concessionaria o Pro Loco Toscana"
+                  className="w-full px-4 py-2.5 bg-zinc-950 border border-zinc-850 rounded-xl text-sm focus:outline-none focus:border-zinc-700 text-zinc-100"
+                />
+              </div>
+
+              {/* Località */}
+              <div>
+                <label className="block text-xs font-semibold text-zinc-400 uppercase mb-1">Località</label>
+                <input 
+                  type="text" 
+                  value={quoteLocalita}
+                  onChange={(e) => setQuoteLocalita(e.target.value)}
+                  placeholder="es. Empoli (FI)"
+                  className="w-full px-4 py-2.5 bg-zinc-950 border border-zinc-850 rounded-xl text-sm focus:outline-none focus:border-zinc-700 text-zinc-100"
+                />
+              </div>
+
+              {/* Area e Sconto */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-400 uppercase mb-1">Area Copertura</label>
+                  <select 
+                    value={quoteArea}
+                    onChange={(e) => setQuoteArea(e.target.value as any)}
+                    className="w-full px-4 py-2.5 bg-zinc-950 border border-zinc-850 rounded-xl text-sm focus:outline-none focus:border-zinc-700 text-zinc-100"
+                  >
+                    <option value="FI">Firenze / Prato / Pistoia (AREA 1)</option>
+                    <option value="PI">Pisa / Lucca / Maremma (AREA 2)</option>
+                    <option value="SI">Siena / Arezzo / Grosseto (AREA 3)</option>
+                    <option value="RETE">Tutte le Province (RETE)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-400 uppercase mb-1">Sconto Complessivo (%)</label>
+                  <input 
+                    type="number" 
+                    value={quoteSconto}
+                    onChange={(e) => setQuoteSconto(Math.max(0, parseInt(e.target.value) || 0))}
+                    className="w-full px-4 py-2.5 bg-zinc-950 border border-zinc-850 rounded-xl text-sm focus:outline-none focus:border-zinc-700 text-zinc-100"
+                  />
+                </div>
+              </div>
+
+              {/* Righe Prodotti */}
+              <div className="border-t border-zinc-800 pt-4 mt-4">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="text-xs font-bold text-zinc-300 uppercase">Voci di Listino Acquistate</h4>
+                  <button 
+                    onClick={handleAddQuoteItem}
+                    className="px-2.5 py-1 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-lg text-xs font-semibold hover:bg-indigo-500/30 transition"
+                  >
+                    ➕ Aggiungi Voce
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {quoteItems.map((item, idx) => (
+                    <div key={item.id} className="flex flex-col md:flex-row items-center gap-3 bg-zinc-950 p-3 rounded-2xl border border-zinc-850">
+                      <div className="flex-1 w-full">
+                        <select
+                          value={item.prodotto}
+                          onChange={(e) => handleUpdateQuoteItem(item.id, 'prodotto', e.target.value)}
+                          className="w-full px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-zinc-200"
+                        >
+                          <option value="spot20">Spot Tabellare 20" (Prezzo d'Area)</option>
+                          <option value="spot30">Spot Tabellare 30" (+20% su d'Area)</option>
+                          <option value="primo_barra">Primo di Barra 10" (14gg - €600 Area 1)</option>
+                          <option value="citazione">Citazione Live Speaker (€30,00 l'una)</option>
+                          <option value="pillola1">Pillola 60" (Prima Messa in Onda - €150,00)</option>
+                          <option value="pillola2">Pillola 60" (Repliche - €100,00)</option>
+                          <option value="djset">DJ Set + Promo Radio (€500,00)</option>
+                          <option value="segnale">Segnale Orario (2 sett €650,00)</option>
+                          <option value="prod">Costo Produzione Spot (€100,00 non scontabile)</option>
+                        </select>
+                      </div>
+                      <div className="w-full md:w-24">
+                        <input
+                          type="number"
+                          value={item.qty}
+                          onChange={(e) => handleUpdateQuoteItem(item.id, 'qty', Math.max(1, parseInt(e.target.value) || 1))}
+                          placeholder="Q.tà"
+                          className="w-full px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-center text-zinc-100"
+                        />
+                      </div>
+                      <button
+                        onClick={() => handleRemoveQuoteItem(item.id)}
+                        disabled={quoteItems.length === 1}
+                        className="px-2.5 py-1.5 bg-red-950/40 text-red-400 border border-red-900/30 rounded-lg text-xs font-bold hover:bg-red-950/60 disabled:opacity-40 transition"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Anteprima prezzi */}
+              <div className="grid grid-cols-2 gap-4 bg-zinc-950 p-4 rounded-2xl border border-zinc-850 mt-6">
+                <div>
+                  <p className="text-[10px] text-zinc-500 uppercase font-semibold">Totale Listino</p>
+                  <p className="text-lg font-bold text-zinc-300 font-mono">€{totalListino.toFixed(2)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] text-zinc-500 uppercase font-semibold">Prezzo Riservato Cliente</p>
+                  <p className="text-xl font-extrabold text-emerald-400 font-mono">€{totalRiservato.toFixed(2)}</p>
+                </div>
+              </div>
+
+              {/* Azioni */}
+              <div className="flex justify-end gap-3 pt-6 border-t border-zinc-800 mt-6">
+                <button
+                  onClick={() => setIsQuoteModalOpen(false)}
+                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-750 text-zinc-300 text-sm font-semibold rounded-xl transition"
+                >
+                  Annulla
+                </button>
+                <button
+                  onClick={handleSaveQuote}
+                  className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-sm font-bold rounded-xl transition shadow-lg shadow-rose-950/20"
+                >
+                  💾 Salva & Inserisci in Pipeline
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
