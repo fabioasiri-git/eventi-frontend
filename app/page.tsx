@@ -321,7 +321,7 @@ export default function LeadEngineDashboard() {
             <h1>
               Radio Toscana Commerciale{' '}
               <span style={{ fontSize: '12px', background: 'rgba(225,29,72,0.25)', color: '#f43f5e', border: '1px solid rgba(225,29,72,0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
-                v7.3.0 - Next.js Control Center (Listino Toscana Comunica)
+                v7.3.0 - Monster Engine (Listino Toscana Comunica)
               </span>
             </h1>
             <p>Lead Engine & CRM Cloud — Centro di Controllo Commerciale Unificato</p>

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Radio Toscana - Lead Engine & Cloud CRM v7.3.0',
-  description: 'Centro di Controllo Commerciale Unificato Radio Toscana v7.3.0 (Listino Toscana Comunica)',
+  title: 'Radio Toscana Monster Engine & Cloud CRM v7.3.0',
+  description: 'Centro di Controllo Commerciale Unificato Radio Toscana Monster Engine v7.3.0 (Listino Toscana Comunica)',
 };
 
 export default function RootLayout({
