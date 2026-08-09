@@ -122,9 +122,15 @@ function initNavigation() {
             btn.classList.add("active");
             
             const targetTab = btn.getAttribute("data-tab");
-            document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
+            document.querySelectorAll(".tab-pane").forEach(pane => {
+                pane.classList.remove("active");
+                pane.style.display = "none";
+            });
             const targetPane = document.getElementById(`tab-${targetTab}`);
-            if (targetPane) targetPane.classList.add("active");
+            if (targetPane) {
+                targetPane.classList.add("active");
+                targetPane.style.display = "block";
+            }
         });
     });
 }
