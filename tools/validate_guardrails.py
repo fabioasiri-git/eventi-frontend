@@ -12,9 +12,10 @@ def validate_lead_engine_guardrails():
     required_files = [
         "MANUALE_OPERATIVO_LEAD_ENGINE.md",
         "MANUALE_OPERATIVO_PROGETTI.md",
-        "dashboard/index.html",
-        "dashboard/app.js",
-        "dashboard/vercel.json"
+        "app/page.tsx",
+        "app/layout.tsx",
+        "package.json",
+        "vercel.json"
     ]
     
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,13 +24,13 @@ def validate_lead_engine_guardrails():
         if not os.path.exists(full_path):
             errors.append(f"❌ File obbligatorio mancante: {rel_path}")
 
-    # 2. Verifica che dashboard/app.js non contenga solo finti dati statici
-    app_js_path = os.path.join(base_dir, "dashboard", "app.js")
-    if os.path.exists(app_js_path):
-        with open(app_js_path, "r", encoding="utf-8") as f:
+    # 2. Verifica che app/page.tsx contenga l'integrazione Supabase attiva
+    page_tsx_path = os.path.join(base_dir, "app", "page.tsx")
+    if os.path.exists(page_tsx_path):
+        with open(page_tsx_path, "r", encoding="utf-8") as f:
             content = f.read()
-            if "INITIAL_LEADS" in content and "createClient" not in content and "fetchSupabaseLeads" not in content:
-                errors.append("⚠️ Guardrail Warning: dashboard/app.js non ha ancora l'integrazione Supabase attiva!")
+            if "fetchSupabaseLeads" not in content and "supabase" not in content.lower():
+                errors.append("⚠️ Guardrail Warning: app/page.tsx non ha l'integrazione Supabase attiva!")
 
     # 3. Risultato della validazione
     if errors:
