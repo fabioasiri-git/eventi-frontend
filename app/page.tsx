@@ -24,19 +24,36 @@ interface LeadRow {
   data_invio_programmazione?: string;
 }
 
+interface QuoteItemRow {
+  id: string;
+  prodotto: string;
+  dataInizio: string;
+  dataFine: string;
+  frequenza: 'EVERY_DAY' | 'WEEKDAYS' | 'ALTERNATE';
+  spotGiorno: number;
+}
+
 export default function LeadEngineDashboard() {
   const [activeTab, setActiveTab] = useState<'kanban' | 'queues' | 'renewals' | 'memory' | 'production' | 'schedules'>('kanban');
   const [leads, setLeads] = useState<LeadRow[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedLeadForEmail, setSelectedLeadForEmail] = useState<LeadRow | null>(null);
 
-  // Form State per Nuovo Preventivo
+  // Form State per Nuovo Preventivo Multi-Riga
   const [qNome, setQNome] = useState('');
   const [qArea, setQArea] = useState('FI');
   const [qSconto, setQSconto] = useState(15);
-  const [qTipoAudio, setQTipoAudio] = useState<'FULL_RT' | 'MULTI_RADIO' | 'CODINO' | 'FORNITO'>('FULL_RT');
+  const [quoteItems, setQuoteItems] = useState<QuoteItemRow[]>([
+    {
+      id: 'row-1',
+      prodotto: 'spot20',
+      dataInizio: '2026-08-10',
+      dataFine: '2026-08-23',
+      frequenza: 'EVERY_DAY',
+      spotGiorno: 6
+    }
+  ]);
 
   // Supabase Fetch
   useEffect(() => {
@@ -44,7 +61,6 @@ export default function LeadEngineDashboard() {
   }, []);
 
   async function fetchSupabaseLeads() {
-    setLoading(true);
     try {
       const res = await fetch('https://dunogeleekgqztkrlxsz.supabase.co/rest/v1/rt_lead_engine_pool?select=*', {
         headers: {
@@ -64,8 +80,6 @@ export default function LeadEngineDashboard() {
       }
     } catch (e) {
       setLeads(getInitialFallbackLeads());
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -140,12 +154,101 @@ export default function LeadEngineDashboard() {
     return { val: finalScore, label: `🟢 ${finalScore} pts (Bassa)`, css: 'score-green' };
   }
 
-  // Calcolo Tariffa Audio Spot
-  function getAudioPrice(tipo: string) {
-    if (tipo === 'FULL_RT') return 100;
-    if (tipo === 'MULTI_RADIO') return 169;
-    if (tipo === 'CODINO') return 30;
-    return 0; // FORNITO
+  // CALCOLO DINAMICO RIGA PREVENTIVO (Date, Frequenza 7/7-5/5-Alterni, Listino)
+  function calculateRowDetails(item: QuoteItemRow) {
+    const start = new Date(item.dataInizio);
+    const end = new Date(item.dataFine);
+
+    let totalDays = 0;
+    if (!isNaN(start.getTime()) && !isNaN(end.getTime()) && end >= start) {
+      totalDays = Math.round((end.getTime() - start.getTime()) / (1000 * 3600 * 24)) + 1;
+    } else {
+      totalDays = 14;
+    }
+
+    let activeDays = totalDays;
+    if (item.frequenza === 'WEEKDAYS') {
+      let count = 0;
+      let cur = new Date(start);
+      while (cur <= end) {
+        const day = cur.getDay();
+        if (day !== 0 && day !== 6) count++;
+        cur.setDate(cur.getDate() + 1);
+      }
+      activeDays = count > 0 ? count : Math.round(totalDays * 5 / 7);
+    } else if (item.frequenza === 'ALTERNATE') {
+      activeDays = Math.ceil(totalDays / 2);
+    }
+
+    const totalSpots = activeDays * item.spotGiorno;
+
+    // Tariffe Unitarie Listino 2026
+    let unitPrice = 9.00; // Default Spot 20" Area 1
+    if (qArea === 'PI') unitPrice = 5.50;
+    else if (qArea === 'SI') unitPrice = 4.50;
+    else if (qArea === 'RETE') unitPrice = 13.00;
+
+    let rowGrossTotal = 0;
+    if (item.prodotto === 'spot20') {
+      rowGrossTotal = unitPrice * totalSpots;
+    } else if (item.prodotto === 'spot30') {
+      rowGrossTotal = (unitPrice * 1.20) * totalSpots;
+    } else if (item.prodotto === 'spot15') {
+      rowGrossTotal = (unitPrice * 0.90) * totalSpots;
+    } else if (item.prodotto === 'spot10') {
+      rowGrossTotal = (unitPrice * 0.80) * totalSpots;
+    } else if (item.prodotto === 'primo_barra') {
+      rowGrossTotal = qArea === 'RETE' ? 800 : (qArea === 'FI' ? 600 : 450);
+    } else if (item.prodotto === 'ultimo_barra') {
+      rowGrossTotal = qArea === 'RETE' ? 700 : (qArea === 'FI' ? 500 : 350);
+    } else if (item.prodotto === 'segnale') {
+      rowGrossTotal = 650;
+    } else if (item.prodotto === 'prod_rt') {
+      rowGrossTotal = 100;
+    } else if (item.prodotto === 'prod_multi') {
+      rowGrossTotal = 169;
+    } else if (item.prodotto === 'codino') {
+      rowGrossTotal = 30;
+    } else if (item.prodotto === 'fornito') {
+      rowGrossTotal = 0;
+    } else if (item.prodotto === 'citazione') {
+      rowGrossTotal = 30 * totalSpots;
+    } else if (item.prodotto === 'pillola1') {
+      rowGrossTotal = 150;
+    } else if (item.prodotto === 'djset') {
+      rowGrossTotal = 500;
+    } else {
+      rowGrossTotal = unitPrice * totalSpots;
+    }
+
+    return { totalDays, activeDays, totalSpots, rowGrossTotal };
+  }
+
+  // Totali Preventivo
+  const totalGrossPrice = quoteItems.reduce((sum, item) => sum + calculateRowDetails(item).rowGrossTotal, 0);
+  const totalNetPrice = totalGrossPrice * (1 - qSconto / 100);
+
+  function addQuoteRow() {
+    setQuoteItems(prev => [
+      ...prev,
+      {
+        id: `row-${Date.now()}`,
+        prodotto: 'spot20',
+        dataInizio: '2026-08-10',
+        dataFine: '2026-08-23',
+        frequenza: 'EVERY_DAY',
+        spotGiorno: 6
+      }
+    ]);
+  }
+
+  function removeQuoteRow(id: string) {
+    if (quoteItems.length === 1) return;
+    setQuoteItems(prev => prev.filter(i => i.id !== id));
+  }
+
+  function updateQuoteRow(id: string, field: keyof QuoteItemRow, value: any) {
+    setQuoteItems(prev => prev.map(i => i.id === id ? { ...i, [field]: value } : i));
   }
 
   // Metriche Header
@@ -188,15 +291,15 @@ export default function LeadEngineDashboard() {
             <h1>
               Radio Toscana Commerciale{' '}
               <span style={{ fontSize: '12px', background: 'rgba(225,29,72,0.25)', color: '#f43f5e', border: '1px solid rgba(225,29,72,0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
-                v7.1.0 - Next.js Live
+                v7.2.0 - Next.js Control Center
               </span>
             </h1>
             <p>Lead Engine & CRM Cloud — Centro di Controllo Commerciale Unificato</p>
           </div>
         </div>
         <div className="header-actions">
-          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.1.0 (Next.js 14 Realtime Engine)')}>
-            🟢 Supabase Realtime [v7.1.0]
+          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.2.0 (Next.js 14 Engine)')}>
+            🟢 Supabase Realtime [v7.2.0]
           </button>
           <button className="btn btn-primary" onClick={() => setShowQuoteModal(true)}>
             ➕ Nuovo Preventivo
@@ -317,7 +420,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 2: CODE DI CONTROLLO */}
       {activeTab === 'queues' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.1)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.2)</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <h4 style={{ color: 'var(--accent-yellow)', marginBottom: '8px' }}>1. Lead Senza Contatto (&gt;7 giorni)</h4>
@@ -341,7 +444,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 3: RINNOVI & UPSELL */}
       {activeTab === 'renewals' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>⏰ Rinnovi & Upsell a 30 Giorni (Sezione 18 del Manuale v7.1)</h3>
+          <h3 style={{ marginBottom: '16px' }}>⏰ Rinnovi & Upsell a 30 Giorni (Sezione 18 del Manuale v7.2)</h3>
           <table className="table">
             <thead>
               <tr>
@@ -370,7 +473,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 4: UNIVERSAL MEMORY LOCK */}
       {activeTab === 'memory' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.1)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.2)</h3>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
             Radar automatico per la riattivazione programmata degli eventi ricorrenti annuali in Toscana.
           </p>
@@ -429,7 +532,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 6: PROGRAMMAZIONE ON-AIR & EMAIL */}
       {activeTab === 'schedules' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air & Dispatch Email (Sezione 20.4 del Manuale v7.1)</h3>
+          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air & Dispatch Email (Sezione 20.4 del Manuale v7.2)</h3>
           <table className="table">
             <thead>
               <tr>
@@ -482,47 +585,131 @@ export default function LeadEngineDashboard() {
         </div>
       )}
 
-      {/* MODALE NUOVO PREVENTIVO */}
+      {/* MODALE NUOVO PREVENTIVO MULTI-RIGA CON DATE E FREQUENZE ON-AIR */}
       {showQuoteModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h3 className="modal-title">➕ Crea Nuovo Preventivo</h3>
+              <h3 className="modal-title">➕ Crea Nuovo Preventivo Commerciale</h3>
               <button className="modal-close" onClick={() => setShowQuoteModal(false)}>✕</button>
             </div>
+            
             <div className="form-group">
               <label className="form-label">Nome Cliente / Azienda</label>
               <input type="text" className="form-input" value={qNome} onChange={e => setQNome(e.target.value)} placeholder="es. Concessionaria o Pro Loco Toscana" />
             </div>
-            <div className="form-group">
-              <label className="form-label">Provincia / Copertura principale</label>
-              <select className="form-select" value={qArea} onChange={e => setQArea(e.target.value)}>
-                <option value="FI">Firenze / Prato / Pistoia (AREA 1)</option>
-                <option value="PI">Pisa / Lucca / Maremma (AREA 2)</option>
-                <option value="SI">Siena / Arezzo / Grosseto (AREA 3)</option>
-                <option value="RETE">Tutte le Province (RETE)</option>
-              </select>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="form-group">
+              <div>
+                <label className="form-label">Provincia / Copertura Principale</label>
+                <select className="form-select" value={qArea} onChange={e => setQArea(e.target.value)}>
+                  <option value="FI">Firenze / Prato / Pistoia (AREA 1)</option>
+                  <option value="PI">Pisa / Lucca / Maremma (AREA 2)</option>
+                  <option value="SI">Siena / Arezzo / Grosseto (AREA 3)</option>
+                  <option value="RETE">Tutte le Province (RETE)</option>
+                </select>
+              </div>
+              <div>
+                <label className="form-label">Percentuale Sconto Complessivo (%)</label>
+                <input type="number" className="form-input" value={qSconto} onChange={e => setQSconto(Number(e.target.value))} />
+              </div>
             </div>
+
+            {/* SEZIONE RIGHE PRODOTTO SCHEDULING CARD */}
             <div className="form-group">
-              <label className="form-label">Tipologia Produzione Audio Spot</label>
-              <select className="form-select" value={qTipoAudio} onChange={e => setQTipoAudio(e.target.value as any)}>
-                <option value="FULL_RT">🎙️ Produzione Esclusiva RT + RF (€ 100,00 + IVA)</option>
-                <option value="MULTI_RADIO">📻 Produzione Multi-Radio Toscana (€ 169,00 + IVA)</option>
-                <option value="CODINO">✂️ Montaggio Codino a Spot Esistente (€ 30,00 + IVA)</option>
-                <option value="FORNITO">📁 Spot Fornito dal Cliente (€ 0,00)</option>
-              </select>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <label className="form-label" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-main)' }}>📋 Voci di Listino & Pianificazione Date/Frequenza</label>
+                <button className="btn btn-xs btn-primary" onClick={addQuoteRow}>➕ Aggiungi Riga Prodotto</button>
+              </div>
+
+              {quoteItems.map((item, idx) => {
+                const details = calculateRowDetails(item);
+                return (
+                  <div key={item.id} className="quote-item-card">
+                    {/* RIGA 1: SELEZIONE PRODOTTO LISTINO */}
+                    <div className="item-card-row-1">
+                      <select className="form-select" value={item.prodotto} onChange={e => updateQuoteRow(item.id, 'prodotto', e.target.value)}>
+                        <option value="spot20">Spot Tabellare 20&quot; (Prezzo d&apos;Area Listino 2026)</option>
+                        <option value="spot30">Spot Tabellare 30&quot; (+20% su d&apos;Area)</option>
+                        <option value="spot15">Spot Tabellare 15&quot; (-10% su d&apos;Area)</option>
+                        <option value="spot10">Spot Tabellare 10&quot; (-20% su d&apos;Area)</option>
+                        <option value="primo_barra">Primo di Barra 10&quot; (Pacchetto 14gg - 196 passaggi)</option>
+                        <option value="ultimo_barra">Ultimo di Barra 10&quot; (Pacchetto 14gg - 196 passaggi)</option>
+                        <option value="segnale">Segnale Orario 5&quot; (2 Settimane - Solo RETE €650)</option>
+                        <option value="prod_rt">🎙️ Produzione Spot RT + RF (€ 100,00 + IVA)</option>
+                        <option value="prod_multi">📻 Produzione Spot Multi-Radio Toscana (€ 169,00 + IVA)</option>
+                        <option value="codino">✂️ Montaggio Codino Tecnico (€ 30,00 + IVA)</option>
+                        <option value="fornito">📁 Spot Fornito dal Cliente (€ 0,00)</option>
+                        <option value="citazione">Citazione Live Speaker (€ 30,00 ciascuna)</option>
+                        <option value="pillola1">Prima Messa in Onda Pillola 60&quot; (€ 150,00)</option>
+                        <option value="djset">DJ Set + Promo Radio (€ 500,00)</option>
+                      </select>
+                      <button className="btn-remove-row" onClick={() => removeQuoteRow(item.id)}>✕</button>
+                    </div>
+
+                    {/* RIGA 2: DATE INIZIO/FINE + FREQUENZA + SPOT/GIORNO */}
+                    <div className="item-card-row-2">
+                      <div>
+                        <label className="form-label" style={{ fontSize: '11px' }}>Data Inizio</label>
+                        <input type="date" className="form-input" value={item.dataInizio} onChange={e => updateQuoteRow(item.id, 'dataInizio', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '11px' }}>Data Fine</label>
+                        <input type="date" className="form-input" value={item.dataFine} onChange={e => updateQuoteRow(item.id, 'dataFine', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '11px' }}>Frequenza Messa in Onda</label>
+                        <select className="form-select" value={item.frequenza} onChange={e => updateQuoteRow(item.id, 'frequenza', e.target.value as any)}>
+                          <option value="EVERY_DAY">🗓️ Tutti i Giorni (7/7)</option>
+                          <option value="WEEKDAYS">💼 Solo Feriali (5/5 No W.E.)</option>
+                          <option value="ALTERNATE">🔄 Giorni Alterni (1gg SÌ, 1gg NO)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '11px' }}>Spot/GG</label>
+                        <input type="number" className="form-input" value={item.spotGiorno} onChange={e => updateQuoteRow(item.id, 'spotGiorno', Number(e.target.value))} />
+                      </div>
+                    </div>
+
+                    {/* RIGA 3: RESOCONTO GIORNI ATTIVI, SPOT TOTALI E SUBTOTALE */}
+                    <div className="item-card-row-3">
+                      <div>
+                        <span>📅 Giorni Calendario: <strong>{details.totalDays} gg</strong></span>
+                        <span style={{ marginLeft: '12px' }}>⚡ Giorni Attivi: <strong>{details.activeDays} gg</strong></span>
+                        <span style={{ marginLeft: '12px' }}>📊 Spot Totali: <strong>{details.totalSpots} spot</strong></span>
+                      </div>
+                      <div style={{ fontSize: '15px', fontWeight: 800, color: 'var(--accent-blue)' }}>
+                        € {details.rowGrossTotal.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            <div className="form-group">
-              <label className="form-label">Percentuale Sconto Complessivo (%)</label>
-              <input type="number" className="form-input" value={qSconto} onChange={e => setQSconto(Number(e.target.value))} />
+
+            {/* ANTEPRIMA PREZZO TOTALE */}
+            <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.2)', padding: '16px', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTALE LORDO LISTINO</div>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--accent-blue)' }}>
+                  € {totalGrossPrice.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>PREZZO RISERVATO CLIENTE (-{qSconto}%)</div>
+                <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--accent-green)' }}>
+                  € {totalNetPrice.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                </div>
+              </div>
             </div>
+
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button className="btn" onClick={() => setShowQuoteModal(false)}>Annulla</button>
               <button className="btn btn-primary" onClick={() => {
-                alert('Preventivo creato con successo ed inviato a Supabase Cloud!');
+                alert('Preventivo Multi-Riga con Frequenza On-Air salvato con successo ed inviato a Supabase Cloud!');
                 setShowQuoteModal(false);
               }}>
-                💾 Salva Preventivo
+                💾 Salva & Inserisci in Pipeline
               </button>
             </div>
           </div>

@@ -291,8 +291,8 @@ header {
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -303,10 +303,13 @@ header {
   background: #0f172a;
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-lg);
-  width: 90%;
-  max-width: 680px;
+  width: 92vw;
+  max-width: 860px;
   padding: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .modal-header {
@@ -319,21 +322,69 @@ header {
 }
 
 .modal-title { font-size: 18px; font-weight: 800; }
-.modal-close { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+.modal-close { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; }
 
 .form-group { margin-bottom: 16px; }
 .form-label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-muted); }
 .form-input, .form-select, .form-textarea {
   width: 100%;
-  padding: 10px;
+  padding: 10px 12px;
   border-radius: var(--radius-md);
   border: 1px solid var(--panel-border);
   background: rgba(255, 255, 255, 0.05);
   color: white;
   font-family: inherit;
   font-size: 13px;
+  outline: none;
 }
 .form-textarea { min-height: 140px; resize: vertical; }
+
+.quote-item-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-card-row-1 {
+  display: grid;
+  grid-template-columns: 1fr 32px;
+  gap: 10px;
+  align-items: center;
+}
+
+.item-card-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 80px;
+  gap: 10px;
+  align-items: center;
+}
+
+.item-card-row-3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(56, 189, 248, 0.06);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  font-size: 12px;
+}
+
+.btn-remove-row {
+  background: rgba(225, 29, 72, 0.2);
+  color: #f43f5e;
+  border: 1px solid rgba(225, 29, 72, 0.4);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
 .table {
   width: 100%;
