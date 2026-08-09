@@ -1,0 +1,14 @@
+{
+  "_istruzioni": "Aggiorna questo file ogni sera guardando i valori nell'interfaccia Antigravity (Settings > Model Quota). Inserisci la % RIMASTA come mostrata dall'interfaccia.",
+  "last_check": "2026-07-26T21:27:00",
+  "gemini": {
+    "weekly_pct_remaining": 1,
+    "fivehour_pct_remaining": 99,
+    "reset_in_hours": 46
+  },
+  "claude_gpt": {
+    "weekly_pct_remaining": 33,
+    "fivehour_pct_remaining": 100,
+    "reset_in_hours": 72
+  }
+}

@@ -1,0 +1,682 @@
+{
+  "updatedAt": "2026-07-26T08:18:07.790Z",
+  "createdAt": "2026-07-14T12:53:22.370Z",
+  "id": "L1NourCRWYTJBJVd",
+  "name": "RT_TELEGRAM_OOH_SCOUTER",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        512,
+        128
+      ],
+      "id": "283b4ec6-a47f-45ad-b198-abccb382124a",
+      "name": "\ud83d\udcf8 Telegram Trigger (Foto)",
+      "webhookId": "175299c5-c8de-42e1-a1c6-30246c0973e4",
+      "credentials": {
+        "telegramApi": {
+          "id": "jHIRf4daCSx1CtHv",
+          "name": "Mostro Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has_photo",
+              "leftValue": "={{ $json.message.photo }}",
+              "transitionValue": "",
+              "rightValue": "",
+              "operator": "isNotEmpty"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        736,
+        128
+      ],
+      "id": "fe94b9cd-7cac-482c-930a-d7c6b9df446f",
+      "name": "\ud83d\uddbc\ufe0f Ha Foto?"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot{{ $credentials.telegramApi.token }}/getFile",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file_id",
+              "value": "={{ $json.message.photo.slice(-1)[0].file_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        944,
+        16
+      ],
+      "id": "3cf31fb2-340c-45c3-89f4-821d4b1db5e7",
+      "name": "\ud83d\udce1 Ottieni Path File"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot{{ $credentials.telegramApi.token }}/{{ $json.result.file_path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1168,
+        16
+      ],
+      "id": "14a82c59-15e1-4edc-82ab-a1f5e30516dd",
+      "name": "\ud83d\udce5 Scarica File"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_GROQ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.2-11b-vision-preview\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"Identify the company advertising in this billboard. Return a JSON object with keys: 'ditta' (string, the brand name), 'comune' (inferred Tuscan city or null), 'settore' (string) and 'prodotto' (string describing what they sell). Do not return markdown, only valid JSON.\"\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"data:image/jpeg;base64,{{ $binary.data.toBase64() }}\"\n          }\n        }\n      ]\n    }\n  ],\n  \"response_format\": { \"type\": \"json_object\" }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1392,
+        16
+      ],
+      "id": "f61d05e8-8d47-4389-a2d9-d90ba9e85707",
+      "name": "\ud83d\udc41\ufe0f Llama 3.2 Vision"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.gumloop.com/api/v1/run_pipeline",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_GUMLOOP_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"user_id\": \"YOUR_GUMLOOP_USER_ID\",\n  \"saved_pipeline_id\": \"YOUR_GUMLOOP_PIPELINE_ID\",\n  \"pipeline_inputs\": [\n    { \"input_name\": \"website_url\", \"value\": \"https://www.google.com/search?q={{ encodeURIComponent(JSON.parse($json.choices[0].message.content).ditta) }}\" },\n    { \"input_name\": \"ditta\", \"value\": \"{{ JSON.parse($json.choices[0].message.content).ditta }}\" },\n    { \"input_name\": \"comune\", \"value\": \"{{ JSON.parse($json.choices[0].message.content).comune || 'Toscana' }}\" },\n    { \"input_name\": \"frequenza\", \"value\": \"NON INSERIRE\" },\n    { \"input_name\": \"prompt_fewshot\", \"value\": \"Scrivi una e-mail che fa leva sul fatto che abbiamo visto il loro cartellone pubblicitario stradale a {{ JSON.parse($json.choices[0].message.content).comune }} e gli proponiamo di amplificare la visibilit\u00e0 parlando agli automobilisti su Radio Toscana.\" }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1616,
+        16
+      ],
+      "id": "de6ac082-f813-410c-8e56-87fa9e5b9b2d",
+      "name": "\ud83e\udd16 Gumloop Scout & Copy"
+    },
+    {
+      "parameters": {
+        "tableId": "leads",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "ditta",
+              "fieldValue": "={{ JSON.parse($node[\"\ud83d\udc41\ufe0f Llama 3.2 Vision\"].json.choices[0].message.content).ditta }}"
+            },
+            {
+              "fieldId": "comune",
+              "fieldValue": "={{ JSON.parse($node[\"\ud83d\udc41\ufe0f Llama 3.2 Vision\"].json.choices[0].message.content).comune }}"
+            },
+            {
+              "fieldId": "stato_workflow",
+              "fieldValue": "SCOPERTO"
+            },
+            {
+              "fieldId": "campagna",
+              "fieldValue": "OOH_CATCH"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $json.outputs.email }}"
+            },
+            {
+              "fieldId": "sito_web",
+              "fieldValue": "={{ $json.outputs.website_url }}"
+            },
+            {
+              "fieldId": "scraped_context",
+              "fieldValue": "={{ $json.outputs.scraped_context }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1824,
+        16
+      ],
+      "id": "dfbd9c07-5efb-4557-bab5-7d7a40c09ee5",
+      "name": "\ud83d\udcbe Salva su Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "jFFk0FHONMD18IKW",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"\ud83d\udcf8 Telegram Trigger (Foto)\"].json.message.chat.id }}",
+        "text": "=\ud83e\udd16 Lead Acquisito con successo!\n\nDitta: {{ JSON.parse($node[\"\ud83d\udc41\ufe0f Llama 3.2 Vision\"].json.choices[0].message.content).ditta }}\nEmail trovata: {{ $node[\"\ud83e\udd16 Gumloop Scout & Copy\"].json.outputs.email || 'Nessuna (Richiede verifica manuale)' }}\n\nIl lead \u00e8 stato salvato nel CRM Supabase sotto la campagna OOH_CATCH ed \u00e8 pronto per essere contattato!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2048,
+        16
+      ],
+      "id": "47d904b5-a99f-4ebf-9166-7a387a5529a4",
+      "name": "\ud83d\udcac Notifica Telegram",
+      "webhookId": "df451d02-9205-4c1e-b3b4-92c806644bbb",
+      "credentials": {
+        "telegramApi": {
+          "id": "Fau7BXnPilezCPxv",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "\ud83d\udcf8 Telegram Trigger (Foto)": {
+      "main": [
+        [
+          {
+            "node": "\ud83d\uddbc\ufe0f Ha Foto?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "\ud83d\uddbc\ufe0f Ha Foto?": {
+      "main": [
+        [
+          {
+            "node": "\ud83d\udce1 Ottieni Path File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "\ud83d\udce1 Ottieni Path File": {
+      "main": [
+        [
+          {
+            "node": "\ud83d\udce5 Scarica File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "\ud83d\udce5 Scarica File": {
+      "main": [
+        [
+          {
+            "node": "\ud83d\udc41\ufe0f Llama 3.2 Vision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "\ud83d\udc41\ufe0f Llama 3.2 Vision": {
+      "main": [
+        [
+          {
+            "node": "\ud83e\udd16 Gumloop Scout & Copy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "\ud83e\udd16 Gumloop Scout & Copy": {
+      "main": [
+        [
+          {
+            "node": "\ud83d\udcbe Salva su Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "\ud83d\udcbe Salva su Supabase": {
+      "main": [
+        [
+          {
+            "node": "\ud83d\udcac Notifica Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "6ce16247-d143-444e-8c73-8a7e7fc7fb65",
+  "activeVersionId": "352d5a00-9a55-41ed-953f-870da8d3016c",
+  "versionCounter": 16,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "shared": [
+    {
+      "updatedAt": "2026-07-14T12:53:22.374Z",
+      "createdAt": "2026-07-14T12:53:22.374Z",
+      "role": "workflow:owner",
+      "workflowId": "L1NourCRWYTJBJVd",
+      "projectId": "vMwVT3lcTSlXS8Pw",
+      "project": {
+        "updatedAt": "2026-03-15T12:45:56.234Z",
+        "createdAt": "2026-03-15T12:41:29.016Z",
+        "id": "vMwVT3lcTSlXS8Pw",
+        "name": "Fabio Asiri <fabio.asiri@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "810a92f6-a3e0-4b8c-a7fa-38db10efc5c3"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-07-26T08:14:36.000Z",
+    "createdAt": "2026-07-26T08:07:39.845Z",
+    "versionId": "352d5a00-9a55-41ed-953f-870da8d3016c",
+    "workflowId": "L1NourCRWYTJBJVd",
+    "nodes": [
+      {
+        "parameters": {
+          "updates": [
+            "message"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          512,
+          128
+        ],
+        "id": "283b4ec6-a47f-45ad-b198-abccb382124a",
+        "name": "\ud83d\udcf8 Telegram Trigger (Foto)",
+        "webhookId": "175299c5-c8de-42e1-a1c6-30246c0973e4",
+        "credentials": {
+          "telegramApi": {
+            "id": "jHIRf4daCSx1CtHv",
+            "name": "Mostro Bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1,
+              "type": "string"
+            },
+            "conditions": [
+              {
+                "id": "has_photo",
+                "leftValue": "={{ $json.message.photo }}",
+                "transitionValue": "",
+                "rightValue": "",
+                "operator": "isNotEmpty"
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          736,
+          128
+        ],
+        "id": "fe94b9cd-7cac-482c-930a-d7c6b9df446f",
+        "name": "\ud83d\uddbc\ufe0f Ha Foto?"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.telegram.org/bot{{ $credentials.telegramApi.token }}/getFile",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "file_id",
+                "value": "={{ $json.message.photo.slice(-1)[0].file_id }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          944,
+          16
+        ],
+        "id": "3cf31fb2-340c-45c3-89f4-821d4b1db5e7",
+        "name": "\ud83d\udce1 Ottieni Path File"
+      },
+      {
+        "parameters": {
+          "url": "=https://api.telegram.org/file/bot{{ $credentials.telegramApi.token }}/{{ $json.result.file_path }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1168,
+          16
+        ],
+        "id": "14a82c59-15e1-4edc-82ab-a1f5e30516dd",
+        "name": "\ud83d\udce5 Scarica File"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.groq.com/openai/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer YOUR_GROQ_API_KEY"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"llama-3.2-11b-vision-preview\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"Identify the company advertising in this billboard. Return a JSON object with keys: 'ditta' (string, the brand name), 'comune' (inferred Tuscan city or null), 'settore' (string) and 'prodotto' (string describing what they sell). Do not return markdown, only valid JSON.\"\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"data:image/jpeg;base64,{{ $binary.data.toBase64() }}\"\n          }\n        }\n      ]\n    }\n  ],\n  \"response_format\": { \"type\": \"json_object\" }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1392,
+          16
+        ],
+        "id": "f61d05e8-8d47-4389-a2d9-d90ba9e85707",
+        "name": "\ud83d\udc41\ufe0f Llama 3.2 Vision"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.gumloop.com/api/v1/run_pipeline",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer YOUR_GUMLOOP_API_KEY"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"user_id\": \"YOUR_GUMLOOP_USER_ID\",\n  \"saved_pipeline_id\": \"YOUR_GUMLOOP_PIPELINE_ID\",\n  \"pipeline_inputs\": [\n    { \"input_name\": \"website_url\", \"value\": \"https://www.google.com/search?q={{ encodeURIComponent(JSON.parse($json.choices[0].message.content).ditta) }}\" },\n    { \"input_name\": \"ditta\", \"value\": \"{{ JSON.parse($json.choices[0].message.content).ditta }}\" },\n    { \"input_name\": \"comune\", \"value\": \"{{ JSON.parse($json.choices[0].message.content).comune || 'Toscana' }}\" },\n    { \"input_name\": \"frequenza\", \"value\": \"NON INSERIRE\" },\n    { \"input_name\": \"prompt_fewshot\", \"value\": \"Scrivi una e-mail che fa leva sul fatto che abbiamo visto il loro cartellone pubblicitario stradale a {{ JSON.parse($json.choices[0].message.content).comune }} e gli proponiamo di amplificare la visibilit\u00e0 parlando agli automobilisti su Radio Toscana.\" }\n  ]\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1616,
+          16
+        ],
+        "id": "de6ac082-f813-410c-8e56-87fa9e5b9b2d",
+        "name": "\ud83e\udd16 Gumloop Scout & Copy"
+      },
+      {
+        "parameters": {
+          "tableId": "leads",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "ditta",
+                "fieldValue": "={{ JSON.parse($node[\"\ud83d\udc41\ufe0f Llama 3.2 Vision\"].json.choices[0].message.content).ditta }}"
+              },
+              {
+                "fieldId": "comune",
+                "fieldValue": "={{ JSON.parse($node[\"\ud83d\udc41\ufe0f Llama 3.2 Vision\"].json.choices[0].message.content).comune }}"
+              },
+              {
+                "fieldId": "stato_workflow",
+                "fieldValue": "SCOPERTO"
+              },
+              {
+                "fieldId": "campagna",
+                "fieldValue": "OOH_CATCH"
+              },
+              {
+                "fieldId": "email",
+                "fieldValue": "={{ $json.outputs.email }}"
+              },
+              {
+                "fieldId": "sito_web",
+                "fieldValue": "={{ $json.outputs.website_url }}"
+              },
+              {
+                "fieldId": "scraped_context",
+                "fieldValue": "={{ $json.outputs.scraped_context }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1824,
+          16
+        ],
+        "id": "dfbd9c07-5efb-4557-bab5-7d7a40c09ee5",
+        "name": "\ud83d\udcbe Salva su Supabase",
+        "credentials": {
+          "supabaseApi": {
+            "id": "jFFk0FHONMD18IKW",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $node[\"\ud83d\udcf8 Telegram Trigger (Foto)\"].json.message.chat.id }}",
+          "text": "=\ud83e\udd16 Lead Acquisito con successo!\n\nDitta: {{ JSON.parse($node[\"\ud83d\udc41\ufe0f Llama 3.2 Vision\"].json.choices[0].message.content).ditta }}\nEmail trovata: {{ $node[\"\ud83e\udd16 Gumloop Scout & Copy\"].json.outputs.email || 'Nessuna (Richiede verifica manuale)' }}\n\nIl lead \u00e8 stato salvato nel CRM Supabase sotto la campagna OOH_CATCH ed \u00e8 pronto per essere contattato!",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2048,
+          16
+        ],
+        "id": "47d904b5-a99f-4ebf-9166-7a387a5529a4",
+        "name": "\ud83d\udcac Notifica Telegram",
+        "webhookId": "df451d02-9205-4c1e-b3b4-92c806644bbb",
+        "credentials": {
+          "telegramApi": {
+            "id": "Fau7BXnPilezCPxv",
+            "name": "Telegram account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "\ud83d\udcf8 Telegram Trigger (Foto)": {
+        "main": [
+          [
+            {
+              "node": "\ud83d\uddbc\ufe0f Ha Foto?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "\ud83d\uddbc\ufe0f Ha Foto?": {
+        "main": [
+          [
+            {
+              "node": "\ud83d\udce1 Ottieni Path File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "\ud83d\udce1 Ottieni Path File": {
+        "main": [
+          [
+            {
+              "node": "\ud83d\udce5 Scarica File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "\ud83d\udce5 Scarica File": {
+        "main": [
+          [
+            {
+              "node": "\ud83d\udc41\ufe0f Llama 3.2 Vision",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "\ud83d\udc41\ufe0f Llama 3.2 Vision": {
+        "main": [
+          [
+            {
+              "node": "\ud83e\udd16 Gumloop Scout & Copy",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "\ud83e\udd16 Gumloop Scout & Copy": {
+        "main": [
+          [
+            {
+              "node": "\ud83d\udcbe Salva su Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "\ud83d\udcbe Salva su Supabase": {
+        "main": [
+          [
+            {
+              "node": "\ud83d\udcac Notifica Telegram",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Fabio Asiri",
+    "name": "Version 352d5a00",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-07-26T08:14:36.024Z",
+        "id": 247,
+        "workflowId": "L1NourCRWYTJBJVd",
+        "versionId": "352d5a00-9a55-41ed-953f-870da8d3016c",
+        "event": "activated",
+        "userId": "810a92f6-a3e0-4b8c-a7fa-38db10efc5c3"
+      }
+    ]
+  }
+}
