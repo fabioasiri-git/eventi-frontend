@@ -1,6 +1,6 @@
 # 📘 Manuale Operativo - Radio Toscana Lead Engine & Cloud CRM ("Sistema Mostro")
 
-**Versione:** 7.0 (Edizione Lead Scoring, Upsell, Listino Prezzi & Dashboard Fatturato)  
+**Versione:** 7.1 (Edizione Ciclo a 4 Fasi, Listino Spot Audio, Ingestion Programmazione Rete & Dashboard Next.js)  
 **Destinatari:** Team Commerciale (Fabio Asiri), Redazione/Copy (Edi), Studio di Registrazione & Amministratori di Sistema  
 **Stazione:** Radio Toscana (Solo Toscana | Solo Hit)
 
@@ -405,7 +405,52 @@ Dashboard aggiornata in tempo reale per i dati contrattuali, con riepilogo setti
 
 ---
 
-## ⚠️ 20. Note di Attenzione su Sezioni Esistenti
+## 🔄 20. Ciclo di Vita Completo della Commessa Commerciale (a 4 Fasi)
+
+Il sistema gestisce l'intero ciclo commerciale in modo deterministico e tracciato, dalla prima trattativa fino alla conferma finale di trasmissione al cliente.
+
+### A. Le 4 Fasi della Commessa Commerciale
+1. **Fase 1 — Preventivo (Commercial Lead)**: Trattativa commerciale, profilazione settore, area target, elenco voci di listino acquistate, percentuale sconto % e calcolo automatico del Lead Scoring (0-100).
+2. **Fase 2 — Contratto (Signed Deal)**: Perfezionamento dell'accordo con numero di contratto univoco (es. `2023/14197`), valore monetario netto, gestione dell'eventuale flag Cambio Merce (Barter) e data sottoscrizione.
+3. **Fase 3 — Produzione Spot Audio & Listino Tariffe**: Gestione dell'audio spot secondo 4 tipologie commerciali con tariffazione automatica:
+   - 🎙️ **Produzione Esclusiva RT + RF** (Solo Radio Toscana + Radio Firenze): `€ 100,00 + IVA` (SLA standard: 7 giorni lavorativi).
+   - 📻 **Produzione Multi-Radio Toscana** (RT/RF + Altre Radio Toscane): `€ 169,00 + IVA` (SLA standard: 7 giorni lavorativi).
+   - ✂️ **Montaggio Codino Tecnico** (Aggiunta di voce/recapito locale a spot master fornito): `€ 30,00 + IVA` (SLA ridotto: 2-3 giorni lavorativi).
+   - 📁 **Spot Fornito dal Cliente** (Traccia audio pronta Direct On-Air): `€ 0,00` (SLA: 0 giorni / Verifica formato immediata).
+4. **Fase 4 — Programmazione On-Air, Ingestion Rete & Dispatch Email**:
+   - Acquisizione del prospetto PDF della **Programmazione On-Air** (Schedules) direttamente dalla cartella condivisa di rete sul PC di lavoro (o via Web Drag & Drop).
+   - Estrazione automatica dei dati di trasmissione: numero contratto, date on-air (inizio/fine), totale spot pianificati (es. 84 spot su 14 giorni) e scansione oraria giornaliera.
+   - Invio dell'email di trasmissione al cliente con il file PDF allegato e tracciamento dello stato d'invio visibile in Dashboard (🟢 *Programmazione Inviata il DD/MM/YYYY HH:MM* | 🟡 *Programmazione Pronta - Da Inviare* | 🔴 *Errore Email*).
+
+### B. Modello Email Preconfigurato (Programmazione On-Air)
+**Oggetto Email:**
+> `Radio Toscana — Programmazione Messa in Onda Campagna "[Nome Campagna]" (Contratto Nr. [Numero Contratto])`
+
+**Corpo Email:**
+> Gentile **[Nome Cliente / Azienda]**,
+>
+> desideriamo confermarLe che la Sua campagna pubblicitaria **"[Nome Campagna]"** è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.
+>
+> 📌 **RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:**
+> • **Contratto di Riferimento:** Nr. [Numero Contratto]  
+> • **Periodo Messa in Onda:** dal [Data Inizio] al [Data Fine]  
+> • **Totale Spot Pianificati:** [Numero Spot] spot (media [Spot al Giorno] spot al giorno)  
+> • **Area Target:** [Area / Copertura]  
+> • **File Audio Spot:** [Nome File Spot Audio]  
+>
+> In allegato a questa email trova il prospetto ufficiale della **Programmazione On-Air** con la scansione esatta di tutti gli orari di trasmissione giornalieri.
+>
+> Per qualsiasi necessità o chiarimento, il Suo referente commerciale rimane a completa disposizione.
+>
+> Cordiali saluti,  
+> **Direzione Commerciale & Programmazione**  
+> *Radio Toscana*  
+> 📧 commerciale@radiotoscana.it  
+> 🌐 www.radiotoscana.it
+
+---
+
+## ⚠️ 21. Note di Attenzione su Sezioni Esistenti
 
 ### A. Sezione 8 — Competitor Audio Intercept
 **Limite d'Uso:** Il canale "Competitor Audio Intercept" è utilizzato esclusivamente per identificare categorie merceologiche attive nella concorrenza (es. "un concessionario pubblicizza in zona X"). Il sistema non deve mai riprodurre, parafrasare o ispirarsi testualmente al wording, agli hook o agli script captati dagli spot dei competitor. L'output ammesso è solo: nome settore, area geografica, frequenza stimata di messa in onda.
@@ -419,3 +464,4 @@ Dashboard aggiornata in tempo reale per i dati contrattuali, con riepilogo setti
 ### D. Sezione 4 — Firma Email Completa
 Aggiungere ai contatti mittente già presenti (nome, ruolo, telefono, email) anche l'indirizzo fisico e il centralino ufficiale:  
 **Via de' Pucci 2, 50122 Firenze, Italia — (+39) 055 285030**
+
