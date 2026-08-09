@@ -1,6 +1,6 @@
 # 📘 Manuale Operativo - Radio Toscana Lead Engine & Cloud CRM ("Sistema Mostro")
 
-**Versione:** 7.2 (Edizione Calcolo Frequenze On-Air 7/7-5/5-Alterni, Listino Ufficiale Audio & Next.js 14 Control Center)  
+**Versione:** 7.3 (Edizione Listino Toscana Comunica 2026, Scala Sconti Volume 0-40%, Frequenze On-Air & Next.js 14 Engine)  
 **Destinatari:** Team Commerciale (Fabio Asiri), Redazione/Copy (Edi), Studio di Registrazione & Amministratori di Sistema  
 **Stazione:** Radio Toscana (Solo Toscana | Solo Hit)
 

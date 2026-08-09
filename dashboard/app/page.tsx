@@ -27,6 +27,7 @@ interface LeadRow {
 interface QuoteItemRow {
   id: string;
   prodotto: string;
+  emittente: 'RADIO_TOSCANA' | 'RADIO_FIRENZE';
   dataInizio: string;
   dataFine: string;
   frequenza: 'EVERY_DAY' | 'WEEKDAYS' | 'ALTERNATE';
@@ -40,14 +41,17 @@ export default function LeadEngineDashboard() {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedLeadForEmail, setSelectedLeadForEmail] = useState<LeadRow | null>(null);
 
-  // Form State per Nuovo Preventivo Multi-Riga
+  // Form State per Nuovo Preventivo Toscana Comunica
   const [qNome, setQNome] = useState('');
-  const [qArea, setQArea] = useState('FI');
-  const [qSconto, setQSconto] = useState(15);
+  const [qArea, setQArea] = useState('AREA1');
+  const [useAutoDiscount, setUseAutoDiscount] = useState(true);
+  const [manualSconto, setManualSconto] = useState(0);
+
   const [quoteItems, setQuoteItems] = useState<QuoteItemRow[]>([
     {
       id: 'row-1',
       prodotto: 'spot20',
+      emittente: 'RADIO_TOSCANA',
       dataInizio: '2026-08-10',
       dataFine: '2026-08-23',
       frequenza: 'EVERY_DAY',
@@ -154,7 +158,7 @@ export default function LeadEngineDashboard() {
     return { val: finalScore, label: `🟢 ${finalScore} pts (Bassa)`, css: 'score-green' };
   }
 
-  // CALCOLO DINAMICO RIGA PREVENTIVO (Date, Frequenza 7/7-5/5-Alterni, Listino)
+  // CALCOLO DINAMICO RIGA PREVENTIVO (Listino Toscana Comunica 2026)
   function calculateRowDetails(item: QuoteItemRow) {
     const start = new Date(item.dataInizio);
     const end = new Date(item.dataFine);
@@ -182,27 +186,33 @@ export default function LeadEngineDashboard() {
 
     const totalSpots = activeDays * item.spotGiorno;
 
-    // Tariffe Unitarie Listino 2026
-    let unitPrice = 9.00; // Default Spot 20" Area 1
-    if (qArea === 'PI') unitPrice = 5.50;
-    else if (qArea === 'SI') unitPrice = 4.50;
-    else if (qArea === 'RETE') unitPrice = 13.00;
+    // Tariffe Ufficiali Toscana Comunica dal documento foto
+    let unitPrice = 9.00; // Default Spot 20" Radio Toscana Area 1
+
+    if (item.emittente === 'RADIO_FIRENZE') {
+      if (item.prodotto === 'spot10') unitPrice = 6.00;
+      else if (item.prodotto === 'spot20') unitPrice = 7.50;
+      else if (item.prodotto === 'spot30') unitPrice = 9.50;
+    } else {
+      // Radio Toscana
+      if (qArea === 'AREA1') {
+        if (item.prodotto === 'spot10') unitPrice = 6.50;
+        else if (item.prodotto === 'spot20') unitPrice = 9.00;
+        else if (item.prodotto === 'spot30') unitPrice = 11.00;
+      } else if (qArea === 'AREA2' || qArea === 'AREA3') {
+        if (item.prodotto === 'spot10') unitPrice = 3.50;
+        else if (item.prodotto === 'spot20') unitPrice = 4.50;
+        else if (item.prodotto === 'spot30') unitPrice = 5.50;
+      } else if (qArea === 'RETE') {
+        if (item.prodotto === 'spot10') unitPrice = 9.00;
+        else if (item.prodotto === 'spot20') unitPrice = 13.00;
+        else if (item.prodotto === 'spot30') unitPrice = 16.00;
+      }
+    }
 
     let rowGrossTotal = 0;
-    if (item.prodotto === 'spot20') {
+    if (['spot10', 'spot20', 'spot30'].includes(item.prodotto)) {
       rowGrossTotal = unitPrice * totalSpots;
-    } else if (item.prodotto === 'spot30') {
-      rowGrossTotal = (unitPrice * 1.20) * totalSpots;
-    } else if (item.prodotto === 'spot15') {
-      rowGrossTotal = (unitPrice * 0.90) * totalSpots;
-    } else if (item.prodotto === 'spot10') {
-      rowGrossTotal = (unitPrice * 0.80) * totalSpots;
-    } else if (item.prodotto === 'primo_barra') {
-      rowGrossTotal = qArea === 'RETE' ? 800 : (qArea === 'FI' ? 600 : 450);
-    } else if (item.prodotto === 'ultimo_barra') {
-      rowGrossTotal = qArea === 'RETE' ? 700 : (qArea === 'FI' ? 500 : 350);
-    } else if (item.prodotto === 'segnale') {
-      rowGrossTotal = 650;
     } else if (item.prodotto === 'prod_rt') {
       rowGrossTotal = 100;
     } else if (item.prodotto === 'prod_multi') {
@@ -211,6 +221,10 @@ export default function LeadEngineDashboard() {
       rowGrossTotal = 30;
     } else if (item.prodotto === 'fornito') {
       rowGrossTotal = 0;
+    } else if (item.prodotto === 'audio_1voce') {
+      rowGrossTotal = 60;
+    } else if (item.prodotto === 'audio_2voci') {
+      rowGrossTotal = 80;
     } else if (item.prodotto === 'citazione') {
       rowGrossTotal = 30 * totalSpots;
     } else if (item.prodotto === 'pillola1') {
@@ -224,9 +238,24 @@ export default function LeadEngineDashboard() {
     return { totalDays, activeDays, totalSpots, rowGrossTotal };
   }
 
-  // Totali Preventivo
+  // Totali Comunicati e Scala Sconti Toscana Comunica
+  const grandTotalSpots = quoteItems.reduce((sum, item) => {
+    const isSpot = ['spot10', 'spot20', 'spot30'].includes(item.prodotto);
+    return sum + (isSpot ? calculateRowDetails(item).totalSpots : 0);
+  }, 0);
+
+  // Calcolo Percentuale Sconto della Scala Ufficiale Toscana Comunica
+  let calculatedDiscountPercent = 0;
+  if (grandTotalSpots > 800) calculatedDiscountPercent = 40;
+  else if (grandTotalSpots >= 401) calculatedDiscountPercent = 30;
+  else if (grandTotalSpots >= 201) calculatedDiscountPercent = 20;
+  else if (grandTotalSpots >= 101) calculatedDiscountPercent = 10;
+  else calculatedDiscountPercent = 0;
+
+  const activeScontoPercent = useAutoDiscount ? calculatedDiscountPercent : manualSconto;
+
   const totalGrossPrice = quoteItems.reduce((sum, item) => sum + calculateRowDetails(item).rowGrossTotal, 0);
-  const totalNetPrice = totalGrossPrice * (1 - qSconto / 100);
+  const totalNetPrice = totalGrossPrice * (1 - activeScontoPercent / 100);
 
   function addQuoteRow() {
     setQuoteItems(prev => [
@@ -234,6 +263,7 @@ export default function LeadEngineDashboard() {
       {
         id: `row-${Date.now()}`,
         prodotto: 'spot20',
+        emittente: 'RADIO_TOSCANA',
         dataInizio: '2026-08-10',
         dataFine: '2026-08-23',
         frequenza: 'EVERY_DAY',
@@ -291,15 +321,15 @@ export default function LeadEngineDashboard() {
             <h1>
               Radio Toscana Commerciale{' '}
               <span style={{ fontSize: '12px', background: 'rgba(225,29,72,0.25)', color: '#f43f5e', border: '1px solid rgba(225,29,72,0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
-                v7.2.0 - Next.js Control Center
+                v7.3.0 - Next.js Control Center (Listino Toscana Comunica)
               </span>
             </h1>
             <p>Lead Engine & CRM Cloud — Centro di Controllo Commerciale Unificato</p>
           </div>
         </div>
         <div className="header-actions">
-          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.2.0 (Next.js 14 Engine)')}>
-            🟢 Supabase Realtime [v7.2.0]
+          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.3.0 (Next.js 14 Engine)')}>
+            🟢 Supabase Realtime [v7.3.0]
           </button>
           <button className="btn btn-primary" onClick={() => setShowQuoteModal(true)}>
             ➕ Nuovo Preventivo
@@ -420,7 +450,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 2: CODE DI CONTROLLO */}
       {activeTab === 'queues' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.2)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.3)</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <h4 style={{ color: 'var(--accent-yellow)', marginBottom: '8px' }}>1. Lead Senza Contatto (&gt;7 giorni)</h4>
@@ -444,7 +474,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 3: RINNOVI & UPSELL */}
       {activeTab === 'renewals' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>⏰ Rinnovi & Upsell a 30 Giorni (Sezione 18 del Manuale v7.2)</h3>
+          <h3 style={{ marginBottom: '16px' }}>⏰ Rinnovi & Upsell a 30 Giorni (Sezione 18 del Manuale v7.3)</h3>
           <table className="table">
             <thead>
               <tr>
@@ -473,7 +503,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 4: UNIVERSAL MEMORY LOCK */}
       {activeTab === 'memory' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.2)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.3)</h3>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
             Radar automatico per la riattivazione programmata degli eventi ricorrenti annuali in Toscana.
           </p>
@@ -500,15 +530,15 @@ export default function LeadEngineDashboard() {
         </div>
       )}
 
-      {/* CONTENT TAB 5: PRODUZIONE SPOT AUDIO & LISTINO */}
+      {/* CONTENT TAB 5: PRODUZIONE SPOT AUDIO & LISTINO TOSCANA COMUNICA */}
       {activeTab === 'production' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🎙️ Produzione Spot Audio & Listino Ufficiale Tariffe (Sezione 20.3)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🎙️ Listino Ufficiale Toscana Comunica & Produzione Audio</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Produzione Esclusiva RT + RF</div>
               <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--accent-green)', margin: '6px 0' }}>€ 100,00 + IVA</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Solo Radio Toscana + Radio Firenze (SLA 7gg)</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Radio Toscana + Radio Firenze (SLA 7gg)</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Produzione Multi-Radio Toscana</div>
@@ -521,9 +551,9 @@ export default function LeadEngineDashboard() {
               <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Aggiunta finale a spot esistente (SLA 2-3gg)</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Spot Fornito dal Cliente</div>
-              <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--text-main)', margin: '6px 0' }}>€ 0,00</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Traccia Audio Pronta (Direct On-Air, SLA 0gg)</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Realizzazione Voci Toscana Comunica</div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-main)', margin: '6px 0' }}>€ 60 (1 Voce) / € 80 (2 Voci)</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Listino Ufficiale Voci Spreader + IVA</div>
             </div>
           </div>
         </div>
@@ -532,7 +562,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 6: PROGRAMMAZIONE ON-AIR & EMAIL */}
       {activeTab === 'schedules' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air & Dispatch Email (Sezione 20.4 del Manuale v7.2)</h3>
+          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air & Dispatch Email (Sezione 20.4 del Manuale v7.3)</h3>
           <table className="table">
             <thead>
               <tr>
@@ -585,12 +615,12 @@ export default function LeadEngineDashboard() {
         </div>
       )}
 
-      {/* MODALE NUOVO PREVENTIVO MULTI-RIGA CON DATE E FREQUENZE ON-AIR */}
+      {/* MODALE NUOVO PREVENTIVO MULTI-RIGA LISTINO TOSCANA COMUNICA */}
       {showQuoteModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h3 className="modal-title">➕ Crea Nuovo Preventivo Commerciale</h3>
+              <h3 className="modal-title">➕ Crea Preventivo Commerciale (Listino Toscana Comunica)</h3>
               <button className="modal-close" onClick={() => setShowQuoteModal(false)}>✕</button>
             </div>
             
@@ -601,17 +631,25 @@ export default function LeadEngineDashboard() {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="form-group">
               <div>
-                <label className="form-label">Provincia / Copertura Principale</label>
+                <label className="form-label">Area Target Radio Toscana</label>
                 <select className="form-select" value={qArea} onChange={e => setQArea(e.target.value)}>
-                  <option value="FI">Firenze / Prato / Pistoia (AREA 1)</option>
-                  <option value="PI">Pisa / Lucca / Maremma (AREA 2)</option>
-                  <option value="SI">Siena / Arezzo / Grosseto (AREA 3)</option>
-                  <option value="RETE">Tutte le Province (RETE)</option>
+                  <option value="AREA1">AREA 1 (FI / PO / PT — FM 104.70 / 98.15)</option>
+                  <option value="AREA2">AREA 2 (MS / LU / LI / PI — FM 88.0)</option>
+                  <option value="AREA3">AREA 3 (Mugello / AR / SI / GR)</option>
+                  <option value="RETE">RETE COMPLETA (Tutte le Frequenze)</option>
                 </select>
               </div>
               <div>
-                <label className="form-label">Percentuale Sconto Complessivo (%)</label>
-                <input type="number" className="form-input" value={qSconto} onChange={e => setQSconto(Number(e.target.value))} />
+                <label className="form-label">Gestione Sconto Comunicati</label>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '6px' }}>
+                  <label style={{ fontSize: '12px', color: 'var(--text-main)', cursor: 'pointer' }}>
+                    <input type="checkbox" checked={useAutoDiscount} onChange={e => setUseAutoDiscount(e.target.checked)} style={{ marginRight: '6px' }} />
+                    Scala Sconti Automatica (0%-40%)
+                  </label>
+                  {!useAutoDiscount && (
+                    <input type="number" className="form-input" style={{ width: '80px' }} value={manualSconto} onChange={e => setManualSconto(Number(e.target.value))} placeholder="Sconto %" />
+                  )}
+                </div>
               </div>
             </div>
 
@@ -622,28 +660,32 @@ export default function LeadEngineDashboard() {
                 <button className="btn btn-xs btn-primary" onClick={addQuoteRow}>➕ Aggiungi Riga Prodotto</button>
               </div>
 
-              {quoteItems.map((item, idx) => {
+              {quoteItems.map((item) => {
                 const details = calculateRowDetails(item);
                 return (
                   <div key={item.id} className="quote-item-card">
-                    {/* RIGA 1: SELEZIONE PRODOTTO LISTINO */}
+                    {/* RIGA 1: SELEZIONE EMITTENTE E PRODOTTO LISTINO */}
                     <div className="item-card-row-1">
-                      <select className="form-select" value={item.prodotto} onChange={e => updateQuoteRow(item.id, 'prodotto', e.target.value)}>
-                        <option value="spot20">Spot Tabellare 20&quot; (Prezzo d&apos;Area Listino 2026)</option>
-                        <option value="spot30">Spot Tabellare 30&quot; (+20% su d&apos;Area)</option>
-                        <option value="spot15">Spot Tabellare 15&quot; (-10% su d&apos;Area)</option>
-                        <option value="spot10">Spot Tabellare 10&quot; (-20% su d&apos;Area)</option>
-                        <option value="primo_barra">Primo di Barra 10&quot; (Pacchetto 14gg - 196 passaggi)</option>
-                        <option value="ultimo_barra">Ultimo di Barra 10&quot; (Pacchetto 14gg - 196 passaggi)</option>
-                        <option value="segnale">Segnale Orario 5&quot; (2 Settimane - Solo RETE €650)</option>
-                        <option value="prod_rt">🎙️ Produzione Spot RT + RF (€ 100,00 + IVA)</option>
-                        <option value="prod_multi">📻 Produzione Spot Multi-Radio Toscana (€ 169,00 + IVA)</option>
-                        <option value="codino">✂️ Montaggio Codino Tecnico (€ 30,00 + IVA)</option>
-                        <option value="fornito">📁 Spot Fornito dal Cliente (€ 0,00)</option>
-                        <option value="citazione">Citazione Live Speaker (€ 30,00 ciascuna)</option>
-                        <option value="pillola1">Prima Messa in Onda Pillola 60&quot; (€ 150,00)</option>
-                        <option value="djset">DJ Set + Promo Radio (€ 500,00)</option>
-                      </select>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <select className="form-select" style={{ width: '160px' }} value={item.emittente} onChange={e => updateQuoteRow(item.id, 'emittente', e.target.value)}>
+                          <option value="RADIO_TOSCANA">📻 Radio Toscana</option>
+                          <option value="RADIO_FIRENZE">⚜️ Radio Firenze</option>
+                        </select>
+                        <select className="form-select" style={{ flex: 1 }} value={item.prodotto} onChange={e => updateQuoteRow(item.id, 'prodotto', e.target.value)}>
+                          <option value="spot20">Spot 20&quot; (Listino Toscana Comunica)</option>
+                          <option value="spot10">Spot 10&quot; (Listino Toscana Comunica)</option>
+                          <option value="spot30">Spot 30&quot; (Listino Toscana Comunica)</option>
+                          <option value="prod_rt">🎙️ Produzione Spot RT + RF (€ 100,00 + IVA)</option>
+                          <option value="prod_multi">📻 Produzione Spot Multi-Radio Toscana (€ 169,00 + IVA)</option>
+                          <option value="codino">✂️ Montaggio Codino Tecnico (€ 30,00 + IVA)</option>
+                          <option value="fornito">📁 Spot Fornito dal Cliente (€ 0,00)</option>
+                          <option value="audio_1voce">👤 Realizzazione Spot 1 Voce (€ 60,00 + IVA)</option>
+                          <option value="audio_2voci">👥 Realizzazione Spot 2 Voci (€ 80,00 + IVA)</option>
+                          <option value="citazione">Citazione Live Speaker (€ 30,00 ciascuna)</option>
+                          <option value="pillola1">Prima Messa in Onda Pillola 60&quot; (€ 150,00)</option>
+                          <option value="djset">DJ Set + Promo Radio (€ 500,00)</option>
+                        </select>
+                      </div>
                       <button className="btn-remove-row" onClick={() => removeQuoteRow(item.id)}>✕</button>
                     </div>
 
@@ -687,16 +729,19 @@ export default function LeadEngineDashboard() {
               })}
             </div>
 
-            {/* ANTEPRIMA PREZZO TOTALE */}
+            {/* RESOCONTO SCONTI SCALA TOSCANA COMUNICA & ANTEPRIMA PREZZO TOTALE */}
             <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.2)', padding: '16px', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTALE LORDO LISTINO</div>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--accent-blue)' }}>
-                  € {totalGrossPrice.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTALE SPOT PIANIFICATI</div>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-main)' }}>
+                  {grandTotalSpots} Spot
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--accent-yellow)', marginTop: '4px' }}>
+                  Scala Sconti Applicata: <strong>{activeScontoPercent}% Sconto</strong>
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>PREZZO RISERVATO CLIENTE (-{qSconto}%)</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>PREZZO RISERVATO CLIENTE (-{activeScontoPercent}%)</div>
                 <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--accent-green)' }}>
                   € {totalNetPrice.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                 </div>
@@ -706,7 +751,7 @@ export default function LeadEngineDashboard() {
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button className="btn" onClick={() => setShowQuoteModal(false)}>Annulla</button>
               <button className="btn btn-primary" onClick={() => {
-                alert('Preventivo Multi-Riga con Frequenza On-Air salvato con successo ed inviato a Supabase Cloud!');
+                alert('Preventivo Toscana Comunica salvato con successo ed inviato a Supabase Cloud!');
                 setShowQuoteModal(false);
               }}>
                 💾 Salva & Inserisci in Pipeline
