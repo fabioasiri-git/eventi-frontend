@@ -198,13 +198,13 @@
     <div class="brand">
       <div class="brand-logo">RT</div>
       <div class="brand-text">
-        <h1>Radio Toscana Commerciale</h1>
-        <p>Lead Engine & CRM Cloud — Preventivatore Multi-Riga (Sez. 16)</p>
+        <h1>Radio Toscana Commerciale <span style="font-size:12px; background:rgba(225,29,72,0.25); color:#f43f5e; border:1px solid rgba(225,29,72,0.4); padding:2px 8px; border-radius:6px; margin-left:8px; font-weight:800;">v7.0.0</span></h1>
+        <p>Lead Engine & CRM Cloud — Sistema Commerciale Unificato</p>
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn" onclick="alert('Connesso a Supabase Cloud - Schema rt_lead_engine')">🟢 Supabase Realtime OK</button>
-      <button class="btn btn-primary" onclick="openNewQuoteModal()">➕ Nuovo Preventivo Multi-Riga (Sez. 16)</button>
+      <button class="btn" onclick="alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.0.0')">🟢 Supabase Realtime [v7.0.0]</button>
+      <button class="btn btn-primary" onclick="openNewQuoteModal()">➕ Nuovo Preventivo</button>
     </div>
   </header>
 
@@ -309,7 +309,7 @@
   <div class="modal-overlay" id="modal-quote">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title">➕ Crea Preventivo Multi-Riga (Sezione 16)</h3>
+        <h3 class="modal-title">➕ Crea Nuovo Preventivo</h3>
         <button class="modal-close" onclick="closeModal('modal-quote')">✕</button>
       </div>
 
@@ -337,7 +337,7 @@
       <!-- SEZIONE RIGHE PRODOTTI / FORMAT PROPRIO COME NEL LISTINO -->
       <div class="form-group">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <label class="form-label" style="font-size: 13px; font-weight: 700; color: var(--text-main);">📋 Voce di Listino Acquistate (Multi-Riga)</label>
+          <label class="form-label" style="font-size: 13px; font-weight: 700; color: var(--text-main);">📋 Voci di Listino Acquistate</label>
           <button class="btn btn-xs btn-primary" onclick="addQuoteRow()">➕ Aggiungi Riga Prodotto/Servizio</button>
         </div>
         
