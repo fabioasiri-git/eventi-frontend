@@ -1,19 +1,4 @@
 {
   "version": 2,
-  "buildCommand": "echo 'Static build ok'",
-  "outputDirectory": ".",
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/app.js", "destination": "/app.js" },
-    { "source": "/styles.css", "destination": "/styles.css" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-      ]
-    }
-  ]
+  "framework": "nextjs"
 }
