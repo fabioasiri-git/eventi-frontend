@@ -232,7 +232,6 @@ export default function LeadEngineDashboard() {
 
     const totalSpots = activeDays * item.spotGiorno;
 
-    // Tariffe Ufficiali Toscana Comunica dal documento foto
     let unitPrice = 9.00;
 
     if (item.emittente === 'RADIO_FIRENZE') {
@@ -301,6 +300,80 @@ export default function LeadEngineDashboard() {
   const totalGrossPrice = quoteItems.reduce((sum, item) => sum + calculateRowDetails(item).rowGrossTotal, 0);
   const totalNetPrice = totalGrossPrice * (1 - activeScontoPercent / 100);
 
+  // Playbook Settoriali Pre-configurati (Metodo Thinkable)
+  function applyPlaybook(preset: 'AUTOMOTIVE' | 'SAGRA' | 'PA') {
+    if (preset === 'AUTOMOTIVE') {
+      setQNome('Concessionaria Auto (Playbook Automotive)');
+      setQArea('AREA1');
+      setQuoteItems([
+        {
+          id: 'row-1',
+          prodotto: 'spot20',
+          emittente: 'RADIO_TOSCANA',
+          dataInizio: '2026-09-07',
+          dataFine: '2026-09-20',
+          frequenza: 'EVERY_DAY',
+          spotGiorno: 6
+        },
+        {
+          id: 'row-2',
+          prodotto: 'prod_rt',
+          emittente: 'RADIO_TOSCANA',
+          dataInizio: '2026-09-07',
+          dataFine: '2026-09-07',
+          frequenza: 'EVERY_DAY',
+          spotGiorno: 1
+        }
+      ]);
+    } else if (preset === 'SAGRA') {
+      setQNome('Pro Loco / Sagra Enogastronomica');
+      setQArea('AREA2');
+      setQuoteItems([
+        {
+          id: 'row-1',
+          prodotto: 'spot20',
+          emittente: 'RADIO_TOSCANA',
+          dataInizio: '2026-09-10',
+          dataFine: '2026-09-15',
+          frequenza: 'EVERY_DAY',
+          spotGiorno: 10
+        },
+        {
+          id: 'row-2',
+          prodotto: 'codino',
+          emittente: 'RADIO_TOSCANA',
+          dataInizio: '2026-09-10',
+          dataFine: '2026-09-10',
+          frequenza: 'EVERY_DAY',
+          spotGiorno: 1
+        }
+      ]);
+    } else if (preset === 'PA') {
+      setQNome('Comune / Ente Pubblico PA');
+      setQArea('RETE');
+      setQuoteItems([
+        {
+          id: 'row-1',
+          prodotto: 'spot30',
+          emittente: 'RADIO_TOSCANA',
+          dataInizio: '2026-09-01',
+          dataFine: '2026-09-20',
+          frequenza: 'WEEKDAYS',
+          spotGiorno: 10
+        },
+        {
+          id: 'row-2',
+          prodotto: 'fornito',
+          emittente: 'RADIO_TOSCANA',
+          dataInizio: '2026-09-01',
+          dataFine: '2026-09-01',
+          frequenza: 'EVERY_DAY',
+          spotGiorno: 1
+        }
+      ]);
+    }
+  }
+
   function addQuoteRow() {
     setQuoteItems(prev => [
       ...prev,
@@ -365,15 +438,15 @@ export default function LeadEngineDashboard() {
             <h1>
               Radio Toscana Commerciale{' '}
               <span style={{ fontSize: '12px', background: 'rgba(225,29,72,0.25)', color: '#f43f5e', border: '1px solid rgba(225,29,72,0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
-                v7.4.0 - Monster Engine (Thinkable Data-Driven &amp; Plafond Scalare)
+                v7.5.0 - Monster Engine (Thinkable Playbooks &amp; Customer Tiering)
               </span>
             </h1>
             <p>Lead Engine &amp; CRM Cloud — Centro di Controllo Commerciale Unificato</p>
           </div>
         </div>
         <div className="header-actions">
-          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.4.0 (Metodo Thinkable Data-Driven)')}>
-            🟢 Supabase Realtime [v7.4.0]
+          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.5.0 (Playbooks Settoriali & Customer Tiering)')}>
+            🟢 Supabase Realtime [v7.5.0]
           </button>
           <button className="btn btn-primary" onClick={() => setShowQuoteModal(true)}>
             ➕ Nuovo Preventivo
@@ -398,11 +471,11 @@ export default function LeadEngineDashboard() {
           <div className="kpi-sub">Trattative Attive Ponderate</div>
         </div>
         <div className="kpi-card">
-          <div className="kpi-title">Valore Cambio Merce (Barter)</div>
+          <div className="kpi-title">Tasso Rinnovo Plafond %</div>
           <div className="kpi-value" style={{ color: 'var(--accent-purple)' }}>
-            € {valoreBarter.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+            88.5%
           </div>
-          <div className="kpi-sub">Forniture Accordate</div>
+          <div className="kpi-sub">Pacchetti Scalare Ri-acquistati</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-title">Tasso Conversione Score 🔴</div>
@@ -515,12 +588,12 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 2: CODE DI CONTROLLO */}
       {activeTab === 'queues' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.4)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.5)</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <h4 style={{ color: 'var(--accent-yellow)', marginBottom: '8px' }}>1. Lead Senza Contatto (&gt;7 giorni)</h4>
               <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Contatti in qualificazione da oltre 7 giorni senza azione registrata.</p>
-              <div style={{ marginTop: '12px', fontWeight: 700, fontSize: '18px', color: '#facc15' }}>0 Lead Bloccati</div>
+              <div style={{ marginTop: '12px', fontWeight 700, fontSize: '18px', color: '#facc15' }}>0 Lead Bloccati</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <h4 style={{ color: 'var(--accent-red)', marginBottom: '8px' }}>2. Preventivi In Sospeso (&gt;14 giorni)</h4>
@@ -584,7 +657,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 4: UNIVERSAL MEMORY LOCK */}
       {activeTab === 'memory' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.4)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.5)</h3>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
             Radar automatico per la riattivazione programmata degli eventi ricorrenti annuali in Toscana.
           </p>
@@ -643,7 +716,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 6: PROGRAMMAZIONE ON-AIR & EMAIL */}
       {activeTab === 'schedules' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air &amp; Dispatch Email (Sezione 20.4 del Manuale v7.4)</h3>
+          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air &amp; Dispatch Email (Sezione 20.4 del Manuale v7.5)</h3>
           <table className="table">
             <thead>
               <tr>
@@ -686,6 +759,22 @@ export default function LeadEngineDashboard() {
             <div className="modal-header">
               <h3 className="modal-title">➕ Crea Preventivo Commerciale (Listino Toscana Comunica)</h3>
               <button className="modal-close" onClick={() => setShowQuoteModal(false)}>✕</button>
+            </div>
+
+            {/* SELEZIONE PLAYBOOK SETTORIALI PRE-CONFIGURATI (THINKABLE METHOD) */}
+            <div className="form-group" style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
+              <label className="form-label" style={{ color: 'var(--accent-yellow)', fontWeight: 700 }}>⚡ Playbook Settoriali Pre-configurati (Preset Rapidi):</label>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
+                <button className="btn btn-xs" style={{ background: 'rgba(56,189,248,0.15)', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.3)' }} onClick={() => applyPlaybook('AUTOMOTIVE')}>
+                  🚗 Automotive (Tinghi Motors)
+                </button>
+                <button className="btn btn-xs" style={{ background: 'rgba(250,204,21,0.15)', color: '#facc15', border: '1px solid rgba(250,204,21,0.3)' }} onClick={() => applyPlaybook('SAGRA')}>
+                  🎪 Sagra / Evento (Pro Loco)
+                </button>
+                <button className="btn btn-xs" style={{ background: 'rgba(168,85,247,0.15)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.3)' }} onClick={() => applyPlaybook('PA')}>
+                  🏛️ Pubblica Amministrazione (PA)
+                </button>
+              </div>
             </div>
             
             <div className="form-group">

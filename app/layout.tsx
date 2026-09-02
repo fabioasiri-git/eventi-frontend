@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Radio Toscana Monster Engine & Cloud CRM v7.4.0',
-  description: 'Centro di Controllo Commerciale Unificato Radio Toscana Monster Engine v7.4.0 (Metodo Thinkable Data-Driven & Plafond Scalare)',
+  title: 'Radio Toscana Monster Engine & Cloud CRM v7.5.0',
+  description: 'Centro di Controllo Commerciale Unificato Radio Toscana Monster Engine v7.5.0 (Thinkable Playbooks Settoriali & Customer Tiering)',
 };
 
 export default function RootLayout({

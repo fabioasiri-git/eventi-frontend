@@ -1,6 +1,6 @@
 # 📘 Manuale Operativo - Radio Toscana Lead Engine & Cloud CRM ("Sistema Mostro")
 
-**Versione:** 7.4 (Edizione Thinkable Data-Driven, Gestione Plafond a Scalare PA/Enterprise & Next.js 14 Engine)  
+**Versione:** 7.5 (Edizione Playbook Settoriali Automotive/PA, Calcolatore Potenziale Cliente & Next.js 14 Engine)  
 **Destinatari:** Team Commerciale (Fabio Asiri), Redazione/Copy (Edi), Studio di Registrazione & Amministratori di Sistema  
 **Stazione:** Radio Toscana (Solo Toscana | Solo Hit)
 
