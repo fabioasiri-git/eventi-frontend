@@ -3,15 +3,18 @@
 tools/session_sync.py
 ---------------------
 Gatekeeper Deterministico di Sincronizzazione Sessione (Check-In / Check-Out).
-Garantisce la parita' assoluta tra postazione Ufficio e postazione Casa:
+Garantisce la parita' assoluta tra postazione Ufficio e postazione Casa e tra progetti:
 1. Verifica ed allinea lo stato Git da GitHub origin/main.
 2. Interroga la Cassaforte Cloud Supabase ("rt_lead_engine"."system_vault")
-   e sincronizza le credenziali nel file locale .env.local protetto.
+   e sincronizza le credenziali nel file locale .env.local protetto
+   per l'ambito del progetto (GLOBAL + project_scope).
 """
 
 import subprocess
 import sys
 import psycopg2
+
+PROJECT_SCOPE = "LEAD_ENGINE"
 
 def run_cmd(cmd):
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True, errors='ignore')
@@ -43,8 +46,8 @@ def checkin():
     else:
         print("  [OK] Repository locale 100% allineato con GitHub.")
 
-    # 2. Sync from Supabase Cloud System Vault
-    print("\n[2/3] Sincronizzazione credenziali dalla Cassaforte Cloud Supabase...")
+    # 2. Sync from Universal Supabase Cloud System Vault
+    print(f"\n[2/3] Sincronizzazione credenziali dal Cloud Vault (Ambito: GLOBAL + {PROJECT_SCOPE})...")
     try:
         conn = psycopg2.connect(
             dbname='postgres',
@@ -54,19 +57,31 @@ def checkin():
             port=6543
         )
         cur = conn.cursor()
-        cur.execute('SELECT key_name, key_value FROM "rt_lead_engine"."system_vault";')
+        cur.execute("""
+            SELECT key_name, key_value, project_scope 
+            FROM "rt_lead_engine"."system_vault"
+            WHERE project_scope IN ('GLOBAL', %s)
+            ORDER BY CASE WHEN project_scope = 'GLOBAL' THEN 1 ELSE 2 END;
+        """, (PROJECT_SCOPE,))
         rows = cur.fetchall()
         
-        env_lines = []
-        for k, v in rows:
+        env_lines = [
+            f"# File generato automaticamente da tools/session_sync.py\n",
+            f"# Ambito Progetto: {PROJECT_SCOPE} & GLOBAL Cloud Vault\n\n"
+        ]
+        keys_dict = {}
+        for k, v, scope in rows:
+            keys_dict[k] = (v, scope)
+            
+        for k, (v, scope) in keys_dict.items():
             env_lines.append(f"{k}={v}\n")
             
         with open('.env.local', 'w', encoding='utf-8') as f:
             f.writelines(env_lines)
             
-        print(f"  [OK] Sincronizzate {len(rows)} chiavi in .env.local locale.")
-        for k, _ in rows:
-            print(f"       -> {k}")
+        print(f"  [OK] Sincronizzate {len(keys_dict)} chiavi in .env.local locale.")
+        for k, (_, scope) in keys_dict.items():
+            print(f"       -> {k} ({scope})")
             
         cur.close()
         conn.close()
