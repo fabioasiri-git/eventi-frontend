@@ -10,8 +10,11 @@ interface LeadRow {
   provincia: string;
   area_target: string;
   fase_commerciale: string;
+  tipo_contratto?: 'SECCO' | 'SCALARE';
   valore_preventivo: number;
   valore_contratto: number;
+  plafond_totale_spot?: number;
+  spot_rimasti?: number;
   is_cambio_merce: boolean;
   dettagli_cambio_merce?: string;
   probabilita_chiusura: number;
@@ -52,14 +55,14 @@ export default function LeadEngineDashboard() {
       id: 'row-1',
       prodotto: 'spot20',
       emittente: 'RADIO_TOSCANA',
-      dataInizio: '2026-08-10',
-      dataFine: '2026-08-23',
+      dataInizio: '2026-09-03',
+      dataFine: '2026-09-16',
       frequenza: 'EVERY_DAY',
       spotGiorno: 6
     }
   ]);
 
-  // Supabase Fetch
+  // Supabase Fetch & Fallback Dati Puliti da Settembre 2026
   useEffect(() => {
     fetchSupabaseLeads();
   }, []);
@@ -77,17 +80,18 @@ export default function LeadEngineDashboard() {
         if (Array.isArray(data) && data.length > 0) {
           setLeads(data);
         } else {
-          setLeads(getInitialFallbackLeads());
+          setLeads(getInitialCleanSeptemberLeads());
         }
       } else {
-        setLeads(getInitialFallbackLeads());
+        setLeads(getInitialCleanSeptemberLeads());
       }
     } catch (e) {
-      setLeads(getInitialFallbackLeads());
+      setLeads(getInitialCleanSeptemberLeads());
     }
   }
 
-  function getInitialFallbackLeads(): LeadRow[] {
+  // Dati Puliti Settembre 2026 (Metodo Thinkable Data-Driven)
+  function getInitialCleanSeptemberLeads(): LeadRow[] {
     return [
       {
         id: 1,
@@ -97,11 +101,13 @@ export default function LeadEngineDashboard() {
         provincia: "FI",
         area_target: "AREA 1",
         fase_commerciale: "CONTRATTO ATTIVO",
-        valore_preventivo: 1165.00,
-        valore_contratto: 1165.00,
+        tipo_contratto: "SCALARE",
+        valore_preventivo: 6500.00,
+        valore_contratto: 6500.00,
+        plafond_totale_spot: 500,
+        spot_rimasti: 416,
         is_cambio_merce: false,
         probabilita_chiusura: 100,
-        data_evento: "2026-08-10",
         numero_contratto: "2023/14197",
         tipo_produzione_spot: "FULL_RT",
         stato_programmazione: "INVIATO",
@@ -109,30 +115,70 @@ export default function LeadEngineDashboard() {
       },
       {
         id: 2,
-        nome_azienda_evento: "Pro Loco Sagra del Tordello",
-        settore: "EVENTI & SAGRE",
-        comune: "Camaiore",
-        provincia: "LU",
-        area_target: "AREA 2",
-        fase_commerciale: "PREVENTIVO INVIATO",
-        valore_preventivo: 617.50,
-        valore_contratto: 0,
+        nome_azienda_evento: "COMUNE DI FIRENZE",
+        settore: "PUBBLICA AMMINISTRAZIONE",
+        comune: "Firenze",
+        provincia: "FI",
+        area_target: "RETE",
+        fase_commerciale: "CONTRATTO ATTIVO",
+        tipo_contratto: "SCALARE",
+        valore_preventivo: 15000.00,
+        valore_contratto: 15000.00,
+        plafond_totale_spot: 1000,
+        spot_rimasti: 880,
         is_cambio_merce: false,
-        probabilita_chiusura: 80,
-        data_evento: "2026-09-01",
-        tipo_produzione_spot: "CODINO",
-        stato_programmazione: "DA_INVIARE"
+        probabilita_chiusura: 100,
+        numero_contratto: "PA-2026/088",
+        tipo_produzione_spot: "FORNITO",
+        stato_programmazione: "INVIATO"
       },
       {
         id: 3,
+        nome_azienda_evento: "ACQUE SPA",
+        settore: "UTILITIES & ENERGIA",
+        comune: "Pisa",
+        provincia: "PI",
+        area_target: "AREA 2",
+        fase_commerciale: "CONTRATTO ATTIVO",
+        tipo_contratto: "SCALARE",
+        valore_preventivo: 10000.00,
+        valore_contratto: 10000.00,
+        plafond_totale_spot: 800,
+        spot_rimasti: 720,
+        is_cambio_merce: false,
+        probabilita_chiusura: 100,
+        numero_contratto: "ENT-2026/412",
+        tipo_produzione_spot: "FULL_RT",
+        stato_programmazione: "INVIATO"
+      },
+      {
+        id: 4,
+        nome_azienda_evento: "MARC CONSULTING",
+        settore: "CONSULENZA AZIENDALE",
+        comune: "Firenze",
+        provincia: "FI",
+        area_target: "AREA 1",
+        fase_commerciale: "CONTRATTO ATTIVO",
+        tipo_contratto: "SECCO",
+        valore_preventivo: 1200.00,
+        valore_contratto: 1200.00,
+        is_cambio_merce: false,
+        probabilita_chiusura: 100,
+        numero_contratto: "2026/0626",
+        tipo_produzione_spot: "FULL_RT",
+        stato_programmazione: "INVIATO"
+      },
+      {
+        id: 5,
         nome_azienda_evento: "ETRURIA LUCE E GAS SPA",
         settore: "UTILITIES & ENERGIA",
         comune: "Firenze",
         provincia: "FI",
         area_target: "AREA 1",
         fase_commerciale: "CONTRATTO CHIUSO",
-        valore_preventivo: 1450.00,
-        valore_contratto: 1450.00,
+        tipo_contratto: "SECCO",
+        valore_preventivo: 2800.00,
+        valore_contratto: 2800.00,
         is_cambio_merce: true,
         dettagli_cambio_merce: "Fornitura Energia Elettrica Sede RT",
         probabilita_chiusura: 100,
@@ -187,14 +233,13 @@ export default function LeadEngineDashboard() {
     const totalSpots = activeDays * item.spotGiorno;
 
     // Tariffe Ufficiali Toscana Comunica dal documento foto
-    let unitPrice = 9.00; // Default Spot 20" Radio Toscana Area 1
+    let unitPrice = 9.00;
 
     if (item.emittente === 'RADIO_FIRENZE') {
       if (item.prodotto === 'spot10') unitPrice = 6.00;
       else if (item.prodotto === 'spot20') unitPrice = 7.50;
       else if (item.prodotto === 'spot30') unitPrice = 9.50;
     } else {
-      // Radio Toscana
       if (qArea === 'AREA1') {
         if (item.prodotto === 'spot10') unitPrice = 6.50;
         else if (item.prodotto === 'spot20') unitPrice = 9.00;
@@ -244,7 +289,6 @@ export default function LeadEngineDashboard() {
     return sum + (isSpot ? calculateRowDetails(item).totalSpots : 0);
   }, 0);
 
-  // Calcolo Percentuale Sconto della Scala Ufficiale Toscana Comunica
   let calculatedDiscountPercent = 0;
   if (grandTotalSpots > 800) calculatedDiscountPercent = 40;
   else if (grandTotalSpots >= 401) calculatedDiscountPercent = 30;
@@ -264,8 +308,8 @@ export default function LeadEngineDashboard() {
         id: `row-${Date.now()}`,
         prodotto: 'spot20',
         emittente: 'RADIO_TOSCANA',
-        dataInizio: '2026-08-10',
-        dataFine: '2026-08-23',
+        dataInizio: '2026-09-03',
+        dataFine: '2026-09-16',
         frequenza: 'EVERY_DAY',
         spotGiorno: 6
       }
@@ -287,18 +331,18 @@ export default function LeadEngineDashboard() {
     .reduce((sum, l) => sum + (l.valore_contratto || 0), 0);
 
   const pipelineAttesa = leads
-    .filter(l => l.fase_commerciale !== 'CONTRATTO CHIUSO' && l.fase_commerciale !== 'SCRARTATO')
+    .filter(l => l.fase_commerciale !== 'CONTRATTO CHIUSO' && l.fase_commerciale !== 'SCARTATO')
     .reduce((sum, l) => sum + ((l.valore_preventivo || 0) * ((l.probabilita_chiusura || 50) / 100)), 0);
 
   const valoreBarter = leads
     .filter(l => l.is_cambio_merce)
     .reduce((sum, l) => sum + (l.valore_contratto || l.valore_preventivo || 0), 0);
 
-  // Colonne Kanban
+  // Colonne Kanban Pulite da Settembre 2026
   const kanbanColumns = [
-    { title: '1. PREVENTIVI IN TRATTATIVA', phase: 'PREVENTIVO INVIATO' },
-    { title: '2. CONTRATTO ATTIVO (IN ONDA) 🟢', phase: 'CONTRATTO ATTIVO' },
-    { title: '3. CONTRATTI CONCLUSI (STORICO)', phase: 'CONTRATTO CHIUSO' },
+    { title: '1. PREVENTIVI IN TRATTATIVA 🟡', phase: 'PREVENTIVO INVIATO' },
+    { title: '2. CONTRATTI ATTIVI (IN ONDA / SCALARE) 🟢', phase: 'CONTRATTO ATTIVO' },
+    { title: '3. CONTRATTI CONCLUSI (STORICO) 📁', phase: 'CONTRATTO CHIUSO' },
     { title: '4. MEMORY LOCK RADAR 🎡', phase: 'MEMORY LOCK' },
     { title: '5. NUOVI LEAD SCOUTER 🕵️‍♂️', phase: 'SCOUTER DISCOVERY' },
     { title: '6. QUALIFICAZIONE ARCHE', phase: 'IN QUALIFICAZIONE' },
@@ -321,18 +365,15 @@ export default function LeadEngineDashboard() {
             <h1>
               Radio Toscana Commerciale{' '}
               <span style={{ fontSize: '12px', background: 'rgba(225,29,72,0.25)', color: '#f43f5e', border: '1px solid rgba(225,29,72,0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
-                v7.3.0 - Monster Engine (Listino Toscana Comunica)
-              </span>
-              <span style={{ fontSize: '11px', background: 'rgba(34,197,94,0.2)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
-                🟢 Vercel Auto-Deploy Verificato
+                v7.4.0 - Monster Engine (Thinkable Data-Driven &amp; Plafond Scalare)
               </span>
             </h1>
-            <p>Lead Engine & CRM Cloud — Centro di Controllo Commerciale Unificato</p>
+            <p>Lead Engine &amp; CRM Cloud — Centro di Controllo Commerciale Unificato</p>
           </div>
         </div>
         <div className="header-actions">
-          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.3.0 (Next.js 14 Engine)')}>
-            🟢 Supabase Realtime [v7.3.0]
+          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.4.0 (Metodo Thinkable Data-Driven)')}>
+            🟢 Supabase Realtime [v7.4.0]
           </button>
           <button className="btn btn-primary" onClick={() => setShowQuoteModal(true)}>
             ➕ Nuovo Preventivo
@@ -381,20 +422,20 @@ export default function LeadEngineDashboard() {
           🚫 Code di Controllo (3 Code)
         </button>
         <button className={`nav-btn ${activeTab === 'renewals' ? 'active' : ''}`} onClick={() => setActiveTab('renewals')}>
-          ⏰ Rinnovi & Upsell (30gg)
+          ⏰ Rinnovi &amp; Upsell (30gg / Plafond)
         </button>
         <button className={`nav-btn ${activeTab === 'memory' ? 'active' : ''}`} onClick={() => setActiveTab('memory')}>
           🎡 Universal Memory Lock
         </button>
         <button className={`nav-btn ${activeTab === 'production' ? 'active' : ''}`} onClick={() => setActiveTab('production')}>
-          🎙️ Produzione Spot Audio & Listino
+          🎙️ Produzione Spot Audio &amp; Listino
         </button>
         <button className={`nav-btn ${activeTab === 'schedules' ? 'active' : ''}`} onClick={() => setActiveTab('schedules')}>
-          📅 Programmazione On-Air & Email
+          📅 Programmazione On-Air &amp; Email
         </button>
       </div>
 
-      {/* CONTENT TAB 1: KANBAN */}
+      {/* CONTENT TAB 1: KANBAN PULITA */}
       {activeTab === 'kanban' && (
         <div className="kanban-board">
           {kanbanColumns.map((col, idx) => {
@@ -408,11 +449,14 @@ export default function LeadEngineDashboard() {
                 <div className="col-cards">
                   {colLeads.length === 0 ? (
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', textAlign: 'center', marginTop: '20px' }}>
-                      Nessun cliente in questa fase
+                      Nessuna pratica in questa colonna
                     </div>
                   ) : (
                     colLeads.map((l, lIdx) => {
                       const scoreInfo = computeLeadScore(l);
+                      const isScalare = l.tipo_contratto === 'SCALARE';
+                      const pctRimasti = isScalare && l.plafond_totale_spot ? Math.round((l.spot_rimasti || 0) / l.plafond_totale_spot * 100) : 100;
+                      
                       return (
                         <div key={lIdx} className="lead-card">
                           <div className="lead-title">
@@ -422,20 +466,38 @@ export default function LeadEngineDashboard() {
                           <div className="lead-tags">
                             <span className="tag">{l.area_target}</span>
                             <span className="tag">{l.settore}</span>
-                            {l.is_cambio_merce && <span className="tag tag-barter">🎁 CAMBIO MERCE</span>}
+                            {isScalare && <span className="tag" style={{ background: 'rgba(56,189,248,0.2)', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.4)' }}>🔋 PLAFOND A SCALARE</span>}
+                            {l.is_cambio_merce && <span className="tag tag-barter">🎁 BARTER</span>}
                           </div>
-                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                          
+                          {/* INDICATORE BARRA DI AVANZAMENTO PER CONTRATTI A SCALARE */}
+                          {isScalare && l.plafond_totale_spot && (
+                            <div style={{ marginTop: '8px', background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '6px', border: '1px solid var(--panel-border)' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, marginBottom: '4px' }}>
+                                <span>Plafond Spot:</span>
+                                <span style={{ color: pctRimasti < 20 ? '#f43f5e' : 'var(--accent-green)' }}>
+                                  {l.spot_rimasti} / {l.plafond_totale_spot} Spot ({pctRimasti}%)
+                                </span>
+                              </div>
+                              <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                                <div style={{ width: `${pctRimasti}%`, height: '100%', background: pctRimasti < 20 ? '#f43f5e' : 'var(--accent-green)', transition: 'width 0.3s ease' }}></div>
+                              </div>
+                            </div>
+                          )}
+
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>
                             📍 {l.comune} ({l.provincia})
                           </div>
+
                           <div className="lead-footer">
                             <span style={{ fontWeight: 800, color: 'var(--accent-blue)' }}>
                               € {(l.valore_contratto || l.valore_preventivo).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                             </span>
                             {l.stato_programmazione === 'INVIATO' ? (
-                              <span style={{ fontSize: '10px', color: 'var(--accent-green)', fontWeight: 700 }}>🟢 Programmazione Inviata</span>
+                              <span style={{ fontSize: '10px', color: 'var(--accent-green)', fontWeight: 700 }}>🟢 On-Air Attivo</span>
                             ) : (
                               <button className="btn btn-xs btn-primary" onClick={() => openEmailModal(l)}>
-                                ✉️ Invia Programmazione
+                                ✉️ Programmazione
                               </button>
                             )}
                           </div>
@@ -453,7 +515,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 2: CODE DI CONTROLLO */}
       {activeTab === 'queues' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.3)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.4)</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <h4 style={{ color: 'var(--accent-yellow)', marginBottom: '8px' }}>1. Lead Senza Contatto (&gt;7 giorni)</h4>
@@ -463,40 +525,56 @@ export default function LeadEngineDashboard() {
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <h4 style={{ color: 'var(--accent-red)', marginBottom: '8px' }}>2. Preventivi In Sospeso (&gt;14 giorni)</h4>
               <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Preventivi inviati in trattativa aperta senza feedback o chiusura.</p>
-              <div style={{ marginTop: '12px', fontWeight: 700, fontSize: '18px', color: '#f43f5e' }}>1 Trattativa In Sospeso</div>
+              <div style={{ marginTop: '12px', fontWeight 700, fontSize: '18px', color: '#f43f5e' }}>0 Trattative In Sospeso</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
-              <h4 style={{ color: 'var(--accent-blue)', marginBottom: '8px' }}>3. Contratti In Scadenza (&lt;30 giorni)</h4>
-              <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Contratti attivi pronti per il rinnovo o la proposta di upsell.</p>
-              <div style={{ marginTop: '12px', fontWeight: 700, fontSize: '18px', color: '#38bdf8' }}>1 Contratto In Scadenza</div>
+              <h4 style={{ color: 'var(--accent-blue)', marginBottom: '8px' }}>3. Plafond &amp; Contratti In Scadenza</h4>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Contratti a scalare in esaurimento (&lt;20%) pronti per il rinnovo pacchetto.</p>
+              <div style={{ marginTop: '12px', fontWeight 700, fontSize: '18px', color: '#38bdf8' }}>3 Pacchetti Attivi</div>
             </div>
           </div>
         </div>
       )}
 
-      {/* CONTENT TAB 3: RINNOVI & UPSELL */}
+      {/* CONTENT TAB 3: RINNOVI & UPSELL PLAFOND */}
       {activeTab === 'renewals' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>⏰ Rinnovi & Upsell a 30 Giorni (Sezione 18 del Manuale v7.3)</h3>
+          <h3 style={{ marginBottom: '16px' }}>⏰ Monitoraggio Plafond &amp; Rinnovi Pacchetto (Metodo Thinkable Data-Driven)</h3>
           <table className="table">
             <thead>
               <tr>
                 <th>Cliente / Azienda</th>
-                <th>Settore</th>
-                <th>Data Scadenza Contratto</th>
-                <th>Valore Attuale</th>
-                <th>Proposta Upsell Suggerita dall&apos;IA</th>
-                <th>Azione</th>
+                <th>Tipologia Contratto</th>
+                <th>Plafond Spot Totali</th>
+                <th>Spot Rimasti</th>
+                <th>Stato Consumo</th>
+                <th>Azione Suggerita dall&apos;IA</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><strong>TINGHI MOTORS SRL</strong></td>
-                <td>AUTOMOTIVE</td>
-                <td>23/08/2026</td>
-                <td>€ 1.165,00</td>
-                <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>+ Citazioni Live + Pillola Intervista (Estensione a RETE)</span></td>
-                <td><button className="btn btn-xs btn-primary">✉️ Invia Proposta Rinnovo</button></td>
+                <td><span className="tag" style={{ background: 'rgba(56,189,248,0.2)', color: '#38bdf8' }}>🔋 SCALARE</span></td>
+                <td>500 Spot</td>
+                <td><strong>416 Spot</strong></td>
+                <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>🟢 83.2% Disponibile</span></td>
+                <td><button className="btn btn-xs btn-primary">✉️ Invia Prospetto Consumi</button></td>
+              </tr>
+              <tr>
+                <td><strong>COMUNE DI FIRENZE</strong></td>
+                <td><span className="tag" style={{ background: 'rgba(56,189,248,0.2)', color: '#38bdf8' }}>🔋 SCALARE PA</span></td>
+                <td>1.000 Spot</td>
+                <td><strong>880 Spot</strong></td>
+                <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>🟢 88.0% Disponibile</span></td>
+                <td><button className="btn btn-xs btn-primary">✉️ Invia Prospetto Consumi</button></td>
+              </tr>
+              <tr>
+                <td><strong>ACQUE SPA</strong></td>
+                <td><span className="tag" style={{ background: 'rgba(56,189,248,0.2)', color: '#38bdf8' }}>🔋 SCALARE ENT</span></td>
+                <td>800 Spot</td>
+                <td><strong>720 Spot</strong></td>
+                <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>🟢 90.0% Disponibile</span></td>
+                <td><button className="btn btn-xs btn-primary">✉️ Invia Prospetto Consumi</button></td>
               </tr>
             </tbody>
           </table>
@@ -506,7 +584,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 4: UNIVERSAL MEMORY LOCK */}
       {activeTab === 'memory' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.3)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.4)</h3>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
             Radar automatico per la riattivazione programmata degli eventi ricorrenti annuali in Toscana.
           </p>
@@ -536,7 +614,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 5: PRODUZIONE SPOT AUDIO & LISTINO TOSCANA COMUNICA */}
       {activeTab === 'production' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🎙️ Listino Ufficiale Toscana Comunica & Produzione Audio</h3>
+          <h3 style={{ marginBottom: '16px' }}>🎙️ Listino Ufficiale Toscana Comunica &amp; Produzione Audio</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Produzione Esclusiva RT + RF</div>
@@ -565,7 +643,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 6: PROGRAMMAZIONE ON-AIR & EMAIL */}
       {activeTab === 'schedules' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air & Dispatch Email (Sezione 20.4 del Manuale v7.3)</h3>
+          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air &amp; Dispatch Email (Sezione 20.4 del Manuale v7.4)</h3>
           <table className="table">
             <thead>
               <tr>
@@ -591,25 +669,8 @@ export default function LeadEngineDashboard() {
                 <td><code>B Tinghi agosto 2026.mp3</code></td>
                 <td><span className="score-badge score-green">🟢 INVIATO (09/08 13:45)</span></td>
                 <td>
-                  <button className="btn btn-xs" onClick={() => openEmailModal(leads[0] || getInitialFallbackLeads()[0])}>
+                  <button className="btn btn-xs" onClick={() => openEmailModal(leads[0] || getInitialCleanSeptemberLeads()[0])}>
                     ✉️ Re-invia Email
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Pro Loco Sagra del Tordello</strong>
-                  <br />
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Campagna Sagra Settembre 2026</span>
-                </td>
-                <td><code>2026/15820</code></td>
-                <td>01/09/2026 – 10/09/2026 (10gg)</td>
-                <td><strong>60 Spot</strong> (6/giorno)</td>
-                <td><code>Codino_Sagra_Tordello.mp3</code></td>
-                <td><span className="score-badge score-yellow">🟡 PRONTO (DA INVIARE)</span></td>
-                <td>
-                  <button className="btn btn-xs btn-primary" onClick={() => openEmailModal(leads[1] || getInitialFallbackLeads()[1])}>
-                    ✉️ Invia Programmazione
                   </button>
                 </td>
               </tr>
@@ -659,7 +720,7 @@ export default function LeadEngineDashboard() {
             {/* SEZIONE RIGHE PRODOTTO SCHEDULING CARD */}
             <div className="form-group">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <label className="form-label" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-main)' }}>📋 Voci di Listino & Pianificazione Date/Frequenza</label>
+                <label className="form-label" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-main)' }}>📋 Voci di Listino &amp; Pianificazione Date/Frequenza</label>
                 <button className="btn btn-xs btn-primary" onClick={addQuoteRow}>➕ Aggiungi Riga Prodotto</button>
               </div>
 
@@ -757,7 +818,7 @@ export default function LeadEngineDashboard() {
                 alert('Preventivo Toscana Comunica salvato con successo ed inviato a Supabase Cloud!');
                 setShowQuoteModal(false);
               }}>
-                💾 Salva & Inserisci in Pipeline
+                💾 Salva &amp; Inserisci in Pipeline
               </button>
             </div>
           </div>
