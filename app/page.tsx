@@ -41,6 +41,7 @@ export default function LeadEngineDashboard() {
   const [activeTab, setActiveTab] = useState<'kanban' | 'queues' | 'renewals' | 'memory' | 'production' | 'schedules'>('kanban');
   const [leads, setLeads] = useState<LeadRow[]>([]);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [showPdfModal, setShowPdfModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedLeadForEmail, setSelectedLeadForEmail] = useState<LeadRow | null>(null);
 
@@ -55,8 +56,8 @@ export default function LeadEngineDashboard() {
       id: 'row-1',
       prodotto: 'spot20',
       emittente: 'RADIO_TOSCANA',
-      dataInizio: '2026-09-03',
-      dataFine: '2026-09-16',
+      dataInizio: '2026-09-07',
+      dataFine: '2026-09-20',
       frequenza: 'EVERY_DAY',
       spotGiorno: 6
     }
@@ -438,15 +439,15 @@ export default function LeadEngineDashboard() {
             <h1>
               Radio Toscana Commerciale{' '}
               <span style={{ fontSize: '12px', background: 'rgba(225,29,72,0.25)', color: '#f43f5e', border: '1px solid rgba(225,29,72,0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
-                v7.5.0 - Monster Engine (Thinkable Playbooks &amp; Customer Tiering)
+                v7.6.0 - Monster Engine (Modern UX A4 Proposal PDF Engine)
               </span>
             </h1>
             <p>Lead Engine &amp; CRM Cloud — Centro di Controllo Commerciale Unificato</p>
           </div>
         </div>
         <div className="header-actions">
-          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.5.0 (Playbooks Settoriali & Customer Tiering)')}>
-            🟢 Supabase Realtime [v7.5.0]
+          <button className="btn" onClick={() => alert('Connesso a Supabase Cloud - Schema rt_lead_engine v7.6.0 (Modern UX A4 Proposal Engine)')}>
+            🟢 Supabase Realtime [v7.6.0]
           </button>
           <button className="btn btn-primary" onClick={() => setShowQuoteModal(true)}>
             ➕ Nuovo Preventivo
@@ -588,7 +589,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 2: CODE DI CONTROLLO */}
       {activeTab === 'queues' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.5)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🚫 3 Code di Controllo (Sezione 7 del Manuale v7.6)</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--panel-border)' }}>
               <h4 style={{ color: 'var(--accent-yellow)', marginBottom: '8px' }}>1. Lead Senza Contatto (&gt;7 giorni)</h4>
@@ -657,7 +658,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 4: UNIVERSAL MEMORY LOCK */}
       {activeTab === 'memory' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.5)</h3>
+          <h3 style={{ marginBottom: '16px' }}>🎡 Universal Memory Lock (Sezione 11 del Manuale v7.6)</h3>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
             Radar automatico per la riattivazione programmata degli eventi ricorrenti annuali in Toscana.
           </p>
@@ -714,7 +715,7 @@ export default function LeadEngineDashboard() {
       {/* CONTENT TAB 6: PROGRAMMAZIONE ON-AIR & EMAIL */}
       {activeTab === 'schedules' && (
         <div style={{ background: 'var(--panel-bg)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
-          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air &amp; Dispatch Email (Sezione 20.4 del Manuale v7.5)</h3>
+          <h3 style={{ marginBottom: '16px' }}>📅 Programmazione On-Air &amp; Dispatch Email (Sezione 20.4 del Manuale v7.6)</h3>
           <table className="table">
             <thead>
               <tr>
@@ -899,14 +900,147 @@ export default function LeadEngineDashboard() {
               </div>
             </div>
 
-            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button className="btn" onClick={() => setShowQuoteModal(false)}>Annulla</button>
-              <button className="btn btn-primary" onClick={() => {
-                alert('Preventivo Toscana Comunica salvato con successo ed inviato a Supabase Cloud!');
-                setShowQuoteModal(false);
-              }}>
-                💾 Salva &amp; Inserisci in Pipeline
+            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <button className="btn" style={{ background: 'rgba(168,85,247,0.2)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.4)' }} onClick={() => setShowPdfModal(true)}>
+                📄 Genera PDF Proposta Commerciale A4
               </button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button className="btn" onClick={() => setShowQuoteModal(false)}>Annulla</button>
+                <button className="btn btn-primary" onClick={() => {
+                  alert('Preventivo Toscana Comunica salvato con successo ed inviato a Supabase Cloud!');
+                  setShowQuoteModal(false);
+                }}>
+                  💾 Salva &amp; Inserisci in Pipeline
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE GENERATORE PROPOSTA COMMERCIALE PDF A4 MODERN UX 2026 */}
+      {showPdfModal && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ width: '900px', maxWidth: '95vw', maxHeight: '90vh', overflowY: 'auto', background: '#000000', padding: '0', borderRadius: '12px' }}>
+            <div style={{ background: '#111111', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222222' }}>
+              <span style={{ fontWeight: 800, color: '#f43f5e', fontSize: '14px' }}>📄 ANTEPRIMA PROPOSTA COMMERCIALE A4 MODERN UX 2026</span>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button className="btn btn-primary btn-xs" onClick={() => window.print()}>🖨️ Stampa / Salva in PDF</button>
+                <button className="modal-close" onClick={() => setShowPdfModal(false)}>✕</button>
+              </div>
+            </div>
+
+            {/* FOGLIO A4 STAMPABILE CON LAYOUT MODERN UX */}
+            <div className="a4-page-preview" style={{ background: '#ffffff', color: '#111111', padding: '40px', margin: '20px auto', width: '210mm', minHeight: '297mm', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', boxSizing: 'border-box', fontFamily: "'Segoe UI', Roboto, sans-serif" }}>
+              
+              {/* HEADER UFFICIALE RADIO TOSCANA */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '3px solid #e11d48', paddingBottom: '16px', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div style={{ background: '#e11d48', color: '#ffffff', fontWeight: 900, fontSize: '24px', padding: '10px 14px', borderRadius: '8px' }}>RT</div>
+                  <div>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#111111', letterSpacing: '-0.5px' }}>RADIO TOSCANA</div>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#e11d48', letterSpacing: '1px', textTransform: 'uppercase' }}>SOLO TOSCANA | SOLO HIT</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '16px', fontWeight: 800, color: '#111111' }}>PROPOSTA COMMERCIALE ON-AIR</div>
+                  <div style={{ fontSize: '11px', color: '#666666', marginTop: '2px' }}>Anno 2026 — Listino Toscana Comunica</div>
+                  <div style={{ fontSize: '11px', color: '#888888', marginTop: '2px' }}>Data Emissione: {new Date().toLocaleDateString('it-IT')}</div>
+                </div>
+              </div>
+
+              {/* SCHEDA DATI CLIENTE E REFERENTE COMMERCIAL E */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '24px' }}>
+                <div>
+                  <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>CLIENTE / COMMITTENTE</div>
+                  <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>{qNome || 'Azienda Cliente Toscana'}</div>
+                  <div style={{ fontSize: '12px', color: '#475569', marginTop: '2px' }}>Area Messa in Onda: <strong>{qArea}</strong></div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>REFERENTE COMMERCIALE ESPERTO</div>
+                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>Fabio Asiri</div>
+                  <div style={{ fontSize: '11px', color: '#475569' }}>📧 commerciale@radiotoscana.it | 🌐 www.radiotoscana.it</div>
+                </div>
+              </div>
+
+              {/* PIANIFICAZIONE EDITORIALE TABELLA MODERN UX */}
+              <div style={{ marginBottom: '24px' }}>
+                <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  📊 Piano Editoriale Messa in Onda
+                </h4>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                  <thead>
+                    <tr style={{ background: '#0f172a', color: '#ffffff', textTransform: 'uppercase', fontSize: '10px' }}>
+                      <th style={{ padding: '10px', textAlign: 'left' }}>Emittente / Prodotto</th>
+                      <th style={{ padding: '10px', textAlign: 'left' }}>Periodo On-Air</th>
+                      <th style={{ padding: '10px', textAlign: 'center' }}>Frequenza</th>
+                      <th style={{ padding: '10px', textAlign: 'center' }}>Spot/GG</th>
+                      <th style={{ padding: '10px', textAlign: 'center' }}>Totale Spot</th>
+                      <th style={{ padding: '10px', textAlign: 'right' }}>Importo Lordo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {quoteItems.map((item, idx) => {
+                      const d = calculateRowDetails(item);
+                      return (
+                        <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
+                          <td style={{ padding: '10px', fontWeight: 700 }}>
+                            {item.emittente === 'RADIO_TOSCANA' ? '📻 Radio Toscana' : '⚜️ Radio Firenze'}
+                            <br />
+                            <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 400 }}>
+                              {item.prodotto.includes('spot') ? `Spot Messa in Onda ${item.prodotto.replace('spot', '')}"` : item.prodotto}
+                            </span>
+                          </td>
+                          <td style={{ padding: '10px' }}>{item.dataInizio} → {item.dataFine}</td>
+                          <td style={{ padding: '10px', textAlign: 'center', fontWeight: 600 }}>
+                            {item.frequenza === 'EVERY_DAY' ? 'Tutti i Giorni (7/7)' : item.frequenza === 'WEEKDAYS' ? 'Feriali (5/5)' : 'Giorni Alterni'}
+                          </td>
+                          <td style={{ padding: '10px', textAlign: 'center', fontWeight: 700 }}>{item.spotGiorno}</td>
+                          <td style={{ padding: '10px', textAlign: 'center', fontWeight: 800, color: '#e11d48' }}>{d.totalSpots} spot</td>
+                          <td style={{ padding: '10px', textAlign: 'right', fontWeight: 700 }}>€ {d.rowGrossTotal.toFixed(2)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* QUADRO ECONOMICO RISERVATO & SCONTI */}
+              <div style={{ background: '#0f172a', color: '#ffffff', padding: '20px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                <div>
+                  <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>TOTALE COMUNICATI PIANIFICATI</div>
+                  <div style={{ fontSize: '20px', fontWeight: 900, color: '#38bdf8', marginTop: '2px' }}>{grandTotalSpots} Spot On-Air</div>
+                  <div style={{ fontSize: '11px', color: '#facc15', marginTop: '4px' }}>
+                    Scala Sconti Toscana Comunica: <strong>-{activeScontoPercent}% Applicato</strong>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>INVESTIMENTO NETTO RISERVATO</div>
+                  <div style={{ fontSize: '28px', fontWeight: 900, color: '#4ade80', marginTop: '2px' }}>
+                    € {totalNetPrice.toLocaleString('it-IT', { minimumFractionDigits: 2 })} + IVA
+                  </div>
+                </div>
+              </div>
+
+              {/* MODULO ACCETTAZIONE E FIRMA CLIENTE */}
+              <div style={{ border: '1px solid #cbd5e1', padding: '16px', borderRadius: '8px', background: '#ffffff' }}>
+                <div style={{ fontSize: '11px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px' }}>
+                  📝 Per Accettazione della Proposta Commerciale e Condizioni di Messa in Onda
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginTop: '30px', fontSize: '11px', color: '#64748b' }}>
+                  <div>
+                    <div>Data: ___________________</div>
+                  </div>
+                  <div>
+                    <div>Luogo: ___________________</div>
+                  </div>
+                  <div>
+                    <div>Timbro e Firma Committente:</div>
+                    <div style={{ height: '40px', borderBottom: '1px dashed #94a3b8', marginTop: '10px' }}></div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
