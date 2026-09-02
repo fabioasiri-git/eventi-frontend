@@ -1,6 +1,6 @@
 # 📘 Manuale Operativo - Radio Toscana Lead Engine & Cloud CRM ("Sistema Mostro")
 
-**Versione:** 7.6 (Edizione Modern UX A4 Proposal Engine, Stampa PDF & Next.js 14 Engine)  
+**Versione:** 7.7 (Edizione Cloud Vault Supabase, Session Sync Deterministico, Remind 3-Step & Modern UX A4 Proposal Engine)  
 **Destinatari:** Team Commerciale (Fabio Asiri), Redazione/Copy (Edi), Studio di Registrazione & Amministratori di Sistema  
 **Stazione:** Radio Toscana (Solo Toscana | Solo Hit)
 
