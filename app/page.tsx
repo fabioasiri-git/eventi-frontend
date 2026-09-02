@@ -673,11 +673,9 @@ export default function LeadEngineDashboard() {
             </thead>
             <tbody>
               <tr>
-                <td><strong>Pro Loco Sagra del Tordello</strong></td>
-                <td>Camaiore (LU) - AREA 2</td>
-                <td>01/09/2026</td>
-                <td><span style={{ color: 'var(--accent-yellow)', fontWeight: 700 }}>⏰ SETTEMBRE (Risveglio a -60gg)</span></td>
-                <td><span className="score-badge score-yellow">🟡 Trattativa Aperta</span></td>
+                <td colSpan={5} style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px' }}>
+                  Nessun evento ricorrente nel radar attuale. Pronto per l&apos;inserimento di nuovi eventi.
+                </td>
               </tr>
             </tbody>
           </table>
