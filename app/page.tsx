@@ -49,53 +49,51 @@ export default function LeadEngineDashboard() {
   const [remindSent, setRemindSent] = useState(false);
 
   // Preventivo Modulare Form State (Standard / Barter Parziale / Barter Puro)
-  const [qNome, setQNome] = useState('Antico Fattore AT');
-  const [qReferente, setQReferente] = useState('Dott. Rossi');
-  const [qTelefono, setQTelefono] = useState('334/8424204');
-  const [qEmail, setQEmail] = useState('amministrazione@anticofattore.it');
-  const [qComune, setQComune] = useState('Firenze');
-  const [qProvincia, setQProvincia] = useState('FI');
-  const [qPiva, setQPiva] = useState('01234567890');
-  const [qSdi, setQSdi] = useState('M5UXCR1');
+  const [qNome, setQNome] = useState('');
+  const [qReferente, setQReferente] = useState('');
+  const [qTelefono, setQTelefono] = useState('');
+  const [qEmail, setQEmail] = useState('');
+  const [qComune, setQComune] = useState('');
+  const [qProvincia, setQProvincia] = useState('');
+  const [qPiva, setQPiva] = useState('');
+  const [qSdi, setQSdi] = useState('');
 
-  const [tipoAccordo, setTipoAccordo] = useState<'STANDARD' | 'BARTER_PARZIALE' | 'BARTER_PURO'>('BARTER_PARZIALE');
+  const [tipoAccordo, setTipoAccordo] = useState<'STANDARD' | 'BARTER_PARZIALE' | 'BARTER_PURO'>('STANDARD');
   const [includeSpot, setIncludeSpot] = useState(true);
   const [spotArea, setSpotArea] = useState('Area 1 (FI / PO / PT — FM 104.7 / 98.2)');
   const [spotDurata, setSpotDurata] = useState('20"');
-  const [spotQuantita, setSpotQuantita] = useState(300);
-  const [spotValore, setSpotValore] = useState(1500);
+  const [spotQuantita, setSpotQuantita] = useState(100);
+  const [spotValore, setSpotValore] = useState(0);
 
-  const [includeProduzione, setIncludeProduzione] = useState(true);
-  const [produzioneValore, setProduzioneValore] = useState(100);
+  const [includeProduzione, setIncludeProduzione] = useState(false);
+  const [produzioneValore, setProduzioneValore] = useState(0);
 
   const [includeCitazioni, setIncludeCitazioni] = useState(false);
-  const [citazioniQuantita, setCitazioniQuantita] = useState(20);
-  const [citazioniValore, setCitazioniValore] = useState(400);
+  const [citazioniQuantita, setCitazioniQuantita] = useState(0);
+  const [citazioniValore, setCitazioniValore] = useState(0);
 
-  const [campiLiberi, setCampiLiberi] = useState<{ id: string; descrizione: string; valore: number }[]>([
-    { id: 'c1', descrizione: "Intervento puntata Mastiscio' 4 interventi", valore: 800 }
-  ]);
+  const [campiLiberi, setCampiLiberi] = useState<{ id: string; descrizione: string; valore: number }[]>([]);
 
-  const [barterRadio, setBarterRadio] = useState('24 pasti per cena staff Radio Toscana');
-  const [barterAscoltatori, setBarterAscoltatori] = useState('16 pasti omaggio per giochi on-air');
+  const [barterRadio, setBarterRadio] = useState('');
+  const [barterAscoltatori, setBarterAscoltatori] = useState('');
 
   // Bozza Contratto Monte Serra State
   const [contractData, setContractData] = useState({
-    numero: '2026/0902-RMS',
-    dataDecorrenza: '2026-09-07',
-    dataScadenza: '2026-10-07',
+    numero: '',
+    dataDecorrenza: '',
+    dataScadenza: '',
     committente: '',
     referente: '',
     piva: '',
     sdi: '',
-    indirizzo: 'Via Calzaiuoli 12, Firenze',
-    totaleNetto: 2400,
-    totaleBarter: 1200,
-    modalitaPagamento: 'RIBA 30gg d.f. f.m.',
-    noteContratto: 'Accordo Radio Monte Serra con quota Barter Enogastronomica'
+    indirizzo: '',
+    totaleNetto: 0,
+    totaleBarter: 0,
+    modalitaPagamento: 'Bonifico bancario 30gg',
+    noteContratto: ''
   });
 
-  // Supabase Fetch & Fallback Dati Puliti da Settembre 2026
+  // Supabase Fetch & Fallback Dati Reali
   useEffect(() => {
     fetchSupabaseLeads();
   }, []);
@@ -106,121 +104,22 @@ export default function LeadEngineDashboard() {
         headers: {
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bm9nZWxlZWtncXp0a3JseHN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0OTE2OTEsImV4cCI6MjA3MDA2NzY5MX0.b_-Jc1Q2914-9988_0',
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bm9nZWxlZWtncXp0a3JseHN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0OTE2OTEsImV4cCI6MjA3MDA2NzY5MX0.b_-Jc1Q2914-9988_0',
+          'Accept-Profile': 'rt_lead_engine'
         }
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setLeads(data);
         } else {
-          setLeads(getInitialLeads());
+          setLeads([]);
         }
       } else {
-        setLeads(getInitialLeads());
+        setLeads([]);
       }
     } catch (e) {
-      setLeads(getInitialLeads());
+      setLeads([]);
     }
-  }
-
-  function getInitialLeads(): LeadRow[] {
-    return [
-      {
-        id: 1,
-        nome_azienda_evento: "TINGHI MOTORS SRL",
-        settore: "AUTOMOTIVE",
-        comune: "Empoli",
-        provincia: "FI",
-        area_target: "AREA 1",
-        fase_commerciale: "CONTRATTO ATTIVO",
-        tipo_contratto: "SCALARE",
-        valore_preventivo: 6500.00,
-        valore_contratto: 6500.00,
-        plafond_totale_spot: 500,
-        spot_rimasti: 416,
-        is_cambio_merce: false,
-        probabilita_chiusura: 100,
-        numero_contratto: "2023/14197",
-        tipo_produzione_spot: "FULL_RT",
-        stato_programmazione: "INVIATO",
-        anno_riferimento: "2026"
-      },
-      {
-        id: 2,
-        nome_azienda_evento: "COMUNE DI FIRENZE",
-        settore: "PUBBLICA AMMINISTRAZIONE",
-        comune: "Firenze",
-        provincia: "FI",
-        area_target: "RETE",
-        fase_commerciale: "CONTRATTO ATTIVO",
-        tipo_contratto: "SCALARE",
-        valore_preventivo: 15000.00,
-        valore_contratto: 15000.00,
-        plafond_totale_spot: 1000,
-        spot_rimasti: 880,
-        is_cambio_merce: false,
-        probabilita_chiusura: 100,
-        numero_contratto: "PA-2026/088",
-        tipo_produzione_spot: "FORNITO",
-        stato_programmazione: "INVIATO",
-        anno_riferimento: "2026"
-      },
-      {
-        id: 3,
-        nome_azienda_evento: "ACQUE SPA",
-        settore: "UTILITIES & ENERGIA",
-        comune: "Pisa",
-        provincia: "PI",
-        area_target: "AREA 2",
-        fase_commerciale: "CONTRATTO ATTIVO",
-        tipo_contratto: "SCALARE",
-        valore_preventivo: 10000.00,
-        valore_contratto: 10000.00,
-        plafond_totale_spot: 800,
-        spot_rimasti: 720,
-        is_cambio_merce: false,
-        probabilita_chiusura: 100,
-        numero_contratto: "ENT-2026/412",
-        tipo_produzione_spot: "FULL_RT",
-        stato_programmazione: "INVIATO",
-        anno_riferimento: "2026"
-      },
-      {
-        id: 4,
-        nome_azienda_evento: "ANTICO FATTORE AT",
-        settore: "RISTORAZIONE & FOOD",
-        comune: "Firenze",
-        provincia: "FI",
-        area_target: "AREA 1",
-        fase_commerciale: "PREVENTIVO INVIATO",
-        tipo_contratto: "SECCO",
-        valore_preventivo: 2400.00,
-        valore_contratto: 0,
-        is_cambio_merce: true,
-        dettagli_cambio_merce: "Barter Parziale Pasti e Cene Staff RT",
-        probabilita_chiusura: 85,
-        anno_riferimento: "2026"
-      },
-      {
-        id: 5,
-        nome_azienda_evento: "ETRURIA LUCE E GAS SPA",
-        settore: "UTILITIES & ENERGIA",
-        comune: "Firenze",
-        provincia: "FI",
-        area_target: "AREA 1",
-        fase_commerciale: "CONTRATTO CHIUSO",
-        tipo_contratto: "SECCO",
-        valore_preventivo: 2800.00,
-        valore_contratto: 2800.00,
-        is_cambio_merce: true,
-        dettagli_cambio_merce: "Fornitura Energia Sede RT",
-        probabilita_chiusura: 100,
-        numero_contratto: "2026/0906",
-        tipo_produzione_spot: "FORNITO",
-        stato_programmazione: "INVIATO",
-        anno_riferimento: "2026"
-      }
-    ];
   }
 
   // Calcolo Totali Preventivo Modulare
@@ -318,6 +217,10 @@ Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
     .filter(l => l.fase_commerciale !== 'CONTRATTO CHIUSO' && l.fase_commerciale !== 'SCARTATO')
     .reduce((sum, l) => sum + ((l.valore_preventivo || 0) * ((l.probabilita_chiusura || 50) / 100)), 0);
 
+  const scalariLeads = filteredLeads.filter(l => l.tipo_contratto === 'SCALARE');
+  const rinnovatiCount = scalariLeads.filter(l => (l.spot_rimasti || 0) < (l.plafond_totale_spot || 0) * 0.2).length;
+  const tassoRinnovo = scalariLeads.length > 0 ? `${Math.round((rinnovatiCount / scalariLeads.length) * 100)}%` : '0%';
+
   // Colonne Kanban Pulite
   const kanbanColumns = [
     { title: '1. PREVENTIVI IN TRATTATIVA 🟡', phase: 'PREVENTIVO INVIATO' },
@@ -391,7 +294,7 @@ Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
         <div className="kpi-card">
           <div className="kpi-title">Tasso Rinnovo Plafond %</div>
           <div className="kpi-value" style={{ color: 'var(--accent-purple)' }}>
-            88.5%
+            {tassoRinnovo}
           </div>
           <div className="kpi-sub">Plafond a Scalare Rinnovati</div>
         </div>
@@ -523,30 +426,31 @@ Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><strong>TINGHI MOTORS SRL</strong></td>
-                <td><span className="tag" style={{ background: 'rgba(56,189,248,0.2)', color: '#38bdf8' }}>🔋 SCALARE</span></td>
-                <td>500 Spot</td>
-                <td><strong>416 Spot</strong></td>
-                <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>🟢 83.2% Disponibile</span></td>
-                <td><button className="btn btn-xs btn-primary">✉️ Invia Prospetto Consumi</button></td>
-              </tr>
-              <tr>
-                <td><strong>COMUNE DI FIRENZE</strong></td>
-                <td><span className="tag" style={{ background: 'rgba(56,189,248,0.2)', color: '#38bdf8' }}>🔋 SCALARE PA</span></td>
-                <td>1.000 Spot</td>
-                <td><strong>880 Spot</strong></td>
-                <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>🟢 88.0% Disponibile</span></td>
-                <td><button className="btn btn-xs btn-primary">✉️ Invia Prospetto Consumi</button></td>
-              </tr>
-              <tr>
-                <td><strong>ACQUE SPA</strong></td>
-                <td><span className="tag" style={{ background: 'rgba(56,189,248,0.2)', color: '#38bdf8' }}>🔋 SCALARE ENT</span></td>
-                <td>800 Spot</td>
-                <td><strong>720 Spot</strong></td>
-                <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>🟢 90.0% Disponibile</span></td>
-                <td><button className="btn btn-xs btn-primary">✉️ Invia Prospetto Consumi</button></td>
-              </tr>
+              {scalariLeads.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '28px' }}>
+                    Nessun contratto a scalare presente nel CRM.
+                  </td>
+                </tr>
+              ) : (
+                scalariLeads.map((l, idx) => {
+                  const pct = l.plafond_totale_spot ? Math.round(((l.spot_rimasti || 0) / l.plafond_totale_spot) * 100) : 0;
+                  return (
+                    <tr key={idx}>
+                      <td><strong>{l.nome_azienda_evento}</strong></td>
+                      <td><span className="tag" style={{ background: 'rgba(56,189,248,0.2)', color: '#38bdf8' }}>🔋 SCALARE</span></td>
+                      <td>{l.plafond_totale_spot || 0} Spot</td>
+                      <td><strong>{l.spot_rimasti || 0} Spot</strong></td>
+                      <td>
+                        <span style={{ color: pct < 20 ? 'var(--accent-red, #f43f5e)' : 'var(--accent-green)', fontWeight: 700 }}>
+                          {pct < 20 ? '🔴' : '🟢'} {pct}% Disponibile
+                        </span>
+                      </td>
+                      <td><button className="btn btn-xs btn-primary">✉️ Invia Prospetto Consumi</button></td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
@@ -991,7 +895,7 @@ Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
                 type="text"
                 className="form-input"
                 readOnly
-                value={`Radio Toscana — Programmazione Messa in Onda Campagna "${selectedLeadForEmail.nome_azienda_evento}" (Contratto Nr. ${selectedLeadForEmail.numero_contratto || '2023/14197'})`}
+                value={`Radio Toscana — Programmazione Messa in Onda Campagna "${selectedLeadForEmail.nome_azienda_evento}"${selectedLeadForEmail.numero_contratto ? ` (Contratto Nr. ${selectedLeadForEmail.numero_contratto})` : ''}`}
               />
             </div>
             <div className="form-group">
@@ -1004,11 +908,10 @@ Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
 desideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.
 
 📌 RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:
-• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || '2023/14197'}
-• Periodo Messa in Onda: dal 10/08/2026 al 23/08/2026
-• Totale Spot Pianificati: 84 spot (media 6 spot al giorno)
-• Area Target: ${selectedLeadForEmail.area_target}
-• File Audio Spot: B Tinghi agosto 2026.mp3
+• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || 'In definizione'}
+• Area Target: ${selectedLeadForEmail.area_target || 'Toscana'}
+• Totale Spot Pianificati: ${selectedLeadForEmail.plafond_totale_spot || 'Secondo accordi'}
+• Stato Programmazione: ${selectedLeadForEmail.stato_programmazione || 'Iniziata'}
 
 In allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.
 
