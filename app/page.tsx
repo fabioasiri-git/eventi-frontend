@@ -960,238 +960,315 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 </div>
               </div>
 
-              {/* PULSANTIERA AGGIUNTA RAPIDA MODULI TIPICI RADIO TOSCANA DA LISTINO UFFICIALE */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px', background: 'rgba(0,0,0,0.25)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', alignSelf: 'center', marginRight: '4px' }}>+ Da Listino Ufficiale:</span>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Spot Radiofonici Tabellari',
-                    'Radio Toscana Rete (Tutta la Toscana)',
-                    '10 spot/gg per 14 gg (140 spot paganti da 20") + 14 spot OMAGGIO (Totale 154 passaggi in onda)',
-                    '07.00 – 21.00 a rotazione',
-                    'Dal 15/09/2026 al 28/09/2026 (14 gg)',
-                    1820,
-                    1400,
-                    {
-                      isSpot: true,
-                      dataInizio: '2026-09-15',
-                      dataFine: '2026-09-28',
-                      spotGiornalieri: 10,
-                      giorniTotali: 14,
-                      spotTotali: 140,
-                      spotOmaggio: 14,
-                      formatoSecondi: 20
-                    }
-                  )}
-                >
-                  + Spot Rete (140 spot da 20")
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Spot Radiofonici Tabellari',
-                    'Radio Toscana Area 1 (FI - PO - PT)',
-                    '7 spot/gg per 14 gg (98 spot paganti da 20")',
-                    '08.00 – 10.00 Drive Time',
-                    'Dal 15/09/2026 al 28/09/2026 (14 gg)',
-                    882,
-                    700,
-                    {
-                      isSpot: true,
-                      dataInizio: '2026-09-15',
-                      dataFine: '2026-09-28',
-                      spotGiornalieri: 7,
-                      giorniTotali: 14,
-                      spotTotali: 98,
-                      spotOmaggio: 0,
-                      formatoSecondi: 20
-                    }
-                  )}
-                >
-                  + Area 1 (FI-PO-PT)
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Spot Radiofonici Tabellari',
-                    'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)',
-                    '7 spot/gg per 14 gg (98 spot paganti da 20")',
-                    '07.00 – 21.00 a rotazione',
-                    'Dal 15/09/2026 al 28/09/2026 (14 gg)',
-                    441,
-                    350,
-                    {
-                      isSpot: true,
-                      dataInizio: '2026-09-15',
-                      dataFine: '2026-09-28',
-                      spotGiornalieri: 7,
-                      giorniTotali: 14,
-                      spotTotali: 98,
-                      spotOmaggio: 0,
-                      formatoSecondi: 20
-                    }
-                  )}
-                >
-                  + Area 2 (Costa LI-PI-LU-MS)
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Spot Radiofonici Tabellari',
-                    'Radio Toscana Area 3 (AR - SI - GR)',
-                    '7 spot/gg per 14 gg (98 spot paganti da 20")',
-                    '07.00 – 21.00 a rotazione',
-                    'Dal 15/09/2026 al 28/09/2026 (14 gg)',
-                    441,
-                    350,
-                    {
-                      isSpot: true,
-                      dataInizio: '2026-09-15',
-                      dataFine: '2026-09-28',
-                      spotGiornalieri: 7,
-                      giorniTotali: 14,
-                      spotTotali: 98,
-                      spotOmaggio: 0,
-                      formatoSecondi: 20
-                    }
-                  )}
-                >
-                  + Area 3 (AR-SI-GR)
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(234, 179, 8, 0.15)', color: '#eab308', border: '1px solid rgba(234, 179, 8, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Spot Radiofonici Tabellari',
-                    'Radio Firenze 95.4 FM',
-                    '7 spot/gg per 14 gg (98 spot paganti da 20")',
-                    '07.00 – 21.00 a rotazione',
-                    'Dal 15/09/2026 al 28/09/2026 (14 gg)',
-                    735,
-                    550,
-                    {
-                      isSpot: true,
-                      dataInizio: '2026-09-15',
-                      dataFine: '2026-09-28',
-                      spotGiornalieri: 7,
-                      giorniTotali: 14,
-                      spotTotali: 98,
-                      spotOmaggio: 0,
-                      formatoSecondi: 20
-                    }
-                  )}
-                >
-                  + Radio Firenze 95.4 FM
-                </button>
+              {/* PULSANTIERA AGGIUNTA RAPIDA MODULI UFFICIALI RADIO TOSCANA */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px', background: 'rgba(0,0,0,0.25)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                
+                {/* RIGA 1: SPOT TABELLARI PER AREA */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', width: '130px' }}>Spot per Area:</span>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Spot Radiofonici Tabellari',
+                      'Radio Toscana Rete (Tutta la Toscana)',
+                      '10 spot/gg per 14 gg (140 spot paganti da 20") + 14 spot OMAGGIO (Totale 154 passaggi)',
+                      '07.00 – 21.00 a rotazione',
+                      'Dal 15/09/2026 al 28/09/2026 (14 gg)',
+                      1820,
+                      1400,
+                      {
+                        isSpot: true,
+                        dataInizio: '2026-09-15',
+                        dataFine: '2026-09-28',
+                        spotGiornalieri: 10,
+                        giorniTotali: 14,
+                        spotTotali: 140,
+                        spotOmaggio: 14,
+                        formatoSecondi: 20
+                      }
+                    )}
+                  >
+                    + Spot Rete (Tutta la Toscana)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Spot Radiofonici Tabellari',
+                      'Radio Toscana Area 1 (FI - PO - PT)',
+                      '7 spot/gg per 14 gg (98 spot paganti da 20")',
+                      '08.00 – 10.00 Drive Time',
+                      'Dal 15/09/2026 al 28/09/2026 (14 gg)',
+                      882,
+                      700,
+                      {
+                        isSpot: true,
+                        dataInizio: '2026-09-15',
+                        dataFine: '2026-09-28',
+                        spotGiornalieri: 7,
+                        giorniTotali: 14,
+                        spotTotali: 98,
+                        spotOmaggio: 0,
+                        formatoSecondi: 20
+                      }
+                    )}
+                  >
+                    + Area 1 (FI-PO-PT)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Spot Radiofonici Tabellari',
+                      'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)',
+                      '7 spot/gg per 14 gg (98 spot paganti da 20")',
+                      '07.00 – 21.00 a rotazione',
+                      'Dal 15/09/2026 al 28/09/2026 (14 gg)',
+                      441,
+                      350,
+                      {
+                        isSpot: true,
+                        dataInizio: '2026-09-15',
+                        dataFine: '2026-09-28',
+                        spotGiornalieri: 7,
+                        giorniTotali: 14,
+                        spotTotali: 98,
+                        spotOmaggio: 0,
+                        formatoSecondi: 20
+                      }
+                    )}
+                  >
+                    + Area 2 (Costa LI-PI-LU-MS)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Spot Radiofonici Tabellari',
+                      'Radio Toscana Area 3 (AR - SI - GR)',
+                      '7 spot/gg per 14 gg (98 spot paganti da 20")',
+                      '07.00 – 21.00 a rotazione',
+                      'Dal 15/09/2026 al 28/09/2026 (14 gg)',
+                      441,
+                      350,
+                      {
+                        isSpot: true,
+                        dataInizio: '2026-09-15',
+                        dataFine: '2026-09-28',
+                        spotGiornalieri: 7,
+                        giorniTotali: 14,
+                        spotTotali: 98,
+                        spotOmaggio: 0,
+                        formatoSecondi: 20
+                      }
+                    )}
+                  >
+                    + Area 3 (AR-SI-GR)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(234, 179, 8, 0.15)', color: '#eab308', border: '1px solid rgba(234, 179, 8, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Spot Radiofonici Tabellari',
+                      'Radio Firenze 95.4 FM',
+                      '7 spot/gg per 14 gg (98 spot paganti da 20")',
+                      '07.00 – 21.00 a rotazione',
+                      'Dal 15/09/2026 al 28/09/2026 (14 gg)',
+                      735,
+                      550,
+                      {
+                        isSpot: true,
+                        dataInizio: '2026-09-15',
+                        dataFine: '2026-09-28',
+                        spotGiornalieri: 7,
+                        giorniTotali: 14,
+                        spotTotali: 98,
+                        spotOmaggio: 0,
+                        formatoSecondi: 20
+                      }
+                    )}
+                  >
+                    + Radio Firenze 95.4 FM
+                  </button>
+                </div>
 
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Realizzazione Spot Audio',
-                    'Diffusione Radio Toscana + Radio Firenze',
-                    'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
-                    'Una Tantum',
-                    'Immediato',
-                    100,
-                    100,
-                    { tipoProduzione: 'SOLO_RT_RF' }
-                  )}
-                >
-                  + Spot Solo RT+RF (€100)
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Realizzazione Spot Audio (Diritti Liberi)',
-                    'Diffusione Tutte le Emittenti della Toscana',
-                    'Realizzazione copy + Registrazione in studio + Cessione master broadcast con diritti liberi per tutte le emittenti toscane',
-                    'Una Tantum',
-                    'Immediato',
-                    169,
-                    169,
-                    { tipoProduzione: 'DIRITTI_LIBERI_TOSCANA' }
-                  )}
-                >
-                  + Spot Diritti Liberi Toscana (€169)
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Intervento Radiofonico Masti Sciò',
-                    'Radio Toscana Rete',
-                    'Intervento in diretta 5 minuti con Massimo Galli (1 v/settimana)',
-                    '17.00 – 19.00 Masti Sciò',
-                    'Canone Mensile',
-                    750,
-                    550
-                  )}
-                >
-                  + Masti Sciò (5 min)
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Sponsorizzazione Rubrica Notiziario / Meteo',
-                    'Radio Toscana Rete',
-                    'Sigla apertura/chiusura Meteo Toscana (6 passaggi al giorno per 30 gg)',
-                    'Ogni ora dalle 07.30 alle 19.30',
-                    'Mese Intero',
-                    950,
-                    700
-                  )}
-                >
-                  + Rubrica Meteo / Notiziario
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(236, 72, 153, 0.15)', color: '#f472b6', border: '1px solid rgba(236, 72, 153, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Citazioni Live Conduttori',
-                    'Radio Toscana Rete',
-                    '10 citazioni spontanee in diretta durante le fasce ad alto ascolto',
-                    'Fasce 08-10 / 12-14',
-                    'Nel periodo della campagna',
-                    500,
-                    350
-                  )}
-                >
-                  + Citazioni Live
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#f8fafc', border: '1px solid rgba(255, 255, 255, 0.2)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Voce Personalizzata',
-                    'Radio Toscana Rete',
-                    'Dettagli prestazione concordata',
-                    'Fascia concordata',
-                    'Periodo concordato',
-                    500,
-                    400
-                  )}
-                >
-                  + Voce Libera
-                </button>
+                {/* RIGA 2: REALIZZAZIONE SPOT AUDIO */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', width: '130px' }}>Produzione Spot:</span>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(212, 63, 74, 0.15)', color: '#f87171', border: '1px solid rgba(212, 63, 74, 0.35)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Realizzazione Spot Audio',
+                      'Diffusione Radio Toscana + Radio Firenze',
+                      'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
+                      'Una Tantum',
+                      'Immediato',
+                      100,
+                      100,
+                      { tipoProduzione: 'SOLO_RT_RF' }
+                    )}
+                  >
+                    + Spot Solo RT+RF (€100)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Realizzazione Spot Audio (Diritti Liberi)',
+                      'Diffusione Tutte le Emittenti della Toscana',
+                      'Realizzazione copy + Registrazione in studio + Cessione master broadcast con liberatoria diritti aperta a qualsiasi altra emittente toscana',
+                      'Una Tantum',
+                      'Immediato',
+                      169,
+                      169,
+                      { tipoProduzione: 'DIRITTI_LIBERI_TOSCANA' }
+                    )}
+                  >
+                    + Spot Diritti Liberi Toscana (€169)
+                  </button>
+                </div>
+
+                {/* RIGA 3: FORMAT & EVENTI LISTINO UFFICIALE RADIO TOSCANA */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', width: '130px' }}>Format &amp; Eventi:</span>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Citazione On-Air',
+                      'Radio Toscana Rete',
+                      'Citazione in diretta conduttori on-air',
+                      'Fascia concordata',
+                      'Nel periodo della campagna',
+                      30,
+                      30
+                    )}
+                  >
+                    + Citazione (€30)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Prima Messa in Onda Pillola',
+                      'Radio Toscana Rete',
+                      'Comprende realizzazione intervista, post produzione e montaggio',
+                      'Palinsesto concordato',
+                      'Nel periodo della campagna',
+                      150,
+                      150
+                    )}
+                  >
+                    + 1ª Messa in Onda Pillola (€150)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Dalla Seconda Messa in Onda Pillola',
+                      'Radio Toscana Rete',
+                      'Messa in onda replica / passaggio successivo pillola',
+                      'A rotazione palinsesto',
+                      'Nel periodo della campagna',
+                      100,
+                      100
+                    )}
+                  >
+                    + Dalla 2ª Messa in Onda Pillola (€100)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'DJ Set + Promo Radio (5 Citazioni)',
+                      'Radio Toscana Rete',
+                      'DJ Set evento con DJ Radio Toscana + Promo Radio (5 citazioni on-air)',
+                      'Evento + Fasce ad alto ascolto',
+                      'Data evento concordata',
+                      500,
+                      500
+                    )}
+                  >
+                    + DJ Set + Promo Radio (€500)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(236, 72, 153, 0.15)', color: '#f472b6', border: '1px solid rgba(236, 72, 153, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Presentazione Evento',
+                      'Radio Toscana Rete',
+                      'Presenza e conduzione/presentazione evento a cura di conduttore Radio Toscana',
+                      'Orario evento',
+                      'Data evento concordata',
+                      400,
+                      400
+                    )}
+                  >
+                    + Presentazione Evento (€400)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Presenza in Onda durante Masti Sciò',
+                      'Radio Toscana Rete',
+                      'Intervento in diretta on-air durante Masti Sciò (durata max 5 minuti con Massimo Galli)',
+                      '17.00 – 19.00 Masti Sciò',
+                      'Data concordata',
+                      250,
+                      250
+                    )}
+                  >
+                    + Presenza Masti Sciò max 5\' (€250)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Realizzazione Materiale: Copy per Citazione',
+                      'Radio Toscana Rete',
+                      'Realizzazione materiale: stesura testo e copy per citazione on-air',
+                      'Una Tantum',
+                      'Immediato',
+                      30,
+                      30
+                    )}
+                  >
+                    + Copy per Citazione (€30)
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#f8fafc', border: '1px solid rgba(255, 255, 255, 0.2)', fontWeight: 700 }}
+                    onClick={() => addQuoteItem(
+                      'Voce Fuori Listino / Personalizzata',
+                      'Radio Toscana Rete',
+                      'Dettagli prestazione concordata',
+                      'Fascia concordata',
+                      'Periodo concordato',
+                      500,
+                      400
+                    )}
+                  >
+                    + Voce Libera
+                  </button>
+                </div>
               </div>
 
               {/* LISTA EDITABILE DEI MODULI */}
@@ -1741,16 +1818,19 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               </div>
 
               {/* MODULO ACCETTAZIONE FIRMA */}
-              <div style={{ border: '1px solid #cbd5e1', padding: '12px 16px', borderRadius: '6px', background: '#ffffff', marginBottom: '16px' }}>
-                <div style={{ fontSize: '10px', fontWeight: 800, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>
+              <div style={{ border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: '6px', background: '#ffffff', marginBottom: '14px' }}>
+                <div style={{ fontSize: '9.5px', fontWeight: 800, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                   ACCETTAZIONE DELLA PROPOSTA COMMERCIALE E CONDIZIONI GENERALI DI TRASMISSIONE
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '16px', marginTop: '14px', fontSize: '10px', color: '#64748b' }}>
+                <div style={{ fontSize: '7.5px', color: '#64748b', lineHeight: 1.35, marginBottom: '6px' }}>
+                  Il materiale audio è concesso in licenza d’uso limitatamente all’ambito convenuto (RT+RF o Diritti Liberi Toscana), con espressa esclusione di network nazionali, circuiti esterni e digital advertising non concordati per iscritto, secondo le condizioni generali di licenza d'autore.
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '14px', marginTop: '6px', fontSize: '9.5px', color: '#64748b' }}>
                   <div>Data: ____ / ____ / 2026</div>
                   <div>Luogo: ____________________</div>
                   <div>
                     <div>Timbro e Firma per Accettazione:</div>
-                    <div style={{ height: '28px', borderBottom: '1px dashed #94a3b8', marginTop: '6px' }}></div>
+                    <div style={{ height: '24px', borderBottom: '1px dashed #94a3b8', marginTop: '4px' }}></div>
                   </div>
                 </div>
               </div>
@@ -1800,7 +1880,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
         <div className="modal-overlay">
           <div className="modal-content" style={{ maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="modal-header">
-              <h3 className="modal-title">📝 Bozza Contratto Radio Monte Serra — Travaso Automatico</h3>
+              <h3 className="modal-title">Bozza Contratto Radio Monte Serra — Travaso Automatico</h3>
               <button className="modal-close" onClick={() => setShowContractModal(false)}>✕</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="form-group">
@@ -1821,6 +1901,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 <input type="text" className="form-input" value={contractData.sdi} onChange={e => setContractData({ ...contractData, sdi: e.target.value })} />
               </div>
             </div>
+
+            {/* CLAUSOLA DIRITTI D'AUTORE E LICENZA MATERIALE AUDIO SPOT */}
+            <div style={{ marginTop: '16px', padding: '14px', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px' }}>
+                Condizioni Generali — Tutela e Licenza d'Uso del Materiale Audio Spot:
+              </div>
+              <div style={{ fontSize: '10.5px', color: '#94a3b8', lineHeight: 1.5 }}>
+                <p style={{ marginBottom: '6px' }}>
+                  Il materiale audio fornito rimane di esclusiva proprietà del produttore ed è concesso in licenza esclusivamente per la diffusione sulla Vostra emittente radiofonica e/o televisiva locale, comprensiva dell’eventuale trasmissione in web streaming collegata alla stessa.
+                </p>
+                <p style={{ marginBottom: '6px' }}>
+                  La licenza d’uso è strettamente limitata alle modalità sopra indicate e non comprende, salvo preventiva autorizzazione scritta del titolare dei diritti, alcuna ulteriore forma di utilizzo, riproduzione, distribuzione o diffusione.
+                </p>
+                <p style={{ marginBottom: '6px' }}>
+                  A titolo esemplificativo e non esaustivo, sono esclusi l’utilizzo su circuiti radiofonici o televisivi multi-emittente, network regionali o nazionali, piattaforme di streaming musicale (quali Spotify e analoghe), campagne pubblicitarie digitali a pagamento, siti internet diversi da quelli dell’emittente autorizzata, sale cinematografiche, impianti sportivi, sistemi di telefonia, podcast, social media e qualsiasi altro canale di comunicazione non espressamente autorizzato.
+                </p>
+                <p>
+                  Ogni utilizzo diverso da quello previsto dalla presente autorizzazione dovrà essere preventivamente concordato e autorizzato per iscritto dal titolare dei diritti, al fine di garantire il corretto rispetto delle condizioni di licenza e della normativa vigente in materia di diritto d’autore e diritti connessi.
+                </p>
+              </div>
+            </div>
+
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button className="btn" onClick={() => setShowContractModal(false)}>Annulla</button>
               <button className="btn btn-primary" onClick={() => {
@@ -1828,7 +1930,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 setShowContractModal(false);
                 setShowQuoteModal(false);
               }}>
-                💾 Conferma &amp; Attiva Contratto
+                Conferma &amp; Attiva Contratto
               </button>
             </div>
           </div>
