@@ -882,8 +882,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       <div style={{ textAlign: 'right' }}>
                         <span style={{ 
                           fontSize: '11px', 
-                          background: 'rgba(34,197,94,0.2)', 
-                          color: '#4ade80', 
+                          background: 'rgba(56, 189, 248, 0.15)', 
+                          color: '#38bdf8', 
                           padding: '3px 8px', 
                           borderRadius: '4px',
                           fontWeight: 700 
@@ -919,19 +919,19 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
             {/* SEZIONE SPECIALE: SCHEDA STORICO CONTRATTI TROVATI */}
             {selectedHistory && selectedHistory.contratti && selectedHistory.contratti.length > 0 && (
               <div style={{
-                background: 'rgba(34, 197, 94, 0.08)',
-                border: '1px solid rgba(34, 197, 94, 0.3)',
+                background: 'rgba(56, 189, 248, 0.08)',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
                 borderRadius: '8px',
                 padding: '12px 16px',
                 marginBottom: '16px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 800, color: '#4ade80', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     Archivio Storico Radio Monte Serra ({selectedHistory.contratti.length} contratti precedenti trovati)
                   </span>
                   <button 
                     className="btn btn-xs"
-                    style={{ background: 'var(--accent-green)', color: '#0f172a', fontWeight: 800, fontSize: '11px', padding: '4px 8px' }}
+                    style={{ background: '#38bdf8', color: '#0f172a', fontWeight: 800, fontSize: '11px', padding: '4px 8px' }}
                     onClick={() => selectHistoricalClient(selectedHistory)}
                   >
                     Applica Condizioni Ultimo Contratto (€ {selectedHistory.ultimo_prezzo})
@@ -1405,11 +1405,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               />
                             </div>
                             <div>
-                              <label style={{ fontSize: '10px', color: '#4ade80', fontWeight: 800, display: 'block', marginBottom: '2px' }}>Spot OMAGGIO:</label>
+                              <label style={{ fontSize: '10px', color: '#f43f5e', fontWeight: 800, display: 'block', marginBottom: '2px' }}>Spot OMAGGIO:</label>
                               <input
                                 type="number"
                                 className="form-input"
-                                style={{ fontSize: '11px', width: '100%', padding: '4px 6px', borderColor: 'rgba(74, 222, 128, 0.5)', color: '#4ade80', fontWeight: 800 }}
+                                style={{ fontSize: '11px', width: '100%', padding: '4px 6px', borderColor: 'rgba(244, 63, 94, 0.4)', color: '#fb7185', fontWeight: 800 }}
                                 value={it.spotOmaggio || 0}
                                 min={0}
                                 placeholder="0"
@@ -1459,7 +1459,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 <span>
                                   Periodo: <strong>{it.giorniTotali || 14} giorni</strong> • <strong>{spotPag} spot paganti ({it.formatoSecondi || 20}")</strong>
                                   {(it.spotOmaggio || 0) > 0 && (
-                                    <span style={{ color: '#4ade80', marginLeft: '6px', fontWeight: 800 }}>
+                                    <span style={{ color: '#fb7185', marginLeft: '6px', fontWeight: 800 }}>
                                       + {it.spotOmaggio} OMAGGIO (Totale: {spotPag + (it.spotOmaggio || 0)} passaggi)
                                     </span>
                                   )}
@@ -1571,11 +1571,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             />
                           </div>
                           <div>
-                            <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
+                            <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
                             <input
                               type="number"
                               className="form-input"
-                              style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#4ade80', borderColor: 'rgba(74, 222, 128, 0.4)' }}
+                              style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.35)' }}
                               value={it.valore}
                               onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
                             />
@@ -1627,11 +1627,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             />
                           </div>
                           <div>
-                            <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
+                            <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
                             <input
                               type="number"
                               className="form-input"
-                              style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#4ade80', borderColor: 'rgba(74, 222, 128, 0.4)' }}
+                              style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.35)' }}
                               value={it.valore}
                               onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
                             />
@@ -1663,7 +1663,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase' }}>Investimento Totale Netto (+ IVA):</span>
-                  <div style={{ fontSize: '20px', fontWeight: 900, color: '#4ade80' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 900, color: '#ffffff' }}>
                     € {totaleInvestimento.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                   </div>
                 </div>
@@ -1866,7 +1866,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               </div>
                             )}
                             {it.tipoProduzione === 'SOLO_RT_RF' && (
-                              <div style={{ fontSize: '8.5px', color: '#16a34a', fontWeight: 700, marginTop: '2px' }}>
+                              <div style={{ fontSize: '8.5px', color: '#D43F4A', fontWeight: 700, marginTop: '2px' }}>
                                 Ambito: Diffusione riservata su Radio Toscana e Radio Firenze
                               </div>
                             )}
@@ -1874,7 +1874,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         <td style={{ padding: '6px 8px', textAlign: 'right', color: '#94a3b8', verticalAlign: 'top', textDecoration: it.prezzoListino && it.prezzoListino > it.valore ? 'line-through' : 'none' }}>
                           € {Number(it.prezzoListino || it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                         </td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, color: '#474350', fontSize: '11px', verticalAlign: 'top' }}>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, color: '#1e293b', fontSize: '11px', verticalAlign: 'top' }}>
                           € {Number(it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                         </td>
                         </tr>
@@ -1889,7 +1889,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 
                 {/* COLONNA SINISTRA: CONDIZIONI COMMERCIALI E ACCORDO */}
                 <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '10px 12px', borderRadius: '6px', fontSize: '9.5px' }}>
-                  <div style={{ fontWeight: 800, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                  <div style={{ fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                     FORMULA CONTRATTUALE: {tipoAccordo === 'STANDARD' ? 'STANDARD (100% FATTURATO)' : tipoAccordo === 'BARTER_PARZIALE' ? 'BARTER PARZIALE (QUOTA MERCE)' : 'BARTER PURO (100% MERCE)'}
                   </div>
                   {tipoAccordo !== 'STANDARD' && (
@@ -1918,12 +1918,12 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       <span>- € {scontoApplicato.toLocaleString('it-IT', { minimumFractionDigits: 2 })} ({Math.round((scontoApplicato / (totaleListino || 1)) * 100)}%)</span>
                     </div>
                   )}
-                  <div style={{ background: '#474350', color: '#ffffff', padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ background: '#1e293b', color: '#ffffff', padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <div style={{ fontSize: '8px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.06em' }}>TOTALE INVESTIMENTO NETTO</div>
+                      <div style={{ fontSize: '8.5px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.07em' }}>TOTALE INVESTIMENTO NETTO</div>
                       <div style={{ fontSize: '7.5px', color: '#cbd5e1' }}>+ IVA di legge</div>
                     </div>
-                    <div style={{ fontSize: '18px', fontWeight: 900, color: '#4ade80' }}>
+                    <div style={{ fontSize: '19px', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
                       € {totaleInvestimento.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                     </div>
                   </div>
