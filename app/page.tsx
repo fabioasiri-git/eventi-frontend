@@ -132,8 +132,8 @@ export default function LeadEngineDashboard() {
       tipo: 'Realizzazione Spot Audio',
       copertura: 'Diffusione Radio Toscana + Radio Firenze',
       dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
-      fascia: 'Una Tantum',
-      periodo: 'Immediato',
+      fascia: 'Costo Una Tantum',
+      periodo: '',
       prezzoListino: 100,
       valore: 100,
       tipoProduzione: 'SOLO_RT_RF'
@@ -294,6 +294,8 @@ export default function LeadEngineDashboard() {
           tipo: 'Realizzazione Spot Audio',
           copertura: 'Diffusione Radio Toscana + Radio Firenze',
           dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
+          fascia: 'Costo Una Tantum',
+          periodo: '',
           prezzoListino: 100,
           valore: 100
         };
@@ -302,8 +304,10 @@ export default function LeadEngineDashboard() {
           ...it,
           tipoProduzione: 'DIRITTI_LIBERI_TOSCANA',
           tipo: 'Realizzazione Spot Audio (Diritti Liberi)',
-          copertura: 'Diffusione Tutte le Emittenti della Toscana',
-          dettagli: 'Realizzazione copy + Registrazione in studio + Cessione file master broadcast con diritti liberi per tutte le emittenti toscane',
+          copertura: 'Diffusione Emittenti Toscana',
+          dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane',
+          fascia: 'Costo Una Tantum',
+          periodo: '',
           prezzoListino: 169,
           valore: 169
         };
@@ -389,8 +393,8 @@ export default function LeadEngineDashboard() {
           tipo: 'Realizzazione Spot Audio',
           copertura: 'Diffusione Radio Toscana + Radio Firenze',
           dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
-          fascia: 'Una Tantum',
-          periodo: 'Immediato',
+          fascia: 'Costo Una Tantum',
+          periodo: '',
           prezzoListino: 100,
           valore: 100,
           tipoProduzione: 'SOLO_RT_RF'
@@ -1109,8 +1113,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       'Realizzazione Spot Audio',
                       'Diffusione Radio Toscana + Radio Firenze',
                       'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
-                      'Una Tantum',
-                      'Immediato',
+                      'Costo Una Tantum',
+                      '',
                       100,
                       100,
                       { tipoProduzione: 'SOLO_RT_RF' }
@@ -1124,10 +1128,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 700 }}
                     onClick={() => addQuoteItem(
                       'Realizzazione Spot Audio (Diritti Liberi)',
-                      'Diffusione Tutte le Emittenti della Toscana',
-                      'Realizzazione copy + Registrazione in studio + Cessione master broadcast con liberatoria diritti aperta a qualsiasi altra emittente toscana',
-                      'Una Tantum',
-                      'Immediato',
+                      'Diffusione Emittenti Toscana',
+                      'Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane',
+                      'Costo Una Tantum',
+                      '',
                       169,
                       169,
                       { tipoProduzione: 'DIRITTI_LIBERI_TOSCANA' }
@@ -1288,7 +1292,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       }}
                     >
                       {/* HEADER MODULO: TIPO E COPERTURA */}
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                           <span style={{ fontSize: '11px', fontWeight: 800, background: 'rgba(225,29,72,0.2)', color: '#f43f5e', padding: '2px 6px', borderRadius: '4px' }}>
                             #{idx + 1}
@@ -1301,21 +1305,6 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             onChange={e => updateQuoteItem(it.id, 'tipo', e.target.value)}
                             placeholder="Tipo modulo (es. Spot Tabellari, Masti Sciò)"
                           />
-                          {!isProdItem && (
-                            <select
-                              className="form-input"
-                              style={{ fontSize: '12px', width: '240px' }}
-                              value={it.copertura}
-                              onChange={e => updateQuoteItem(it.id, 'copertura', e.target.value)}
-                            >
-                              <option value="Radio Toscana Rete (Tutta la Toscana)">Radio Toscana Rete (Tutta la Toscana)</option>
-                              <option value="Radio Toscana Area 1 (FI - PO - PT)">Radio Toscana Area 1 (FI - PO - PT)</option>
-                              <option value="Radio Toscana Area 2 (Costa: LI - PI - LU - MS)">Radio Toscana Area 2 (Costa LI-PI-LU-MS)</option>
-                              <option value="Radio Toscana Area 3 (AR - SI - GR)">Radio Toscana Area 3 (AR - SI - GR)</option>
-                              <option value="Radio Firenze 95.4 FM">Radio Firenze 95.4 FM</option>
-                              <option value="RT + RF Combinata (Rete + Firenze)">RT + RF Combinata (Rete + Firenze)</option>
-                            </select>
-                          )}
                         </div>
                         <button
                           type="button"
@@ -1327,6 +1316,43 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           Rimuovi
                         </button>
                       </div>
+
+                      {/* SELETTORE A BOTTONI 1-CLIC PER BACINO / AREA EMITTENTE */}
+                      {!isProdItem && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '10px', background: 'rgba(0,0,0,0.2)', padding: '6px 10px', borderRadius: '6px' }}>
+                          <span style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bacino di Trasmissione:</span>
+                          {[
+                            { val: 'Radio Toscana Rete (Tutta la Toscana)', short: 'RT Rete (Toscana)' },
+                            { val: 'Radio Toscana Area 1 (FI - PO - PT)', short: 'Area 1 (FI-PO-PT)' },
+                            { val: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)', short: 'Area 2 (Costa)' },
+                            { val: 'Radio Toscana Area 3 (AR - SI - GR)', short: 'Area 3 (Sud)' },
+                            { val: 'Radio Firenze 95.4 FM', short: 'Radio Firenze 95.4' },
+                            { val: 'RT + RF Combinata (Rete + Firenze)', short: 'RT + RF Combinata' }
+                          ].map(opt => {
+                            const active = it.copertura === opt.val;
+                            return (
+                              <button
+                                key={opt.val}
+                                type="button"
+                                onClick={() => updateQuoteItem(it.id, 'copertura', opt.val)}
+                                style={{
+                                  fontSize: '11px',
+                                  padding: '4px 9px',
+                                  borderRadius: '5px',
+                                  border: active ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                                  background: active ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255,255,255,0.04)',
+                                  color: active ? '#ffffff' : '#94a3b8',
+                                  fontWeight: active ? 800 : 500,
+                                  cursor: 'pointer',
+                                  transition: 'all 0.15s ease'
+                                }}
+                              >
+                                {active ? '✓ ' : ''}{opt.short}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
 
                       {/* BLOCCO DEDICATO PIANIFICAZIONE SPOT: DATE, QUANTITÀ GIORNALIERA, TOTALI, OMAGGI */}
                       {isSpotItem && (
@@ -1391,17 +1417,36 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               />
                             </div>
                             <div>
-                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Formato Audio:</label>
-                              <select
-                                className="form-input"
-                                style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
-                                value={it.formatoSecondi || 20}
-                                onChange={e => handleSpotFieldChange(it.id, { formatoSecondi: Number(e.target.value) })}
-                              >
-                                <option value={10}>10 secondi (10")</option>
-                                <option value={20}>20 secondi (20")</option>
-                                <option value={30}>30 secondi (30")</option>
-                              </select>
+                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>Formato Audio:</label>
+                              <div style={{ display: 'flex', gap: '4px' }}>
+                                {[
+                                  { sec: 10, label: '10"' },
+                                  { sec: 20, label: '20"' },
+                                  { sec: 30, label: '30"' }
+                                ].map(f => {
+                                  const active = (it.formatoSecondi || 20) === f.sec;
+                                  return (
+                                    <button
+                                      key={f.sec}
+                                      type="button"
+                                      onClick={() => handleSpotFieldChange(it.id, { formatoSecondi: f.sec })}
+                                      style={{
+                                        flex: 1,
+                                        padding: '4px 2px',
+                                        fontSize: '11px',
+                                        borderRadius: '4px',
+                                        border: active ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                                        background: active ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255,255,255,0.04)',
+                                        color: active ? '#ffffff' : '#94a3b8',
+                                        fontWeight: active ? 800 : 600,
+                                        cursor: 'pointer'
+                                      }}
+                                    >
+                                      {f.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
                             </div>
                           </div>
                           {/* RIEPILOGO RAPIDO DEL PIANO SPOT CON LISTINO UFFICIALE */}
@@ -1480,68 +1525,119 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           </div>
                           <div style={{ fontSize: '10.5px', color: '#cbd5e1', marginTop: '8px', background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '4px', lineHeight: 1.45 }}>
                             {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA'
-                              ? 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Cessione master broadcast con liberatoria diritti aperta a qualsiasi altra emittente toscana.'
+                              ? 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per emittenti toscane.'
                               : 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per la messa in onda riservata alle frequenze di Radio Toscana e Radio Firenze.'}
                           </div>
                         </div>
                       )}
 
                       {/* RIGA DATI GENERALI: DETTAGLI, FASCIA, PERIODO, LISTINO, PREZZO RISERVATO */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 100px 100px', gap: '8px', alignItems: 'center' }}>
-                        <div>
-                          <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Dettagli / Passaggi / Formato:</span>
-                          <input
-                            type="text"
-                            className="form-input"
-                            style={{ fontSize: '11px', width: '100%' }}
-                            value={it.dettagli}
-                            onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
-                            placeholder='es. 10 spot/gg x 14 gg (140 passaggi da 20")'
-                          />
+                      {isProdItem ? (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 150px 100px 100px', gap: '8px', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Specifiche Servizio Audio:</span>
+                            <input
+                              type="text"
+                              className="form-input"
+                              style={{ fontSize: '11px', width: '100%' }}
+                              value={it.dettagli}
+                              onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
+                              placeholder="Specifiche tecniche e di produzione..."
+                            />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Tipologia Costo:</span>
+                            <div style={{
+                              background: 'rgba(255,255,255,0.06)',
+                              border: '1px solid rgba(255,255,255,0.12)',
+                              borderRadius: '4px',
+                              padding: '6px 8px',
+                              fontSize: '11px',
+                              fontWeight: 700,
+                              color: '#cbd5e1',
+                              textAlign: 'center'
+                            }}>
+                              Costo Una Tantum
+                            </div>
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Listino (€):</span>
+                            <input
+                              type="number"
+                              className="form-input"
+                              style={{ fontSize: '12px', width: '100%', textAlign: 'right' }}
+                              value={it.prezzoListino}
+                              onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
+                            />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
+                            <input
+                              type="number"
+                              className="form-input"
+                              style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#4ade80', borderColor: 'rgba(74, 222, 128, 0.4)' }}
+                              value={it.valore}
+                              onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Fascia Oraria:</span>
-                          <input
-                            type="text"
-                            className="form-input"
-                            style={{ fontSize: '11px', width: '100%' }}
-                            value={it.fascia}
-                            onChange={e => updateQuoteItem(it.id, 'fascia', e.target.value)}
-                            placeholder="es. 07.00 - 21.00"
-                          />
+                      ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 100px 100px', gap: '8px', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Dettagli / Passaggi / Formato:</span>
+                            <input
+                              type="text"
+                              className="form-input"
+                              style={{ fontSize: '11px', width: '100%' }}
+                              value={it.dettagli}
+                              onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
+                              placeholder='es. 10 spot/gg x 14 gg (140 passaggi da 20")'
+                            />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Fascia Oraria:</span>
+                            <input
+                              type="text"
+                              className="form-input"
+                              style={{ fontSize: '11px', width: '100%' }}
+                              value={it.fascia}
+                              onChange={e => updateQuoteItem(it.id, 'fascia', e.target.value)}
+                              placeholder="es. 07.00 - 21.00"
+                            />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Periodo / Validità:</span>
+                            <input
+                              type="text"
+                              className="form-input"
+                              style={{ fontSize: '11px', width: '100%' }}
+                              value={it.periodo}
+                              onChange={e => updateQuoteItem(it.id, 'periodo', e.target.value)}
+                              placeholder="es. Settembre 2026"
+                            />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Listino (€):</span>
+                            <input
+                              type="number"
+                              className="form-input"
+                              style={{ fontSize: '12px', width: '100%', textAlign: 'right' }}
+                              value={it.prezzoListino}
+                              onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
+                            />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
+                            <input
+                              type="number"
+                              className="form-input"
+                              style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#4ade80', borderColor: 'rgba(74, 222, 128, 0.4)' }}
+                              value={it.valore}
+                              onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Periodo / Validità:</span>
-                          <input
-                            type="text"
-                            className="form-input"
-                            style={{ fontSize: '11px', width: '100%' }}
-                            value={it.periodo}
-                            onChange={e => updateQuoteItem(it.id, 'periodo', e.target.value)}
-                            placeholder="es. Settembre 2026"
-                          />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Listino (€):</span>
-                          <input
-                            type="number"
-                            className="form-input"
-                            style={{ fontSize: '12px', width: '100%', textAlign: 'right' }}
-                            value={it.prezzoListino}
-                            onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
-                          />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
-                          <input
-                            type="number"
-                            className="form-input"
-                            style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#4ade80', borderColor: 'rgba(74, 222, 128, 0.4)' }}
-                            value={it.valore}
-                            onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
-                          />
-                        </div>
-                      </div>
+                      )}
                     </div>
                   );
                 })}
@@ -1728,43 +1824,53 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   <thead>
                     <tr style={{ background: '#474350', color: '#ffffff', textTransform: 'uppercase', fontSize: '8.5px', letterSpacing: '0.05em' }}>
                       <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Modulo &amp; Ambito di Diffusione</th>
-                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700, width: '115px' }}>Fascia / Formato</th>
-                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Dettagli di Programmazione</th>
+                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700, width: '115px' }}>Fascia / Tipologia</th>
+                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Dettagli &amp; Specifiche</th>
                       <th style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, width: '80px' }}>Listino</th>
                       <th style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, width: '90px' }}>Prezzo Netto</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {quoteItems.map((it, idx) => (
-                      <tr key={it.id} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
-                        <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                            <span style={{ fontWeight: 800, color: '#1e293b' }}>{it.tipo}</span>
-                            {it.spotOmaggio && it.spotOmaggio > 0 ? (
-                              <span style={{ fontSize: '7.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 4px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                + {it.spotOmaggio} OMAGGIO
+                    {quoteItems.map((it, idx) => {
+                      const isProd = !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione');
+                      return (
+                        <tr key={it.id} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+                          <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                              <span style={{ fontWeight: 800, color: '#1e293b' }}>{it.tipo}</span>
+                              {it.spotOmaggio && it.spotOmaggio > 0 ? (
+                                <span style={{ fontSize: '7.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 4px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                  + {it.spotOmaggio} OMAGGIO
+                                </span>
+                              ) : null}
+                            </div>
+                            <div style={{ fontSize: '9px', color: '#D43F4A', fontWeight: 700, marginTop: '2px' }}>{it.copertura}</div>
+                          </td>
+                          <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
+                            {isProd ? (
+                              <span style={{ fontWeight: 800, color: '#475569', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                Costo Una Tantum
                               </span>
-                            ) : null}
-                          </div>
-                          <div style={{ fontSize: '9px', color: '#D43F4A', fontWeight: 700, marginTop: '2px' }}>{it.copertura}</div>
-                        </td>
-                        <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
-                          <div style={{ fontWeight: 700, color: '#334155' }}>{it.fascia}</div>
-                          <div style={{ fontSize: '9px', color: '#64748b', marginTop: '1px' }}>{it.periodo}</div>
-                        </td>
-                        <td style={{ padding: '6px 8px', color: '#334155', verticalAlign: 'top' }}>
-                          <div style={{ lineHeight: 1.35 }}>{it.dettagli}</div>
-                          {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' && (
-                            <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>
-                              Ambito: Diritti Liberi per tutte le emittenti toscane (File master broadcast)
-                            </div>
-                          )}
-                          {it.tipoProduzione === 'SOLO_RT_RF' && (
-                            <div style={{ fontSize: '8.5px', color: '#16a34a', fontWeight: 700, marginTop: '2px' }}>
-                              Ambito: Diffusione riservata su Radio Toscana e Radio Firenze
-                            </div>
-                          )}
-                        </td>
+                            ) : (
+                              <>
+                                <div style={{ fontWeight: 700, color: '#334155' }}>{it.fascia}</div>
+                                {it.periodo && <div style={{ fontSize: '9px', color: '#64748b', marginTop: '1px' }}>{it.periodo}</div>}
+                              </>
+                            )}
+                          </td>
+                          <td style={{ padding: '6px 8px', color: '#334155', verticalAlign: 'top' }}>
+                            <div style={{ lineHeight: 1.35 }}>{it.dettagli}</div>
+                            {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' && (
+                              <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>
+                                Ambito: Diritti di diffusione per emittenti toscane
+                              </div>
+                            )}
+                            {it.tipoProduzione === 'SOLO_RT_RF' && (
+                              <div style={{ fontSize: '8.5px', color: '#16a34a', fontWeight: 700, marginTop: '2px' }}>
+                                Ambito: Diffusione riservata su Radio Toscana e Radio Firenze
+                              </div>
+                            )}
+                          </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right', color: '#94a3b8', verticalAlign: 'top', textDecoration: it.prezzoListino && it.prezzoListino > it.valore ? 'line-through' : 'none' }}>
                           € {Number(it.prezzoListino || it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                         </td>
