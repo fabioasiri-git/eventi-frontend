@@ -128,9 +128,9 @@ export default function LeadEngineDashboard() {
     },
     {
       id: 'it-2',
-      tipo: 'Produzione Audio Ufficiale RT+RF',
-      copertura: 'Studi Radio Toscana',
-      dettagli: 'Copia creativa, speakeraggio professionale, mix e master — Uso esclusivo emittenti gruppo RT + Radio Firenze 95.4',
+      tipo: 'Realizzazione Spot Audio',
+      copertura: 'Diffusione Radio Toscana + Radio Firenze',
+      dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
       fascia: 'Una Tantum',
       periodo: 'Immediato',
       prezzoListino: 100,
@@ -149,8 +149,8 @@ export default function LeadEngineDashboard() {
     valore: number,
     extraProps?: Partial<QuoteLineItem>
   ) {
-    const isSpotItem = (tipo.toLowerCase().includes('spot') && !tipo.toLowerCase().includes('produzione')) || !!extraProps?.isSpot;
-    const isProdItem = tipo.toLowerCase().includes('produzione');
+    const isProdItem = tipo.toLowerCase().includes('produzione') || tipo.toLowerCase().includes('realizzazione') || !!extraProps?.tipoProduzione;
+    const isSpotItem = ((tipo.toLowerCase().includes('spot') && !isProdItem) || !!extraProps?.isSpot);
 
     const defaultDataInizio = '2026-09-15';
     const defaultDataFine = '2026-09-28';
@@ -239,8 +239,9 @@ export default function LeadEngineDashboard() {
         return {
           ...it,
           tipoProduzione: 'SOLO_RT_RF',
-          tipo: 'Produzione Audio Ufficiale RT+RF',
-          dettagli: 'Copia creativa, speakeraggio professionale, mix e master — Uso esclusivo emittenti gruppo RT + Radio Firenze 95.4',
+          tipo: 'Realizzazione Spot Audio',
+          copertura: 'Diffusione Radio Toscana + Radio Firenze',
+          dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
           prezzoListino: 100,
           valore: 100
         };
@@ -248,8 +249,9 @@ export default function LeadEngineDashboard() {
         return {
           ...it,
           tipoProduzione: 'DIRITTI_LIBERI_TOSCANA',
-          tipo: 'Produzione Audio con Diritti Liberi Toscana',
-          dettagli: 'Copia creativa, speakeraggio professionale, mix e master — Include liberatoria audio e diritti di diffusione per altre emittenti toscane',
+          tipo: 'Realizzazione Spot Audio (Diritti Liberi)',
+          copertura: 'Diffusione Tutte le Emittenti della Toscana',
+          dettagli: 'Realizzazione copy + Registrazione in studio + Cessione file master con diritti liberi per tutte le emittenti toscane',
           prezzoListino: 169,
           valore: 169
         };
@@ -319,9 +321,9 @@ export default function LeadEngineDashboard() {
         },
         {
           id: 'hist-2',
-          tipo: 'Produzione Audio Ufficiale RT+RF',
-          copertura: 'Studi Radio Toscana',
-          dettagli: 'Copia creativa, speakeraggio professionale, mix e master — Uso esclusivo emittenti gruppo RT + Radio Firenze 95.4',
+          tipo: 'Realizzazione Spot Audio',
+          copertura: 'Diffusione Radio Toscana + Radio Firenze',
+          dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
           fascia: 'Una Tantum',
           periodo: 'Immediato',
           prezzoListino: 100,
@@ -985,9 +987,9 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   className="btn btn-xs"
                   style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 700 }}
                   onClick={() => addQuoteItem(
-                    'Produzione Audio Ufficiale RT+RF',
-                    'Studi Radio Toscana',
-                    'Copia creativa, speakeraggio professionale, mix e master — Uso esclusivo emittenti gruppo RT + Radio Firenze 95.4',
+                    'Realizzazione Spot Audio',
+                    'Diffusione Radio Toscana + Radio Firenze',
+                    'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
                     'Una Tantum',
                     'Immediato',
                     100,
@@ -995,16 +997,16 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     { tipoProduzione: 'SOLO_RT_RF' }
                   )}
                 >
-                  🎧 + Prod. Solo RT+RF (€100)
+                  🎧 + Realizzazione Spot Solo RT+RF (€100)
                 </button>
                 <button
                   type="button"
                   className="btn btn-xs"
                   style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 700 }}
                   onClick={() => addQuoteItem(
-                    'Produzione Audio con Diritti Liberi Toscana',
-                    'Studi Radio Toscana',
-                    'Copia creativa, speakeraggio professionale, mix e master — Include liberatoria audio e diritti di diffusione per altre emittenti toscane',
+                    'Realizzazione Spot Audio (Diritti Liberi)',
+                    'Diffusione Tutte le Emittenti della Toscana',
+                    'Realizzazione copy + Registrazione in studio + Cessione master con diritti liberi per tutte le emittenti toscane',
                     'Una Tantum',
                     'Immediato',
                     169,
@@ -1012,7 +1014,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     { tipoProduzione: 'DIRITTI_LIBERI_TOSCANA' }
                   )}
                 >
-                  🌐 + Prod. Diritti Liberi Toscana (€169)
+                  🌐 + Realizzazione Spot Diritti Liberi Toscana (€169)
                 </button>
                 <button
                   type="button"
@@ -1051,8 +1053,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               {/* LISTA EDITABILE DEI MODULI */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {quoteItems.map((it, idx) => {
-                  const isSpotItem = (it.isSpot || it.tipo.toLowerCase().includes('spot')) && !it.tipo.toLowerCase().includes('produzione');
-                  const isProdItem = it.tipo.toLowerCase().includes('produzione');
+                  const isProdItem = !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione');
+                  const isSpotItem = (it.isSpot || it.tipo.toLowerCase().includes('spot')) && !isProdItem;
 
                   return (
                     <div
@@ -1078,20 +1080,38 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             onChange={e => updateQuoteItem(it.id, 'tipo', e.target.value)}
                             placeholder="Tipo modulo (es. Spot Tabellari, Masti Sciò)"
                           />
-                          <select
-                            className="form-input"
-                            style={{ fontSize: '12px', width: '240px' }}
-                            value={it.copertura}
-                            onChange={e => updateQuoteItem(it.id, 'copertura', e.target.value)}
-                          >
-                            <option value="Radio Toscana Rete (Tutta la Toscana)">Radio Toscana Rete (Tutta la Toscana)</option>
-                            <option value="Radio Toscana Area 1 (FI - PO - PT)">Radio Toscana Area 1 (FI - PO - PT)</option>
-                            <option value="Radio Toscana Area 2 (Costa: LI - PI - LU - MS)">Radio Toscana Area 2 (Costa LI-PI-LU-MS)</option>
-                            <option value="Radio Toscana Area 3 (AR - SI - GR)">Radio Toscana Area 3 (AR - SI - GR)</option>
-                            <option value="Radio Firenze 95.4 FM">Radio Firenze 95.4 FM</option>
-                            <option value="RT + RF Combinata (Rete + Firenze)">RT + RF Combinata (Rete + Firenze)</option>
-                            <option value="Studi Radio Toscana">Studi Radio Toscana</option>
-                          </select>
+                          {isProdItem ? (
+                            <select
+                              className="form-input"
+                              style={{ fontSize: '12px', width: '290px' }}
+                              value={it.copertura}
+                              onChange={e => {
+                                const val = e.target.value;
+                                if (val.includes('Tutte le Emittenti')) {
+                                  handleProduzioneChange(it.id, 'DIRITTI_LIBERI_TOSCANA');
+                                } else {
+                                  handleProduzioneChange(it.id, 'SOLO_RT_RF');
+                                }
+                              }}
+                            >
+                              <option value="Diffusione Radio Toscana + Radio Firenze">Ambito: Radio Toscana + Radio Firenze (€ 100,00)</option>
+                              <option value="Diffusione Tutte le Emittenti della Toscana">Ambito: Tutte Emittenti Toscana (€ 169,00)</option>
+                            </select>
+                          ) : (
+                            <select
+                              className="form-input"
+                              style={{ fontSize: '12px', width: '240px' }}
+                              value={it.copertura}
+                              onChange={e => updateQuoteItem(it.id, 'copertura', e.target.value)}
+                            >
+                              <option value="Radio Toscana Rete (Tutta la Toscana)">Radio Toscana Rete (Tutta la Toscana)</option>
+                              <option value="Radio Toscana Area 1 (FI - PO - PT)">Radio Toscana Area 1 (FI - PO - PT)</option>
+                              <option value="Radio Toscana Area 2 (Costa: LI - PI - LU - MS)">Radio Toscana Area 2 (Costa LI-PI-LU-MS)</option>
+                              <option value="Radio Toscana Area 3 (AR - SI - GR)">Radio Toscana Area 3 (AR - SI - GR)</option>
+                              <option value="Radio Firenze 95.4 FM">Radio Firenze 95.4 FM</option>
+                              <option value="RT + RF Combinata (Rete + Firenze)">RT + RF Combinata (Rete + Firenze)</option>
+                            </select>
+                          )}
                         </div>
                         <button
                           type="button"
@@ -1201,7 +1221,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       {isProdItem && (
                         <div style={{ background: 'rgba(168, 85, 247, 0.08)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '6px', padding: '10px', marginBottom: '10px' }}>
                           <div style={{ fontSize: '11px', fontWeight: 800, color: '#c084fc', marginBottom: '6px' }}>
-                            🎧 Ambito di Diffusione &amp; Diritti Spot Audio:
+                            🎧 Realizzazione Spot Audio — Comprende: Realizzazione Copy (testo) + Registrazione Studio Professionale + Diritti di Diffusione
                           </div>
                           <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
                             <label style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.valore === 100 || it.tipoProduzione === 'SOLO_RT_RF') ? '#4ade80' : '#94a3b8', fontWeight: 700 }}>
@@ -1211,7 +1231,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 checked={it.valore === 100 || it.tipoProduzione === 'SOLO_RT_RF'}
                                 onChange={() => handleProduzioneChange(it.id, 'SOLO_RT_RF')}
                               />
-                              📻 Solo Radio Toscana + Radio Firenze (€ 100,00 + IVA)
+                              📻 Ambito: Solo Radio Toscana + Radio Firenze (€ 100,00 + IVA)
                             </label>
                             <label style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.valore === 169 || it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA') ? '#38bdf8' : '#94a3b8', fontWeight: 700 }}>
                               <input
@@ -1220,13 +1240,13 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 checked={it.valore === 169 || it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA'}
                                 onChange={() => handleProduzioneChange(it.id, 'DIRITTI_LIBERI_TOSCANA')}
                               />
-                              🌐 Diritti Liberi per altre emittenti Toscana (€ 169,00 + IVA)
+                              🌐 Ambito: Diritti Liberi per altre emittenti Toscana (€ 169,00 + IVA)
                             </label>
                           </div>
-                          <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '4px' }}>
+                          <div style={{ fontSize: '10px', color: '#cbd5e1', marginTop: '6px', background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '4px' }}>
                             {(it.valore === 169 || it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA')
-                              ? '✓ Include master audio broadcast e liberatoria completa per messa in onda su qualsiasi altra emittente toscana.'
-                              : '✓ Tariffa speciale interna riservata per diffusione esclusiva sui canali Radio Toscana e Radio Firenze 95.4.'}
+                              ? '✓ Comprende: Scrittura copy + Registrazione speaker professionista in studio + Cessione file master audio broadcast con liberatoria diritti aperta per la trasmissione su qualsiasi altra emittente toscana.'
+                              : '✓ Comprende: Scrittura copy + Registrazione speaker professionista in studio + Diritti di diffusione per la messa in onda riservata alle frequenze di Radio Toscana e Radio Firenze.'}
                           </div>
                         </div>
                       )}
@@ -1424,9 +1444,9 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                   <thead>
                     <tr style={{ background: '#0f172a', color: '#ffffff', textTransform: 'uppercase', fontSize: '10px' }}>
-                      <th style={{ padding: '10px', textAlign: 'left' }}>Modulo / Emittente</th>
+                      <th style={{ padding: '10px', textAlign: 'left' }}>Modulo / Ambito di Diffusione</th>
                       <th style={{ padding: '10px', textAlign: 'left' }}>Fascia &amp; Periodo</th>
-                      <th style={{ padding: '10px', textAlign: 'left' }}>Dettagli di Programmazione</th>
+                      <th style={{ padding: '10px', textAlign: 'left' }}>Dettagli (Copy, Studio, Diritti)</th>
                       <th style={{ padding: '10px', textAlign: 'right' }}>Listino Ufficiale</th>
                       <th style={{ padding: '10px', textAlign: 'right' }}>Prezzo Riservato</th>
                     </tr>
@@ -1452,13 +1472,13 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         <td style={{ padding: '10px', color: '#334155' }}>
                           <div>{it.dettagli}</div>
                           {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' && (
-                            <div style={{ fontSize: '10px', color: '#0284c7', fontWeight: 600, marginTop: '2px' }}>
-                              ★ Include diritti liberi e liberatoria per altre emittenti toscane
+                            <div style={{ fontSize: '10px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>
+                              ★ Ambito: Diritti Liberi per tutte le emittenti toscane (File master broadcast incluso)
                             </div>
                           )}
                           {it.tipoProduzione === 'SOLO_RT_RF' && (
-                            <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>
-                              ★ Riservato per trasmissione esclusiva su Radio Toscana e Radio Firenze
+                            <div style={{ fontSize: '10px', color: '#16a34a', fontWeight: 700, marginTop: '2px' }}>
+                              ★ Ambito: Riservato per trasmissione su Radio Toscana e Radio Firenze
                             </div>
                           )}
                         </td>
