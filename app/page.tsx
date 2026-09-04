@@ -46,8 +46,8 @@ interface QuoteLineItem {
   spotTotali?: number;
   spotOmaggio?: number;
   formatoSecondi?: number;
-  // Specifiche Produzione Audio Spot (Listino Ufficiale: 1 voce 60€, 2 voci 80€, RT+RF 100€, Diritti Liberi 169€)
-  tipoProduzione?: 'UNA_VOCE' | 'DUE_VOCI' | 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA';
+  // Specifiche Produzione Audio Spot (Solo RT+RF 100€ vs Diritti Liberi 169€)
+  tipoProduzione?: 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA';
   tariffaUnitaria?: number;
 }
 
@@ -284,31 +284,9 @@ export default function LeadEngineDashboard() {
     }));
   }
 
-  function handleProduzioneChange(id: string, tipoProd: 'UNA_VOCE' | 'DUE_VOCI' | 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA') {
+  function handleProduzioneChange(id: string, tipoProd: 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA') {
     setQuoteItems(prev => prev.map(it => {
       if (it.id !== id) return it;
-      if (tipoProd === 'UNA_VOCE') {
-        return {
-          ...it,
-          tipoProduzione: 'UNA_VOCE',
-          tipo: 'Realizzazione Spot Audio (1 Voce)',
-          copertura: 'Diffusione Radio Toscana + Radio Firenze',
-          dettagli: 'Realizzazione copy + Registrazione speaker professionista in studio (1 voce)',
-          prezzoListino: 60,
-          valore: 60
-        };
-      }
-      if (tipoProd === 'DUE_VOCI') {
-        return {
-          ...it,
-          tipoProduzione: 'DUE_VOCI',
-          tipo: 'Realizzazione Spot Audio (2 Voci)',
-          copertura: 'Diffusione Radio Toscana + Radio Firenze',
-          dettagli: 'Realizzazione copy + Registrazione doppiatori professionisti in studio (2 voci)',
-          prezzoListino: 80,
-          valore: 80
-        };
-      }
       if (tipoProd === 'SOLO_RT_RF') {
         return {
           ...it,
@@ -1102,40 +1080,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 >
                   ⚜️ + Radio Firenze 95.4 FM
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Realizzazione Spot Audio (1 Voce)',
-                    'Diffusione Radio Toscana + Radio Firenze',
-                    'Realizzazione copy + Registrazione speaker professionista in studio (1 voce)',
-                    'Una Tantum',
-                    'Immediato',
-                    60,
-                    60,
-                    { tipoProduzione: 'UNA_VOCE' }
-                  )}
-                >
-                  🎙️ + Spot 1 Voce (€60)
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 700 }}
-                  onClick={() => addQuoteItem(
-                    'Realizzazione Spot Audio (2 Voci)',
-                    'Diffusione Radio Toscana + Radio Firenze',
-                    'Realizzazione copy + Registrazione doppiatori professionisti in studio (2 voci)',
-                    'Una Tantum',
-                    'Immediato',
-                    80,
-                    80,
-                    { tipoProduzione: 'DUE_VOCI' }
-                  )}
-                >
-                  👥 + Spot 2 Voci (€80)
-                </button>
+
                 <button
                   type="button"
                   className="btn btn-xs"
@@ -1410,58 +1355,36 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         </div>
                       )}
 
-                      {/* BLOCCO DEDICATO PRODUZIONE AUDIO: 1 VOCE (60€), 2 VOCI (80€), SOLO RT+RF (100€), LIBERI TOSCANA (169€) */}
+                      {/* BLOCCO DEDICATO PRODUZIONE AUDIO: SOLO RT+RF (100€) VS DIRITTI LIBERI TOSCANA (169€) */}
                       {isProdItem && (
                         <div style={{ background: 'rgba(168, 85, 247, 0.08)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '6px', padding: '10px', marginBottom: '10px' }}>
                           <div style={{ fontSize: '11px', fontWeight: 800, color: '#c084fc', marginBottom: '8px' }}>
-                            🎧 Realizzazione Spot Audio — Listino &amp; Ambito di Diffusione:
+                            🎧 Realizzazione Spot Audio — Ambito di Diffusione &amp; Diritti:
                           </div>
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px' }}>
-                            <label style={{ fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.tipoProduzione === 'UNA_VOCE' || it.valore === 60) ? '#4ade80' : '#94a3b8', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '4px' }}>
-                              <input
-                                type="radio"
-                                name={`tipoProd-${it.id}`}
-                                checked={it.tipoProduzione === 'UNA_VOCE' || it.valore === 60}
-                                onChange={() => handleProduzioneChange(it.id, 'UNA_VOCE')}
-                              />
-                              🎙️ 1 Voce (€ 60,00 + IVA)
-                            </label>
-                            <label style={{ fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.tipoProduzione === 'DUE_VOCI' || it.valore === 80) ? '#4ade80' : '#94a3b8', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '4px' }}>
-                              <input
-                                type="radio"
-                                name={`tipoProd-${it.id}`}
-                                checked={it.tipoProduzione === 'DUE_VOCI' || it.valore === 80}
-                                onChange={() => handleProduzioneChange(it.id, 'DUE_VOCI')}
-                              />
-                              👥 2 Voci (€ 80,00 + IVA)
-                            </label>
-                            <label style={{ fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? '#38bdf8' : '#94a3b8', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '4px' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '8px' }}>
+                            <label style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? '#4ade80' : '#94a3b8', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '4px' }}>
                               <input
                                 type="radio"
                                 name={`tipoProd-${it.id}`}
                                 checked={it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100}
                                 onChange={() => handleProduzioneChange(it.id, 'SOLO_RT_RF')}
                               />
-                              📻 Solo RT + RF (€ 100,00 + IVA)
+                              📻 Solo Radio Toscana + Radio Firenze (€ 100,00 + IVA)
                             </label>
-                            <label style={{ fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '#a855f7' : '#94a3b8', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '4px' }}>
+                            <label style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '#38bdf8' : '#94a3b8', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '4px' }}>
                               <input
                                 type="radio"
                                 name={`tipoProd-${it.id}`}
                                 checked={it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169}
                                 onChange={() => handleProduzioneChange(it.id, 'DIRITTI_LIBERI_TOSCANA')}
                               />
-                              🌐 Diritti Liberi Toscana (€ 169,00)
+                              🌐 Diritti Liberi per altre emittenti Toscana (€ 169,00 + IVA)
                             </label>
                           </div>
                           <div style={{ fontSize: '10px', color: '#cbd5e1', marginTop: '6px', background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '4px' }}>
                             {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA'
-                              ? '✓ Comprende: Copywriter + Studio + Consegna master broadcast con diritti liberi per qualsiasi altra emittente toscana.'
-                              : (it.tipoProduzione === 'SOLO_RT_RF'
-                                ? '✓ Comprende: Copywriter + Studio + Diritti di diffusione per la messa in onda su Radio Toscana e Radio Firenze.'
-                                : (it.tipoProduzione === 'DUE_VOCI'
-                                  ? '✓ Listino Ufficiale: Realizzazione materiale audio con doppiatori professionisti (2 voci).'
-                                  : '✓ Listino Ufficiale: Realizzazione materiale audio con speaker professionista singolo (1 voce).'))}
+                              ? '✓ Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Cessione master broadcast con liberatoria diritti aperta a qualsiasi altra emittente toscana.'
+                              : '✓ Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per la messa in onda riservata alle frequenze di Radio Toscana e Radio Firenze.'}
                           </div>
                         </div>
                       )}
@@ -1696,16 +1619,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               ★ Ambito: Riservato per trasmissione su Radio Toscana e Radio Firenze
                             </div>
                           )}
-                          {it.tipoProduzione === 'UNA_VOCE' && (
-                            <div style={{ fontSize: '10px', color: '#475569', fontWeight: 700, marginTop: '2px' }}>
-                              ★ Realizzazione Spot a Listino Ufficiale (1 Voce)
-                            </div>
-                          )}
-                          {it.tipoProduzione === 'DUE_VOCI' && (
-                            <div style={{ fontSize: '10px', color: '#475569', fontWeight: 700, marginTop: '2px' }}>
-                              ★ Realizzazione Spot a Listino Ufficiale (2 Voci)
-                            </div>
-                          )}
+
                         </td>
                         <td style={{ padding: '10px', textAlign: 'right', color: '#64748b', textDecoration: it.prezzoListino && it.prezzoListino > it.valore ? 'line-through' : 'none' }}>
                           € {Number(it.prezzoListino || it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
