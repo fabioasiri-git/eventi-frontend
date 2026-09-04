@@ -491,8 +491,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
     <div>
       {/* HEADER PRINCIPALE */}
       <header>
-        <div className="brand">
-          <div className="brand-logo">RT</div>
+        <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="brand-logo" style={{ background: 'transparent', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none' }}>
+            <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '48px', width: 'auto', objectFit: 'contain' }} />
+          </div>
           <div className="brand-text">
             <h1>
               Radio Toscana Commerciale{' '}
@@ -714,8 +716,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
       {showQuoteModal && (
         <div className="modal-overlay">
           <div className="modal-content" style={{ maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}>
-            <div className="modal-header">
-              <h3 className="modal-title">➕ Crea Preventivo Modulare (Standard / Barter / Servizi)</h3>
+            <div className="modal-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '36px', width: 'auto', objectFit: 'contain' }} />
+                <h3 className="modal-title" style={{ margin: 0 }}>Crea Preventivo Modulare Radio Toscana</h3>
+              </div>
               <button className="modal-close" onClick={() => setShowQuoteModal(false)}>✕</button>
             </div>
 
@@ -1374,19 +1379,26 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
             {/* FOGLIO A4 STAMPABILE MODERN UX */}
             <div className="a4-page-preview" style={{ background: '#ffffff', color: '#111111', padding: '40px', margin: '20px auto', width: '210mm', minHeight: '297mm', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', boxSizing: 'border-box', fontFamily: "'Segoe UI', Roboto, sans-serif" }}>
               
-              {/* HEADER UFFICIALE RADIO TOSCANA */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '3px solid #e11d48', paddingBottom: '16px', marginBottom: '24px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                  <div style={{ background: '#e11d48', color: '#ffffff', fontWeight: 900, fontSize: '24px', padding: '10px 14px', borderRadius: '8px' }}>RT</div>
-                  <div>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#111111', letterSpacing: '-0.5px' }}>RADIO TOSCANA</div>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#e11d48', letterSpacing: '1px', textTransform: 'uppercase' }}>SOLO TOSCANA | SOLO HIT</div>
-                  </div>
+              {/* HEADER UFFICIALE RADIO TOSCANA CARTA INTESTATA */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #e2e8f0', paddingBottom: '20px', marginBottom: '24px' }}>
+                <div>
+                  <img
+                    src="/logo_radio_toscana.png"
+                    alt="Radio Toscana - Solo Toscana | Solo Hit"
+                    style={{ height: '65px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                  />
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '16px', fontWeight: 800, color: '#111111' }}>PROPOSTA COMMERCIALE ON-AIR</div>
-                  <div style={{ fontSize: '11px', color: '#666666', marginTop: '2px' }}>Opportunity 2026 — Formula {tipoAccordo}</div>
-                  <div style={{ fontSize: '11px', color: '#888888', marginTop: '2px' }}>Data: {new Date().toLocaleDateString('it-IT')}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+                  <img
+                    src="/logo_radio_firenze.png"
+                    alt="88.7 Radio Firenze"
+                    style={{ height: '34px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                  />
+                  <div style={{ textAlign: 'right', marginTop: '6px' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.3px' }}>PROPOSTA COMMERCIALE ON-AIR</div>
+                    <div style={{ fontSize: '11px', color: '#64748b' }}>Opportunity 2026 — Formula {tipoAccordo}</div>
+                    <div style={{ fontSize: '10px', color: '#94a3b8' }}>Data: {new Date().toLocaleDateString('it-IT')}</div>
+                  </div>
                 </div>
               </div>
 
@@ -1522,18 +1534,26 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               </div>
 
               {/* MODULO ACCETTAZIONE FIRMA */}
-              <div style={{ border: '1px solid #cbd5e1', padding: '16px', borderRadius: '8px', background: '#ffffff' }}>
+              <div style={{ border: '1px solid #cbd5e1', padding: '16px', borderRadius: '8px', background: '#ffffff', marginBottom: '24px' }}>
                 <div style={{ fontSize: '11px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px' }}>
                   📝 Per Accettazione della Proposta Commerciale e Condizioni di Messa in Onda
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginTop: '30px', fontSize: '11px', color: '#64748b' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginTop: '24px', fontSize: '11px', color: '#64748b' }}>
                   <div>Data: ___________________</div>
                   <div>Luogo: ___________________</div>
                   <div>
                     <div>Timbro e Firma Committente:</div>
-                    <div style={{ height: '40px', borderBottom: '1px dashed #94a3b8', marginTop: '10px' }}></div>
+                    <div style={{ height: '35px', borderBottom: '1px dashed #94a3b8', marginTop: '10px' }}></div>
                   </div>
                 </div>
+              </div>
+
+              {/* FOOTER UFFICIALE CARTA INTESTATA RADIO MONTE SERRA / RADIO TOSCANA / RADIO FIRENZE */}
+              <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '16px', textAlign: 'center', fontSize: '10px', color: '#64748b', lineHeight: 1.5 }}>
+                <div style={{ fontWeight: 800, color: '#e11d48', fontSize: '11px', marginBottom: '2px' }}>Radio Toscana e Radio Firenze</div>
+                <div>Direzione e sede: via de&apos; Pucci, 2 - 50122 Firenze - Tel. 055 285030 - Fax 055 283793</div>
+                <div>Radio Toscana e Radio Firenze sono marchi di proprietà di Radio Monte Serra srl</div>
+                <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '2px' }}>P.IVA 04472740481 - C.F. 00940130503 - CCIAA Firenze 453074 - Conc. Prot. 903292 - Reg. Trib. Fi 63912</div>
               </div>
 
             </div>
