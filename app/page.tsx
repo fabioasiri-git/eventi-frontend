@@ -28,6 +28,17 @@ interface HistoricalClient {
   ultimo_anno: string;
 }
 
+interface QuoteLineItem {
+  id: string;
+  tipo: string;
+  copertura: string;
+  dettagli: string;
+  fascia: string;
+  periodo: string;
+  prezzoListino: number;
+  valore: number;
+}
+
 interface LeadRow {
   id?: number | string;
   nome_azienda_evento: string;
@@ -84,22 +95,53 @@ export default function LeadEngineDashboard() {
   const [qPiva, setQPiva] = useState('');
   const [qSdi, setQSdi] = useState('');
 
+  // Moduli Preventivo Modulare Dinamico
+  const [quoteItems, setQuoteItems] = useState<QuoteLineItem[]>([
+    {
+      id: 'it-1',
+      tipo: 'Spot Radiofonici Tabellari',
+      copertura: 'Radio Toscana Rete (Tutta la Toscana)',
+      dettagli: '10 spot al giorno per 14 giorni (Totale 140 passaggi da 20")',
+      fascia: '07.00 – 21.00',
+      periodo: 'Autunno 2026',
+      prezzoListino: 1820,
+      valore: 1400
+    },
+    {
+      id: 'it-2',
+      tipo: 'Produzione Audio Ufficiale RT',
+      copertura: 'Studi Radio Toscana',
+      dettagli: 'Copia creativa, speakeraggio professionale, mixaggio e masterizzazione',
+      fascia: 'Una Tantum',
+      periodo: 'Immediato',
+      prezzoListino: 100,
+      valore: 100
+    }
+  ]);
+
+  function addQuoteItem(tipo: string, copertura: string, dettagli: string, fascia: string, periodo: string, listino: number, valore: number) {
+    const newItem: QuoteLineItem = {
+      id: `it-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      tipo,
+      copertura,
+      dettagli,
+      fascia,
+      periodo,
+      prezzoListino: listino,
+      valore: valore
+    };
+    setQuoteItems(prev => [...prev, newItem]);
+  }
+
+  function updateQuoteItem(id: string, field: keyof QuoteLineItem, val: any) {
+    setQuoteItems(prev => prev.map(it => it.id === id ? { ...it, [field]: val } : it));
+  }
+
+  function removeQuoteItem(id: string) {
+    setQuoteItems(prev => prev.filter(it => it.id !== id));
+  }
+
   const [tipoAccordo, setTipoAccordo] = useState<'STANDARD' | 'BARTER_PARZIALE' | 'BARTER_PURO'>('STANDARD');
-  const [includeSpot, setIncludeSpot] = useState(true);
-  const [spotArea, setSpotArea] = useState('Area 1 (FI / PO / PT — FM 104.7 / 98.2)');
-  const [spotDurata, setSpotDurata] = useState('20"');
-  const [spotQuantita, setSpotQuantita] = useState(100);
-  const [spotValore, setSpotValore] = useState(0);
-
-  const [includeProduzione, setIncludeProduzione] = useState(false);
-  const [produzioneValore, setProduzioneValore] = useState(0);
-
-  const [includeCitazioni, setIncludeCitazioni] = useState(false);
-  const [citazioniQuantita, setCitazioniQuantita] = useState(0);
-  const [citazioniValore, setCitazioniValore] = useState(0);
-
-  const [campiLiberi, setCampiLiberi] = useState<{ id: string; descrizione: string; valore: number }[]>([]);
-
   const [barterRadio, setBarterRadio] = useState('');
   const [barterAscoltatori, setBarterAscoltatori] = useState('');
 
@@ -137,7 +179,31 @@ export default function LeadEngineDashboard() {
     setShowHistorySuggestions(false);
 
     if (client.ultimo_prezzo && !isNaN(Number(client.ultimo_prezzo))) {
-      setSpotValore(Number(client.ultimo_prezzo));
+      const p = Number(client.ultimo_prezzo);
+      const lastContract = client.contratti?.[0];
+      const spotTxt = lastContract?.spot ? `${lastContract.spot} spot complessivi` : 'Pianificazione concordata da archivio';
+      setQuoteItems([
+        {
+          id: 'hist-1',
+          tipo: 'Spot Radiofonici Tabellari',
+          copertura: 'Radio Toscana Rete (Tutta la Toscana)',
+          dettagli: `${spotTxt} — Formato 20"/30"`,
+          fascia: '07.00 – 21.00',
+          periodo: 'Stagione Autunno / Inverno 2026',
+          prezzoListino: Math.round(p * 1.25),
+          valore: p
+        },
+        {
+          id: 'hist-2',
+          tipo: 'Produzione Audio Ufficiale RT',
+          copertura: 'Studi Radio Toscana',
+          dettagli: 'Copia creativa, speakeraggio professionale, mix e master',
+          fascia: 'Una Tantum',
+          periodo: 'Immediato',
+          prezzoListino: 100,
+          valore: 100
+        }
+      ]);
     }
   }
 
@@ -186,12 +252,10 @@ export default function LeadEngineDashboard() {
     }
   }
 
-  // Calcolo Totali Preventivo Modulare
-  const totSpot = includeSpot ? Number(spotValore || 0) : 0;
-  const totProd = includeProduzione ? Number(produzioneValore || 0) : 0;
-  const totCit = includeCitazioni ? Number(citazioniValore || 0) : 0;
-  const totLiberi = campiLiberi.reduce((acc, curr) => acc + Number(curr.valore || 0), 0);
-  const totaleInvestimento = totSpot + totProd + totCit + totLiberi;
+  // Calcolo Totali Preventivo Modulare Dinamico
+  const totaleInvestimento = quoteItems.reduce((acc, curr) => acc + Number(curr.valore || 0), 0);
+  const totaleListino = quoteItems.reduce((acc, curr) => acc + Number(curr.prezzoListino || curr.valore || 0), 0);
+  const scontoApplicato = Math.max(0, totaleListino - totaleInvestimento);
 
   // Gestione Step Remind a 3 Fasi
   function openRemindModal(lead: LeadRow) {
@@ -249,6 +313,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
   // Apertura Generatore Bozza Contratto Radio Monte Serra
   function openContractGenerator() {
+    const summaryItems = quoteItems.map(it => `${it.tipo} [${it.copertura}] - ${it.dettagli} (Valore: €${it.valore})`).join(' | ');
     setContractData({
       numero: `2026/${Math.floor(1000 + Math.random() * 9000)}-RMS`,
       dataDecorrenza: '2026-09-07',
@@ -261,7 +326,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
       totaleNetto: totaleInvestimento,
       totaleBarter: tipoAccordo === 'STANDARD' ? 0 : Math.round(totaleInvestimento / 2),
       modalitaPagamento: tipoAccordo === 'BARTER_PURO' ? '100% Cambio Merce / Barter' : 'RIBA 30gg d.f. f.m.',
-      noteContratto: `Formula Accordo: ${tipoAccordo}. Messa in onda Radio Toscana (${spotArea}).`
+      noteContratto: `Formula Accordo: ${tipoAccordo}. ${summaryItems}`
     });
     setShowContractModal(true);
   }
@@ -666,16 +731,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   <button 
                     className="btn btn-xs"
                     style={{ background: 'var(--accent-green)', color: '#0f172a', fontWeight: 800, fontSize: '11px', padding: '4px 8px' }}
-                    onClick={() => {
-                      if (selectedHistory.ultimo_prezzo && !isNaN(Number(selectedHistory.ultimo_prezzo))) {
-                        setSpotValore(Number(selectedHistory.ultimo_prezzo));
-                      }
-                      const firstSpot = selectedHistory.contratti[0]?.spot;
-                      if (firstSpot) {
-                        const parsed = parseInt(firstSpot);
-                        if (!isNaN(parsed) && parsed > 0) setSpotQuantita(parsed);
-                      }
-                    }}
+                    onClick={() => selectHistoricalClient(selectedHistory)}
                   >
                     ⚡ Applica Condizioni Ultimo Contratto (€ {selectedHistory.ultimo_prezzo})
                   </button>
@@ -694,74 +750,271 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               </div>
             )}
 
-            {/* MODULI DI ACQUISTO (SPOT, PRODUZIONE, CITAZIONI, CAMPI LIBERI) */}
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '8px', border: '1px solid var(--panel-border)', marginBottom: '16px' }}>
-              <h4 style={{ fontSize: '13px', fontWeight: 800, marginBottom: '10px', color: '#fff' }}>📦 Pacchetto Campagna On-Air:</h4>
-
-              {/* SPOT AUDIO */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <input type="checkbox" checked={includeSpot} onChange={e => setIncludeSpot(e.target.checked)} />
-                  Spot Audio ({spotQuantita} passaggi da {spotDurata})
-                </label>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <input type="number" className="form-input" style={{ width: '90px' }} value={spotValore} onChange={e => setSpotValore(Number(e.target.value))} />
-                  <span style={{ fontSize: '12px', color: '#94a3b8' }}>€</span>
-                </div>
-              </div>
-
-              {/* PRODUZIONE AUDIO */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <input type="checkbox" checked={includeProduzione} onChange={e => setIncludeProduzione(e.target.checked)} />
-                  Produzione Audio Ufficiale RT (€ 100,00)
-                </label>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <input type="number" className="form-input" style={{ width: '90px' }} value={produzioneValore} onChange={e => setProduzioneValore(Number(e.target.value))} />
-                  <span style={{ fontSize: '12px', color: '#94a3b8' }}>€</span>
-                </div>
-              </div>
-
-              {/* CITAZIONI LIVE */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <input type="checkbox" checked={includeCitazioni} onChange={e => setIncludeCitazioni(e.target.checked)} />
-                  Citazioni Live Speaker ({citazioniQuantita} citazioni)
-                </label>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <input type="number" className="form-input" style={{ width: '90px' }} value={citazioniValore} onChange={e => setCitazioniValore(Number(e.target.value))} />
-                  <span style={{ fontSize: '12px', color: '#94a3b8' }}>€</span>
-                </div>
-              </div>
-
-              {/* CAMPI LIBERI (ES. MASTISCIO') */}
-              {campiLiberi.map((c, idx) => (
-                <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0' }}>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ flex: 1, marginRight: '10px' }}
-                    value={c.descrizione}
-                    onChange={e => {
-                      const val = e.target.value;
-                      setCampiLiberi(prev => prev.map(item => item.id === c.id ? { ...item, descrizione: val } : item));
-                    }}
-                  />
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <input
-                      type="number"
-                      className="form-input"
-                      style={{ width: '90px' }}
-                      value={c.valore}
-                      onChange={e => {
-                        const val = Number(e.target.value);
-                        setCampiLiberi(prev => prev.map(item => item.id === c.id ? { ...item, valore: val } : item));
-                      }}
-                    />
-                    <span style={{ fontSize: '12px', color: '#94a3b8' }}>€</span>
+            {/* MODULI DI ACQUISTO MODULARE RADIO TOSCANA */}
+            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px', border: '1px solid var(--panel-border)', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <div>
+                  <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#fff', margin: 0 }}>
+                    📦 Moduli Campagna &amp; Voci Preventivo ({quoteItems.length} voci attive)
+                  </h4>
+                  <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                    Aggiungi e personalizza le linee di programmazione per emittente, fascia, listino e prezzo riservato
                   </div>
                 </div>
-              ))}
+              </div>
+
+              {/* PULSANTIERA AGGIUNTA RAPIDA MODULI TIPICI RADIO TOSCANA */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px', background: 'rgba(0,0,0,0.25)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', alignSelf: 'center', marginRight: '4px' }}>+ Aggiungi:</span>
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
+                  onClick={() => addQuoteItem(
+                    'Spot Radiofonici Tabellari',
+                    'Radio Toscana Rete (Regionale)',
+                    '10 spot/giorno x 14 giorni (140 passaggi da 20")',
+                    '07.00 – 21.00 a rotazione',
+                    'Autunno 2026',
+                    1820,
+                    1400
+                  )}
+                >
+                  📻 + Spot Rete (14gg x 10 spot)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
+                  onClick={() => addQuoteItem(
+                    'Spot Radiofonici Tabellari',
+                    'Radio Toscana Area 1 (FI - PO - PT)',
+                    '7 spot/giorno x 14 giorni (98 passaggi da 20")',
+                    '08.00 – 10.00 Drive Time',
+                    'Autunno 2026',
+                    1200,
+                    900
+                  )}
+                >
+                  📍 + Spot Area 1 (FI-PO-PT)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 700 }}
+                  onClick={() => addQuoteItem(
+                    'Intervento Radiofonico Masti Sciò',
+                    'Radio Toscana Rete',
+                    'Intervento in diretta 5 minuti con Massimo Galli (1 v/settimana)',
+                    '17.00 – 19.00 Masti Sciò',
+                    'Canone Mensile',
+                    750,
+                    550
+                  )}
+                >
+                  🎙️ + Masti Sciò (5 min)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
+                  onClick={() => addQuoteItem(
+                    'Sponsorizzazione Rubrica Notiziario / Meteo',
+                    'Radio Toscana Rete',
+                    'Sigla apertura/chiusura Meteo Toscana (6 passaggi al giorno per 30 gg)',
+                    'Ogni ora dalle 07.30 alle 19.30',
+                    'Mese Intero',
+                    950,
+                    700
+                  )}
+                >
+                  ⛅ + Rubrica Meteo / Traffico
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 700 }}
+                  onClick={() => addQuoteItem(
+                    'Produzione Audio Ufficiale RT',
+                    'Studi Radio Toscana',
+                    'Copia creativa, speakeraggio professionale, mixaggio e masterizzazione',
+                    'Una Tantum',
+                    'Immediato',
+                    100,
+                    100
+                  )}
+                >
+                  🎧 + Produzione Spot (€100)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(236, 72, 153, 0.15)', color: '#f472b6', border: '1px solid rgba(236, 72, 153, 0.3)', fontWeight: 700 }}
+                  onClick={() => addQuoteItem(
+                    'Citazioni Live Conduttori',
+                    'Radio Toscana Rete',
+                    '10 citazioni spontanee in diretta durante le fasce ad alto ascolto',
+                    'Fasce 08-10 / 12-14',
+                    'Nel periodo della campagna',
+                    500,
+                    350
+                  )}
+                >
+                  📢 + Citazioni Live
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#f8fafc', border: '1px solid rgba(255, 255, 255, 0.2)', fontWeight: 700 }}
+                  onClick={() => addQuoteItem(
+                    'Voce Personalizzata',
+                    'Radio Toscana Rete',
+                    'Dettagli prestazione concordata',
+                    'Fascia concordata',
+                    'Periodo concordato',
+                    500,
+                    400
+                  )}
+                >
+                  ✏️ + Voce Libera
+                </button>
+              </div>
+
+              {/* LISTA EDITABILE DEI MODULI */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {quoteItems.map((it, idx) => (
+                  <div
+                    key={it.id}
+                    style={{
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '8px',
+                      padding: '12px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 800, background: 'rgba(225,29,72,0.2)', color: '#f43f5e', padding: '2px 6px', borderRadius: '4px' }}>
+                          #{idx + 1}
+                        </span>
+                        <input
+                          type="text"
+                          className="form-input"
+                          style={{ fontWeight: 800, fontSize: '13px', color: '#f8fafc', width: '260px' }}
+                          value={it.tipo}
+                          onChange={e => updateQuoteItem(it.id, 'tipo', e.target.value)}
+                          placeholder="Tipo modulo (es. Spot Tabellari, Masti Sciò)"
+                        />
+                        <select
+                          className="form-input"
+                          style={{ fontSize: '12px', width: '230px' }}
+                          value={it.copertura}
+                          onChange={e => updateQuoteItem(it.id, 'copertura', e.target.value)}
+                        >
+                          <option value="Radio Toscana Rete (Tutta la Toscana)">Radio Toscana Rete (Tutta la Toscana)</option>
+                          <option value="Radio Toscana Area 1 (FI - PO - PT)">Radio Toscana Area 1 (FI - PO - PT)</option>
+                          <option value="Radio Toscana Area 2 (Costa: LI - PI - LU - MS)">Radio Toscana Area 2 (Costa LI-PI-LU-MS)</option>
+                          <option value="Radio Toscana Area 3 (AR - SI - GR)">Radio Toscana Area 3 (AR - SI - GR)</option>
+                          <option value="Radio Firenze 95.4 FM">Radio Firenze 95.4 FM</option>
+                          <option value="RT + RF Combinata (Rete + Firenze)">RT + RF Combinata (Rete + Firenze)</option>
+                          <option value="Studi Radio Toscana">Studi Radio Toscana</option>
+                        </select>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeQuoteItem(it.id)}
+                        className="btn btn-xs"
+                        style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '2px 8px' }}
+                        title="Elimina voce"
+                      >
+                        🗑️ Rimuovi
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 100px 100px', gap: '8px', alignItems: 'center' }}>
+                      <div>
+                        <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Dettagli / Passaggi / Formato:</span>
+                        <input
+                          type="text"
+                          className="form-input"
+                          style={{ fontSize: '11px', width: '100%' }}
+                          value={it.dettagli}
+                          onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
+                          placeholder='es. 10 spot/gg x 14 gg (140 passaggi da 20")'
+                        />
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Fascia Oraria:</span>
+                        <input
+                          type="text"
+                          className="form-input"
+                          style={{ fontSize: '11px', width: '100%' }}
+                          value={it.fascia}
+                          onChange={e => updateQuoteItem(it.id, 'fascia', e.target.value)}
+                          placeholder="es. 07.00 - 21.00"
+                        />
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Periodo / Validità:</span>
+                        <input
+                          type="text"
+                          className="form-input"
+                          style={{ fontSize: '11px', width: '100%' }}
+                          value={it.periodo}
+                          onChange={e => updateQuoteItem(it.id, 'periodo', e.target.value)}
+                          placeholder="es. Settembre 2026"
+                        />
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Listino (€):</span>
+                        <input
+                          type="number"
+                          className="form-input"
+                          style={{ fontSize: '12px', width: '100%', textAlign: 'right' }}
+                          value={it.prezzoListino}
+                          onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
+                        />
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
+                        <input
+                          type="number"
+                          className="form-input"
+                          style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#4ade80', borderColor: 'rgba(74, 222, 128, 0.4)' }}
+                          value={it.valore}
+                          onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* RIEPILOGO TOTALI E SCONTO COMMERCIALE */}
+              <div style={{ marginTop: '14px', background: 'rgba(0,0,0,0.35)', padding: '12px 16px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '20px' }}>
+                  <div>
+                    <span style={{ fontSize: '11px', color: '#94a3b8' }}>Valore Totale Listino:</span>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#cbd5e1', textDecoration: scontoApplicato > 0 ? 'line-through' : 'none' }}>
+                      € {totaleListino.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </div>
+                  </div>
+                  {scontoApplicato > 0 && (
+                    <div>
+                      <span style={{ fontSize: '11px', color: '#f43f5e' }}>Sconto Riservato Accordato:</span>
+                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#f43f5e' }}>
+                        - € {scontoApplicato.toLocaleString('it-IT', { minimumFractionDigits: 2 })} ({Math.round((scontoApplicato / (totaleListino || 1)) * 100)}%)
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase' }}>Investimento Totale Netto (+ IVA):</span>
+                  <div style={{ fontSize: '20px', fontWeight: 900, color: '#4ade80' }}>
+                    € {totaleInvestimento.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* SEZIONE BARTER (SE ATTIVO) */}
@@ -862,41 +1115,67 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                   <thead>
                     <tr style={{ background: '#0f172a', color: '#ffffff', textTransform: 'uppercase', fontSize: '10px' }}>
-                      <th style={{ padding: '10px', textAlign: 'left' }}>Modulo / Servizio</th>
-                      <th style={{ padding: '10px', textAlign: 'left' }}>Dettagli di Trasmissione</th>
-                      <th style={{ padding: '10px', textAlign: 'right' }}>Valore Economico</th>
+                      <th style={{ padding: '10px', textAlign: 'left' }}>Modulo / Emittente</th>
+                      <th style={{ padding: '10px', textAlign: 'left' }}>Fascia &amp; Periodo</th>
+                      <th style={{ padding: '10px', textAlign: 'left' }}>Dettagli di Programmazione</th>
+                      <th style={{ padding: '10px', textAlign: 'right' }}>Listino Ufficiale</th>
+                      <th style={{ padding: '10px', textAlign: 'right' }}>Prezzo Riservato</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {includeSpot && (
-                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td style={{ padding: '10px', fontWeight: 700 }}>Spot Pubblicitari Radiofonici</td>
-                        <td style={{ padding: '10px' }}>{spotQuantita} passaggi da {spotDurata} ({spotArea})</td>
-                        <td style={{ padding: '10px', textAlign: 'right', fontWeight: 700 }}>€ {spotValore.toFixed(2)}</td>
-                      </tr>
-                    )}
-                    {includeProduzione && (
-                      <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
-                        <td style={{ padding: '10px', fontWeight: 700 }}>Produzione Audio Ufficiale</td>
-                        <td style={{ padding: '10px' }}>Registrazione spot, copy, mixaggio e master RT</td>
-                        <td style={{ padding: '10px', textAlign: 'right', fontWeight: 700 }}>€ {produzioneValore.toFixed(2)}</td>
-                      </tr>
-                    )}
-                    {includeCitazioni && (
-                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td style={{ padding: '10px', fontWeight: 700 }}>Citazioni Live Speaker</td>
-                        <td style={{ padding: '10px' }}>{citazioniQuantita} citazioni dirette nei programmi di punta</td>
-                        <td style={{ padding: '10px', textAlign: 'right', fontWeight: 700 }}>€ {citazioniValore.toFixed(2)}</td>
-                      </tr>
-                    )}
-                    {campiLiberi.map((c, idx) => (
-                      <tr key={c.id} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
-                        <td style={{ padding: '10px', fontWeight: 700 }}>Accordo Editoriale Aggiuntivo</td>
-                        <td style={{ padding: '10px' }}>{c.descrizione}</td>
-                        <td style={{ padding: '10px', textAlign: 'right', fontWeight: 700 }}>€ {Number(c.valore || 0).toFixed(2)}</td>
+                    {quoteItems.map((it, idx) => (
+                      <tr key={it.id} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+                        <td style={{ padding: '10px', fontWeight: 700 }}>
+                          <div>{it.tipo}</div>
+                          <div style={{ fontSize: '10px', color: '#e11d48', fontWeight: 600 }}>{it.copertura}</div>
+                        </td>
+                        <td style={{ padding: '10px' }}>
+                          <div>{it.fascia}</div>
+                          <div style={{ fontSize: '10px', color: '#64748b' }}>{it.periodo}</div>
+                        </td>
+                        <td style={{ padding: '10px', color: '#334155' }}>
+                          {it.dettagli}
+                        </td>
+                        <td style={{ padding: '10px', textAlign: 'right', color: '#64748b', textDecoration: it.prezzoListino && it.prezzoListino > it.valore ? 'line-through' : 'none' }}>
+                          € {Number(it.prezzoListino || it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td style={{ padding: '10px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                          € {Number(it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
+                  <tfoot>
+                    {scontoApplicato > 0 && (
+                      <tr style={{ borderTop: '2px solid #cbd5e1', background: '#f1f5f9' }}>
+                        <td colSpan={3} style={{ padding: '8px 10px', fontWeight: 700, textAlign: 'right', color: '#64748b' }}>
+                          Totale a Listino Ufficiale:
+                        </td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#64748b', textDecoration: 'line-through' }}>
+                          € {totaleListino.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td></td>
+                      </tr>
+                    )}
+                    {scontoApplicato > 0 && (
+                      <tr style={{ background: '#fef2f2' }}>
+                        <td colSpan={4} style={{ padding: '8px 10px', fontWeight: 800, textAlign: 'right', color: '#e11d48' }}>
+                          Sconto Commerciale Esclusivo a Voi Riservato:
+                        </td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, color: '#e11d48' }}>
+                          - € {scontoApplicato.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                        </td>
+                      </tr>
+                    )}
+                    <tr style={{ background: '#0f172a', color: '#ffffff' }}>
+                      <td colSpan={4} style={{ padding: '10px', fontWeight: 800, textAlign: 'right', textTransform: 'uppercase' }}>
+                        Totale Netto Concordato (+ IVA):
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'right', fontWeight: 900, fontSize: '14px', color: '#4ade80' }}>
+                        € {totaleInvestimento.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
 
