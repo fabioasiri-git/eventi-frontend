@@ -1642,202 +1642,209 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               style={{
                 background: '#ffffff',
                 color: '#111111',
-                padding: '24px 30px',
+                padding: '20px 26px',
                 margin: '15px auto',
                 width: '210mm',
                 maxWidth: '100%',
-                minHeight: '275mm',
+                minHeight: '270mm',
                 boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
                 boxSizing: 'border-box',
-                fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+                fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+                position: 'relative'
               }}
             >
               
               {/* HEADER UFFICIALE RADIO TOSCANA CARTA INTESTATA */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #D43F4A', paddingBottom: '14px', marginBottom: '18px' }}>
-                <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #474350', paddingBottom: '12px', marginBottom: '14px', position: 'relative' }}>
+                <div style={{ position: 'absolute', bottom: '-2.5px', left: 0, width: '90px', height: '2.5px', background: '#D43F4A' }}></div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <img
                     src="/logo_radio_toscana.png"
                     alt="Radio Toscana - Solo Toscana | Solo Hit"
-                    style={{ height: '54px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                    style={{ height: '46px', width: 'auto', objectFit: 'contain', display: 'block' }}
                   />
+                  <div style={{ borderLeft: '1px solid #cbd5e1', paddingLeft: '12px' }}>
+                    <div style={{ fontSize: '8px', color: '#64748b', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>EMITTENTE REGIONALE</div>
+                    <div style={{ fontSize: '11px', fontWeight: 900, color: '#474350', letterSpacing: '0.04em' }}>SOLO TOSCANA | SOLO HIT</div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                  <img
-                    src="/logo_radio_firenze.png"
-                    alt="88.7 Radio Firenze"
-                    style={{ height: '26px', width: 'auto', objectFit: 'contain', display: 'block' }}
-                  />
-                  <div style={{ textAlign: 'right', marginTop: '4px' }}>
-                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#474350', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                      PROPOSTA COMMERCIALE ON-AIR
-                    </div>
-                    <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>
-                      Formula: {tipoAccordo} • Data: {new Date().toLocaleDateString('it-IT')}
-                    </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', marginBottom: '4px' }}>
+                    <img
+                      src="/logo_radio_firenze.png"
+                      alt="88.7 Radio Firenze"
+                      style={{ height: '22px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                    />
+                    <span style={{ fontSize: '8.5px', fontWeight: 800, background: '#f1f5f9', color: '#474350', border: '1px solid #cbd5e1', padding: '2px 6px', borderRadius: '3px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      PROPOSTA COMMERCIALE
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#474350', fontWeight: 700 }}>
+                    Rif. RT-2026/09-{String(new Date().getDate()).padStart(2, '0')} • Data: {new Date().toLocaleDateString('it-IT')}
+                  </div>
+                  <div style={{ fontSize: '8.5px', color: '#94a3b8' }}>
+                    Validità offerta: 30 giorni data emissione
                   </div>
                 </div>
               </div>
 
-              {/* SCHEDA DATI COMMITTENTE & CONCESSIONARIA PUBBLICITÀ */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '16px', background: '#f8fafc', padding: '12px 16px', borderRadius: '6px', border: '1px solid #e2e8f0', marginBottom: '18px' }}>
+              {/* SCHEDA DATI COMMITTENTE & CONTATTO DIRETTO (GRIGLIA B2B A 2 COLONNE) */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '14px', background: '#f8fafc', padding: '10px 14px', borderRadius: '6px', border: '1px solid #e2e8f0', marginBottom: '14px' }}>
                 <div>
-                  <div style={{ fontSize: '9px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>COMMITTENTE</div>
-                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#474350', marginTop: '2px', lineHeight: 1.2 }}>{qNome || 'Azienda Partner'}</div>
-                  <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>
+                  <div style={{ fontSize: '8.5px', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>COMMITTENTE / AZIENDA</div>
+                  <div style={{ fontSize: '13.5px', fontWeight: 900, color: '#474350', marginTop: '2px', lineHeight: 1.2 }}>{qNome || 'Azienda Partner'}</div>
+                  <div style={{ fontSize: '10px', color: '#475569', marginTop: '3px' }}>
                     Referente: <strong>{qReferente || 'Direzione'}</strong> • P.IVA / C.F.: <strong>{qPiva || 'In fase di definizione'}</strong>
                   </div>
                   {qComune && (
-                    <div style={{ fontSize: '10px', color: '#64748b', marginTop: '1px' }}>
+                    <div style={{ fontSize: '9.5px', color: '#64748b', marginTop: '1px' }}>
                       Sede: {qComune} {qProvincia ? `(${qProvincia})` : ''}
                     </div>
                   )}
                 </div>
                 <div>
-                  <div style={{ fontSize: '9px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>DIREZIONE COMMERCIALE</div>
-                  <div style={{ fontSize: '13px', fontWeight: 800, color: '#474350', marginTop: '2px' }}>Fabio Asiri</div>
-                  <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>
+                  <div style={{ fontSize: '8.5px', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>EMITTENTE &amp; CONTATTO DIRETTO</div>
+                  <div style={{ fontSize: '12.5px', fontWeight: 900, color: '#474350', marginTop: '2px' }}>Fabio Asiri — Direzione Commerciale</div>
+                  <div style={{ fontSize: '10px', color: '#475569', marginTop: '3px' }}>
                     commerciale@radiotoscana.it • Tel. 347 6818595
+                  </div>
+                  <div style={{ fontSize: '9.5px', color: '#D43F4A', fontWeight: 700, marginTop: '1px' }}>
+                    Radio Toscana • Radio Firenze (Radio Monte Serra S.r.l.)
                   </div>
                 </div>
               </div>
 
               {/* DETTAGLIO DELLA PROPOSTA ECONOMICA */}
-              <div style={{ marginBottom: '16px' }}>
-                <h4 style={{ fontSize: '11px', fontWeight: 800, color: '#474350', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.06em', borderLeft: '3px solid #D43F4A', paddingLeft: '8px' }}>
-                  DETTAGLIO MODULI DELLA CAMPAGNA PUBBLICITARIA
-                </h4>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+              <div style={{ marginBottom: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <h4 style={{ fontSize: '10.5px', fontWeight: 900, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.06em', borderLeft: '3px solid #D43F4A', paddingLeft: '6px', margin: 0 }}>
+                    PIANO DI COMUNICAZIONE &amp; MODULI DELLA CAMPAGNA
+                  </h4>
+                  <span style={{ fontSize: '9px', color: '#64748b', fontWeight: 600 }}>{quoteItems.length} linee di pianificazione</span>
+                </div>
+
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px' }}>
                   <thead>
-                    <tr style={{ background: '#474350', color: '#ffffff', textTransform: 'uppercase', fontSize: '9.5px', letterSpacing: '0.05em' }}>
-                      <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 700 }}>Modulo / Ambito di Diffusione</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 700, width: '130px' }}>Fascia &amp; Periodo</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 700 }}>Dettagli di Programmazione</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, width: '95px' }}>Listino Ufficiale</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, width: '105px' }}>Prezzo Riservato</th>
+                    <tr style={{ background: '#474350', color: '#ffffff', textTransform: 'uppercase', fontSize: '8.5px', letterSpacing: '0.05em' }}>
+                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Modulo &amp; Ambito di Diffusione</th>
+                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700, width: '115px' }}>Fascia / Formato</th>
+                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Dettagli di Programmazione</th>
+                      <th style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, width: '80px' }}>Listino</th>
+                      <th style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, width: '90px' }}>Prezzo Netto</th>
                     </tr>
                   </thead>
                   <tbody>
                     {quoteItems.map((it, idx) => (
                       <tr key={it.id} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
-                        <td style={{ padding: '8px 10px', verticalAlign: 'top' }}>
+                        <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                             <span style={{ fontWeight: 800, color: '#1e293b' }}>{it.tipo}</span>
                             {it.spotOmaggio && it.spotOmaggio > 0 ? (
-                              <span style={{ fontSize: '8.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 5px', borderRadius: '3px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                              <span style={{ fontSize: '7.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 4px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                 + {it.spotOmaggio} OMAGGIO
                               </span>
                             ) : null}
                           </div>
-                          <div style={{ fontSize: '10px', color: '#D43F4A', fontWeight: 700, marginTop: '2px' }}>{it.copertura}</div>
+                          <div style={{ fontSize: '9px', color: '#D43F4A', fontWeight: 700, marginTop: '2px' }}>{it.copertura}</div>
                         </td>
-                        <td style={{ padding: '8px 10px', verticalAlign: 'top' }}>
-                          <div style={{ fontWeight: 600, color: '#334155' }}>{it.fascia}</div>
-                          <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>{it.periodo}</div>
+                        <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
+                          <div style={{ fontWeight: 700, color: '#334155' }}>{it.fascia}</div>
+                          <div style={{ fontSize: '9px', color: '#64748b', marginTop: '1px' }}>{it.periodo}</div>
                         </td>
-                        <td style={{ padding: '8px 10px', color: '#334155', verticalAlign: 'top' }}>
+                        <td style={{ padding: '6px 8px', color: '#334155', verticalAlign: 'top' }}>
                           <div style={{ lineHeight: 1.35 }}>{it.dettagli}</div>
                           {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' && (
-                            <div style={{ fontSize: '9.5px', color: '#0284c7', fontWeight: 700, marginTop: '3px' }}>
-                              Ambito: Diritti Liberi per tutte le emittenti toscane (File master broadcast incluso)
+                            <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>
+                              Ambito: Diritti Liberi per tutte le emittenti toscane (File master broadcast)
                             </div>
                           )}
                           {it.tipoProduzione === 'SOLO_RT_RF' && (
-                            <div style={{ fontSize: '9.5px', color: '#16a34a', fontWeight: 700, marginTop: '3px' }}>
+                            <div style={{ fontSize: '8.5px', color: '#16a34a', fontWeight: 700, marginTop: '2px' }}>
                               Ambito: Diffusione riservata su Radio Toscana e Radio Firenze
                             </div>
                           )}
                         </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', color: '#94a3b8', verticalAlign: 'top', textDecoration: it.prezzoListino && it.prezzoListino > it.valore ? 'line-through' : 'none' }}>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#94a3b8', verticalAlign: 'top', textDecoration: it.prezzoListino && it.prezzoListino > it.valore ? 'line-through' : 'none' }}>
                           € {Number(it.prezzoListino || it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                         </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, color: '#474350', fontSize: '12px', verticalAlign: 'top' }}>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, color: '#474350', fontSize: '11px', verticalAlign: 'top' }}>
                           € {Number(it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                         </td>
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot>
-                    {scontoApplicato > 0 && (
-                      <tr style={{ borderTop: '2px solid #cbd5e1', background: '#f1f5f9' }}>
-                        <td colSpan={3} style={{ padding: '6px 10px', fontWeight: 700, textAlign: 'right', color: '#64748b', fontSize: '10px', textTransform: 'uppercase' }}>
-                          Valore Complessivo a Listino Ufficiale:
-                        </td>
-                        <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 700, color: '#94a3b8', textDecoration: 'line-through' }}>
-                          € {totaleListino.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                        </td>
-                        <td></td>
-                      </tr>
-                    )}
-                    {scontoApplicato > 0 && (
-                      <tr style={{ background: '#fef2f2' }}>
-                        <td colSpan={4} style={{ padding: '6px 10px', fontWeight: 800, textAlign: 'right', color: '#D43F4A', fontSize: '10.5px', textTransform: 'uppercase' }}>
-                          Sconto Commerciale Esclusivo a Voi Riservato:
-                        </td>
-                        <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 800, color: '#D43F4A' }}>
-                          - € {scontoApplicato.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                        </td>
-                      </tr>
-                    )}
-                    <tr style={{ background: '#474350', color: '#ffffff' }}>
-                      <td colSpan={4} style={{ padding: '8px 10px', fontWeight: 800, textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '11px' }}>
-                        Totale Netto Concordato (+ IVA):
-                      </td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 900, fontSize: '14px', color: '#4ade80' }}>
-                        € {totaleInvestimento.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                      </td>
-                    </tr>
-                  </tfoot>
                 </table>
               </div>
 
-              {/* SEZIONE BARTER NELLA STAMPA (SE PRESENTE) */}
-              {tipoAccordo !== 'STANDARD' && (
-                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '10px 14px', borderRadius: '6px', marginBottom: '16px' }}>
-                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    QUOTA CAMBIO MERCE / ACCORDO BARTER:
+              {/* QUADRO ECONOMICO E CONDIZIONI GENERALI (LAYOUT COESO SENZA DUPLICAZIONI) */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '14px', alignItems: 'start', marginBottom: '14px' }}>
+                
+                {/* COLONNA SINISTRA: CONDIZIONI COMMERCIALI E ACCORDO */}
+                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '10px 12px', borderRadius: '6px', fontSize: '9.5px' }}>
+                  <div style={{ fontWeight: 800, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                    FORMULA CONTRATTUALE: {tipoAccordo === 'STANDARD' ? 'STANDARD (100% FATTURATO)' : tipoAccordo === 'BARTER_PARZIALE' ? 'BARTER PARZIALE (QUOTA MERCE)' : 'BARTER PURO (100% MERCE)'}
                   </div>
-                  <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>
-                    • Quota Radio Toscana: <strong>{barterRadio}</strong> — Quota Ascoltatori: <strong>{barterAscoltatori}</strong>
+                  {tipoAccordo !== 'STANDARD' && (
+                    <div style={{ color: '#475569', marginBottom: '4px', lineHeight: 1.35 }}>
+                      • Quota Radio Toscana: <strong>{barterRadio || 'Come da accordi'}</strong><br />
+                      • Quota Ascoltatori (Promozioni On-Air): <strong>{barterAscoltatori || 'Come da accordi'}</strong>
+                    </div>
+                  )}
+                  <div style={{ color: '#64748b', lineHeight: 1.4 }}>
+                    • Pagamento: <strong>Bonifico Bancario 30 gg fine mese d.f.</strong> (salvo diversi accordi scritti)<br />
+                    • Messa in onda: <strong>Condizionata alla restituzione della presente siglata</strong> e fornitura materiale audio.
                   </div>
                 </div>
-              )}
 
-              {/* TOTALE INVESTIMENTO BANNER */}
-              <div style={{ background: '#474350', color: '#ffffff', padding: '12px 16px', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <div>
-                  <div style={{ fontSize: '9px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.08em' }}>FORMULA CONCORDATA</div>
-                  <div style={{ fontSize: '14px', fontWeight: 900, color: '#38bdf8', marginTop: '1px' }}>{tipoAccordo}</div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '9px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.08em' }}>INVESTIMENTO TOTALE NETTO</div>
-                  <div style={{ fontSize: '20px', fontWeight: 900, color: '#4ade80', marginTop: '1px' }}>
-                    € {totaleInvestimento.toLocaleString('it-IT', { minimumFractionDigits: 2 })} + IVA
+                {/* COLONNA DESTRA: TOTALIZZATORE ECONOMICO AD ALTO CONTRASTO */}
+                <div style={{ border: '1px solid #cbd5e1', borderRadius: '6px', overflow: 'hidden' }}>
+                  <div style={{ background: '#f1f5f9', padding: '6px 10px', display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#64748b' }}>
+                    <span>Valore Listino Ufficiale:</span>
+                    <span style={{ fontWeight: 700, textDecoration: scontoApplicato > 0 ? 'line-through' : 'none' }}>
+                      € {totaleListino.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                  {scontoApplicato > 0 && (
+                    <div style={{ background: '#fef2f2', padding: '5px 10px', display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#D43F4A', fontWeight: 800 }}>
+                      <span>Vantaggio Riservato Cliente:</span>
+                      <span>- € {scontoApplicato.toLocaleString('it-IT', { minimumFractionDigits: 2 })} ({Math.round((scontoApplicato / (totaleListino || 1)) * 100)}%)</span>
+                    </div>
+                  )}
+                  <div style={{ background: '#474350', color: '#ffffff', padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontSize: '8px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.06em' }}>TOTALE INVESTIMENTO NETTO</div>
+                      <div style={{ fontSize: '7.5px', color: '#cbd5e1' }}>+ IVA di legge</div>
+                    </div>
+                    <div style={{ fontSize: '18px', fontWeight: 900, color: '#4ade80' }}>
+                      € {totaleInvestimento.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </div>
                   </div>
                 </div>
+
               </div>
 
-              {/* MODULO ACCETTAZIONE FIRMA */}
-              <div style={{ border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: '6px', background: '#ffffff', marginBottom: '14px' }}>
-                <div style={{ fontSize: '9.5px', fontWeight: 800, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+              {/* MODULO ACCETTAZIONE FIRMA E CLAUSOLA LICENZA AUDIO */}
+              <div style={{ border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: '6px', background: '#ffffff', marginBottom: '12px' }}>
+                <div style={{ fontSize: '9px', fontWeight: 900, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>
                   ACCETTAZIONE DELLA PROPOSTA COMMERCIALE E CONDIZIONI GENERALI DI TRASMISSIONE
                 </div>
                 <div style={{ fontSize: '7.5px', color: '#64748b', lineHeight: 1.35, marginBottom: '6px' }}>
                   Il materiale audio è concesso in licenza d’uso limitatamente all’ambito convenuto (RT+RF o Diritti Liberi Toscana), con espressa esclusione di network nazionali, circuiti esterni e digital advertising non concordati per iscritto, secondo le condizioni generali di licenza d'autore.
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '14px', marginTop: '6px', fontSize: '9.5px', color: '#64748b' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '12px', marginTop: '6px', fontSize: '9px', color: '#64748b' }}>
                   <div>Data: ____ / ____ / 2026</div>
                   <div>Luogo: ____________________</div>
                   <div>
                     <div>Timbro e Firma per Accettazione:</div>
-                    <div style={{ height: '24px', borderBottom: '1px dashed #94a3b8', marginTop: '4px' }}></div>
+                    <div style={{ height: '22px', borderBottom: '1px dashed #94a3b8', marginTop: '4px' }}></div>
                   </div>
                 </div>
               </div>
 
               {/* ELEMENTO CORPORATE SOUNDWAVE */}
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px', opacity: 0.85 }}>
-                <svg width="108" height="12" viewBox="0 0 108 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '6px', opacity: 0.85 }}>
+                <svg width="108" height="10" viewBox="0 0 108 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect x="0" y="4" width="2" height="4" rx="1" fill="#474350" />
                   <rect x="5" y="2" width="2" height="8" rx="1" fill="#474350" />
                   <rect x="10" y="0" width="2" height="12" rx="1" fill="#D43F4A" />
@@ -1864,8 +1871,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               </div>
 
               {/* FOOTER UFFICIALE CARTA INTESTATA RADIO MONTE SERRA / RADIO TOSCANA / RADIO FIRENZE */}
-              <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '8px', textAlign: 'center', fontSize: '8.5px', color: '#64748b', lineHeight: 1.45 }}>
-                <div style={{ fontWeight: 800, color: '#D43F4A', fontSize: '9.5px', marginBottom: '1px' }}>Radio Toscana • Radio Firenze</div>
+              <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '6px', textAlign: 'center', fontSize: '8px', color: '#64748b', lineHeight: 1.4 }}>
+                <div style={{ fontWeight: 800, color: '#D43F4A', fontSize: '9px', marginBottom: '1px' }}>Radio Toscana • Radio Firenze</div>
                 <div>Direzione e sede: Via de&apos; Pucci 2, 50122 Firenze • Tel. 055 285030 • Fax 055 283793 • radiomonteserra@pec.it</div>
                 <div>Radio Toscana e Radio Firenze sono marchi di Radio Monte Serra S.r.l. — P.IVA 04472740481 • C.F. 00940130503 • CCIAA Firenze 453074</div>
               </div>
