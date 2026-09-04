@@ -1949,31 +1949,22 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 </div>
               </div>
 
-              {/* ELEMENTO CORPORATE SOUNDWAVE */}
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '6px', opacity: 0.85 }}>
-                <svg width="108" height="10" viewBox="0 0 108 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="0" y="4" width="2" height="4" rx="1" fill="#474350" />
-                  <rect x="5" y="2" width="2" height="8" rx="1" fill="#474350" />
-                  <rect x="10" y="0" width="2" height="12" rx="1" fill="#D43F4A" />
-                  <rect x="15" y="2" width="2" height="8" rx="1" fill="#D43F4A" />
-                  <rect x="20" y="3" width="2" height="6" rx="1" fill="#474350" />
-                  <rect x="25" y="1" width="2" height="10" rx="1" fill="#474350" />
-                  <rect x="30" y="0" width="2" height="12" rx="1" fill="#D43F4A" />
-                  <rect x="35" y="2" width="2" height="8" rx="1" fill="#D43F4A" />
-                  <rect x="40" y="4" width="2" height="4" rx="1" fill="#474350" />
-                  <rect x="45" y="1" width="2" height="10" rx="1" fill="#474350" />
-                  <rect x="50" y="0" width="2" height="12" rx="1" fill="#D43F4A" />
-                  <rect x="55" y="0" width="2" height="12" rx="1" fill="#D43F4A" />
-                  <rect x="60" y="2" width="2" height="8" rx="1" fill="#474350" />
-                  <rect x="65" y="4" width="2" height="4" rx="1" fill="#474350" />
-                  <rect x="70" y="1" width="2" height="10" rx="1" fill="#D43F4A" />
-                  <rect x="75" y="0" width="2" height="12" rx="1" fill="#D43F4A" />
-                  <rect x="80" y="3" width="2" height="6" rx="1" fill="#474350" />
-                  <rect x="85" y="1" width="2" height="10" rx="1" fill="#474350" />
-                  <rect x="90" y="0" width="2" height="12" rx="1" fill="#D43F4A" />
-                  <rect x="95" y="2" width="2" height="8" rx="1" fill="#D43F4A" />
-                  <rect x="100" y="3" width="2" height="6" rx="1" fill="#474350" />
-                  <rect x="105" y="4" width="2" height="4" rx="1" fill="#474350" />
+              {/* ELEMENTO CORPORATE LED METER UFFICIALE RADIO TOSCANA */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px', opacity: 0.9 }}>
+                <svg width="108" height="28" viewBox="0 0 128 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  {[2, 4, 2, 3, 1, 1, 3, 2, 4, 2, 1, 3, 2, 4, 5, 4, 6, 4, 3, 1].map((count, cIdx) => (
+                    <g key={cIdx}>
+                      {Array.from({ length: count }).map((_, dIdx) => (
+                        <circle
+                          key={dIdx}
+                          cx={3 + cIdx * 6.4}
+                          cy={35 - dIdx * 6.4}
+                          r={2.4}
+                          fill="#BD323D"
+                        />
+                      ))}
+                    </g>
+                  ))}
                 </svg>
               </div>
 
