@@ -14,12 +14,13 @@ if val_res.returncode != 0:
     print("\n❌ CHECK-OUT ANNULLATO: Trovati errori nei guardrail. Risolverli prima del push.")
     sys.exit(1)
 
-print("\n--- 2. ESPORTO IL BACKUP COMPLETO DEI WORKFLOW N8N ---")
-try:
-    exporter_path = os.path.join(tools_dir, "export_all_n8n_workflows.py")
-    subprocess.run([sys.executable, exporter_path], check=True)
-except Exception as e:
-    print("⚠️ Attenzione export n8n:", e)
+exporter_path = os.path.join(tools_dir, "export_all_n8n_workflows.py")
+if os.path.exists(exporter_path):
+    print("\n--- 2. ESPORTO IL BACKUP COMPLETO DEI WORKFLOW N8N ---")
+    try:
+        subprocess.run([sys.executable, exporter_path], check=True)
+    except Exception as e:
+        print("⚠️ Attenzione export n8n:", e)
 
 print("\n--- 3. SALVO E SPINGO TUTTI I FILE SU GITHUB (GIT COMMIT & PUSH) ---")
 try:
