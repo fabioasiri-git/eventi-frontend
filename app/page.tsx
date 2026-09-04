@@ -1829,8 +1829,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 <div style={{ fontSize: '9px', fontWeight: 900, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>
                   ACCETTAZIONE DELLA PROPOSTA COMMERCIALE E CONDIZIONI GENERALI DI TRASMISSIONE
                 </div>
-                <div style={{ fontSize: '7.5px', color: '#64748b', lineHeight: 1.35, marginBottom: '6px' }}>
-                  Il materiale audio è concesso in licenza d’uso limitatamente all’ambito convenuto (RT+RF o Diritti Liberi Toscana), con espressa esclusione di network nazionali, circuiti esterni e digital advertising non concordati per iscritto, secondo le condizioni generali di licenza d'autore.
+                <div style={{ fontSize: '7.5px', color: '#64748b', lineHeight: 1.35, marginBottom: '6px', borderLeft: '2.5px solid #D43F4A', paddingLeft: '6px' }}>
+                  <strong>Tutela Diritto d&apos;Autore:</strong> Il materiale audio è concesso in licenza d&apos;uso esclusivamente per l&apos;ambito concordato (RT+RF o Diritti Liberi Toscana), con espressa esclusione di network nazionali, circuiti esterni e digital advertising non autorizzati per iscritto.
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '12px', marginTop: '6px', fontSize: '9px', color: '#64748b' }}>
                   <div>Data: ____ / ____ / 2026</div>
@@ -1885,52 +1885,62 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
       {/* MODALE BOZZA CONTRATTO RADIO MONTE SERRA (LAVORO UFFICIO 18:30) */}
       {showContractModal && (
         <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto' }}>
-            <div className="modal-header">
-              <h3 className="modal-title">Bozza Contratto Radio Monte Serra — Travaso Automatico</h3>
+          <div className="modal-content" style={{ maxWidth: '850px', maxHeight: '90vh', overflowY: 'auto', background: '#0f172a', border: '1px solid #334155' }}>
+            <div className="modal-header" style={{ borderBottom: '1px solid #334155', paddingBottom: '12px', marginBottom: '16px' }}>
+              <div>
+                <h3 className="modal-title" style={{ color: '#f8fafc', fontSize: '15px' }}>Bozza Contratto Pubblicitario — Radio Monte Serra S.r.l.</h3>
+                <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>Travaso automatico dati dalla Proposta Commerciale</div>
+              </div>
               <button className="modal-close" onClick={() => setShowContractModal(false)}>✕</button>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="form-group">
-              <div>
-                <label className="form-label">Numero Contratto Ufficiale</label>
-                <input type="text" className="form-input" value={contractData.numero} onChange={e => setContractData({ ...contractData, numero: e.target.value })} />
+
+            {/* DATI ANAGRAFICI COMMITTENTE */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px', marginBottom: '16px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
+                Dati Identificativi Committente &amp; Contratto
               </div>
-              <div>
-                <label className="form-label">Ragione Sociale Committente</label>
-                <input type="text" className="form-input" value={contractData.committente} onChange={e => setContractData({ ...contractData, committente: e.target.value })} />
-              </div>
-              <div>
-                <label className="form-label">Partita IVA</label>
-                <input type="text" className="form-input" value={contractData.piva} onChange={e => setContractData({ ...contractData, piva: e.target.value })} />
-              </div>
-              <div>
-                <label className="form-label">Codice Univoco SDI</label>
-                <input type="text" className="form-input" value={contractData.sdi} onChange={e => setContractData({ ...contractData, sdi: e.target.value })} />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
+                <div>
+                  <label className="form-label" style={{ fontSize: '10px' }}>Numero Contratto</label>
+                  <input type="text" className="form-input" style={{ fontSize: '12px' }} value={contractData.numero} onChange={e => setContractData({ ...contractData, numero: e.target.value })} />
+                </div>
+                <div>
+                  <label className="form-label" style={{ fontSize: '10px' }}>Ragione Sociale</label>
+                  <input type="text" className="form-input" style={{ fontSize: '12px' }} value={contractData.committente} onChange={e => setContractData({ ...contractData, committente: e.target.value })} />
+                </div>
+                <div>
+                  <label className="form-label" style={{ fontSize: '10px' }}>Partita IVA / C.F.</label>
+                  <input type="text" className="form-input" style={{ fontSize: '12px' }} value={contractData.piva} onChange={e => setContractData({ ...contractData, piva: e.target.value })} />
+                </div>
+                <div>
+                  <label className="form-label" style={{ fontSize: '10px' }}>Codice SDI / PEC</label>
+                  <input type="text" className="form-input" style={{ fontSize: '12px' }} value={contractData.sdi} onChange={e => setContractData({ ...contractData, sdi: e.target.value })} />
+                </div>
               </div>
             </div>
 
-            {/* CLAUSOLA DIRITTI D'AUTORE E LICENZA MATERIALE AUDIO SPOT */}
-            <div style={{ marginTop: '16px', padding: '14px', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 800, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px' }}>
-                Condizioni Generali — Tutela e Licenza d'Uso del Materiale Audio Spot:
+            {/* ARTICOLO CONDIZIONI GENERALI: TESTO INTEGRALE TUTELA MATERIALE AUDIO SPOT */}
+            <div style={{ padding: '16px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(212, 63, 74, 0.3)', borderRadius: '6px', marginBottom: '16px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
+                Condizioni Generali — Art. Tutela del Diritto d&apos;Autore e Licenza d&apos;Uso del Materiale Audio Spot
               </div>
-              <div style={{ fontSize: '10.5px', color: '#94a3b8', lineHeight: 1.5 }}>
-                <p style={{ marginBottom: '6px' }}>
+              <div style={{ fontSize: '11px', color: '#cbd5e1', lineHeight: 1.6 }}>
+                <p style={{ marginBottom: '8px' }}>
                   Il materiale audio fornito rimane di esclusiva proprietà del produttore ed è concesso in licenza esclusivamente per la diffusione sulla Vostra emittente radiofonica e/o televisiva locale, comprensiva dell’eventuale trasmissione in web streaming collegata alla stessa.
                 </p>
-                <p style={{ marginBottom: '6px' }}>
+                <p style={{ marginBottom: '8px' }}>
                   La licenza d’uso è strettamente limitata alle modalità sopra indicate e non comprende, salvo preventiva autorizzazione scritta del titolare dei diritti, alcuna ulteriore forma di utilizzo, riproduzione, distribuzione o diffusione.
                 </p>
-                <p style={{ marginBottom: '6px' }}>
+                <p style={{ marginBottom: '8px' }}>
                   A titolo esemplificativo e non esaustivo, sono esclusi l’utilizzo su circuiti radiofonici o televisivi multi-emittente, network regionali o nazionali, piattaforme di streaming musicale (quali Spotify e analoghe), campagne pubblicitarie digitali a pagamento, siti internet diversi da quelli dell’emittente autorizzata, sale cinematografiche, impianti sportivi, sistemi di telefonia, podcast, social media e qualsiasi altro canale di comunicazione non espressamente autorizzato.
                 </p>
-                <p>
+                <p style={{ margin: 0 }}>
                   Ogni utilizzo diverso da quello previsto dalla presente autorizzazione dovrà essere preventivamente concordato e autorizzato per iscritto dal titolare dei diritti, al fine di garantire il corretto rispetto delle condizioni di licenza e della normativa vigente in materia di diritto d’autore e diritti connessi.
                 </p>
               </div>
             </div>
 
-            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button className="btn" onClick={() => setShowContractModal(false)}>Annulla</button>
               <button className="btn btn-primary" onClick={() => {
                 alert(`Contratto ${contractData.numero} per ${contractData.committente} attivato e salvato su Supabase!`);
