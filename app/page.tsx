@@ -1877,8 +1877,9 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, color: '#474350', fontSize: '11px', verticalAlign: 'top' }}>
                           € {Number(it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                         </td>
-                      </tr>
-                    ))}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
