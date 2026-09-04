@@ -1,0 +1,4146 @@
+[
+  {
+    "ditta": "C.A.I. COOPERATIVA AUDIOPROTESISTI",
+    "referente": "",
+    "indirizzo": "Via delle Cento Stelle",
+    "cap": "50137",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "06638100484",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "14/2/2023",
+        "prezzo": 800,
+        "spot": "",
+        "file": "Contrattl CAI - Toscana oggi 14.02.23.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 800,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "LA VILLA SPA",
+    "referente": "ILARIA CARPISASSI",
+    "indirizzo": "VIA BENEDETTO DA FOLANO",
+    "cap": "50125",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "marketing@arkiholding.it",
+    "piva": "05548060481",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "1/3/2023",
+        "prezzo": 240,
+        "spot": "",
+        "file": "Contrattl La Villa - Toscana oggi 01.03.23.xls",
+        "referente": "ILARIA CARPISASSI"
+      },
+      {
+        "anno": "2023",
+        "data": "10/2/2023",
+        "prezzo": 240,
+        "spot": "",
+        "file": "Contrattl La Villa - Toscana oggi 10.02.23.xls",
+        "referente": "ILARIA CARPISASSI"
+      },
+      {
+        "anno": "2023",
+        "data": "10/2/2023",
+        "prezzo": 240,
+        "spot": "",
+        "file": "Contrattl La Villa - Toscana oggi 15.02.23.xls",
+        "referente": "ILARIA CARPISASSI"
+      },
+      {
+        "anno": "2023",
+        "data": "1/3/2023",
+        "prezzo": 240,
+        "spot": "",
+        "file": "Contrattl La Villa - Toscana oggi 23.03.23.xls",
+        "referente": "ILARIA CARPISASSI"
+      }
+    ],
+    "totale_contratti": 4,
+    "ultimo_prezzo": 240,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ADV BIRÒ SNC",
+    "referente": "Mario Bacciottini",
+    "indirizzo": "Via Salvador Allende",
+    "cap": "50051",
+    "citta": "Castelfiorentino",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "mario@biro.it",
+    "piva": "05125090489",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "16/6/2023",
+        "prezzo": 600,
+        "spot": "72+26 omaggio",
+        "file": "Contratto Adv Birò (Mercanzia) 16.06.23.xls",
+        "referente": "Mario Bacciottini"
+      },
+      {
+        "anno": "2024",
+        "data": "26/6/2024",
+        "prezzo": 600,
+        "spot": "72+26 omaggio",
+        "file": "Contratto Adv Birò (Mercanzia) 26.06.24.xls",
+        "referente": "Mario Bacciottini"
+      },
+      {
+        "anno": "2024",
+        "data": "26/6/2024",
+        "prezzo": 600,
+        "spot": "72+26 omaggio",
+        "file": "Contratto Adv Birò (Mercanzia) 26.06.24_.xls",
+        "referente": "Mario Bacciottini"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 600,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "ALESSANDRO BRIZZI",
+    "referente": "",
+    "indirizzo": "Via Ancona",
+    "cap": "59100",
+    "citta": "Prato",
+    "provincia": "PO",
+    "telefono": "3395679463",
+    "email": "",
+    "piva": "Brzlsn27bg999u",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "14/7/2023",
+        "prezzo": 125,
+        "spot": "",
+        "file": "Contratto Alessandro Brizzi 18.07.23.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 125,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ALIA SERVIZI AMBIENTALI SPA",
+    "referente": "",
+    "indirizzo": "BACCIO DA MONTELUPO",
+    "cap": "50142",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "4855090488",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "7/3/2023",
+        "prezzo": 900,
+        "spot": "450",
+        "file": "Contratto Alia 15.03.23 new.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "7/3/2023",
+        "prezzo": 900,
+        "spot": "450",
+        "file": "Contratto Alia 15.03.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "15/3/2023",
+        "prezzo": 4000,
+        "spot": "425 + 25 omaggio",
+        "file": "Copia di Contratto Alia 15 03 23 new.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2024",
+        "data": "28/2/2024",
+        "prezzo": 3000,
+        "spot": "350",
+        "file": "Contratto Alia 28.02.24.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2025",
+        "data": "4/4/2025",
+        "prezzo": 3000,
+        "spot": "350",
+        "file": "Contratto Alia 04.04.25.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2026",
+        "data": "5/2/2026",
+        "prezzo": 3000,
+        "spot": "350+100 0maggio",
+        "file": "Contratto Alia 05.02.26.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2026",
+        "data": "22/1/2026",
+        "prezzo": 3000,
+        "spot": "350",
+        "file": "Contratto Alia 22.01.26.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 7,
+    "ultimo_prezzo": 3000,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "OPERA PRIMAZIALE PISANA ONLUS",
+    "referente": "Presidente",
+    "indirizzo": "piazza Duomo",
+    "cap": "56126",
+    "citta": "Pisa",
+    "provincia": "PI",
+    "telefono": "050 878111",
+    "email": "m.valtriani@formanova.it     fatture@pec.opapisa.it",
+    "piva": "0012 5790501 cod des.UE2LXTM",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "14/7/2023",
+        "prezzo": 1900,
+        "spot": "",
+        "file": "Contratto Anima Mundi 07.07.23.xls",
+        "referente": "Presidente"
+      },
+      {
+        "anno": "2023",
+        "data": "7/7/2023",
+        "prezzo": 2400,
+        "spot": "",
+        "file": "Contratto Opera Primaziale Pisana 07.07.23.xls",
+        "referente": "Presidente"
+      },
+      {
+        "anno": "2024",
+        "data": "3/6/2024",
+        "prezzo": 2100,
+        "spot": "",
+        "file": "Contratto Anima Mundi 03.06.24.xls",
+        "referente": "Presidente"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 2100,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "ANTHROPIC SB SRL",
+    "referente": "Ida Bonavoglia",
+    "indirizzo": "Via Gino Capponi",
+    "cap": "50121",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "348 081 3917",
+    "email": "info@a-lab.it",
+    "piva": "108881230964",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "23/1/2024",
+        "prezzo": 350,
+        "spot": "70 + 42 omaggio",
+        "file": "Contratto Anthropic SB srl 21.12.23.xls",
+        "referente": "Ida Bonavoglia"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 350,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ARTEX SCRL",
+    "referente": "Elisa Guidi",
+    "indirizzo": "GIANO DELLA BELLA",
+    "cap": "50124",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "e.guidi@artex.firenze.it",
+    "piva": "04842740484",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "24/10/2023",
+        "prezzo": 300,
+        "spot": "60",
+        "file": "Contratto ARTEX SCRL 24.10.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2024",
+        "data": "19/2/2024",
+        "prezzo": 300,
+        "spot": "60",
+        "file": "Contratto ARTEX SCRL 19.02.24.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2026",
+        "data": "24/2/2026",
+        "prezzo": 400,
+        "spot": "60+20 omaggio",
+        "file": "Contratto ARTEX SCRL 24.02.26.xls",
+        "referente": "Elisa Guidi"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "APS - CIRCOLO RICREATIVO CULTURALE - POZZOLATICCO - ARCI",
+    "referente": "FRANCESCO",
+    "indirizzo": "VIA IMPRUNETANA",
+    "cap": "50023",
+    "citta": "IMPRUNETA",
+    "provincia": "FI",
+    "telefono": "339/3644360",
+    "email": "crcpozzolatico@live.it",
+    "piva": "05399520484",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "17/5/2023",
+        "prezzo": 150,
+        "spot": "36",
+        "file": "Contratto ASD Pozzolatico  17 05 23.xls",
+        "referente": "FRANCESCO"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 150,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ASSOCIAZIONE MUS.E",
+    "referente": "Niko Malenotti",
+    "indirizzo": "Via Aurelio Nicolodi",
+    "cap": "50131",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "05118160489 – C.F.94083520489",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "20/12/2023",
+        "prezzo": 900,
+        "spot": "70",
+        "file": "Contratto Associazione Mus.e.xls",
+        "referente": "Niko Malenotti"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 900,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ASS. NAZ. AUTIERI D'ITALIA DELLA GARFAGNANA",
+    "referente": "",
+    "indirizzo": "G. PASCOLI",
+    "cap": "55032",
+    "citta": "CAST. DI GARFAGNANA",
+    "provincia": "LU",
+    "telefono": "",
+    "email": "INFO@AUTIERIGARFAGNANA.IT",
+    "piva": "CF. 90004760469",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "7/3/2023",
+        "prezzo": 900,
+        "spot": "27",
+        "file": "Contratto Autieri Garfagnana 07.03.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "7/3/2023",
+        "prezzo": 900,
+        "spot": "80+24 omaggio",
+        "file": "Contratto Autieri Garfagnana 15.09.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "26/9/2023",
+        "prezzo": 540,
+        "spot": "36",
+        "file": "Contratto Autieri Garfagnana 23.09.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "17/1/2023",
+        "prezzo": 2960,
+        "spot": "48",
+        "file": "Contratto Pasquetta.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 4,
+    "ultimo_prezzo": 2960,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ASSOCIAZIONE GARFAGNANA TERRA UNICA",
+    "referente": "Alessandro Pedreschi",
+    "indirizzo": "DEBBIA",
+    "cap": "55032",
+    "citta": "CAST. DI GARFAGNANA",
+    "provincia": "LU",
+    "telefono": "333 697 7473",
+    "email": "ale.pedreschi@libero.it",
+    "piva": "02680430465",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "24/10/2023",
+        "prezzo": 540,
+        "spot": "36",
+        "file": "Contratto Autieri Garfagnana 24.10.23.xls",
+        "referente": "Alessandro Pedreschi"
+      },
+      {
+        "anno": "2023",
+        "data": "24/10/2023",
+        "prezzo": 540,
+        "spot": "36",
+        "file": "Contratto Garfagnana Terra Unica 24.10.23.xls",
+        "referente": "Alessandro Pedreschi"
+      },
+      {
+        "anno": "2024",
+        "data": "26/9/2024",
+        "prezzo": 1080,
+        "spot": "36",
+        "file": "Contratto Garfagnana Terra Unica 26.09.24.xls",
+        "referente": "ALESSANDRO PEDRESCHI"
+      },
+      {
+        "anno": "2025",
+        "data": "4/11/2025",
+        "prezzo": 1080,
+        "spot": "144",
+        "file": "Contratto Garfagnana Terra Unica 04.11.25 Promo.xls",
+        "referente": "ALESSANDRO PEDRESCHI"
+      },
+      {
+        "anno": "2025",
+        "data": "17/10/2024",
+        "prezzo": 1000,
+        "spot": "2",
+        "file": "Contratto Garfagnana Terra Unica 17.10.24 EVENTO.xls",
+        "referente": "ALESSANDRO PEDRESCHI"
+      },
+      {
+        "anno": "2025",
+        "data": "23/4/2025",
+        "prezzo": 3070,
+        "spot": "2",
+        "file": "Contratto Garfagnana Terra Unica 23.04.25.xls",
+        "referente": "ALESSANDRO PEDRESCHI"
+      }
+    ],
+    "totale_contratti": 6,
+    "ultimo_prezzo": 3070,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "BALDO SRL",
+    "referente": "Simona",
+    "indirizzo": "Nanni",
+    "cap": "40050",
+    "citta": "Monte San Pietro",
+    "provincia": "BO",
+    "telefono": "051/733867",
+    "email": "simona@loradeglianimali.it",
+    "piva": "03235941204",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "2/2/2023",
+        "prezzo": 900,
+        "spot": "10",
+        "file": "Contratto BALDO SRL 02.02.23.xls",
+        "referente": "Simona"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 900,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "BEAUTY BRASS SRL",
+    "referente": "Monica Bini",
+    "indirizzo": "Via Torello da Strada",
+    "cap": "50027",
+    "citta": "Strada In Chainti",
+    "provincia": "FI",
+    "telefono": "3495160736",
+    "email": "info@mubagioielli.it",
+    "piva": "03780580480 cod des.M5UXCR1",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "12/7/2023",
+        "prezzo": 3000,
+        "spot": "660",
+        "file": "Contratto BEAUTY BRASS 12.07.23.xls",
+        "referente": "Monica Bini"
+      },
+      {
+        "anno": "2023",
+        "data": "24/10/2023",
+        "prezzo": 150,
+        "spot": "5",
+        "file": "Contratto BEAUTY BRASS 24.10.23.xls",
+        "referente": "Monica Bini"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 150,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "SEVERINO BECAGLI SRL",
+    "referente": "TOMMASO BECAGLI",
+    "indirizzo": "AURELIA ANTICA",
+    "cap": "58100",
+    "citta": "GROSSETO",
+    "provincia": "GR",
+    "telefono": "",
+    "email": "PRESS@SEVERINOBECAGLI.IT",
+    "piva": "1584930539",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "17/1/2023",
+        "prezzo": 2960,
+        "spot": "48",
+        "file": "Contratto Becagli 17.01.23.xls",
+        "referente": "TOMMASO BECAGLI"
+      },
+      {
+        "anno": "2023",
+        "data": "15/11/2023",
+        "prezzo": 500,
+        "spot": "144",
+        "file": "Contratto Becagli Pacchetto Natale 15.11.23.xls",
+        "referente": "TOMMASO BECAGLI"
+      },
+      {
+        "anno": "2023",
+        "data": "21/4/2023",
+        "prezzo": 490,
+        "spot": "1",
+        "file": "Contratto Pausini Pack Becagli 21.04.23.xls",
+        "referente": "TOMMASO BECAGLI"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 490,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "N.P.G. SAS DI ZANAGLIO NORMAN & C. - RISTORANTE BELLA CIAO",
+    "referente": "Norman Zanaglio",
+    "indirizzo": "VIA VOLTERRANA",
+    "cap": "50018",
+    "citta": "Scandicci",
+    "provincia": "FI",
+    "telefono": "366 496 9157",
+    "email": "normanzanaglio@gmail.com",
+    "piva": "06342010482",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "21/12/2023",
+        "prezzo": 840,
+        "spot": "196",
+        "file": "Contratto Bella Ciao 21.12.23.xls",
+        "referente": "Norman Zanaglio"
+      },
+      {
+        "anno": "2023",
+        "data": "21/12/2023",
+        "prezzo": 840,
+        "spot": "196",
+        "file": "Contratto Bella Ciao 21.12.23_.xls",
+        "referente": "Norman Zanaglio"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 840,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "GESTION AERONAUTICA INTEGRAL CANARIA S.L. (GAIC)",
+    "referente": "",
+    "indirizzo": "C/ Ignacio Ellacuría Beascoechea,",
+    "cap": "35214",
+    "citta": "Gran Canaria - SPAGNA",
+    "provincia": "EE",
+    "telefono": "",
+    "email": "",
+    "piva": "ES B76027432",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "14/11/2023",
+        "prezzo": 5550,
+        "spot": "840",
+        "file": "Contratto Binter 14.11.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "16/11/2023",
+        "prezzo": 2376,
+        "spot": "176",
+        "file": "Contratto Binter 16.11.23.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 2376,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "CAMPEGGIO PUNTALA SRL",
+    "referente": "Roberto Vergottini",
+    "indirizzo": "loc. Punta Ala",
+    "cap": "58043",
+    "citta": "Castiglion della Pescaia",
+    "provincia": "GR",
+    "telefono": "347/2703101",
+    "email": "roberto.vergottini@campingpuntala.it -",
+    "piva": "01233070539 cod des.M5UXCR1",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "12/7/2023",
+        "prezzo": 550,
+        "spot": "2",
+        "file": "Contratto Camping Puntala 12.07.23.xls",
+        "referente": "Roberto Vergottini"
+      },
+      {
+        "anno": "2024",
+        "data": "10/5/2024",
+        "prezzo": 1600,
+        "spot": "4",
+        "file": "Contratto Camping Puntala 10.05.24.xls",
+        "referente": "Roberto Vergottini"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 1600,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "CENTRO COMMERCIALE NATURALE CURE",
+    "referente": "Maurizio Izzo",
+    "indirizzo": "CONDOTTA",
+    "cap": "50122",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "10/3/2023",
+        "prezzo": 180,
+        "spot": "12",
+        "file": "Contratto CCN Le Cure 10.03.23.xls",
+        "referente": "Maurizio Izzo"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 180,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "CENTRAL SRL",
+    "referente": "Maurizio Orlandini",
+    "indirizzo": "Barberinese",
+    "cap": "50130",
+    "citta": "Campi bisenzio",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "maurizio.orlandini@runnerpizza.it",
+    "piva": "07082100483",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "2/8/2023",
+        "prezzo": 0,
+        "spot": "",
+        "file": "Contratto Central Srl 02.08.23.xls",
+        "referente": "Maurizio Orlandini"
+      },
+      {
+        "anno": "2023",
+        "data": "4/5/2023",
+        "prezzo": 320,
+        "spot": "14 pp al gg",
+        "file": "Contratto Central Srl 04.05.23.xls",
+        "referente": "Maurizio Orlandini"
+      },
+      {
+        "anno": "2023",
+        "data": "22/12/2023",
+        "prezzo": 320,
+        "spot": "14 pp al gg",
+        "file": "Contratto Central Srl 22.12.23.xls",
+        "referente": "Maurizio Orlandini"
+      },
+      {
+        "anno": "2023",
+        "data": "26/5/2023",
+        "prezzo": 640,
+        "spot": "14 pp al gg",
+        "file": "Contratto Central Srl 26.05.23.xls",
+        "referente": "Maurizio Orlandini"
+      }
+    ],
+    "totale_contratti": 4,
+    "ultimo_prezzo": 640,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "CHIANTI BANCA CREDITO COOPERATIVO SOC.",
+    "referente": "Andrea Cabella",
+    "indirizzo": "Via Cassia Nord",
+    "cap": "53035",
+    "citta": "Monteriggioni",
+    "provincia": "SI",
+    "telefono": "333/3030991",
+    "email": "andrea.cabella@chiantibanca.it",
+    "piva": "15240741007",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "15/12/2023",
+        "prezzo": 1000,
+        "spot": "126",
+        "file": "Contratto Chianti Banca15.12.23.xls",
+        "referente": "Andrea Cabella"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "CNA SERVIZI E CONSULENZE SRL",
+    "referente": "IACOPO FABBRINI",
+    "indirizzo": "VIA LUIGI ALAMANNI",
+    "cap": "50123",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "338/9394467",
+    "email": "ifabbrini@firenze.cna.it",
+    "piva": "03637290481",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "18/4/2023",
+        "prezzo": 2900,
+        "spot": "10 Pills",
+        "file": "Contratto CNA 18 04 23.xls",
+        "referente": "IACOPO FABBRINI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 2900,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "FEDERAZIONE REGIONALE COLDIRETTI TOSCANA",
+    "referente": "ANDREA BERTI",
+    "indirizzo": "VIALE FRATELLI ROSSELLI",
+    "cap": "50123",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "393384147298",
+    "email": "andrea.berti@coldiretti.it",
+    "piva": "CF 80012150480",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "9/2/2023",
+        "prezzo": 920,
+        "spot": "312",
+        "file": "Contratto Coldiretti 09.02.23.xls",
+        "referente": "ANDREA BERTI"
+      },
+      {
+        "anno": "2024",
+        "data": "03/06/2024",
+        "prezzo": 1000,
+        "spot": "75 + 30 omaggio (Tot. 105 spot)",
+        "file": "Contratto Atom x Coldiretti 03.06.24.pdf",
+        "referente": "Alessandro Pretelli / Atom x Coldiretti"
+      },
+      {
+        "anno": "2025",
+        "data": "24/07/2025",
+        "prezzo": 1500,
+        "spot": "Live Radio & Media Partnership",
+        "file": "Preventivo Live Radio Coldiretti 24.07.25.pdf",
+        "referente": "Andrea Berti"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2024/2025"
+  },
+  {
+    "ditta": "COLLEVENTI PROMOZIONE SRLS",
+    "referente": "Cristoforo Iorio",
+    "indirizzo": "VIA CAMALDO",
+    "cap": "53036",
+    "citta": "POGGIBONSI",
+    "provincia": "SI",
+    "telefono": "",
+    "email": "colleventi.c@gmail.com",
+    "piva": "01461640524",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "6/12/2023",
+        "prezzo": 400,
+        "spot": "96",
+        "file": "Contratto Colleventi 06.12.23.xls",
+        "referente": "Cristoforo Iorio"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "COMBO SERVICE SRL",
+    "referente": "",
+    "indirizzo": "VIALE EUROPA",
+    "cap": "50126",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "05056040487",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "8/11/2023",
+        "prezzo": 3540,
+        "spot": "320+100 omaggio",
+        "file": "Contratto Combo Service (Mbe 0348) 08.11.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "28/6/2023",
+        "prezzo": 2500,
+        "spot": "260+60 omaggio",
+        "file": "Contratto Combo Service (Mbe 0348) 28.06.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2024",
+        "data": "11/10/2024",
+        "prezzo": 3600,
+        "spot": "320+120 omaggio",
+        "file": "Contratto Combo Service (Mbe 0348) 11.10.24.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2024",
+        "data": "8/11/2023",
+        "prezzo": 3700,
+        "spot": "380+120 omaggio",
+        "file": "Contratto Combo Service (Mbe 0348) 13.04.24.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2025",
+        "data": "28/4/2025",
+        "prezzo": 3700,
+        "spot": "380+120 omaggio",
+        "file": "Contratto Combo Service (Mbe 0348) 28.04.25.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 5,
+    "ultimo_prezzo": 3700,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "CONFCOMMERCIO PROVINCIA DI PISA",
+    "referente": "Alessio Giovarruscio",
+    "indirizzo": "Via Chiassatello",
+    "cap": "56121",
+    "citta": "Pisa",
+    "provincia": "PI",
+    "telefono": "",
+    "email": "a.giovarruscio@confcommerciopisa.it",
+    "piva": "80004010502",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "1/12/2023",
+        "prezzo": 970,
+        "spot": "18",
+        "file": "Contratto Confcommercio Pisa 01.12.2023.xls",
+        "referente": "Alessio Giovarruscio"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 970,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "CAT CONFCOMMERCIO SRL",
+    "referente": "Alessio Giovanruscio",
+    "indirizzo": "VIA CHIASSATELLO",
+    "cap": "56121",
+    "citta": "PISA",
+    "provincia": "PI",
+    "telefono": "050-25196/7",
+    "email": "a.giovarruscio@confcommerciopisa.it",
+    "piva": "01522340502",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "5/9/2023",
+        "prezzo": 100,
+        "spot": "50+10 omaggio",
+        "file": "Contratto Confcommercio Pisa 05.09.23.xls",
+        "referente": "Alessio Giovanruscio"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 100,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "CONFESERCENTI FIRENZE",
+    "referente": "Daniele Nardoni",
+    "indirizzo": "P.zza Pier Vettori",
+    "cap": "50143",
+    "citta": "FIRENZE",
+    "provincia": "PT",
+    "telefono": "055/2705286",
+    "email": "d.nardoni@confesercenti.fi.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "29/12/2023",
+        "prezzo": 3600,
+        "spot": "360",
+        "file": "Contratto Confesercenti Firenze 08 06 23.xls",
+        "referente": "Daniele Nardoni"
+      },
+      {
+        "anno": "2023",
+        "data": "17/5/2023",
+        "prezzo": 200,
+        "spot": "20+ 5 omaggio",
+        "file": "Contratto Confesercenti Firenze 17 05 23.xls",
+        "referente": "Martina Venni"
+      },
+      {
+        "anno": "2023",
+        "data": "29/12/2023",
+        "prezzo": 3600,
+        "spot": "360",
+        "file": "Contratto Confesercenti Firenze 29 12 23.xls",
+        "referente": "Daniele Nardoni"
+      },
+      {
+        "anno": "2023",
+        "data": "17/5/2023",
+        "prezzo": 200,
+        "spot": "20+ 5 omaggio",
+        "file": "Contratto Selva Coop 17 05 23.xls",
+        "referente": "Martina Venni"
+      },
+      {
+        "anno": "2024",
+        "data": "3/7/2024",
+        "prezzo": 3000,
+        "spot": "240",
+        "file": "Contratto Confesercenti Firenze 03.07.24.xls",
+        "referente": "Daniele Nardoni"
+      },
+      {
+        "anno": "2024",
+        "data": "29/12/2023",
+        "prezzo": 3600,
+        "spot": "360",
+        "file": "Contratto Confesercenti Firenze 29 12 23_.xls",
+        "referente": "Daniele Nardoni"
+      },
+      {
+        "anno": "2025",
+        "data": "9/9/2025",
+        "prezzo": 3000,
+        "spot": "240",
+        "file": "Contratto Confesercenti Firenze 09.09.25.xls",
+        "referente": "Daniele Nardoni"
+      },
+      {
+        "anno": "2025",
+        "data": "10/1/2025",
+        "prezzo": 3600,
+        "spot": "360",
+        "file": "Contratto Confesercenti Firenze 10.01.25.xls",
+        "referente": "Daniele Nardoni"
+      },
+      {
+        "anno": "2026",
+        "data": "14/1/2026",
+        "prezzo": 3000,
+        "spot": "360",
+        "file": "Contratto Confesercenti Firenze 14.01.26.xls",
+        "referente": "Daniele Nardoni"
+      }
+    ],
+    "totale_contratti": 9,
+    "ultimo_prezzo": 3000,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "CONFRATERNITA MISERICORDIA MALMANTILE",
+    "referente": "Simona",
+    "indirizzo": "VIA VECCHIA PISANA",
+    "cap": "50055",
+    "citta": "LASTRA A SIGNA",
+    "provincia": "FI",
+    "telefono": "338 3586900",
+    "email": "simona@essetiart.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "24/5/2023",
+        "prezzo": 290,
+        "spot": "36",
+        "file": "Contratto Confraternita Misericordia Malmantile 24 05 23.xls",
+        "referente": "Simona"
+      },
+      {
+        "anno": "2024",
+        "data": "3/5/2024",
+        "prezzo": 290,
+        "spot": "36",
+        "file": "Contratto Confraternita Misericordia Malmantile 03 05 24.xls",
+        "referente": "Simona"
+      },
+      {
+        "anno": "2024",
+        "data": "14/5/2024",
+        "prezzo": 290,
+        "spot": "36",
+        "file": "Contratto Confraternita Misericordia Malmantile 14 05 24.xls",
+        "referente": "Simona"
+      },
+      {
+        "anno": "2026",
+        "data": "13/5/2026",
+        "prezzo": 290,
+        "spot": "36+36 omaggio",
+        "file": "Contratto Confraternita Misericordia Malmantile 13 05 26.xls",
+        "referente": "Simona"
+      }
+    ],
+    "totale_contratti": 4,
+    "ultimo_prezzo": 290,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "UNICOOP FIRENZE",
+    "referente": "MARGHERITA PINI",
+    "indirizzo": "VIA S. REPARATA",
+    "cap": "50129",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "00407780485",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "15/9/2023",
+        "prezzo": 1700,
+        "spot": "120 + 20 omaggio",
+        "file": "Contratto Coop 15 09 23.xls",
+        "referente": "MARGHERITA PINI"
+      },
+      {
+        "anno": "2023",
+        "data": "20/3/2023",
+        "prezzo": 4000,
+        "spot": "250+70 omaggio",
+        "file": "Contratto Coop 20 03 23.xls",
+        "referente": "MARGHERITA PINI"
+      },
+      {
+        "anno": "2023",
+        "data": "27/11/2023",
+        "prezzo": 1700,
+        "spot": "120 + 20 omaggio",
+        "file": "Contratto Coop 27 11 23.xls",
+        "referente": "MARGHERITA PINI"
+      },
+      {
+        "anno": "2023",
+        "data": "28/9/2023",
+        "prezzo": 2000,
+        "spot": "8",
+        "file": "Contratto Coop 50 Anni  28 09 23.xls",
+        "referente": "GIULIO CARAVELLA"
+      },
+      {
+        "anno": "2023",
+        "data": "3/4/2023",
+        "prezzo": 990,
+        "spot": "70+14 OMAGGIO",
+        "file": "Contratto Coop Career Day  03 04 23.xls",
+        "referente": "GIULIO CARAVELLA"
+      },
+      {
+        "anno": "2023",
+        "data": "15/3/2023",
+        "prezzo": 4000,
+        "spot": "425 + 25 omaggio",
+        "file": "Contratto Coop WIP16 03 23 new.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2024",
+        "data": "23/5/2024",
+        "prezzo": 3300,
+        "spot": "280",
+        "file": "Contratto Coop 23 05 24.xls",
+        "referente": "MARGHERITA PINI"
+      },
+      {
+        "anno": "2025",
+        "data": "12/2/2025",
+        "prezzo": 1176,
+        "spot": "140",
+        "file": "Contratto Coop 12.02.25.xls",
+        "referente": "MARGHERITA PINI"
+      }
+    ],
+    "totale_contratti": 8,
+    "ultimo_prezzo": 1176,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "COSTA EDUTAINMENT SPA",
+    "referente": "Valentina Ferrucci",
+    "indirizzo": "Via Ascoli Piceno",
+    "cap": "47838",
+    "citta": "Riccione",
+    "provincia": "RN",
+    "telefono": "",
+    "email": "",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "14/12/2023",
+        "prezzo": 720,
+        "spot": "96",
+        "file": "Contratto Costa 14.12.23 TCM.xls",
+        "referente": "Valentina Ferrucci"
+      },
+      {
+        "anno": "2023",
+        "data": "1/3/2022",
+        "prezzo": 1450,
+        "spot": "78",
+        "file": "Contratto Costa Edutainment 01.03.23.xls",
+        "referente": "Valentina Ferrucci"
+      },
+      {
+        "anno": "2024",
+        "data": "16/10/2024",
+        "prezzo": null,
+        "spot": "96",
+        "file": "Contratto Costa Edutainment 16.10.24 Natale.xls",
+        "referente": "Valentina Ferrucci"
+      },
+      {
+        "anno": "2024",
+        "data": "16/10/2024",
+        "prezzo": 1450,
+        "spot": "516",
+        "file": "Contratto Costa Edutainment 16.10.24.xls",
+        "referente": "Valentina Ferrucci"
+      },
+      {
+        "anno": "2024",
+        "data": "18/1/2024",
+        "prezzo": 1500,
+        "spot": "516",
+        "file": "Contratto Costa Edutainment 18.01.24.xls",
+        "referente": "Valentina Ferrucci"
+      },
+      {
+        "anno": "2024",
+        "data": "25/1/2024",
+        "prezzo": 1450,
+        "spot": "516",
+        "file": "Contratto Costa Edutainment 25.01.24.xls",
+        "referente": "Valentina Ferrucci"
+      },
+      {
+        "anno": "2025",
+        "data": "16/10/2024",
+        "prezzo": null,
+        "spot": "180",
+        "file": "Contratto Costa Edutainment 07.11.25 Natale.xls",
+        "referente": "Valentina Ferrucci"
+      },
+      {
+        "anno": "2025",
+        "data": "10/11/2025",
+        "prezzo": 0,
+        "spot": "180",
+        "file": "Contratto Costa Edutainment 10.11.25 Natale.xls",
+        "referente": "Valentina Ferrucci"
+      },
+      {
+        "anno": "2025",
+        "data": "10/11/2025",
+        "prezzo": 0,
+        "spot": "180",
+        "file": "Contratto Costa Edutainment 11.11.25 Natale.xls",
+        "referente": "Dott.ssa Patrizia Leardini"
+      }
+    ],
+    "totale_contratti": 9,
+    "ultimo_prezzo": 0,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "DELFIN S.R.L.",
+    "referente": "Tommaso Becagli",
+    "indirizzo": "Lungarno Amerigo Vespucci",
+    "cap": "50123",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "3357853463",
+    "email": "",
+    "piva": "07205130482",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "15/11/2023",
+        "prezzo": 500,
+        "spot": "7",
+        "file": "Contratto Delfin Srl Pacchetto Natale 15.11.23.xls",
+        "referente": "Tommaso Becagli"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 500,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ETRURIA LUCE E GAS SPA",
+    "referente": "SIMONE DONATI",
+    "indirizzo": "VIA FOGGINI",
+    "cap": "50142",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "s.donati@etrurialucegas.it",
+    "piva": "01772620496",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "11/4/2023",
+        "prezzo": 1800,
+        "spot": "240+40omaggio",
+        "file": "Contratto Etruria Luce e Gas Spa  12.04.23.xls",
+        "referente": "SIMONE DONATI"
+      },
+      {
+        "anno": "2023",
+        "data": "30/10/2023",
+        "prezzo": 1040,
+        "spot": "100+40omaggio",
+        "file": "Contratto Etruria Luce e Gas Spa 30.10.23 cm.xls",
+        "referente": "SIMONE DONATI"
+      },
+      {
+        "anno": "2024",
+        "data": "3/6/2024",
+        "prezzo": 3300,
+        "spot": "230",
+        "file": "Contratto Etruria Luce e Gas Spa 03.06.24.xls",
+        "referente": "SIMONE DONATI"
+      },
+      {
+        "anno": "2024",
+        "data": "13/3/2024",
+        "prezzo": 1800,
+        "spot": "",
+        "file": "Contratto Etruria Luce e Gas Spa 13.03.24.xls",
+        "referente": "SIMONE DONATI"
+      },
+      {
+        "anno": "2024",
+        "data": "26/6/2024",
+        "prezzo": 300,
+        "spot": "50+",
+        "file": "Contratto Etruria Luce e Gas Spa 26.06.24.xls",
+        "referente": "SIMONE DONATI"
+      },
+      {
+        "anno": "2026",
+        "data": "2/2/2026",
+        "prezzo": 2800,
+        "spot": "280",
+        "file": "Contratto Etruria Luce e Gas Spa 02.02.26.xls",
+        "referente": "SIMONE DONATI"
+      },
+      {
+        "anno": "2026",
+        "data": "9/6/2026",
+        "prezzo": 2800,
+        "spot": "280",
+        "file": "Contratto Etruria Luce e Gas Spa 09.06.26.xls",
+        "referente": "SIMONE DONATI"
+      }
+    ],
+    "totale_contratti": 7,
+    "ultimo_prezzo": 2800,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "FIVAG CISL FIRENZE",
+    "referente": "Donatella Santini",
+    "indirizzo": "B. DEI",
+    "cap": "50127",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "donatella.caf@gmail.com",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "17/1/2023",
+        "prezzo": 1450,
+        "spot": "24",
+        "file": "Contratto Fivag Cisl 1 maggio 17.03.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "12/9/2023",
+        "prezzo": 1450,
+        "spot": "30",
+        "file": "Contratto Fivag Cisl 29 ottobre 12.09.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "12/9/2023",
+        "prezzo": 1350,
+        "spot": "30",
+        "file": "Contratto Fivag Cisl 29 ottobre 13.09.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "17/1/2023",
+        "prezzo": 1350,
+        "spot": "24",
+        "file": "Contratto Fivag Cisl 7 maggio 17.03.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2024",
+        "data": "13/3/2024",
+        "prezzo": 1480,
+        "spot": "36",
+        "file": "Contratto Fivag Cisl 1 maggio 13.03.24.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2024",
+        "data": "25/9/2024",
+        "prezzo": 1480,
+        "spot": "36",
+        "file": "Contratto Fivag Cisl 3 novembre 25.09.24.xls",
+        "referente": "Donatella Santini"
+      },
+      {
+        "anno": "2025",
+        "data": "29/8/2025",
+        "prezzo": 2000,
+        "spot": "60",
+        "file": "Contratto Fivag Cisl 2 novembre 29.08.25.xls",
+        "referente": "Donatella Santini"
+      }
+    ],
+    "totale_contratti": 7,
+    "ultimo_prezzo": 2000,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "FONDAZIONE PUBBLICHE ASSISTENZE - IMPRESA SOCIALE",
+    "referente": "Mattia Perrone",
+    "indirizzo": "Via Bessi",
+    "cap": "50018",
+    "citta": "Scandicci",
+    "provincia": "FI",
+    "telefono": "3429533056",
+    "email": "m.perrone@fondazionepas.it",
+    "piva": "06261980483 - CF. 94212240488",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "19/1/2024",
+        "prezzo": 660,
+        "spot": "132 + 66 omaggio",
+        "file": "Contratto FONDAZIONE PUBBLICHE ASSISTENZE19.01.23.xls",
+        "referente": "Mattia Perrone"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 660,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "FONDAZIONE SISTEMA TOSCANA",
+    "referente": "MARIANGELA DELLA MONICA",
+    "indirizzo": "VIA DUCA D'AOSTA",
+    "cap": "50129",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "05468660484",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "15/9/2023",
+        "prezzo": 600,
+        "spot": "40+20 omaggio",
+        "file": "Contratto Fondazione Sistema Toscana 15 09 23.xls",
+        "referente": "MARIANGELA DELLA MONICA"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 600,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "FORSHIP S.P.A.",
+    "referente": "CRISTINA PIZZUTTI",
+    "indirizzo": "CALATA NORD - PORTO VADO",
+    "cap": "17047",
+    "citta": "VADO LIGURE",
+    "provincia": "SV",
+    "telefono": "",
+    "email": "c.pizzutti@corsicaferries.com",
+    "piva": "01977660925",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "1/6/2023",
+        "prezzo": 2000,
+        "spot": "180",
+        "file": "Contratto Forship Spa 01.06.23.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      },
+      {
+        "anno": "2023",
+        "data": "6/6/2023",
+        "prezzo": 3560,
+        "spot": "39",
+        "file": "Contratto Forship Spa 06.06.2023.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      },
+      {
+        "anno": "2023",
+        "data": "6/6/2023",
+        "prezzo": 3560,
+        "spot": "39",
+        "file": "Contratto Forship Spa 06.06.23.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      },
+      {
+        "anno": "2023",
+        "data": "7/2/2023",
+        "prezzo": 1250,
+        "spot": "72",
+        "file": "Contratto Forship Spa 07.02.23.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      },
+      {
+        "anno": "2024",
+        "data": "14/5/2024",
+        "prezzo": 3478,
+        "spot": "336+84 free",
+        "file": "Contratto Forship Spa 14.05.24.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      },
+      {
+        "anno": "2024",
+        "data": "26/6/2024",
+        "prezzo": 300,
+        "spot": "50+",
+        "file": "Contratto Forship Spa 26.06.24.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      },
+      {
+        "anno": "2024",
+        "data": "31/1/2024",
+        "prezzo": 1180,
+        "spot": "12+4 omaggio",
+        "file": "Contratto Forship Spa 31.0.24.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      },
+      {
+        "anno": "2024",
+        "data": "31/1/2024",
+        "prezzo": 1180,
+        "spot": "12+4 omaggio",
+        "file": "Contratto Forship Spa 31.0.24_agg.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      },
+      {
+        "anno": "2025",
+        "data": "17/12/2024",
+        "prezzo": 1596,
+        "spot": "168",
+        "file": "Contratto Forship Spa 17.12.24.xls",
+        "referente": "CRISTINA PIZZUTTI"
+      }
+    ],
+    "totale_contratti": 9,
+    "ultimo_prezzo": 1596,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "GADGET GROUP SRL",
+    "referente": "DAVIDE MAGALDI",
+    "indirizzo": "VIA SAN ROCCHINO",
+    "cap": "25123",
+    "citta": "BRESCIA",
+    "provincia": "BS",
+    "telefono": "055285030",
+    "email": "magaldi@gadgetgroup.it",
+    "piva": "03379330172",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "16/5/2023",
+        "prezzo": 400,
+        "spot": "6",
+        "file": "Contratto Gadeget Group Srl 16.05.23.xls",
+        "referente": "DAVIDE MAGALDI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "GRUPPO ATTIVITÀ RICREATIVA S.ANGELO",
+    "referente": "Valeriana Del Carlo",
+    "indirizzo": "Via della Chiesa Trav. XVIII",
+    "cap": "55100",
+    "citta": "LUCCA",
+    "provincia": "LU",
+    "telefono": "328 824 7414",
+    "email": "valerianad@virgilio.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "18/5/2023",
+        "prezzo": 400,
+        "spot": "40+ 8 omaggio",
+        "file": "Contratto GAR S.Angelo Lucca 18 05 23.xls",
+        "referente": "Valeriana Del Carlo"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "GHIBE SRL",
+    "referente": "Claudio Bianchi",
+    "indirizzo": "PiazzaSan Pier Maggiore",
+    "cap": "50122",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "3357000825",
+    "email": "c.bianchi@ighibellini.com",
+    "piva": "06587560480",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "30/11/2023",
+        "prezzo": 500,
+        "spot": "7",
+        "file": "Contratto Ghibe Srl Pacchetto Natale 30.11.23.xls",
+        "referente": "Claudio Bianchi"
+      },
+      {
+        "anno": "2024",
+        "data": "24/6/2024",
+        "prezzo": 500,
+        "spot": "",
+        "file": "Contratto Ghibe Srl sponsorizzazione evento 24.06.24.xls",
+        "referente": "Claudio Bianchi"
+      },
+      {
+        "anno": "2025",
+        "data": "5/2/2025",
+        "prezzo": 745.9,
+        "spot": "8",
+        "file": "Contratto Ghibe Srl sponsorizzazione Masti Sciò 21 01 25.xls",
+        "referente": "Claudio Bianchi"
+      },
+      {
+        "anno": "2025",
+        "data": "21/1/2025",
+        "prezzo": 750,
+        "spot": "8",
+        "file": "Contratto Ghibe Srl sponsorizzazione Masti Sciò 21.01.25.xls",
+        "referente": "Claudio Bianchi"
+      }
+    ],
+    "totale_contratti": 4,
+    "ultimo_prezzo": 750,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "GREEN PARK BRAMASOLE",
+    "referente": "Mirella",
+    "indirizzo": "Via del Virginio",
+    "cap": "50056",
+    "citta": "Montelupo F.no",
+    "provincia": "FI",
+    "telefono": "340 782 0277",
+    "email": "parcobramasole@gmail.com",
+    "piva": "06131450485  cod des. M5UXCR1",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "10/7/2023",
+        "prezzo": 270,
+        "spot": "9",
+        "file": "Contratto Green Park Bramasole 07.07.23.xls",
+        "referente": "Mirella"
+      },
+      {
+        "anno": "2023",
+        "data": "10/7/2023",
+        "prezzo": 270,
+        "spot": "9",
+        "file": "Contratto Green Park Bramasole 10.07.23.xls",
+        "referente": "Mirella"
+      },
+      {
+        "anno": "2024",
+        "data": "15/7/2024",
+        "prezzo": 360,
+        "spot": "12",
+        "file": "Contratto Green Park Bramasole 15.07.24.xls",
+        "referente": "Mirella"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 360,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "GRUPPO CINOFILO FIORENTINO",
+    "referente": "Serena Donnini",
+    "indirizzo": "Viale Sanzio",
+    "cap": "50124",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "seredon74@gmail.com",
+    "piva": "CF. 00994410488",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "8/3/2023",
+        "prezzo": 300,
+        "spot": "5",
+        "file": "Contratto Gruppo Cinofilo F.no 08.03.23.xls",
+        "referente": "Serena Donnini"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 300,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ACCADEMIA DEI FORTIFICATI APS",
+    "referente": "Simone Valeri",
+    "indirizzo": "Via Dei Mille",
+    "cap": "56038",
+    "citta": "Ponsacco",
+    "provincia": "PI",
+    "telefono": "",
+    "email": "info@iconcertinellarepubblica.it",
+    "piva": "02478410505",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "30/5/2023",
+        "prezzo": 1285,
+        "spot": "168",
+        "file": "Contratto I concerti della Repubblical 30.05.23.xls",
+        "referente": "Simone Valeri"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1285,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ISTITUTO NAZIONALE DI STUDI SUL RINASCIMENTO",
+    "referente": "Claudia Coluccia",
+    "indirizzo": "PIAZZA DEGLI STROZZI",
+    "cap": "50123",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "claudiac@iris-firenze.org",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "8/2/2023",
+        "prezzo": 1080,
+        "spot": "36",
+        "file": "Contratto Iris Firenze 08.02.23.xls",
+        "referente": "Claudia Coluccia"
+      },
+      {
+        "anno": "2023",
+        "data": "17/1/2023",
+        "prezzo": 216,
+        "spot": "36",
+        "file": "Contratto Iris Firenze 17.01.23.xls",
+        "referente": "Claudia Coluccia"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 216,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "LEGACOOP TOSCANA",
+    "referente": "LETIZIA BOTTINI",
+    "indirizzo": "Largo F.lli Alinari",
+    "cap": "50123",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "lbottini@legacooptoscana.coop",
+    "piva": "C.F. 80006770483",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "8/2/2023",
+        "prezzo": 750,
+        "spot": "96",
+        "file": "Contratto LegaCoop 08.02.23.xls",
+        "referente": "LETIZIA BOTTINI"
+      },
+      {
+        "anno": "2023",
+        "data": "3/5/2024",
+        "prezzo": 700,
+        "spot": "1",
+        "file": "Contratto LegaCoop 17.02.23.xls",
+        "referente": "LETIZIA BOTTINI - MAURIZIO IZZO"
+      },
+      {
+        "anno": "2024",
+        "data": "3/5/2024",
+        "prezzo": 700,
+        "spot": "1",
+        "file": "Contratto LegaCoop 03.05.24.xls",
+        "referente": "LETIZIA BOTTINI - MAURIZIO IZZO"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 700,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "SOCIETÀ CONSORTILE AGRICOLA DI LEGNAIA A RESPONSABILITÀ LIMITATA",
+    "referente": "Fabio Fondatori",
+    "indirizzo": "Masaccio",
+    "cap": "50132",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "marketing@legnaia.it",
+    "piva": "07084710487",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "10/11/2023",
+        "prezzo": 500,
+        "spot": "1",
+        "file": "Contratto Legnaia 10.11.23.xls",
+        "referente": "Fabio Fondatori"
+      },
+      {
+        "anno": "2023",
+        "data": "11/5/2023",
+        "prezzo": 0,
+        "spot": "",
+        "file": "Contratto Legnaia 11.05.23.xls",
+        "referente": "Fabio Fondatori"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 0,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "LUCCA CREA SRL",
+    "referente": "ANNA ANGELICI",
+    "indirizzo": "Corso Garibaldi",
+    "cap": "55100",
+    "citta": "LUCCA",
+    "provincia": "LU",
+    "telefono": "",
+    "email": "",
+    "piva": "01966320465",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "4/4/2023",
+        "prezzo": 200,
+        "spot": "10",
+        "file": "Contratto Lucca Crea  04.04.23.xls",
+        "referente": "ANNA ANGELICI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 200,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "MANE PONTEGGI SRL",
+    "referente": "ANGELO",
+    "indirizzo": "VIA DEI GELLO",
+    "cap": "56038",
+    "citta": "PONSACCO",
+    "provincia": "PI",
+    "telefono": "349/5658436",
+    "email": "maneponteggisrl@gmail.com",
+    "piva": "02444530501",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "11/4/2023",
+        "prezzo": 490,
+        "spot": "50+22 OMAGGIO",
+        "file": "Contratto Mane Ponteggi  11 04 23.xls",
+        "referente": "ANGELO"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 490,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "M.C. MATERASSI",
+    "referente": "Marco ciolini",
+    "indirizzo": "Via Il Prato",
+    "cap": "50123",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "3331774723",
+    "email": "info@mcmaterassi.shop",
+    "piva": "02482580970",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "2/8/2023",
+        "prezzo": "OMAGGIO",
+        "spot": "",
+        "file": "Contratto MC Materassi 02.08.23.xls",
+        "referente": "Marco ciolini"
+      },
+      {
+        "anno": "2023",
+        "data": "4/5/2023",
+        "prezzo": 650,
+        "spot": "130+38 omaggio",
+        "file": "Contratto MC Materassi 04.05.23.xls",
+        "referente": "Marco ciolini"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 650,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "MISERICORDIA DI MASSA MACINAIA E S.GIUSTO DI COMPITO ODV",
+    "referente": "Giacomo Cipollini",
+    "indirizzo": "Via per S.Andrea",
+    "cap": "55012",
+    "citta": "Massa Macinaia",
+    "provincia": "LU",
+    "telefono": "340/4037943",
+    "email": "gia.cipollini@gmail.com",
+    "piva": "00903960466",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "16/6/2023",
+        "prezzo": 450,
+        "spot": "90",
+        "file": "Contratto Mis. di Massa Macinai (Sagra del Fungo Porcino con polenta) 16.06.23.xls",
+        "referente": "Giacomo Cipollini"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 450,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "MYNET SRL",
+    "referente": "Leonardo Liuzzi",
+    "indirizzo": "Viale dei Mille",
+    "cap": "50131",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "liuzzi@gruppomynet.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "5/1/2023",
+        "prezzo": 2200,
+        "spot": "1100",
+        "file": "Contratto Mynet Srl 05.01.23.xls",
+        "referente": "Leonardo Liuzzi"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 2200,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "OSTERIA DEL GALLETTO SNC DI SORDI A. E C.",
+    "referente": "PIETRO MERCATALI",
+    "indirizzo": "VIALA EUROPA UNITA",
+    "cap": "50032",
+    "citta": "BORGO SAN LORENZO",
+    "provincia": "FI",
+    "telefono": "348/3971644",
+    "email": "pietro.mercatali@gmail.com",
+    "piva": "06168780481",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "16/11/2023",
+        "prezzo": 170,
+        "spot": "11",
+        "file": "Contratto Osteria del Galletto  16.11.23.xls",
+        "referente": "PIETRO MERCATALI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 170,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "PANIFICIO RITA RAINONE",
+    "referente": "STEFANO GIUSTI",
+    "indirizzo": "DONINZETTI",
+    "cap": "50018",
+    "citta": "SCANDICCI",
+    "provincia": "FI",
+    "telefono": "347/0484711",
+    "email": "PANIFICIO.RITA@GMAIL.COM",
+    "piva": "06239380485",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "27/3/2023",
+        "prezzo": 620,
+        "spot": "100+24 OMAGGIO",
+        "file": "Contratto Panificio Rita 27.03.23.xls",
+        "referente": "STEFANO GIUSTI"
+      },
+      {
+        "anno": "2023",
+        "data": "15/11/2023",
+        "prezzo": 500,
+        "spot": "7",
+        "file": "Contratto Panificio Rita Pacchetto Ntale 15.11.23.xls",
+        "referente": "STEFANO GIUSTI"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 500,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "PANIFICIO S.R.L.",
+    "referente": "STEFANO GIUSTI",
+    "indirizzo": "DONINZETTI",
+    "cap": "50018",
+    "citta": "SCANDICCI",
+    "provincia": "FI",
+    "telefono": "347/0484711",
+    "email": "PANIFICIO.RITA@GMAIL.COM",
+    "piva": "07145280488",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "16/11/2023",
+        "prezzo": 500,
+        "spot": "7",
+        "file": "Contratto Panificio SRl Pacchetto Ntale 16.11.23.xls",
+        "referente": "STEFANO GIUSTI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 500,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "EATALY FIRENZE",
+    "referente": "MARIA TERESA CAIAZZO",
+    "indirizzo": "VIA DE' MARTELLI",
+    "cap": "50122",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "055/0153610",
+    "email": "m.caiazzo@eataly.it",
+    "piva": "09450580015",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "21/4/2023",
+        "prezzo": 500,
+        "spot": "1",
+        "file": "Contratto Pausini Pack Eataly 21.04.23.xls",
+        "referente": "MARIA TERESA CAIAZZO"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 500,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "POLISPORTIVA BLU ASD",
+    "referente": "Glenda Martelli",
+    "indirizzo": "Via Boncioli",
+    "cap": "50067",
+    "citta": "Rignano sull'Arno",
+    "provincia": "FI",
+    "telefono": "055 8305262 int.222",
+    "email": "glenda.martelli@cte.fi.it",
+    "piva": "06050290482 CF: 94045470484",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "18/10/2023",
+        "prezzo": 400,
+        "spot": "3+2 OMAGGIO",
+        "file": "Contratto POLISPORTIVA BLU ASD 18.10.23.xls",
+        "referente": "Glenda Martelli"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "PROLOCO MONTEREGGIO APS",
+    "referente": "Sandro Fogola",
+    "indirizzo": "VIA DE WITT WALLACE",
+    "cap": "54026",
+    "citta": "MONTEREGGIO",
+    "provincia": "MS",
+    "telefono": "340/9707303",
+    "email": "info@nuvoleamontereggio.it",
+    "piva": "01433460456 + CF 93001140453",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "25/1/2023",
+        "prezzo": 500,
+        "spot": "6",
+        "file": "ContrattO Proloco Montereggio Aps 25.01.23.xls",
+        "referente": "Sandro Fogola"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 500,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "PUBLIACQUA S.P.A",
+    "referente": "Sara Mancini",
+    "indirizzo": "Villamagna",
+    "cap": "50126",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "s.mancini@publiacqua.it",
+    "piva": "05040110487",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "5/5/2023",
+        "prezzo": 2496,
+        "spot": "64",
+        "file": "Contratto Publiacqua 05.05.23.xls",
+        "referente": "Sara Mancini"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 2496,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "SCHWEIZ TOURISMUS",
+    "referente": "Piccarda Frulli",
+    "indirizzo": "Morgartenstrasse",
+    "cap": "8004",
+    "citta": "ZURICH",
+    "provincia": "CH",
+    "telefono": "335/261447",
+    "email": "",
+    "piva": "CHE-108.956.138",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "19/12/2023",
+        "prezzo": 2000,
+        "spot": "17",
+        "file": "Contratto Schweiz Tourismus 19.12.23.xls",
+        "referente": "Piccarda Frulli"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 2000,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "SICREA SRL",
+    "referente": "Maurizio Izzo",
+    "indirizzo": "DI GRAMIGNANO",
+    "cap": "50130",
+    "citta": "Campi bisenzio",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "m.izzo@sicrea.eu",
+    "piva": "0607098048",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "8/3/2023",
+        "prezzo": 1000,
+        "spot": "140 + 28 omaggio",
+        "file": "Contratto Si Crea 08.03.23.xls",
+        "referente": "Maurizio Izzo"
+      },
+      {
+        "anno": "2023",
+        "data": "13/4/2023",
+        "prezzo": 500,
+        "spot": "50 + 13 omaggio",
+        "file": "Contratto Si Crea 13.04.23.xls",
+        "referente": "Maurizio Izzo"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 500,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "FRANCESCO DI FONZO (SPAZIO99)",
+    "referente": "Francesco Di Fonzo",
+    "indirizzo": "Viale De Amicis",
+    "cap": "50137",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "francesco.difo@gmail.com",
+    "piva": "07146530485",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "28/9/2023",
+        "prezzo": 670,
+        "spot": "9",
+        "file": "Contratto Spazio 99i  02 10 23.pdf.xls",
+        "referente": "Francesco Di Fonzo"
+      },
+      {
+        "anno": "2023",
+        "data": "28/9/2023",
+        "prezzo": 670,
+        "spot": "9",
+        "file": "Contratto Spazio 99i  28 09 23.xls",
+        "referente": "Francesco Di Fonzo"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 670,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "SVILUPPO PG SRL",
+    "referente": "MAURIZIO ORLANDINI",
+    "indirizzo": "VIA BARACCA",
+    "cap": "50127",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "3395679463",
+    "email": "maurizio.orlandini@runnerpizza.it",
+    "piva": "05604060482",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "3/8/2023",
+        "prezzo": 2240,
+        "spot": "14 pp al gg",
+        "file": "Contratto Sviluppo PG 03.08.23.xls",
+        "referente": "MAURIZIO ORLANDINI"
+      },
+      {
+        "anno": "2024",
+        "data": "23/2/2023",
+        "prezzo": 2240,
+        "spot": "14 pp al gg",
+        "file": "Contratto Sviluppo PG 23.02.24.xls",
+        "referente": "MAURIZIO ORLANDINI"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 2240,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "SY ALIOU SRL",
+    "referente": "ALIOU",
+    "indirizzo": "B. CIRUINI",
+    "cap": "50051",
+    "citta": "CASTELFIORENTINO",
+    "provincia": "FI",
+    "telefono": "0517/634643",
+    "email": "syaliou@alice.it",
+    "piva": "07174530480",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "7/2/2023",
+        "prezzo": 13500,
+        "spot": "80",
+        "file": "Contratto Sy Aliou 07.02.23.xls",
+        "referente": "ALIOU"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 13500,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "INTO THE MUSIC PRODUCTIONS S.R.L.",
+    "referente": "",
+    "indirizzo": "Strada Militare",
+    "cap": "36057",
+    "citta": "ARCUGNANO",
+    "provincia": "VI",
+    "telefono": "",
+    "email": "symphonikaontherock@gmail.com",
+    "piva": "04466900240",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "12/10/2023",
+        "prezzo": 900,
+        "spot": "80",
+        "file": "Contratto SYMPHONIKA ON THE ROCK 12.10.23.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 900,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "TABLOID SOCIETÀ COOPERATIVA",
+    "referente": "Enrico Agostini",
+    "indirizzo": "Via Giovanni dalle Bande Nere",
+    "cap": "50126",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "05554070481",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "28/11/2023",
+        "prezzo": 1600,
+        "spot": "168+56 omaggio",
+        "file": "Contratto Tabloid 28.11.23.xls",
+        "referente": "Enrico Agostini"
+      },
+      {
+        "anno": "2023",
+        "data": "29/11/2023",
+        "prezzo": 1600,
+        "spot": "168+56 omaggio",
+        "file": "Contratto Tabloid 29.11.23.xls",
+        "referente": "Enrico Agostini"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 1600,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "TINGHI MOTORS SRL",
+    "referente": "EVA SINOSINI - CLAUDIA ZARI",
+    "indirizzo": "VIA LEOPOLDO GIUNTINI",
+    "cap": "50053",
+    "citta": "EMPOLI",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "eva.sinosini@tinghimotors.it",
+    "piva": "00918250481",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "6/10/2023",
+        "prezzo": 1260,
+        "spot": "420",
+        "file": "Contratto TINGHI MOTORS  06.10.23.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2023",
+        "data": "21/4/2023",
+        "prezzo": 800,
+        "spot": "1",
+        "file": "Contratto TINGHI MOTORS  21.04.23.xls",
+        "referente": "EVA SINOSINI - CLAUDIA ZARI"
+      },
+      {
+        "anno": "2024",
+        "data": "8/10/2024",
+        "prezzo": 1260,
+        "spot": "420",
+        "file": "Contratto TINGHI MOTORS  08.10.24.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2025",
+        "data": "7/2/2025",
+        "prezzo": 1260,
+        "spot": "420",
+        "file": "Contratto TINGHI MOTORS  07.02.25.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2025",
+        "data": "10/6/2025",
+        "prezzo": 1260,
+        "spot": "420",
+        "file": "Contratto TINGHI MOTORS  10.06.25.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2025",
+        "data": "12/11/2025",
+        "prezzo": 1260,
+        "spot": "420",
+        "file": "Contratto TINGHI MOTORS  11.11.25.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2026",
+        "data": "11/5/2026",
+        "prezzo": 1260,
+        "spot": "420",
+        "file": "Contratto TINGHI MOTORS  11.05.26.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 7,
+    "ultimo_prezzo": 1260,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "FONDAZIONE DELL'OSPEDALE PEDIATRICO ANNA MEYER ONLUS",
+    "referente": "Giampaolo Donzelli",
+    "indirizzo": "Viale Pieraccini",
+    "cap": "50139",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "055-5662731",
+    "email": "a.benedetti@meyer.it",
+    "piva": "CF. 94080 470480",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "6/4/2023",
+        "prezzo": 1000,
+        "spot": "",
+        "file": "Contratto TO Meryer 06.04.23.xls",
+        "referente": "Giampaolo Donzelli"
+      },
+      {
+        "anno": "2023",
+        "data": "24/3/2023",
+        "prezzo": 1000,
+        "spot": "",
+        "file": "Contratto TO Meryer 24.03.23.xls",
+        "referente": "Giampaolo Donzelli"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "USIP COMITATO DI FIRENZE",
+    "referente": "MARCO CECCANTINI",
+    "indirizzo": "F.BOCCHI",
+    "cap": "50126",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "338/2034106",
+    "email": "m.ceccantini@uisp.it",
+    "piva": "03773990480 - CF. 94044500489",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "16/6/2023",
+        "prezzo": 0,
+        "spot": "200",
+        "file": "Contratto Uisp Firenze (Pavoniere) 16.06.23.xls",
+        "referente": "MARCO CECCANTINI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 0,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "UNICOOP TIRRENO S. C",
+    "referente": "Marco Monti",
+    "indirizzo": "S.S. Aurelia",
+    "cap": "57025",
+    "citta": "Piombino",
+    "provincia": "LI",
+    "telefono": "335/7884196",
+    "email": "daniela.raspo@unicooptirreno.coop.it",
+    "piva": "00103530499",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "15/12/2023",
+        "prezzo": 540,
+        "spot": "72",
+        "file": "Contratto Unicoop Tirreno 15.12.23.xls",
+        "referente": "Marco Monti"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 540,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "UNIONE MONTANA DEI COMUNI DEL MUGELLO",
+    "referente": "Ing. Vincenzo Massaro",
+    "indirizzo": "Via Palmiro Togliatti",
+    "cap": "50032",
+    "citta": "Borgo San Lorenzo",
+    "provincia": "FI",
+    "telefono": "055 84527185",
+    "email": "turismo@uc-mugello.fi.it",
+    "piva": "05207690485",
+    "contratti": [
+      {
+        "anno": "2023",
+        "data": "13/7/2023",
+        "prezzo": 900,
+        "spot": "120+120 omagg",
+        "file": "Contratto Unione Comuni del Mugello 13.07.23.xls",
+        "referente": "Ing. Vincenzo Massaro"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 900,
+    "ultimo_anno": "2023"
+  },
+  {
+    "ditta": "ACQUE SPA",
+    "referente": "Luca Bindi",
+    "indirizzo": "Via Bellatalla",
+    "cap": "56121",
+    "citta": "Ospedaletto",
+    "provincia": "PI",
+    "telefono": "3355647954",
+    "email": "l.bindi@acque.net",
+    "piva": "05175700482",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "15/3/2024",
+        "prezzo": 0,
+        "spot": "10",
+        "file": "Contratto Acque Spa 15.03.2024.xls",
+        "referente": "Luca Bindi"
+      },
+      {
+        "anno": "2025",
+        "data": "17/4/2025",
+        "prezzo": 4000,
+        "spot": "550+150 omaggio",
+        "file": "Contratto Acque Spa 17.04.2025.xls",
+        "referente": "Luca Bindi"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 4000,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "ASD SILLICAGNANA",
+    "referente": "ALESSANDRO",
+    "indirizzo": "VIA SAN MARTINO",
+    "cap": "55038",
+    "citta": "SAN ROMANO IN GARFAGNANA",
+    "provincia": "LU",
+    "telefono": "3463530544",
+    "email": "asdsillicagnana@gmail.com",
+    "piva": "CF 00905430468",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "21/6/2024",
+        "prezzo": 300,
+        "spot": "100",
+        "file": "Contratto Asd Sillicagnana 21.06.24.xls",
+        "referente": "ALESSANDRO"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 300,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "ASFALTI RU.GE SNC",
+    "referente": "DIEGO RUSSO",
+    "indirizzo": "VIA VITTORIO NICCOLI",
+    "cap": "50051",
+    "citta": "CASTELFIORENTINO",
+    "provincia": "FI",
+    "telefono": "3383310392",
+    "email": "asfaltiruge@asfaltiruge.it",
+    "piva": "04502780481",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "9/10/2024",
+        "prezzo": 1935,
+        "spot": "15",
+        "file": "Contratto Asfalti Ru.Ge 09.10.24.xls",
+        "referente": "DIEGO RUSSO"
+      },
+      {
+        "anno": "2024",
+        "data": "21/6/2024",
+        "prezzo": 990,
+        "spot": "305",
+        "file": "Contratto Asfalti Ru.Ge 21.06.24.xls",
+        "referente": "DIEGO RUSSO"
+      },
+      {
+        "anno": "2024",
+        "data": "21/6/2024",
+        "prezzo": 990,
+        "spot": "305",
+        "file": "Contratto Asfalti Ru.Ge 21.06.24_2.xls",
+        "referente": "DIEGO RUSSO"
+      },
+      {
+        "anno": "2025",
+        "data": "28/2/2025",
+        "prezzo": 500,
+        "spot": "20",
+        "file": "Contratto Asfalti Ru.Ge 28.02.25.xls",
+        "referente": "DIEGO RUSSO"
+      },
+      {
+        "anno": "2026",
+        "data": "16/1/2026",
+        "prezzo": 1000,
+        "spot": "6+1",
+        "file": "Contratto Asfalti Ru.Ge 16.01.26.xls",
+        "referente": "DIEGO RUSSO"
+      }
+    ],
+    "totale_contratti": 5,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "ATOM PRODUCTION SOC. COOP. R.L.",
+    "referente": "Alessandro pretelli",
+    "indirizzo": "VIA FOLLONICA",
+    "cap": "51039",
+    "citta": "QUARRATA",
+    "provincia": "PT",
+    "telefono": "3484921741",
+    "email": "info@atomproduction.it",
+    "piva": "01800660472  cod des.G9HZJRW",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "3/6/2024",
+        "prezzo": 1000,
+        "spot": "75+30 omaggio",
+        "file": "Contratto Atom x Coldiretti 03.06.24.xls",
+        "referente": "Alessandro pretelli"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "FONDAZIONE SOLIDARIETÀ CARITAS ONLUS FIRENZE",
+    "referente": "Riccardo Messina",
+    "indirizzo": "De' Pucci",
+    "cap": "50122",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "5/2/2024",
+        "prezzo": 3900,
+        "spot": "200",
+        "file": "Contratto Caritas 05.2.24.xls",
+        "referente": "Riccardo Messina"
+      },
+      {
+        "anno": "2025",
+        "data": "16/1/2025",
+        "prezzo": 4650,
+        "spot": "3",
+        "file": "Contratto Caritas 16.1.25.xls",
+        "referente": "Nicoletta Bazzoffi"
+      },
+      {
+        "anno": "2026",
+        "data": "2/4/2026",
+        "prezzo": 4650,
+        "spot": "3",
+        "file": "Contratto Caritas 02.04.2026.xls",
+        "referente": "Nicoletta Bazzoffi"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 4650,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "ARCIDIOCESI DI FIRENZE - CARITAS DIOCESANA",
+    "referente": "Luca Orsoni",
+    "indirizzo": "PIAZZA SAN GIOVANNI",
+    "cap": "50129",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "orsoni@caritasfirenze.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "17/1/2024",
+        "prezzo": 3300,
+        "spot": "260 + 28 omagg",
+        "file": "Contratto Caritas 17.01.24 Servizio Civile.xls",
+        "referente": "Luca Orsoni"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 3300,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "CLK ITALIA SRL UNINOMINALE",
+    "referente": "Rebecca Fimia",
+    "indirizzo": "Via Marie Curie",
+    "cap": "500051",
+    "citta": "Castelfiorentino",
+    "provincia": "FI",
+    "telefono": "0571 16555.85",
+    "email": "rebecca.fimia@clk-italia.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "17/6/2024",
+        "prezzo": 300,
+        "spot": "50",
+        "file": "Contratto Clk Italia 17.06.24.xls",
+        "referente": "Rebecca Fimia"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 300,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "CLK ITALIA",
+    "referente": "Roberto Tordini",
+    "indirizzo": "Via M. Curie",
+    "cap": "50051",
+    "citta": "Z.I. Malacoda Castelfiorentino",
+    "provincia": "FI",
+    "telefono": "0571 165551",
+    "email": "roberto.tordini@clk-italia.it",
+    "piva": "05906420483",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "24/9/2024",
+        "prezzo": 4500,
+        "spot": "600 + 300 omag",
+        "file": "Contratto Clk Italia 24.09.24.xls",
+        "referente": "Roberto Tordini"
+      },
+      {
+        "anno": "2026",
+        "data": "15/1/2026",
+        "prezzo": 4500,
+        "spot": "900",
+        "file": "Contratto Clk Italia 15.01.26.xls",
+        "referente": "Roberto Tordini"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 4500,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "CONFARTIGIANATO IMPRESE TOSCANA",
+    "referente": "Stefania Salvatici",
+    "indirizzo": "Via Giovanni del Pian dei Carpini",
+    "cap": "50127",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "salvatici@confartigianato.toscana.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "20/2/2023",
+        "prezzo": 315,
+        "spot": "42",
+        "file": "Contratto Confartigianato Imprese Toscana 20.02.24.xls",
+        "referente": "Stefania Salvatici"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 315,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "CSI TOSCANA APS",
+    "referente": "Carlo Paraci",
+    "indirizzo": "Via di Novoli",
+    "cap": "50127",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "3295850206",
+    "email": "toscana.presidente@csi-net.it",
+    "piva": "05319470489",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "25/9/2024",
+        "prezzo": 2000,
+        "spot": "",
+        "file": "Contratto CSI 25.09.24.xls",
+        "referente": "Carlo Paraci"
+      },
+      {
+        "anno": "2025",
+        "data": "11/9/2025",
+        "prezzo": 1300,
+        "spot": "",
+        "file": "Contratto CSI 11.09.25.xls",
+        "referente": "Carlo Faraci"
+      },
+      {
+        "anno": "2025",
+        "data": "11/9/2025",
+        "prezzo": 1300,
+        "spot": "",
+        "file": "Contratto CSI 12.09.25.xls",
+        "referente": "Carlo Faraci"
+      },
+      {
+        "anno": "2025",
+        "data": "25/9/2024",
+        "prezzo": 2000,
+        "spot": "",
+        "file": "Contratto MISERCICORDIA IMPRUNETA 09.04.25.xls",
+        "referente": "Carlo Paraci"
+      },
+      {
+        "anno": "2025",
+        "data": "25/9/2024",
+        "prezzo": 2000,
+        "spot": "",
+        "file": "Contratto MISERCICORDIA IMPRUNETA 25.09.24.xls",
+        "referente": "Carlo Paraci"
+      }
+    ],
+    "totale_contratti": 5,
+    "ultimo_prezzo": 2000,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "EMMEGI SICUREZZA SAS",
+    "referente": "GIORGIO MAGLI",
+    "indirizzo": "GRAN BRETAGNA",
+    "cap": "50126",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "349/8339280",
+    "email": "amministrazione@emmegisicurezza.it",
+    "piva": "04576260485",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "26/11/2024",
+        "prezzo": 3000,
+        "spot": "400+50 Omaggio",
+        "file": "Contratto Emmegi Sicurezza Sas 26.11.24.xls",
+        "referente": "GIORGIO MAGLI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 3000,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "FIESOLE DEMOCRATICA",
+    "referente": "ALESSANDRO PESCI",
+    "indirizzo": "VIA MATTEOTTI",
+    "cap": "50014",
+    "citta": "FIESOLE",
+    "provincia": "FI",
+    "telefono": "3382342394",
+    "email": "fiesoledemocratica@gmail.com",
+    "piva": "CF. 94311750486",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "17/9/2024",
+        "prezzo": 350,
+        "spot": "70",
+        "file": "Contratto Fiesole Democratica 17.09.24.xls",
+        "referente": "ALESSANDRO PESCI"
+      },
+      {
+        "anno": "2025",
+        "data": "27/10/2025",
+        "prezzo": 350,
+        "spot": "72",
+        "file": "Contratto Fiesole Democratica 27.10.25.xls",
+        "referente": "ALESSANDRO PESCI"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 350,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "FIRENZE FIERA SPA",
+    "referente": "Fiamma Domestici",
+    "indirizzo": "P.zza Adua",
+    "cap": "50123",
+    "citta": "FIRENZE",
+    "provincia": "PT",
+    "telefono": "",
+    "email": "",
+    "piva": "04933280481",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "26/2/2024",
+        "prezzo": 1200,
+        "spot": "80",
+        "file": "Contratto Firenze Fiera 26.02.24.xls",
+        "referente": "Fiamma Domestici"
+      },
+      {
+        "anno": "2025",
+        "data": "2/4/2025",
+        "prezzo": 1200,
+        "spot": "80",
+        "file": "Contratto Firenze Fiera 02.04.25.xls",
+        "referente": "Fiamma Domestici"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 1200,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "FONDAZIONE ORCHESTRA REGIONALE TOSCANA",
+    "referente": "BASILE RICCARDO",
+    "indirizzo": "VERDI",
+    "cap": "50122",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "335 387 281",
+    "email": "",
+    "piva": "01774620486",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "26/11/2024",
+        "prezzo": 1000,
+        "spot": "10",
+        "file": "Contratto Fondazione Ort 26.11.24.xls",
+        "referente": "BASILE RICCARDO"
+      },
+      {
+        "anno": "2024",
+        "data": "26/11/2024",
+        "prezzo": 1000,
+        "spot": "10",
+        "file": "Contratto Fondazione Orte 26.11.24.xls",
+        "referente": "BASILE RICCARDO"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "GIULIANO MERLINI",
+    "referente": "",
+    "indirizzo": "Via Antonio Gramsci",
+    "cap": "50012",
+    "citta": "Bagno a Ripoli",
+    "provincia": "FI",
+    "telefono": "3339496198",
+    "email": "giuliano.merlini@fastwebnet.it",
+    "piva": "02187820481 - CF. MRLGLN65R16D612A",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "9/7/2024",
+        "prezzo": 700,
+        "spot": "140",
+        "file": "Contratto Giuliano Merlini.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 700,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "GLSERVIS S.R.L.",
+    "referente": "Mirco Gallus",
+    "indirizzo": "Via Iacopo del Meglio",
+    "cap": "50143",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "mgallus@glservis.it",
+    "piva": "06189410480",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "26/6/2024",
+        "prezzo": 300,
+        "spot": "50+",
+        "file": "Contratto GL Servis 26.06.24.xls",
+        "referente": "Mirco Gallus"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 300,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "IL.  SUPPORTO",
+    "referente": "Chiovitti Giovanni",
+    "indirizzo": "Via Poggio al vento",
+    "cap": "55022",
+    "citta": "Cavriglia",
+    "provincia": "AR",
+    "telefono": "",
+    "email": "chiovittigiovanni@gmail.com",
+    "piva": "02429990514",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "14/3/2024",
+        "prezzo": 600,
+        "spot": "196",
+        "file": "Contratto Il Supporto 14.03.24.xls",
+        "referente": "Chiovitti Giovanni"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 600,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "CONS. DEGLI OPERATORI DEL MERCATO CENTRALE DI SAN LORENZO",
+    "referente": "Linda Papi",
+    "indirizzo": "VIA DELL'ARIENTO",
+    "cap": "50123",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "linda@imagerylab.net",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "7/5/2024",
+        "prezzo": 2200,
+        "spot": "600",
+        "file": "Contratto Mercato Centrale 07.05.24 - anno 2024.xls",
+        "referente": "Linda Papi"
+      },
+      {
+        "anno": "2024",
+        "data": "13/3/2024",
+        "prezzo": 1000,
+        "spot": "",
+        "file": "Contratto Mercato Centrale 13.03.24.xls",
+        "referente": "Linda Papi"
+      },
+      {
+        "anno": "2025",
+        "data": "10/3/2025",
+        "prezzo": 2200,
+        "spot": "600",
+        "file": "Contratto Mercato Centrale 10.03.25 - anno 2025.xls",
+        "referente": "Linda Papi"
+      },
+      {
+        "anno": "2026",
+        "data": "30/3/2026",
+        "prezzo": 2200,
+        "spot": "440+160 omaggio",
+        "file": "Contratto Mercato Centrale 30.03.26 - anno 2026.xls",
+        "referente": "Linda Papi"
+      }
+    ],
+    "totale_contratti": 4,
+    "ultimo_prezzo": 2200,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "MUSEI NAZIONALI DI SIENA",
+    "referente": "Elena Fazz - Annalisa Giovani",
+    "indirizzo": "Via San Pietro",
+    "cap": "53100",
+    "citta": "SIENA",
+    "provincia": "SI",
+    "telefono": "",
+    "email": "annalisa.giovani@cultura.gov.it, elena.fazzi@cultura.gov.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "8/7/2024",
+        "prezzo": 3550,
+        "spot": "150 + 36 omagg",
+        "file": "Contratto Musei Nazionali di Siena 08.07.24.xls",
+        "referente": "Elena Fazz - Annalisa Giovani"
+      },
+      {
+        "anno": "2024",
+        "data": "24/7/2024",
+        "prezzo": 1425,
+        "spot": "150 + 36 omagg",
+        "file": "Contratto Musei Nazionali di Siena 24.07.24.xls",
+        "referente": "Elena Fazz - Annalisa Giovani"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 1425,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "NEL BORGO COMITATO OPERATORI ECONOMICI B.S.L.",
+    "referente": "Francesca Corsi",
+    "indirizzo": "PIAZZA M.LUTHER KING C/O CONFESERCENTI",
+    "cap": "50032",
+    "citta": "BORGO SAN LORENZO",
+    "provincia": "FI",
+    "telefono": "339/1433441",
+    "email": "corsifrancesca72.fc@gmail.com",
+    "piva": "04657770485",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "25/9/2024",
+        "prezzo": 400,
+        "spot": "65",
+        "file": "Contratto Nel Borgo 25.09.24.xls",
+        "referente": "Francesca Corsi"
+      },
+      {
+        "anno": "2025",
+        "data": "18/11/2025",
+        "prezzo": 400,
+        "spot": "40",
+        "file": "Contratto Nel Borgo 17.11.25.xls",
+        "referente": "Francesca Corsi"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "CONSORZIO PORTA A MARE",
+    "referente": "Gabriele Giuntini",
+    "indirizzo": "VIA FURIO DIAZ",
+    "cap": "57123",
+    "citta": "LIVORNO",
+    "provincia": "LI",
+    "telefono": "",
+    "email": "Gabriele.Giuntini@gruppoigd.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "10/5/2024",
+        "prezzo": 1500,
+        "spot": "12",
+        "file": "Contratto Porta a Mare 10.05.24.xls",
+        "referente": "Gabriele Giuntini"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "PREPARATORI D'UVA SRL",
+    "referente": "Elisa Portelli",
+    "indirizzo": "VIA PAPA GIOVANNI XXIII",
+    "cap": "33040",
+    "citta": "CORNO DI ROSAZZO",
+    "provincia": "UD",
+    "telefono": "",
+    "email": "elisa@simonitesirch.it",
+    "piva": "02298100302",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "20/2/2023",
+        "prezzo": 1000,
+        "spot": "",
+        "file": "Contratto PREPARATORI D'UVA 20.02.24.xls",
+        "referente": "Elisa Portelli"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2024"
+  },
+  {
+    "ditta": "RHAETISCHE BAHN AG",
+    "referente": "ENRICO BERNASCONI",
+    "indirizzo": "KREDITOREN BAHNOFSTRASSE",
+    "cap": "CH 7001",
+    "citta": "CHUR - CH",
+    "provincia": "Pr.",
+    "telefono": "",
+    "email": "Enrico.Bernasconi@rhb.ch",
+    "piva": "CHE 105956490",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "28/2/2024",
+        "prezzo": 6500,
+        "spot": "600",
+        "file": "Contratto Rhaetische Bahn 28.02.24.xls",
+        "referente": "ENRICO BERNASCONI"
+      },
+      {
+        "anno": "2025",
+        "data": "12/2/2025",
+        "prezzo": 6500,
+        "spot": "600",
+        "file": "Contratto Rhaetische Bahn 12.02.25.xls",
+        "referente": "ENRICO BERNASCONI"
+      },
+      {
+        "anno": "2025",
+        "data": "13/2/2025",
+        "prezzo": 5500,
+        "spot": "600",
+        "file": "Contratto Rhaetische Bahn 13.02.25.xls",
+        "referente": "ENRICO BERNASCONI"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 5500,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "TOSCANA AEROPORTI S.P.A.",
+    "referente": "FEDERICO BARRACO",
+    "indirizzo": "VIA DEL TERMINE",
+    "cap": "50127",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "366/6775746",
+    "email": "Federico.Barraco@toscana-aeroporti.com",
+    "piva": "00403110505",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "2/7/2024",
+        "prezzo": 300,
+        "spot": "50+",
+        "file": "Contratto Toscana Aereoporti 02.07.24.xls",
+        "referente": "FEDERICO BARRACO"
+      },
+      {
+        "anno": "2025",
+        "data": "27/1/2025",
+        "prezzo": 5000,
+        "spot": "530",
+        "file": "Contratto Toscana Aereoporti 27.01.25.xls",
+        "referente": "FEDERICO BARRACO"
+      },
+      {
+        "anno": "2025",
+        "data": "28/1/2025",
+        "prezzo": 5000,
+        "spot": "330+120 free",
+        "file": "Contratto Toscana Aereoporti 28.01.25.xls",
+        "referente": "FEDERICO BARRACO"
+      },
+      {
+        "anno": "2025",
+        "data": "10/4/2025",
+        "prezzo": 600,
+        "spot": "5",
+        "file": "Contratto Toscana Aereoporti Notte Rosa 10.04.25.xls",
+        "referente": "FEDERICO BARRACO"
+      },
+      {
+        "anno": "2026",
+        "data": "2/4/2026",
+        "prezzo": 5000,
+        "spot": "350+150 free",
+        "file": "Contratto Toscana Aereoporti 02.04.26.xls",
+        "referente": "FEDERICO BARRACO"
+      }
+    ],
+    "totale_contratti": 5,
+    "ultimo_prezzo": 5000,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "UNIONE PROVINCIALE AGRICOLTORI DI SIENA",
+    "referente": "Carlotta Lettieri",
+    "indirizzo": "Via Massetana Romana",
+    "cap": "53100",
+    "citta": "Siena",
+    "provincia": "SI",
+    "telefono": "3337237000",
+    "email": "ufficiostampa@confagricolturasiena.it",
+    "piva": "00844790527  CF. 92005600520",
+    "contratti": [
+      {
+        "anno": "2024",
+        "data": "1/3/2024",
+        "prezzo": 2500,
+        "spot": "6+1 omaggio",
+        "file": "Contratto UPA Siena 01.03.24.xls",
+        "referente": "Carlotta Lettieri"
+      },
+      {
+        "anno": "2025",
+        "data": "2/4/2025",
+        "prezzo": 2049.18,
+        "spot": "6",
+        "file": "Contratto UPA Siena 02.04.25.xls",
+        "referente": "Carlotta Lettieri"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 2049.18,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "ANTICO FATTORE SRL",
+    "referente": "Giacomo",
+    "indirizzo": "Via Lambertesca",
+    "cap": "50122",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "Info@anticofattore.it",
+    "piva": "0692610483",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "7/10/2025",
+        "prezzo": 3000,
+        "spot": "",
+        "file": "Contratto Antico Fattore 07.10.25.xls",
+        "referente": "Giacomo"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 3000,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "BRANDINI SPA",
+    "referente": "MATTEO COSTA",
+    "indirizzo": "ARTURO CHIARI",
+    "cap": "50127",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "matteo.costa@brandini.it",
+    "piva": "393420484",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "4/4/2025",
+        "prezzo": 420,
+        "spot": "84",
+        "file": "Contratto Brandini 04 04 25.xls",
+        "referente": "MATTEO COSTA"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 420,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "CNA TOSCANA",
+    "referente": "GIULIANA CANTINI",
+    "indirizzo": "VIA ALAMANNI",
+    "cap": "50123",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "055-0192944",
+    "email": "comunicazione@cnatoscana.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "9/4/2025",
+        "prezzo": 2000,
+        "spot": "4",
+        "file": "Contratto CNA TOSCANA  2 09.04.25.xls",
+        "referente": "GIULIANA CANTINI"
+      },
+      {
+        "anno": "2025",
+        "data": "3/4/2025",
+        "prezzo": 3000,
+        "spot": "4",
+        "file": "Contratto CNA TOSCANA 03.04.25.xls",
+        "referente": "GIULIANA CANTINI"
+      },
+      {
+        "anno": "2025",
+        "data": "9/4/2025",
+        "prezzo": 1000,
+        "spot": "2",
+        "file": "Contratto CNA TOSCANA 1 09.04.25.xls",
+        "referente": "GIULIANA CANTINI"
+      }
+    ],
+    "totale_contratti": 3,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "DEYAF DI BARRIOS CLARISSA",
+    "referente": "",
+    "indirizzo": "",
+    "cap": "CAP",
+    "citta": "Città",
+    "provincia": "Pr.",
+    "telefono": "",
+    "email": "",
+    "piva": "07285730482",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "3/6/2024",
+        "prezzo": 200,
+        "spot": "20 + 20 omaggio",
+        "file": "Contratto Deyaf Bozza.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 200,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "EUROEDILE SRL",
+    "referente": "RICCARDO FERRADINI",
+    "indirizzo": "VIA DELLA TORRE",
+    "cap": "50135",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "329 231 2532",
+    "email": "riccardo@euroedile.com",
+    "piva": "4745880486",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "14/11/2025",
+        "prezzo": null,
+        "spot": "",
+        "file": "Contratto Euroedile 14.11.25.xls",
+        "referente": "RICCARDO FERRADINI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": null,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "FLASHBACK - ASSOCIAZIONE CULTURALE DI RETRO-COMPUTING",
+    "referente": "Manuele Cambi",
+    "indirizzo": "Via del Fonditore",
+    "cap": "58022",
+    "citta": "FOLLONICA",
+    "provincia": "GR",
+    "telefono": "",
+    "email": "info@flashbackmuseum.it",
+    "piva": "01770190534      P.IVA 01770190534",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "25/9/2025",
+        "prezzo": 270,
+        "spot": "RETE",
+        "file": "Contratto Flashbackmuseum 25.09.25.xls",
+        "referente": "Manuele Cambi"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 270,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "FOLLOMIX ASSOCIAZIONE CULTURALE",
+    "referente": "Francesco Bertelli",
+    "indirizzo": "Via Fratelli Lumière",
+    "cap": "58022",
+    "citta": "FOLLONICA",
+    "provincia": "GR",
+    "telefono": "",
+    "email": "francescobertelli89brt@gmail.com",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "16/9/2025",
+        "prezzo": 420,
+        "spot": "RETE",
+        "file": "Contratto Follomix 16.09.25.xls",
+        "referente": "Francesco Bertelli"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 420,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "FONDAZIONE LIVORNO EURO MEDITERRANEA",
+    "referente": "Gabriele Benucci",
+    "indirizzo": "LARGO DEL CISTERNINO",
+    "cap": "57123",
+    "citta": "LIVORNO",
+    "provincia": "LI",
+    "telefono": "348 2602993",
+    "email": "gabriele.benucci@fondazionelem.it",
+    "piva": "01955740491 - CF 01387130493",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "11/11/2025",
+        "prezzo": 750,
+        "spot": "100",
+        "file": "Contratto Fondazione LEM 11.11.25.xls",
+        "referente": "Gabriele Benucci"
+      },
+      {
+        "anno": "2025",
+        "data": "11/11/2025",
+        "prezzo": 750,
+        "spot": "100",
+        "file": "Contratto Fondazione LEM 19.11.25.xls",
+        "referente": "Gabriele Benucci"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 750,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "HICARE SURGERY SRL",
+    "referente": "Emanuele Piombanti",
+    "indirizzo": "Via Gramsci",
+    "cap": "50055",
+    "citta": "LASTRA A SIGNA",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "amministrazione@hicaresurgery.com",
+    "piva": "06854070486",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "2/10/2025",
+        "prezzo": 800,
+        "spot": "4",
+        "file": "Contratto HiCare Surgery 02.10.25.xls",
+        "referente": "Emanuele Piombanti"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 800,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "LAS TAPAS SRLS",
+    "referente": "CASAROSA CLAUDIO",
+    "indirizzo": "VIA PISACANE",
+    "cap": "56025",
+    "citta": "PONTEDERA",
+    "provincia": "PI",
+    "telefono": "3482481628",
+    "email": "helly.panda23@gmail.com",
+    "piva": "02469510503",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "5/2/2025",
+        "prezzo": 240,
+        "spot": "8",
+        "file": "Contratto Las Tapas Srls 05.02.25.xls",
+        "referente": "CASAROSA CLAUDIO"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 240,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "LIBÒ DI LIRIO MANGALAVITI",
+    "referente": "Lirio Mangalaviti",
+    "indirizzo": "Via Passavanti",
+    "cap": "50133",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "3382342394",
+    "email": "lirio.lm@gmail.com",
+    "piva": "0 6 3 3 4 9 4 0 48 0",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "27/10/2025",
+        "prezzo": 350,
+        "spot": "72",
+        "file": "Contratto Libò 29.10.25.xls",
+        "referente": "Lirio Mangalaviti"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 350,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "VENERABILE CONFRATERNITA DI MISERICORDIA DI MPRUNETA",
+    "referente": "",
+    "indirizzo": "Piazza Accursio da Bagnolo",
+    "cap": "50023",
+    "citta": "IMPRUNETA",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "01104090483",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "4/4/2025",
+        "prezzo": 1600,
+        "spot": "",
+        "file": "Contratto MISERICORDIA IMPRUNETA 04.04.25.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1600,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "ISTITUTO MODARTECH SRL",
+    "referente": "JACOPO CARLESI",
+    "indirizzo": "VIALE RINALDO PIAGGIO",
+    "cap": "56025",
+    "citta": "PONTEDERA",
+    "provincia": "PI",
+    "telefono": "",
+    "email": "jacopo@jacopocarlesi.com",
+    "piva": "01846640504",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "15/7/2025",
+        "prezzo": 600,
+        "spot": "6",
+        "file": "Contratto Modartech 15.07.25.xls",
+        "referente": "JACOPO CARLESI"
+      },
+      {
+        "anno": "2026",
+        "data": "8/6/2026",
+        "prezzo": 600,
+        "spot": "6",
+        "file": "Contratto Modartech 18.06.26.xls",
+        "referente": "JACOPO CARLESI"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 600,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "MUSETTI S.A.S. DI MUSETTI MARIO E MARIA ROSA E C.",
+    "referente": "MARIO MUSETTI",
+    "indirizzo": "VIA VITTORIO VENETO",
+    "cap": "55100",
+    "citta": "LUCCA",
+    "provincia": "LU",
+    "telefono": "",
+    "email": "info@umbertomusetti.it",
+    "piva": "01751210467",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "18/7/2025",
+        "prezzo": 715,
+        "spot": "140",
+        "file": "Contratto Musetti 18.07.25.xls",
+        "referente": "MARIO MUSETTI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 715,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "L’INCANTO DI BOCCADARNO",
+    "referente": "Fabrizio Fontani",
+    "indirizzo": "Via Barbolani",
+    "cap": "56128",
+    "citta": "Marina di Pisa",
+    "provincia": "PI",
+    "telefono": "",
+    "email": "info@lincantodiboccadarno.it",
+    "piva": "01452390501",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "15/4/2025",
+        "prezzo": 1500,
+        "spot": "50",
+        "file": "Contratto Notte Rosa Fabrizio Fontani 15.04.25.xls",
+        "referente": "Fabrizio Fontani"
+      },
+      {
+        "anno": "2025",
+        "data": "15/4/2025",
+        "prezzo": 1500,
+        "spot": "50",
+        "file": "Contratto Notte Rosa Fabrizio Fontani 16.04.25.xls",
+        "referente": "Fabrizio Fontani"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "GEOFOR PATRIMONIO SRL",
+    "referente": "Domenico Bechini",
+    "indirizzo": "Viale America",
+    "cap": "56025",
+    "citta": "Pontedera",
+    "provincia": "PI",
+    "telefono": "",
+    "email": "domenico.bechini@gmail.com",
+    "piva": "01751030501",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "17/4/2025",
+        "prezzo": 1500,
+        "spot": "50",
+        "file": "Contratto Notte Rosa Geofor Patrimonio 17.04.25.xls",
+        "referente": "Domenico Bechini"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "SAN ROSSORE SPORT VILLAGE SRL",
+    "referente": "",
+    "indirizzo": "viale delle Cascine",
+    "cap": "CAP",
+    "citta": "Pisa",
+    "provincia": "PI",
+    "telefono": "",
+    "email": "",
+    "piva": "02337100503",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "10/4/2025",
+        "prezzo": 1500,
+        "spot": "50",
+        "file": "Contratto Notte Rosa San Rossore Sport Village 10.04.25.xls",
+        "referente": ""
+      },
+      {
+        "anno": "2025",
+        "data": "10/4/2025",
+        "prezzo": 1500,
+        "spot": "50",
+        "file": "Contratto Notte Rosa San Rossore Sport Village 15.04.25.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "PROMOLUCCA EVENTI SRLS",
+    "referente": "Davide Carpeggiani",
+    "indirizzo": "Via Aurelia",
+    "cap": "19038",
+    "citta": "Sarzana",
+    "provincia": "SP",
+    "telefono": "392 72 533 25",
+    "email": "tattoo@promolucca.it",
+    "piva": "01485610115",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "21/1/2025",
+        "prezzo": 400,
+        "spot": "140",
+        "file": "Contratto Promolucca Eventi 21.01.25.xls",
+        "referente": "Davide Carpeggiani"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "RISTORANTE SOLDI DEI CAMPAGNOLI SRL",
+    "referente": "Luigi Matteini",
+    "indirizzo": "Via Di Montechiaro",
+    "cap": "51100",
+    "citta": "PONTELUNGO",
+    "provincia": "PT",
+    "telefono": "3428530777",
+    "email": "luigimatteini@libero.it",
+    "piva": "02002680474",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "7/11/2025",
+        "prezzo": 1000,
+        "spot": "200",
+        "file": "Contratto Rist. Soldi dei campagnoli 07.11.25.xls",
+        "referente": "Luigi Matteini"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1000,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "TERRE DI MEZZO SRL",
+    "referente": "MARGHERITA PINI",
+    "indirizzo": "VIA VENTISETTE APRILE",
+    "cap": "50129",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "06786560489",
+    "contratti": [
+      {
+        "anno": "2025",
+        "data": "12/2/2025",
+        "prezzo": 1176,
+        "spot": "70",
+        "file": "Contratto Terre di Mezzo 12.02.25.xls",
+        "referente": "MARGHERITA PINI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1176,
+    "ultimo_anno": "2025"
+  },
+  {
+    "ditta": "SOCIETA' G.D.J. DI AIELLO CINZIA & SAS",
+    "referente": "JACOPO",
+    "indirizzo": "VIA CARDUCCI",
+    "cap": "58022",
+    "citta": "FOLLONICA",
+    "provincia": "GR",
+    "telefono": "339 777 2890",
+    "email": "Alohabeach@live.it",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "13/4/2026",
+        "prezzo": 1500,
+        "spot": "5",
+        "file": "Contratto Aloha13.04.2026.xls",
+        "referente": "JACOPO"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "ASD MARATONA MUGELLO",
+    "referente": "Martina Capannoli Gherardi",
+    "indirizzo": "Piazza del Popolo",
+    "cap": "50032",
+    "citta": "BORGO SAN LORENZO",
+    "provincia": "FI",
+    "telefono": "339 228 9586",
+    "email": "maratonamugello@gmail.com",
+    "piva": "06195870487   CF 90026690488",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "19/5/2026",
+        "prezzo": 400,
+        "spot": "168",
+        "file": "Contratto ASD Maratona Mugello 19.05.26.xls",
+        "referente": "Martina Capannoli Gherardi"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "CAFFETTERIE NANNINI SRL",
+    "referente": "GIOVANNI PALUMBO",
+    "indirizzo": "strada massetana romana",
+    "cap": "53100",
+    "citta": "SIENA",
+    "provincia": "SI",
+    "telefono": "333 531 6271",
+    "email": "Giovanni.palumbo@faroaltospa.it",
+    "piva": "07877270723",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "12/1/2026",
+        "prezzo": 160,
+        "spot": "40",
+        "file": "Contratto Caffè Nannini 12.01.26.xls",
+        "referente": "GIOVANNI PALUMBO"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 160,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "JACOPO CARLESI",
+    "referente": "JACOPO CARLESI",
+    "indirizzo": "VIA DELLA MADONNA DELLE GRAZIE",
+    "cap": "50135",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "3334969766",
+    "email": "jacopo@jacopocarlesi.com",
+    "piva": "IT06068580486",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "5/2/2026",
+        "prezzo": 250,
+        "spot": "2",
+        "file": "Contratto Carlesi  (Immagine Italia & Co.) 02.02.26.xls",
+        "referente": "JACOPO CARLESI"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 250,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "CENTRO CAMERETTE DI GIOIA S.R.L.S",
+    "referente": "Angela",
+    "indirizzo": "Via Francesco Baracca,",
+    "cap": "50127",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "055 3875072",
+    "email": "centrocamerettefirenze@gmail.com",
+    "piva": "03022880805",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "2/2/2026",
+        "prezzo": 1640,
+        "spot": "320",
+        "file": "Contratto Centro Camerette 02.02.26.xls",
+        "referente": "Angela"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1640,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "GARAGE LA QUERCE S.R.L",
+    "referente": "Andrea Benes",
+    "indirizzo": "frà Jacopo Passavanti",
+    "cap": "50133",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "55576526",
+    "email": "garagelaquerce@gmail.com",
+    "piva": "00493660484",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "15/1/2026",
+        "prezzo": 3000,
+        "spot": "12",
+        "file": "Contratto Garage La Querce 15.01.26.xls",
+        "referente": "Andrea Benes"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 3000,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "FRANCESCO MOSCA",
+    "referente": "Antonietta Mosca",
+    "indirizzo": "Di Carcherì",
+    "cap": "50020",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "0571670950",
+    "email": "info@moscafrancesco.it",
+    "piva": "01379700485",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "22/1/2026",
+        "prezzo": 1500,
+        "spot": "177",
+        "file": "Contratto Mosca Francesco 22.01.26.xls",
+        "referente": "Antonietta Mosca"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "SIDICOPY SRL",
+    "referente": "ALESSIO OSVALDI",
+    "indirizzo": "V.LE BELFIORE",
+    "cap": "50144",
+    "citta": "FIRENZE",
+    "provincia": "FI",
+    "telefono": "349 781 5212",
+    "email": "alessio.osvaldi@sidicopy.it",
+    "piva": "05079720487",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "16/2/2026",
+        "prezzo": 3870,
+        "spot": "30",
+        "file": "Contratto Sidicopy 16.02.26.xls",
+        "referente": "ALESSIO OSVALDI"
+      },
+      {
+        "anno": "2026",
+        "data": "16/2/2026",
+        "prezzo": 3870,
+        "spot": "30",
+        "file": "Contratto Sidicopy 16.02.26_agg.xls",
+        "referente": "ALESSIO OSVALDI"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 3870,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "I RAGAZZI DI SIPARIO ONLUS",
+    "referente": "Marco",
+    "indirizzo": "VIA ARETINA",
+    "cap": "50136",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "",
+    "email": "",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "1/4/2026",
+        "prezzo": 1500,
+        "spot": "300",
+        "file": "Contratto Sipario 01.04.26.xls",
+        "referente": "Marco"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "CONSEJERÍA DE TURISMO EN ROMA",
+    "referente": "",
+    "indirizzo": "Via del Mortaro",
+    "cap": "00187",
+    "citta": "Roma",
+    "provincia": "RM",
+    "telefono": "",
+    "email": "Arturo.Escudero@tourspain.es",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "13/4/2026",
+        "prezzo": 1500,
+        "spot": "",
+        "file": "Contratto Volotea Oviedo13.04.2026.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "CONTURSA\nCONGRESOS Y TURISMO DE SEVILLA, S.A",
+    "referente": "",
+    "indirizzo": "Avda Alcalde Luis Uruñuela",
+    "cap": "41020",
+    "citta": "Sevilla",
+    "provincia": "Pr.",
+    "telefono": "",
+    "email": "",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "13/4/2026",
+        "prezzo": 1500,
+        "spot": "",
+        "file": "Contratto Volotea Siviglia13.04.2026.xls",
+        "referente": ""
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 1500,
+    "ultimo_anno": "2026"
+  }
+]

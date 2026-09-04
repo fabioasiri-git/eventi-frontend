@@ -1,6 +1,32 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import storicoClientiData from '../data/storico_clienti.json';
+
+interface HistoricalContract {
+  anno: string;
+  data: string;
+  prezzo: number | string;
+  spot: string;
+  file: string;
+  referente: string;
+}
+
+interface HistoricalClient {
+  ditta: string;
+  referente: string;
+  indirizzo: string;
+  cap: string;
+  citta: string;
+  provincia: string;
+  telefono: string;
+  email: string;
+  piva: string;
+  contratti: HistoricalContract[];
+  totale_contratti: number;
+  ultimo_prezzo: number | string;
+  ultimo_anno: string;
+}
 
 interface LeadRow {
   id?: number | string;
@@ -76,6 +102,44 @@ export default function LeadEngineDashboard() {
 
   const [barterRadio, setBarterRadio] = useState('');
   const [barterAscoltatori, setBarterAscoltatori] = useState('');
+
+  // Ricerca e Autocomplete Storico Contratti (126 clienti / 267 contratti)
+  const [selectedHistory, setSelectedHistory] = useState<HistoricalClient | null>(null);
+  const [historySuggestions, setHistorySuggestions] = useState<HistoricalClient[]>([]);
+  const [showHistorySuggestions, setShowHistorySuggestions] = useState(false);
+
+  function handleClientNameChange(val: string) {
+    setQNome(val);
+    if (val.trim().length >= 2) {
+      const q = val.toLowerCase();
+      const matches = (storicoClientiData as HistoricalClient[]).filter(c => 
+        c.ditta.toLowerCase().includes(q) || 
+        (c.referente && c.referente.toLowerCase().includes(q)) ||
+        (c.citta && c.citta.toLowerCase().includes(q))
+      );
+      setHistorySuggestions(matches.slice(0, 8));
+      setShowHistorySuggestions(true);
+    } else {
+      setShowHistorySuggestions(false);
+      setHistorySuggestions([]);
+    }
+  }
+
+  function selectHistoricalClient(client: HistoricalClient) {
+    setSelectedHistory(client);
+    setQNome(client.ditta);
+    setQReferente(client.referente || '');
+    setQComune(client.citta || '');
+    setQProvincia(client.provincia || '');
+    setQPiva(client.piva || '');
+    setQEmail(client.email || '');
+    setQTelefono(client.telefono || '');
+    setShowHistorySuggestions(false);
+
+    if (client.ultimo_prezzo && !isNaN(Number(client.ultimo_prezzo))) {
+      setSpotValore(Number(client.ultimo_prezzo));
+    }
+  }
 
   // Bozza Contratto Monte Serra State
   const [contractData, setContractData] = useState({
@@ -154,7 +218,7 @@ Resto a disposizione per qualsiasi chiarimento sui dettagli del piano di trasmis
 
 Un cordiale saluto,
 Fabio Asiri — Direzione Commerciale Radio Toscana
-Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
+Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
     } else if (step === 2) {
       setRemindSubject(`Radio Toscana — Urgenza Disponibilità Palinsesto Settembre (${clientName})`);
       setRemindBody(`Gentile Referente di ${clientName},
@@ -167,7 +231,7 @@ Resto a Sua disposizione anche telefonicamente per confermare i dettagli.
 
 Cordiali saluti,
 Fabio Asiri — Direzione Commerciale Radio Toscana
-Tel: 334/8424204`);
+Tel: 347/6818595`);
     } else {
       setRemindSubject(`Radio Toscana — Aggiornamento Pratica Commerciale ${clientName}`);
       setRemindBody(`Gentile Referente di ${clientName},
@@ -179,7 +243,7 @@ Qualora desiderasse riattivare la pianificazione o valutare una diversa formula,
 RingraziandoLa per il tempo dedicatoci, porgo i miei più cordiali saluti.
 
 Fabio Asiri — Direzione Commerciale Radio Toscana
-Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
+Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
     }
   }
 
@@ -493,25 +557,142 @@ Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
               </div>
             </div>
 
-            {/* DATI CLIENTE */}
+            {/* DATI CLIENTE CON AUTOCOMPLETE DA STORICO CONTRATTI */}
+            <div style={{ position: 'relative', marginBottom: '12px' }}>
+              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Nome Cliente / Azienda (Cerca nei 267 Contratti Storici)</span>
+                {selectedHistory && (
+                  <span style={{ color: 'var(--accent-green)', fontSize: '11px', fontWeight: 800 }}>
+                    ✓ Cliente Storico Trovato ({selectedHistory.totale_contratti} contratti registrati)
+                  </span>
+                )}
+              </label>
+              <input 
+                type="text" 
+                className="form-input" 
+                placeholder="Es. Coldiretti, Tinghi Motors, Alia, Artex, Misericordia..."
+                value={qNome} 
+                onChange={e => handleClientNameChange(e.target.value)}
+                onFocus={() => { if (qNome.length >= 2) setShowHistorySuggestions(true); }}
+              />
+
+              {/* DROPDOWN AUTOCOMPLETE SUGGERIMENTI */}
+              {showHistorySuggestions && historySuggestions.length > 0 && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  zIndex: 999,
+                  background: '#1e293b',
+                  border: '1px solid #38bdf8',
+                  borderRadius: '8px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.6)',
+                  maxHeight: '260px',
+                  overflowY: 'auto',
+                  marginTop: '4px'
+                }}>
+                  {historySuggestions.map((c, idx) => (
+                    <div 
+                      key={idx}
+                      onClick={() => selectHistoricalClient(c)}
+                      style={{
+                        padding: '10px 14px',
+                        borderBottom: '1px solid rgba(255,255,255,0.05)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(56,189,248,0.15)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 800, color: '#f8fafc', fontSize: '13px' }}>{c.ditta}</div>
+                        <div style={{ fontSize: '11px', color: '#94a3b8' }}>
+                          👤 {c.referente || 'N/D'} | 📍 {c.citta} ({c.provincia}) | ✉️ {c.email || 'N/D'}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{ 
+                          fontSize: '11px', 
+                          background: 'rgba(34,197,94,0.2)', 
+                          color: '#4ade80', 
+                          padding: '3px 8px', 
+                          borderRadius: '4px',
+                          fontWeight: 700 
+                        }}>
+                          {c.totale_contratti} contr. | Ultimo € {c.ultimo_prezzo || 'N/D'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="form-group">
-              <div>
-                <label className="form-label">Nome Cliente / Azienda</label>
-                <input type="text" className="form-input" value={qNome} onChange={e => setQNome(e.target.value)} />
-              </div>
               <div>
                 <label className="form-label">Referente Commerciale Cliente</label>
                 <input type="text" className="form-input" value={qReferente} onChange={e => setQReferente(e.target.value)} />
               </div>
               <div>
                 <label className="form-label">Comune &amp; Provincia</label>
-                <input type="text" className="form-input" value={`${qComune} (${qProvincia})`} onChange={e => setQComune(e.target.value)} />
+                <input type="text" className="form-input" value={qComune ? `${qComune} (${qProvincia})` : ''} onChange={e => setQComune(e.target.value)} />
               </div>
               <div>
                 <label className="form-label">Partita IVA / SDI</label>
-                <input type="text" className="form-input" value={`${qPiva} / ${qSdi}`} onChange={e => setQPiva(e.target.value)} />
+                <input type="text" className="form-input" value={qPiva ? `${qPiva} / ${qSdi}` : ''} onChange={e => setQPiva(e.target.value)} />
+              </div>
+              <div>
+                <label className="form-label">Recapiti Diretti (Tel / Email)</label>
+                <input type="text" className="form-input" value={`${qTelefono} | ${qEmail}`} onChange={e => setQTelefono(e.target.value)} />
               </div>
             </div>
+
+            {/* SEZIONE SPECIALE: SCHEDA STORICO CONTRATTI TROVATI */}
+            {selectedHistory && selectedHistory.contratti && selectedHistory.contratti.length > 0 && (
+              <div style={{
+                background: 'rgba(34, 197, 94, 0.08)',
+                border: '1px solid rgba(34, 197, 94, 0.3)',
+                borderRadius: '8px',
+                padding: '12px 16px',
+                marginBottom: '16px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: '#4ade80', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    📂 Archivio Storico Radio Monte Serra ({selectedHistory.contratti.length} contratti precedenti trovati)
+                  </span>
+                  <button 
+                    className="btn btn-xs"
+                    style={{ background: 'var(--accent-green)', color: '#0f172a', fontWeight: 800, fontSize: '11px', padding: '4px 8px' }}
+                    onClick={() => {
+                      if (selectedHistory.ultimo_prezzo && !isNaN(Number(selectedHistory.ultimo_prezzo))) {
+                        setSpotValore(Number(selectedHistory.ultimo_prezzo));
+                      }
+                      const firstSpot = selectedHistory.contratti[0]?.spot;
+                      if (firstSpot) {
+                        const parsed = parseInt(firstSpot);
+                        if (!isNaN(parsed) && parsed > 0) setSpotQuantita(parsed);
+                      }
+                    }}
+                  >
+                    ⚡ Applica Condizioni Ultimo Contratto (€ {selectedHistory.ultimo_prezzo})
+                  </button>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
+                  {selectedHistory.contratti.map((co, cidx) => (
+                    <div key={cidx} style={{ background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '6px', fontSize: '11px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ fontWeight: 800, color: '#f8fafc' }}>
+                        Anno {co.anno} — € {co.prezzo ? Number(co.prezzo).toLocaleString('it-IT', { minimumFractionDigits: 2 }) : 'N/D'}
+                      </div>
+                      <div style={{ color: '#94a3b8', marginTop: '2px' }}>Spot: {co.spot || 'Standard'}</div>
+                      <div style={{ color: '#64748b', fontSize: '10px' }}>Ref: {co.referente || 'Archivio'} | {co.file}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* MODULI DI ACQUISTO (SPOT, PRODUZIONE, CITAZIONI, CAMPI LIBERI) */}
             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '8px', border: '1px solid var(--panel-border)', marginBottom: '16px' }}>
@@ -669,7 +850,7 @@ Tel: 334/8424204 | Email: commerciale@radiotoscana.it`);
                 <div>
                   <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>DIREZIONE COMMERCIALE</div>
                   <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>Fabio Asiri</div>
-                  <div style={{ fontSize: '11px', color: '#475569' }}>📧 commerciale@radiotoscana.it | 📞 334/8424204</div>
+                  <div style={{ fontSize: '11px', color: '#475569' }}>📧 commerciale@radiotoscana.it | 📞 347/6818595</div>
                 </div>
               </div>
 
