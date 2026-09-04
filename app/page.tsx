@@ -793,28 +793,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
             {/* FORMULA ACCORDO */}
             <div className="form-group" style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid var(--panel-border)' }}>
-              <label className="form-label" style={{ color: 'var(--accent-yellow)', fontWeight: 800 }}>📌 Tipologia Accordo Commerciale:</label>
+              <label className="form-label" style={{ color: 'var(--accent-yellow)', fontWeight: 800 }}>Tipologia Accordo Commerciale:</label>
               <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
                 <button
                   className="btn btn-xs"
-                  style={{ flex: 1, background: tipoAccordo === 'STANDARD' ? 'var(--accent-blue)' : 'rgba(255,255,255,0.05)', color: '#fff' }}
+                  style={{ flex: 1, background: tipoAccordo === 'STANDARD' ? 'var(--accent-blue)' : 'rgba(255,255,255,0.05)', color: '#fff', fontWeight: 600 }}
                   onClick={() => setTipoAccordo('STANDARD')}
                 >
-                  💵 Standard (100% Fatturato)
+                  Standard (100% Fatturato)
                 </button>
                 <button
                   className="btn btn-xs"
-                  style={{ flex: 1, background: tipoAccordo === 'BARTER_PARZIALE' ? 'var(--accent-purple)' : 'rgba(255,255,255,0.05)', color: '#fff' }}
+                  style={{ flex: 1, background: tipoAccordo === 'BARTER_PARZIALE' ? 'var(--accent-purple)' : 'rgba(255,255,255,0.05)', color: '#fff', fontWeight: 600 }}
                   onClick={() => setTipoAccordo('BARTER_PARZIALE')}
                 >
-                  🎁 Barter Parziale (Quota Merce)
+                  Barter Parziale (Quota Merce)
                 </button>
                 <button
                   className="btn btn-xs"
-                  style={{ flex: 1, background: tipoAccordo === 'BARTER_PURO' ? '#ec4899' : 'rgba(255,255,255,0.05)', color: '#fff' }}
+                  style={{ flex: 1, background: tipoAccordo === 'BARTER_PURO' ? '#ec4899' : 'rgba(255,255,255,0.05)', color: '#fff', fontWeight: 600 }}
                   onClick={() => setTipoAccordo('BARTER_PURO')}
                 >
-                  🔄 Barter Puro (100% Merce)
+                  Barter Puro (100% Merce)
                 </button>
               </div>
             </div>
@@ -923,14 +923,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                   <span style={{ fontSize: '12px', fontWeight: 800, color: '#4ade80', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    📂 Archivio Storico Radio Monte Serra ({selectedHistory.contratti.length} contratti precedenti trovati)
+                    Archivio Storico Radio Monte Serra ({selectedHistory.contratti.length} contratti precedenti trovati)
                   </span>
                   <button 
                     className="btn btn-xs"
                     style={{ background: 'var(--accent-green)', color: '#0f172a', fontWeight: 800, fontSize: '11px', padding: '4px 8px' }}
                     onClick={() => selectHistoricalClient(selectedHistory)}
                   >
-                    ⚡ Applica Condizioni Ultimo Contratto (€ {selectedHistory.ultimo_prezzo})
+                    Applica Condizioni Ultimo Contratto (€ {selectedHistory.ultimo_prezzo})
                   </button>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
@@ -952,7 +952,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <div>
                   <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#fff', margin: 0 }}>
-                    📦 Moduli Campagna &amp; Voci Preventivo ({quoteItems.length} voci attive)
+                    Moduli Campagna &amp; Voci Preventivo ({quoteItems.length} voci attive)
                   </h4>
                   <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
                     Aggiungi e personalizza le linee di programmazione per emittente, fascia, listino e prezzo riservato
@@ -987,7 +987,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     }
                   )}
                 >
-                  📻 + Spot Rete (140 spot da 20")
+                  + Spot Rete (140 spot da 20")
                 </button>
                 <button
                   type="button"
@@ -1013,7 +1013,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     }
                   )}
                 >
-                  📍 + Area 1 (FI-PO-PT)
+                  + Area 1 (FI-PO-PT)
                 </button>
                 <button
                   type="button"
@@ -1039,7 +1039,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     }
                   )}
                 >
-                  🌊 + Area 2 (Costa LI-PI-LU-MS)
+                  + Area 2 (Costa LI-PI-LU-MS)
                 </button>
                 <button
                   type="button"
@@ -1065,7 +1065,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     }
                   )}
                 >
-                  ⛰️ + Area 3 (AR-SI-GR)
+                  + Area 3 (AR-SI-GR)
                 </button>
                 <button
                   type="button"
@@ -1091,7 +1091,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     }
                   )}
                 >
-                  ⚜️ + Radio Firenze 95.4 FM
+                  + Radio Firenze 95.4 FM
                 </button>
 
                 <button
@@ -1109,7 +1109,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     { tipoProduzione: 'SOLO_RT_RF' }
                   )}
                 >
-                  🎧 + Spot Solo RT+RF (€100)
+                  + Spot Solo RT+RF (€100)
                 </button>
                 <button
                   type="button"
@@ -1126,7 +1126,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     { tipoProduzione: 'DIRITTI_LIBERI_TOSCANA' }
                   )}
                 >
-                  🌐 + Spot Diritti Liberi Toscana (€169)
+                  + Spot Diritti Liberi Toscana (€169)
                 </button>
                 <button
                   type="button"
@@ -1142,7 +1142,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     550
                   )}
                 >
-                  🎙️ + Masti Sciò (5 min)
+                  + Masti Sciò (5 min)
                 </button>
                 <button
                   type="button"
@@ -1158,7 +1158,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     700
                   )}
                 >
-                  ⛅ + Rubrica Meteo / Notiziario
+                  + Rubrica Meteo / Notiziario
                 </button>
                 <button
                   type="button"
@@ -1174,7 +1174,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     350
                   )}
                 >
-                  📢 + Citazioni Live
+                  + Citazioni Live
                 </button>
                 <button
                   type="button"
@@ -1190,7 +1190,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     400
                   )}
                 >
-                  ✏️ + Voce Libera
+                  + Voce Libera
                 </button>
               </div>
 
@@ -1224,24 +1224,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             onChange={e => updateQuoteItem(it.id, 'tipo', e.target.value)}
                             placeholder="Tipo modulo (es. Spot Tabellari, Masti Sciò)"
                           />
-                          {isProdItem ? (
-                            <select
-                              className="form-input"
-                              style={{ fontSize: '12px', width: '290px' }}
-                              value={it.copertura}
-                              onChange={e => {
-                                const val = e.target.value;
-                                if (val.includes('Tutte le Emittenti')) {
-                                  handleProduzioneChange(it.id, 'DIRITTI_LIBERI_TOSCANA');
-                                } else {
-                                  handleProduzioneChange(it.id, 'SOLO_RT_RF');
-                                }
-                              }}
-                            >
-                              <option value="Diffusione Radio Toscana + Radio Firenze">Ambito: Radio Toscana + Radio Firenze (€ 100,00)</option>
-                              <option value="Diffusione Tutte le Emittenti della Toscana">Ambito: Tutte Emittenti Toscana (€ 169,00)</option>
-                            </select>
-                          ) : (
+                          {!isProdItem && (
                             <select
                               className="form-input"
                               style={{ fontSize: '12px', width: '240px' }}
@@ -1261,10 +1244,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           type="button"
                           onClick={() => removeQuoteItem(it.id)}
                           className="btn btn-xs"
-                          style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '2px 8px' }}
+                          style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '4px 10px', fontWeight: 600 }}
                           title="Elimina voce"
                         >
-                          🗑️ Rimuovi
+                          Rimuovi
                         </button>
                       </div>
 
@@ -1272,7 +1255,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       {isSpotItem && (
                         <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '6px', padding: '10px', marginBottom: '10px' }}>
                           <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', marginBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <span>🗓️ Programmazione Spot (Da Data a Data, Cadenza Giornaliera e Omaggi):</span>
+                            <span>Programmazione Spot (Da Data a Data, Cadenza Giornaliera e Omaggi):</span>
                             <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 400 }}>Calcolo automatico passaggi e periodo</span>
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
@@ -1319,7 +1302,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               />
                             </div>
                             <div>
-                              <label style={{ fontSize: '10px', color: '#4ade80', fontWeight: 800, display: 'block', marginBottom: '2px' }}>🎁 Spot OMAGGIO:</label>
+                              <label style={{ fontSize: '10px', color: '#4ade80', fontWeight: 800, display: 'block', marginBottom: '2px' }}>Spot OMAGGIO:</label>
                               <input
                                 type="number"
                                 className="form-input"
@@ -1352,7 +1335,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             return (
                               <div style={{ marginTop: '8px', fontSize: '11px', color: '#cbd5e1', background: 'rgba(0,0,0,0.25)', padding: '8px 10px', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                                 <span>
-                                  📊 Periodo: <strong>{it.giorniTotali || 14} giorni</strong> • <strong>{spotPag} spot paganti ({it.formatoSecondi || 20}")</strong>
+                                  Periodo: <strong>{it.giorniTotali || 14} giorni</strong> • <strong>{spotPag} spot paganti ({it.formatoSecondi || 20}")</strong>
                                   {(it.spotOmaggio || 0) > 0 && (
                                     <span style={{ color: '#4ade80', marginLeft: '6px', fontWeight: 800 }}>
                                       + {it.spotOmaggio} OMAGGIO (Totale: {spotPag + (it.spotOmaggio || 0)} passaggi)
@@ -1360,7 +1343,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   )}
                                 </span>
                                 <span style={{ color: '#38bdf8', fontWeight: 700 }}>
-                                  📋 Listino Ufficiale: € {tariffa.toFixed(2)}/spot → <strong>Totale: € {listinoTot.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</strong>
+                                  Listino Ufficiale: € {tariffa.toFixed(2)}/spot → <strong>Totale: € {listinoTot.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</strong>
                                 </span>
                               </div>
                             );
@@ -1370,34 +1353,58 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
                       {/* BLOCCO DEDICATO PRODUZIONE AUDIO: SOLO RT+RF (100€) VS DIRITTI LIBERI TOSCANA (169€) */}
                       {isProdItem && (
-                        <div style={{ background: 'rgba(168, 85, 247, 0.08)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '6px', padding: '10px', marginBottom: '10px' }}>
-                          <div style={{ fontSize: '11px', fontWeight: 800, color: '#c084fc', marginBottom: '8px' }}>
-                            🎧 Realizzazione Spot Audio — Ambito di Diffusione &amp; Diritti:
+                        <div style={{ background: 'rgba(71, 67, 80, 0.4)', border: '1px solid rgba(212, 63, 74, 0.35)', borderRadius: '6px', padding: '12px', marginBottom: '12px' }}>
+                          <div style={{ fontSize: '11px', fontWeight: 800, color: '#f8fafc', marginBottom: '8px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                            Ambito di Diffusione e Diritti Spot (Selezione con Spunta):
                           </div>
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '8px' }}>
-                            <label style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? '#4ade80' : '#94a3b8', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '4px' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '10px' }}>
+                            <label style={{
+                              fontSize: '12px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              cursor: 'pointer',
+                              color: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? '#ffffff' : '#94a3b8',
+                              fontWeight: 700,
+                              background: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? 'rgba(212, 63, 74, 0.25)' : 'rgba(0,0,0,0.25)',
+                              border: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? '1px solid #D43F4A' : '1px solid rgba(255,255,255,0.1)',
+                              padding: '10px 12px',
+                              borderRadius: '6px'
+                            }}>
                               <input
                                 type="radio"
                                 name={`tipoProd-${it.id}`}
                                 checked={it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100}
                                 onChange={() => handleProduzioneChange(it.id, 'SOLO_RT_RF')}
                               />
-                              📻 Solo Radio Toscana + Radio Firenze (€ 100,00 + IVA)
+                              Solo Radio Toscana + Radio Firenze (€ 100,00 + IVA)
                             </label>
-                            <label style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '#38bdf8' : '#94a3b8', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '4px' }}>
+                            <label style={{
+                              fontSize: '12px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              cursor: 'pointer',
+                              color: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '#ffffff' : '#94a3b8',
+                              fontWeight: 700,
+                              background: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? 'rgba(56, 189, 248, 0.25)' : 'rgba(0,0,0,0.25)',
+                              border: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                              padding: '10px 12px',
+                              borderRadius: '6px'
+                            }}>
                               <input
                                 type="radio"
                                 name={`tipoProd-${it.id}`}
                                 checked={it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169}
                                 onChange={() => handleProduzioneChange(it.id, 'DIRITTI_LIBERI_TOSCANA')}
                               />
-                              🌐 Diritti Liberi per altre emittenti Toscana (€ 169,00 + IVA)
+                              Diritti Liberi per altre emittenti Toscana (€ 169,00 + IVA)
                             </label>
                           </div>
-                          <div style={{ fontSize: '10px', color: '#cbd5e1', marginTop: '6px', background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '4px' }}>
+                          <div style={{ fontSize: '10.5px', color: '#cbd5e1', marginTop: '8px', background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '4px', lineHeight: 1.45 }}>
                             {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA'
-                              ? '✓ Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Cessione master broadcast con liberatoria diritti aperta a qualsiasi altra emittente toscana.'
-                              : '✓ Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per la messa in onda riservata alle frequenze di Radio Toscana e Radio Firenze.'}
+                              ? 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Cessione master broadcast con liberatoria diritti aperta a qualsiasi altra emittente toscana.'
+                              : 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per la messa in onda riservata alle frequenze di Radio Toscana e Radio Firenze.'}
                           </div>
                         </div>
                       )}
@@ -1493,7 +1500,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
             {/* SEZIONE BARTER (SE ATTIVO) */}
             {tipoAccordo !== 'STANDARD' && (
               <div style={{ background: 'rgba(168, 85, 247, 0.08)', border: '1px solid rgba(168, 85, 247, 0.25)', padding: '12px', borderRadius: '8px', marginBottom: '16px' }}>
-                <label className="form-label" style={{ color: '#c084fc', fontWeight: 800 }}>🎁 Dettaglio Accordo Barter (Cambio Merce):</label>
+                <label className="form-label" style={{ color: '#c084fc', fontWeight: 800 }}>Dettaglio Accordo Barter (Cambio Merce):</label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
                   <div>
                     <span style={{ fontSize: '11px', color: '#94a3b8' }}>Quota Staff Radio Toscana:</span>
@@ -1521,13 +1528,13 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   style={{ background: 'rgba(168,85,247,0.2)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.4)', fontWeight: 700 }}
                   onClick={() => setShowPdfModal(true)}
                 >
-                  📄 Proposta A4 Modern UX
+                  Proposta A4 Radio Toscana
                 </button>
                 <button
                   className="btn btn-primary"
                   onClick={openContractGenerator}
                 >
-                  📝 Genera Bozza Contratto RMS
+                  Genera Bozza Contratto RMS
                 </button>
               </div>
             </div>
@@ -1610,13 +1617,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   )}
                 </div>
                 <div>
-                  <div style={{ fontSize: '9px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>DIREZIONE COMMERCIALE &amp; CONCESSIONARIA</div>
+                  <div style={{ fontSize: '9px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>DIREZIONE COMMERCIALE</div>
                   <div style={{ fontSize: '13px', fontWeight: 800, color: '#474350', marginTop: '2px' }}>Fabio Asiri</div>
                   <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>
                     commerciale@radiotoscana.it • Tel. 347 6818595
-                  </div>
-                  <div style={{ fontSize: '10px', color: '#64748b', marginTop: '1px' }}>
-                    Concessionaria: Toscana Comunica S.r.l.
                   </div>
                 </div>
               </div>
@@ -1784,7 +1788,6 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 <div style={{ fontWeight: 800, color: '#D43F4A', fontSize: '9.5px', marginBottom: '1px' }}>Radio Toscana • Radio Firenze</div>
                 <div>Direzione e sede: Via de&apos; Pucci 2, 50122 Firenze • Tel. 055 285030 • Fax 055 283793 • radiomonteserra@pec.it</div>
                 <div>Radio Toscana e Radio Firenze sono marchi di Radio Monte Serra S.r.l. — P.IVA 04472740481 • C.F. 00940130503 • CCIAA Firenze 453074</div>
-                <div style={{ color: '#94a3b8', marginTop: '1px' }}>Concessionaria Esclusiva di Pubblicità: Toscana Comunica S.r.l. — info@toscanacomunica.it</div>
               </div>
 
             </div>
