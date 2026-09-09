@@ -158,47 +158,6 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
       }
     ],
     note: 'Proposta Rif. RT-2026/09-04 per 180 spot tabellari Area 1 + Realizzazione Spot Diritti Liberi.'
-  },
-  {
-    id: 'asfalti-ruge-2026',
-    nome_azienda_evento: 'Asfalti Ru.Ge S.r.l.',
-    referente: 'Ufficio Tecnico / Amm.',
-    email: 'info@asfaltiruge.it',
-    telefono: '0574 650000',
-    settore: 'Edilizia / Infrastrutture',
-    comune: 'Prato',
-    provincia: 'PO',
-    area_target: 'Radio Toscana Rete',
-    fase_commerciale: 'CONTRATTO ATTIVO',
-    tipo_contratto: 'SCALARE',
-    valore_preventivo: 3200,
-    valore_contratto: 3200,
-    numero_contratto: '2026/06-RUGE',
-    plafond_totale_spot: 250,
-    spot_rimasti: 185,
-    is_cambio_merce: false,
-    probabilita_chiusura: 100,
-    anno_riferimento: '2026',
-    stato_programmazione: 'IN_ONDA',
-    note: 'Contratto a scalare attivo per copertura rete regionale.'
-  },
-  {
-    id: 'comune-greve-2026',
-    nome_azienda_evento: 'Comune di Greve in Chianti (Expo Chianti Classico)',
-    referente: 'Cinzia Dugo (Uff. Stampa)',
-    email: 'cinziadugo@gmail.com',
-    telefono: '',
-    settore: 'Eventi / Istituzionale',
-    comune: 'Greve in Chianti',
-    provincia: 'FI',
-    area_target: 'Area 1 (FI-PO-PT) + Rete',
-    fase_commerciale: 'SCOUTER DISCOVERY',
-    valore_preventivo: 1500,
-    valore_contratto: 0,
-    is_cambio_merce: false,
-    probabilita_chiusura: 60,
-    anno_riferimento: '2026',
-    note: 'Lead intercettato da Radar Redazione per 54° Expo Chianti Classico (10-13 Settembre 2026).'
   }
 ];
 
@@ -595,7 +554,12 @@ export default function LeadEngineDashboard() {
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            setLeads(parsed);
+            // Bonifica automatica: esclude i mockup di test 'asfalti-ruge-2026' e 'comune-greve-2026'
+            const cleaned = parsed.filter((l: any) => l.id !== 'asfalti-ruge-2026' && l.id !== 'comune-greve-2026');
+            const hasColdiretti = cleaned.some((l: any) => l.id === 'coldiretti-toscana-2026');
+            const finalList = hasColdiretti ? cleaned : [...INITIAL_LEADS_POOL, ...cleaned];
+            setLeads(finalList);
+            localStorage.setItem('rt_lead_engine_leads_v1', JSON.stringify(finalList));
             return;
           }
         }
