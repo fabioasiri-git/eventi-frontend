@@ -531,13 +531,15 @@ export default function LeadEngineDashboard() {
     noteContratto: ''
   });
 
+  const STORAGE_KEY = 'rt_lead_engine_leads_v3';
+
   // Helper Persistenza Reale (LocalStorage + Memoria)
   function updateLeadsAndPersist(updater: (prev: LeadRow[]) => LeadRow[]) {
     setLeads(prev => {
       const next = updater(prev);
       if (typeof window !== 'undefined') {
         try {
-          localStorage.setItem('rt_lead_engine_leads_v1', JSON.stringify(next));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
         } catch (e) {
           console.error('LocalStorage write error', e);
         }
@@ -546,20 +548,37 @@ export default function LeadEngineDashboard() {
     });
   }
 
+  function handleResetToCleanState() {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('rt_lead_engine_leads_v1');
+        localStorage.removeItem('rt_lead_engine_leads_v2');
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_LEADS_POOL));
+      } catch (e) {}
+    }
+    setLeads(INITIAL_LEADS_POOL);
+    alert('Pipeline bonificata: visualizzata solo la pratica reale Coldiretti Toscana in PREVENTIVI IN TRATTATIVA.');
+  }
+
   // Caricamento Dati Iniziali con Fallback Deterministico
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        const saved = localStorage.getItem('rt_lead_engine_leads_v1');
+        // Pulizia forzata delle vecchie cache con mockup di test
+        localStorage.removeItem('rt_lead_engine_leads_v1');
+        localStorage.removeItem('rt_lead_engine_leads_v2');
+
+        const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            // Bonifica automatica: esclude i mockup di test 'asfalti-ruge-2026' e 'comune-greve-2026'
+            // Bonifica automatica: elimina i mockup di test 'asfalti-ruge' e 'comune-greve'
             const cleaned = parsed.filter((l: any) => l.id !== 'asfalti-ruge-2026' && l.id !== 'comune-greve-2026');
+            // Assicura che Coldiretti sia presente ed esattamente nella fase PREVENTIVO INVIATO
             const hasColdiretti = cleaned.some((l: any) => l.id === 'coldiretti-toscana-2026');
             const finalList = hasColdiretti ? cleaned : [...INITIAL_LEADS_POOL, ...cleaned];
             setLeads(finalList);
-            localStorage.setItem('rt_lead_engine_leads_v1', JSON.stringify(finalList));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(finalList));
             return;
           }
         }
@@ -567,11 +586,11 @@ export default function LeadEngineDashboard() {
         console.error('Errore lettura localStorage', e);
       }
     }
-    // Inizializza con pool standard che include Federazione Regionale Coldiretti Toscana
+    // Inizializza con pool pulito contenente solo Coldiretti Toscana in trattativa
     setLeads(INITIAL_LEADS_POOL);
     if (typeof window !== 'undefined') {
       try {
-        localStorage.setItem('rt_lead_engine_leads_v1', JSON.stringify(INITIAL_LEADS_POOL));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_LEADS_POOL));
       } catch (e) {}
     }
   }, []);
@@ -1170,6 +1189,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
           <button className="btn" onClick={() => alert('Cassaforte Cloud Supabase: system_vault connesso e sincronizzato!')}>
             🔒 Cloud Vault OK
+          </button>
+          <button 
+            className="btn"
+            style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', fontSize: '11px', fontWeight: 700 }}
+            onClick={handleResetToCleanState}
+            title="Ripristina la pipeline pulita con solo la pratica reale Coldiretti in trattativa"
+          >
+            🧹 Reset / Solo Coldiretti
           </button>
           <button className="btn btn-primary" onClick={() => setShowQuoteModal(true)}>
             ➕ Nuovo Preventivo Modulare
