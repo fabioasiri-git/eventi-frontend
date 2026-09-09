@@ -1,22 +1,27 @@
-# 📘 MANUALE OPERATIVO & HANDOFF: RT AC MUSIC INTELLIGENCE
+# 📘 MANUALE OPERATIVO: MUSIC INTELLIGENCE (RADIO TOSCANA & RADIO FIRENZE)
 
-**Progetto:** Radio Toscana — AC Music Intelligence & Benchmark  
-**Workflow n8n ID:** `Iz4FEv42Ll6dl8pU`  
-**File di Configurazione Locale:** [ac_music_intelligence_n8n_workflow.json](file:///e:/Lead%20Engine%20RT/DB%20Musicale/ac_music_intelligence_n8n_workflow.json)  
-**Data Ultimo Aggiornamento:** 29 Luglio 2026  
+**Progetti & Workflow Separati:**
+1. **Radio Toscana (RT)** — Formato: **Adult Contemporary (AC)** | Workflow ID: `Iz4FEv42Ll6dl8pU` | Benchmark: **RDS Relax, RMC, Dimensione Suono Soft**
+2. **Radio Firenze (RF)** — Formato: **Powerfull Station (Dance / Hit / Energy)** | Workflow ID: `7h7x6US8dj2yTC9l` | Benchmark: **DISCORADIO**
 
 ---
 
-## 🎯 1. Obiettivo del Prodotto
+## 🎯 1. Due Emittenti Distinte con Due Generi Musicali Opposti (REGOLA ASSOLUTA)
 
-Il sistema esegue un'analisi strategica settimanale automatizzata basata sui passaggi radiofonici storici reali (~1.894 brani negli ultimi 7 giorni) rilevati tra **Radio Toscana** e le emittenti di benchmark (**RDS Relax**, **Radio Monte Carlo**, **Dimensione Suono Soft**).
+È fondamentale non confondere MAI la linea editoriale delle due emittenti:
 
-I dati vengono elaborati dall'IA tramite l'API di **Groq** (modello `llama-3.3-70b-versatile`), integrando i dati di popolarità globale di **Deezer** (`0-100`), per generare un **Report Strategico Weekly** suddiviso in 4 categorie:
+| Parametro | 📻 RADIO TOSCANA (RT) | ⚡ RADIO FIRENZE (RF — 95.4 FM) |
+| :--- | :--- | :--- |
+| **Identità** | Rete Regionale d'Autore | "La Powerfull Station" |
+| **Formato Musicale** | **Adult Contemporary (AC)** | **Hit Station / Dance, Pop-Dance, Rhythmic** |
+| **BPM & Sound** | Melodico, morbido, rilassato, cantautorale | **Alta energia, cassa in 4, drop potenti, uptempo** |
+| **Orizzonte Brani** | Grandi classici italiani (80-90) + Pop soft | **Dagli inizi del 2000 ad oggi (Superhit + Club)** |
+| **Target Primario** | 25-54 anni (famiglie, ascolto in casa/ufficio) | 15-44 anni (giovani, chi guida in città, studenti) |
+| **Benchmark Esclusivo** | **RDS Relax** (primario), RMC, DS Soft | **DISCORADIO** (esclusivo) |
+| **Vietati in Onda** | Hard rock, trap pesante, techno dura | **Ballad lente, acustiche, brani noiosi o lounge** |
+| **Tabella Database** | `catalogo_toscana` | `catalogo_firenze` |
 
-1. 🟢 **I GRANDI ASSENTI**: Brani ad alto successo sul benchmark RDS Relax ma assenti dal catalogo di Radio Toscana.
-2. 🟡 **DA INCREMENTARE**: Brani in catalogo ma sotto-ruotati rispetto al benchmark.
-3. 🔴 **DA FAR USCIRE**: Rami secchi ad alta rotazione interna con 0 passaggi sul benchmark e bassa popolarità Deezer.
-4. 🕵️ **IL RADAR COMPETITOR**: Brani scoperti su Radio Monte Carlo / Dimensione Suono Soft adatti al formato AC.
+---
 
 ---
 

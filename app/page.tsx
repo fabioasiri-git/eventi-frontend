@@ -54,12 +54,17 @@ interface QuoteLineItem {
 interface LeadRow {
   id?: number | string;
   nome_azienda_evento: string;
+  referente?: string;
+  email?: string;
+  telefono?: string;
+  piva?: string;
+  sdi?: string;
   settore: string;
   comune: string;
   provincia: string;
   area_target: string;
   fase_commerciale: string;
-  tipo_contratto?: 'SECCO' | 'SCALARE';
+  tipo_contratto?: 'SECCO' | 'SCALARE' | 'SPOT_TABELLARE' | 'BARTER';
   valore_preventivo: number;
   valore_contratto: number;
   plafond_totale_spot?: number;
@@ -75,19 +80,159 @@ interface LeadRow {
   stato_programmazione?: string;
   data_invio_programmazione?: string;
   anno_riferimento?: string;
+  note?: string;
+  quote_items?: QuoteLineItem[];
+  tipo_accordo?: 'STANDARD' | 'BARTER_PARZIALE' | 'BARTER_PURO';
+  barter_radio?: string;
+  barter_ascoltatori?: string;
+  data_preventivo?: string;
+  data_ultimo_invio?: string;
+  stato_produzione?: 'NON_RICHIESTA' | 'IN_ATTESA_COPY' | 'IN_STUDIO' | 'IN_ATTESA_AUDIO_TRELLO' | 'PRODOTTO_APPROVATO';
+  data_scadenza_produzione?: string;
+  copy_testo?: string;
+  data_inizio_trasmissione?: string;
+  data_fine_trasmissione?: string;
+  spot_giornalieri?: number;
 }
+
+const INITIAL_LEADS_POOL: LeadRow[] = [
+  {
+    id: 'coldiretti-toscana-2026',
+    nome_azienda_evento: 'Federazione Regionale Coldiretti Toscana',
+    referente: 'ANDREA BERTI',
+    email: 'toscana@coldiretti.it',
+    telefono: '055 323651',
+    piva: 'CF 80012150480',
+    sdi: '',
+    settore: 'Agricoltura / Istituzionale',
+    comune: 'Firenze',
+    provincia: 'FI',
+    area_target: 'Radio Toscana Area 1 (FI - PO - PT)',
+    fase_commerciale: 'PREVENTIVO INVIATO',
+    tipo_contratto: 'SPOT_TABELLARE',
+    valore_preventivo: 1000,
+    valore_contratto: 0,
+    plafond_totale_spot: 180,
+    spot_rimasti: 180,
+    is_cambio_merce: false,
+    probabilita_chiusura: 70,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-09-04',
+    data_ultimo_invio: '2026-09-04',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'IN_ATTESA_COPY',
+    data_scadenza_produzione: '2026-09-16',
+    copy_testo: 'Promozione e valorizzazione eccellenze agroalimentari toscane (Spot 20" - Diritti Liberi Toscana).',
+    data_inizio_trasmissione: '2026-09-09',
+    data_fine_trasmissione: '2026-09-17',
+    spot_giornalieri: 20,
+    quote_items: [
+      {
+        id: 'it-coldiretti-1',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        dettagli: '20 spot/gg per 9 gg (180 spot paganti da 20")',
+        fascia: '07.00 – 21.00 a rotazione',
+        periodo: 'Dal 09/09/2026 al 17/09/2026 (9 gg)',
+        prezzoListino: 1620,
+        valore: 831,
+        isSpot: true,
+        dataInizio: '2026-09-09',
+        dataFine: '2026-09-17',
+        spotGiornalieri: 20,
+        giorniTotali: 9,
+        spotTotali: 180,
+        spotOmaggio: 0,
+        formatoSecondi: 20
+      },
+      {
+        id: 'it-coldiretti-2',
+        tipo: 'Realizzazione Spot Audio',
+        copertura: 'Diffusione Emittenti Toscana',
+        dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane',
+        fascia: 'Costo Una Tantum',
+        periodo: '',
+        prezzoListino: 169,
+        valore: 169,
+        tipoProduzione: 'DIRITTI_LIBERI_TOSCANA'
+      }
+    ],
+    note: 'Proposta Rif. RT-2026/09-04 per 180 spot tabellari Area 1 + Realizzazione Spot Diritti Liberi.'
+  },
+  {
+    id: 'asfalti-ruge-2026',
+    nome_azienda_evento: 'Asfalti Ru.Ge S.r.l.',
+    referente: 'Ufficio Tecnico / Amm.',
+    email: 'info@asfaltiruge.it',
+    telefono: '0574 650000',
+    settore: 'Edilizia / Infrastrutture',
+    comune: 'Prato',
+    provincia: 'PO',
+    area_target: 'Radio Toscana Rete',
+    fase_commerciale: 'CONTRATTO ATTIVO',
+    tipo_contratto: 'SCALARE',
+    valore_preventivo: 3200,
+    valore_contratto: 3200,
+    numero_contratto: '2026/06-RUGE',
+    plafond_totale_spot: 250,
+    spot_rimasti: 185,
+    is_cambio_merce: false,
+    probabilita_chiusura: 100,
+    anno_riferimento: '2026',
+    stato_programmazione: 'IN_ONDA',
+    note: 'Contratto a scalare attivo per copertura rete regionale.'
+  },
+  {
+    id: 'comune-greve-2026',
+    nome_azienda_evento: 'Comune di Greve in Chianti (Expo Chianti Classico)',
+    referente: 'Cinzia Dugo (Uff. Stampa)',
+    email: 'cinziadugo@gmail.com',
+    telefono: '',
+    settore: 'Eventi / Istituzionale',
+    comune: 'Greve in Chianti',
+    provincia: 'FI',
+    area_target: 'Area 1 (FI-PO-PT) + Rete',
+    fase_commerciale: 'SCOUTER DISCOVERY',
+    valore_preventivo: 1500,
+    valore_contratto: 0,
+    is_cambio_merce: false,
+    probabilita_chiusura: 60,
+    anno_riferimento: '2026',
+    note: 'Lead intercettato da Radar Redazione per 54° Expo Chianti Classico (10-13 Settembre 2026).'
+  }
+];
 
 export default function LeadEngineDashboard() {
   const [activeTab, setActiveTab] = useState<'kanban' | 'queues' | 'renewals' | 'memory' | 'production' | 'schedules'>('kanban');
   const [leads, setLeads] = useState<LeadRow[]>([]);
   const [selectedYear, setSelectedYear] = useState<'2026' | '2025' | '2024' | 'ALL'>('2026');
 
-  // Modali Preventivo, Proposta A4, Contratto e Remind
+  // Modali Preventivo, Proposta A4, Contratto, Remind e Invio Email
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [showContractModal, setShowContractModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedLeadForEmail, setSelectedLeadForEmail] = useState<LeadRow | null>(null);
+
+  // Modale Email Proposta Commerciale Dedicata
+  const [showProposalEmailModal, setShowProposalEmailModal] = useState(false);
+  const [selectedLeadForProposalEmail, setSelectedLeadForProposalEmail] = useState<LeadRow | null>(null);
+  const [proposalEmailRecipient, setProposalEmailRecipient] = useState('');
+  const [proposalEmailSubject, setProposalEmailSubject] = useState('');
+  const [proposalEmailBody, setProposalEmailBody] = useState('');
+  const [proposalEmailSentNotification, setProposalEmailSentNotification] = useState(false);
+
+  // Modale Generatore Scheda Trello Ufficiale & WhatsApp Push
+  const [showTrelloDispatchModal, setShowTrelloDispatchModal] = useState(false);
+  const [selectedLeadForTrello, setSelectedLeadForTrello] = useState<LeadRow | null>(null);
+  const [trelloBoardUrl, setTrelloBoardUrl] = useState('https://trello.com');
+  const [trelloCardTitle, setTrelloCardTitle] = useState('');
+  const [trelloCardDueDate, setTrelloCardDueDate] = useState('');
+  const [trelloCardDescription, setTrelloCardDescription] = useState('');
+  const [trelloWaMessage, setTrelloWaMessage] = useState('');
+
+  // Stato Modifica Preventivo Esistente (Edit in Place)
+  const [editingLeadId, setEditingLeadId] = useState<string | number | null>(null);
 
   // Remind Modal a 3 Step (Lavoro Ufficio 18:30)
   const [showRemindModal, setShowRemindModal] = useState(false);
@@ -427,9 +572,44 @@ export default function LeadEngineDashboard() {
     noteContratto: ''
   });
 
-  // Supabase Fetch & Fallback Dati Reali
+  // Helper Persistenza Reale (LocalStorage + Memoria)
+  function updateLeadsAndPersist(updater: (prev: LeadRow[]) => LeadRow[]) {
+    setLeads(prev => {
+      const next = updater(prev);
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('rt_lead_engine_leads_v1', JSON.stringify(next));
+        } catch (e) {
+          console.error('LocalStorage write error', e);
+        }
+      }
+      return next;
+    });
+  }
+
+  // Caricamento Dati Iniziali con Fallback Deterministico
   useEffect(() => {
-    fetchSupabaseLeads();
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('rt_lead_engine_leads_v1');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setLeads(parsed);
+            return;
+          }
+        }
+      } catch (e) {
+        console.error('Errore lettura localStorage', e);
+      }
+    }
+    // Inizializza con pool standard che include Federazione Regionale Coldiretti Toscana
+    setLeads(INITIAL_LEADS_POOL);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('rt_lead_engine_leads_v1', JSON.stringify(INITIAL_LEADS_POOL));
+      } catch (e) {}
+    }
   }, []);
 
   async function fetchSupabaseLeads() {
@@ -443,16 +623,15 @@ export default function LeadEngineDashboard() {
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data)) {
-          setLeads(data);
-        } else {
-          setLeads([]);
+        if (Array.isArray(data) && data.length > 0) {
+          updateLeadsAndPersist(prev => {
+            const ids = new Set(data.map((d: any) => String(d.id)));
+            return [...data, ...prev.filter(l => !ids.has(String(l.id)))];
+          });
         }
-      } else {
-        setLeads([]);
       }
     } catch (e) {
-      setLeads([]);
+      console.log('Supabase sync skipped, fallback to local pool');
     }
   }
 
@@ -475,6 +654,7 @@ export default function LeadEngineDashboard() {
 
   // Ripulisci e azzera il preventivatore per nuova trattativa
   function resetQuoteBuilder() {
+    setEditingLeadId(null);
     setQNome('');
     setQReferente('');
     setQTelefono('');
@@ -485,6 +665,8 @@ export default function LeadEngineDashboard() {
     setQSdi('');
     setSelectedHistory(null);
     setTipoAccordo('STANDARD');
+    setBarterRadio('');
+    setBarterAscoltatori('');
     setQuoteItems([
       {
         id: 'it-1',
@@ -518,67 +700,348 @@ export default function LeadEngineDashboard() {
     ]);
   }
 
-  // Salva Preventivo nella colonna PREVENTIVI IN TRATTATIVA della Dashboard
+  // Salva o Aggiorna Preventivo nella colonna PREVENTIVI IN TRATTATIVA della Dashboard
   function saveAsQuoteInNegotiation() {
     if (!qNome.trim()) {
       alert('Inserisci almeno il Nome Azienda / Cliente prima di salvare il preventivo.');
       return;
     }
     const clientName = qNome.trim();
-    const newQuoteLead: LeadRow = {
-      id: Date.now(),
+    const mainSpot = quoteItems.find(it => it.isSpot) || quoteItems[0];
+    const hasProd = quoteItems.some(it => !it.isSpot || it.tipoProduzione);
+    const prodItem = quoteItems.find(it => !it.isSpot || it.tipoProduzione);
+
+    const updatedLeadData: Partial<LeadRow> = {
       nome_azienda_evento: clientName,
       referente: qReferente,
       email: qEmail,
       telefono: qTelefono,
       comune: qComune,
       provincia: qProvincia,
+      piva: qPiva,
+      sdi: qSdi,
       fase_commerciale: 'PREVENTIVO INVIATO',
       valore_preventivo: totaleInvestimento,
-      area_target: quoteItems[0]?.copertura || 'Toscana',
-      plafond_totale_spot: quoteItems[0]?.spotTotali || 0,
+      area_target: mainSpot?.copertura || quoteItems[0]?.copertura || 'Toscana',
+      plafond_totale_spot: mainSpot?.spotTotali || 0,
+      spot_rimasti: mainSpot?.spotTotali || 0,
       anno_riferimento: '2026',
-      probabilita_chiusura: 60,
-      note: `Preventivo emesso il ${new Date().toLocaleDateString('it-IT')} per € ${totaleInvestimento.toLocaleString('it-IT')}. Formula: ${tipoAccordo}.`
+      probabilita_chiusura: 70,
+      tipo_accordo: tipoAccordo,
+      barter_radio: barterRadio,
+      barter_ascoltatori: barterAscoltatori,
+      quote_items: [...quoteItems],
+      data_preventivo: new Date().toISOString().split('T')[0],
+      data_inizio_trasmissione: mainSpot?.dataInizio,
+      data_fine_trasmissione: mainSpot?.dataFine,
+      spot_giornalieri: mainSpot?.spotGiornalieri,
+      tipo_produzione_spot: prodItem ? (prodItem.tipoProduzione || 'SOLO_RT_RF') : undefined,
+      stato_produzione: hasProd ? 'IN_ATTESA_COPY' : 'NON_RICHIESTA',
+      data_scadenza_produzione: hasProd ? new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString().split('T')[0] : undefined,
+      note: `Proposta commerciale emessa il ${new Date().toLocaleDateString('it-IT')} per € ${totaleInvestimento.toLocaleString('it-IT')}. Formula: ${tipoAccordo}. Voci: ${quoteItems.length}.`
     };
 
-    setLeads(prev => [newQuoteLead, ...prev.filter(l => l.nome_azienda_evento.toLowerCase() !== clientName.toLowerCase())]);
+    updateLeadsAndPersist(prev => {
+      if (editingLeadId) {
+        // Aggiorna lead esistente in-place
+        return prev.map(l => {
+          if (l.id === editingLeadId) {
+            return { ...l, ...updatedLeadData };
+          }
+          return l;
+        });
+      } else {
+        // Crea nuovo lead
+        const newLead: LeadRow = {
+          id: `quote-${Date.now()}`,
+          settore: 'B2B / Servizi',
+          valore_contratto: 0,
+          is_cambio_merce: tipoAccordo !== 'STANDARD',
+          ...updatedLeadData
+        } as LeadRow;
+        return [newLead, ...prev.filter(l => l.nome_azienda_evento.toLowerCase() !== clientName.toLowerCase())];
+      }
+    });
+
     setShowQuoteModal(false);
-    alert(`Preventivo per "${clientName}" (€ ${totaleInvestimento.toLocaleString('it-IT')}) salvato nella colonna "PREVENTIVI IN TRATTATIVA"!`);
+    alert(`✅ Preventivo per "${clientName}" (€ ${totaleInvestimento.toLocaleString('it-IT')}) salvato con successo in "PREVENTIVI IN TRATTATIVA"!`);
+  }
+
+  // Funzione Modifica Preventivo Esistente (Edit in Place con Autocompilazione Totale)
+  function openEditQuoteModal(lead: LeadRow) {
+    setEditingLeadId(lead.id || null);
+    setQNome(lead.nome_azienda_evento || '');
+    setQReferente(lead.referente || '');
+    setQTelefono(lead.telefono || '');
+    setQEmail(lead.email || '');
+    setQComune(lead.comune || '');
+    setQProvincia(lead.provincia || '');
+    setQPiva(lead.piva || '');
+    setQSdi(lead.sdi || '');
+    setTipoAccordo(lead.tipo_accordo || 'STANDARD');
+    if (lead.barter_radio) setBarterRadio(lead.barter_radio);
+    if (lead.barter_ascoltatori) setBarterAscoltatori(lead.barter_ascoltatori);
+
+    if (lead.quote_items && lead.quote_items.length > 0) {
+      setQuoteItems([...lead.quote_items]);
+    } else {
+      // Ricostruzione elementi se non presenti
+      setQuoteItems([
+        {
+          id: `edit-${Date.now()}-1`,
+          tipo: 'Spot Radiofonici Tabellari',
+          copertura: lead.area_target || 'Radio Toscana Rete',
+          dettagli: `${lead.plafond_totale_spot || 140} spot pianificati da 20"`,
+          fascia: '07.00 – 21.00 a rotazione',
+          periodo: lead.data_inizio_trasmissione && lead.data_fine_trasmissione
+            ? `Dal ${lead.data_inizio_trasmissione} al ${lead.data_fine_trasmissione}`
+            : 'Pianificazione concordata',
+          prezzoListino: Math.round((lead.valore_preventivo || 1000) * 1.3),
+          valore: lead.valore_preventivo || 1000,
+          isSpot: true,
+          spotTotali: lead.plafond_totale_spot || 140,
+          formatoSecondi: 20
+        }
+      ]);
+    }
+    setShowQuoteModal(true);
+  }
+
+  // Visualizza Proposta A4 Direttamente dal Lead Kanban
+  function openProposalA4ForLead(lead: LeadRow) {
+    openEditQuoteModal(lead);
+    setShowPdfModal(true);
+  }
+
+  // Passa Direttamente a Contratto RMS dal Lead Kanban
+  function openContractForLead(lead: LeadRow) {
+    openEditQuoteModal(lead);
+    const items = lead.quote_items && lead.quote_items.length > 0 ? lead.quote_items : quoteItems;
+    const mainSpot = items.find(it => it.isSpot) || items[0];
+    const summaryItems = items.map(it => `${it.tipo} [${it.copertura}] - ${it.dettagli} (Valore: €${it.valore})`).join(' | ');
+    const spacesPrice = items.filter(i => i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
+    const prodPrice = items.filter(i => !i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
+    const totalVal = lead.valore_preventivo || items.reduce((s, i) => s + (i.valore || 0), 0);
+
+    const mezzoVal = (mainSpot?.copertura || lead.area_target || '').includes('Firenze') && !(mainSpot?.copertura || lead.area_target || '').includes('Toscana')
+      ? 'Radio Firenze 88.7'
+      : ((mainSpot?.copertura || lead.area_target || '').includes('Combinata') ? 'Radio Toscana + Radio Firenze' : 'Radio Toscana');
+
+    setContractData({
+      numero: lead.numero_contratto || `2026/${Math.floor(1000 + Math.random() * 9000)}-RMS`,
+      dataDecorrenza: mainSpot?.dataInizio || lead.data_inizio_trasmissione || '2026-09-15',
+      dataScadenza: mainSpot?.dataFine || lead.data_fine_trasmissione || '2026-09-28',
+      committente: lead.nome_azienda_evento,
+      referente: lead.referente || 'Referente Aziendale',
+      piva: lead.piva || '',
+      sdi: lead.sdi || '',
+      indirizzo: [lead.comune, lead.provincia ? `(${lead.provincia})` : ''].filter(Boolean).join(' ') || 'Toscana',
+      telefono: lead.telefono || '',
+      email: lead.email || '',
+      mezzo: mezzoVal,
+      formato: `${mainSpot?.formatoSecondi || 20}"`,
+      quantitaSpot: mainSpot?.spotTotali || lead.plafond_totale_spot || 0,
+      area: mainSpot?.copertura || lead.area_target || 'RT Rete (Tutta la Toscana)',
+      prezzoSpazi: spacesPrice,
+      prezzoProduzione: prodPrice,
+      totaleNetto: totalVal,
+      totaleBarter: lead.tipo_accordo === 'STANDARD' ? 0 : Math.round(totalVal / 2),
+      modalitaPagamento: lead.tipo_accordo === 'BARTER_PURO' ? '100% Cambio Merce / Barter' : 'Bonifico bancario 30gg d.f. f.m.',
+      noteContratto: `Formula Accordo: ${lead.tipo_accordo || 'STANDARD'}. ${summaryItems}`
+    });
+    setShowContractModal(true);
+  }
+
+  // Apertura Modale Invio Email Proposta Commerciale
+  function openProposalEmailModal(lead: LeadRow) {
+    setSelectedLeadForProposalEmail(lead);
+    setProposalEmailRecipient(lead.email || 'commerciale@radiotoscana.it');
+    const rif = `RT-2026/09-${new Date().getDate().toString().padStart(2, '0')}`;
+    setProposalEmailSubject(`Radio Toscana — Proposta Commerciale per ${lead.nome_azienda_evento} (Rif. ${rif})`);
+
+    const items = lead.quote_items && lead.quote_items.length > 0 ? lead.quote_items : quoteItems;
+    const itemsSummary = items.map(i => `• ${i.tipo}: ${i.copertura} (${i.dettagli}) — Netto € ${i.valore}`).join('\n');
+    const tot = lead.valore_preventivo || items.reduce((s, i) => s + (i.valore || 0), 0);
+
+    setProposalEmailBody(`Gentile ${lead.referente || lead.nome_azienda_evento},
+
+in riferimento ai nostri accordi commerciali, Le trasmetto la Proposta Commerciale ufficiale per la campagna di comunicazione on-air su Radio Toscana (Radio Monte Serra S.r.l.).
+
+📌 PIANO DI COMUNICAZIONE & SPECIFICHE DELLA CAMPAGNA:
+${itemsSummary}
+
+💰 TOTALE INVESTIMENTO COMMERCIALE NETTO: € ${tot.toLocaleString('it-IT', { minimumFractionDigits: 2 })} + IVA
+• Formula Contrattuale: ${lead.tipo_accordo || 'Standard (100% Fatturato)'}
+• Pagamento: Bonifico Bancario 30 gg fine mese d.f.
+• Messa in onda: Condizionata alla restituzione della proposta siglata per accettazione e alla fornitura del materiale audio.
+
+In allegato a questa email Le trasmetto il documento ufficiale in formato PDF pronto per la visione e la firma.
+
+Resto a Sua completa disposizione per qualsiasi chiarimento operativo o per calibrare gli orari di programmazione.
+
+Un cordiale saluto,
+
+Fabio Asiri — Direzione Commerciale
+Radio Toscana • Radio Firenze (Radio Monte Serra S.r.l.)
+Tel. 347 6818595 | commerciale@radiotoscana.it
+Via de' Pucci 2, 50122 Firenze`);
+
+    setProposalEmailSentNotification(false);
+    setShowProposalEmailModal(true);
+  }
+
+  // Inoltra Incarico alla Tab Produzione Spot Audio
+  function sendLeadToProduction(lead: LeadRow) {
+    const hasProd = lead.quote_items?.some(it => !it.isSpot || it.tipoProduzione) || true;
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === lead.id) {
+        return {
+          ...l,
+          stato_produzione: 'IN_ATTESA_COPY',
+          data_scadenza_produzione: l.data_scadenza_produzione || new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString().split('T')[0]
+        };
+      }
+      return l;
+    }));
+    setActiveTab('production');
+    alert(`🎙️ Incarico di Produzione Spot Audio attivato per "${lead.nome_azienda_evento}"!\n• SLA di Consegna: 7 Giorni (Scadenza: ${new Date(Date.now() + 7 * 24 * 3600 * 1000).toLocaleDateString('it-IT')})\n• Trasferito nella scheda Produzione Spot.`);
+  }
+
+  // Inoltra alla Tab Programmazione On-Air
+  function sendLeadToSchedule(lead: LeadRow) {
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === lead.id) {
+        return {
+          ...l,
+          stato_programmazione: 'IN_PALINSESTO'
+        };
+      }
+      return l;
+    }));
+    setActiveTab('schedules');
+    alert(`📅 Campagna per "${lead.nome_azienda_evento}" registrata nel Palinsesto di Programmazione On-Air!`);
+  }
+
+  // Apertura Modale Generatore Scheda Trello & Notifica WhatsApp
+  function openTrelloDispatchModal(lead: LeadRow) {
+    setSelectedLeadForTrello(lead);
+    const startDate = lead.data_inizio_trasmissione || '2026-09-15';
+    const d = new Date(startDate);
+    const dueDateObj = isNaN(d.getTime()) ? new Date(Date.now() + 5 * 24 * 3600 * 1000) : new Date(d.getTime() - 2 * 24 * 3600 * 1000);
+    const dueDateStr = dueDateObj.toISOString().split('T')[0];
+
+    const isDiritti = lead.tipo_produzione_spot === 'DIRITTI_LIBERI_TOSCANA' || lead.quote_items?.some(it => it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA');
+    const dirittiTxt = isDiritti ? 'Diritti Liberi Toscana (169€)' : 'Solo RT+RF (100€)';
+
+    const title = `[RT] ${lead.nome_azienda_evento} — Spot 20" (On-Air: ${startDate})`;
+    setTrelloCardTitle(title);
+    setTrelloCardDueDate(`${dueDateStr} (Ore 18:00)`);
+
+    const desc = `### 📻 COMMESSA SPOT AUDIO — RADIO TOSCANA / RADIO FIRENZE
+
+**COMMITTENTE:** ${lead.nome_azienda_evento}
+**REFERENTE DA CONTATTARE:** ${lead.referente || 'Da verificare'}
+**TELEFONO:** ${lead.telefono || '—'}
+**EMAIL:** ${lead.email || '—'}
+**LOCALITÀ:** ${lead.comune} (${lead.provincia})
+
+---
+### 🗓️ PIANIFICAZIONE & SPECIFICHE
+* **Periodo Messa in Onda:** Dal ${startDate} al ${lead.data_fine_trasmissione || 'fine campagna'} (${lead.spot_giornalieri || 10} spot/gg)
+* **Formato:** 20 Secondi (ca. 40-45 parole parlate)
+* **Tipologia Diritti:** ${dirittiTxt}
+* **Data Limite Consegna Audio:** **${dueDateStr} entro le ore 18:00** (Tassativa per caricamento in regia broadcast 48h prima)
+
+---
+### 📋 CHECKLIST DI LAVORAZIONE
+- [ ] Contattare referente per intervista / briefing promozionale
+- [ ] Stesura testo copy 20"
+- [ ] Approvazione testo scritta dal cliente (email o WhatsApp)
+- [ ] Registrazione voce speaker & mastering audio broadcast
+- [ ] Allegare Master Audio definitivo (WAV/MP3) a questa scheda Trello`;
+
+    setTrelloCardDescription(desc);
+
+    const waMsg = `Ciao! Ti ho caricato su Trello la nuova commessa spot per *${lead.nome_azienda_evento}* (On-Air dal ${startDate}).
+Trovi tutti i riferimenti del cliente nella scheda. Consegna file audio richiesta entro il ${dueDateObj.toLocaleDateString('it-IT')}.
+Grazie e buon lavoro!`;
+    setTrelloWaMessage(waMsg);
+
+    setShowTrelloDispatchModal(true);
+  }
+
+  // Conferma invio scheda a Trello
+  function markAsDispatchedToTrello() {
+    if (!selectedLeadForTrello) return;
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === selectedLeadForTrello.id) {
+        return {
+          ...l,
+          stato_produzione: 'IN_ATTESA_AUDIO_TRELLO',
+          data_scadenza_produzione: trelloCardDueDate.split(' ')[0]
+        };
+      }
+      return l;
+    }));
+    setShowTrelloDispatchModal(false);
+    alert(`📋 Scheda per "${selectedLeadForTrello.nome_azienda_evento}" registrata per Trello!\nStato aggiornato a: 🟡 In Lavorazione Esterna (In attesa audio).`);
+  }
+
+  // Ricezione File Audio Finito e Sblocco Regia
+  function markAudioReceivedInRegia(lead: LeadRow) {
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === lead.id) {
+        return {
+          ...l,
+          stato_produzione: 'PRODOTTO_APPROVATO',
+          stato_programmazione: 'IN_PALINSESTO'
+        };
+      }
+      return l;
+    }));
+    alert(`🎉 File Audio Ricevuto per "${lead.nome_azienda_evento}"!\n• Sbloccato per la Regia Broadcast On-Air\n• Semaforo verde 🟢 assegnato nel Palinsesto.`);
   }
 
   // Conferma & Attiva Contratto: Passa a CONTRATTO ATTIVO e ripulisce il preventivatore
   function confirmAndActivateContract() {
     const clientName = contractData.committente.trim() || 'Nuovo Cliente Contratto';
     const newContractLead: LeadRow = {
-      id: Date.now(),
+      id: editingLeadId || `contract-${Date.now()}`,
       nome_azienda_evento: clientName,
       referente: contractData.referente,
       email: contractData.email || qEmail,
       telefono: contractData.telefono || qTelefono,
       comune: qComune,
       provincia: qProvincia,
+      piva: contractData.piva,
+      sdi: contractData.sdi,
       fase_commerciale: 'CONTRATTO ATTIVO',
       tipo_contratto: tipoAccordo === 'STANDARD' ? 'SPOT_TABELLARE' : 'BARTER',
       valore_contratto: contractData.totaleNetto,
+      valore_preventivo: contractData.totaleNetto,
       numero_contratto: contractData.numero,
       area_target: contractData.area || 'Toscana',
       plafond_totale_spot: contractData.quantitaSpot || 0,
       spot_rimasti: contractData.quantitaSpot || 0,
       anno_riferimento: '2026',
       probabilita_chiusura: 100,
+      quote_items: [...quoteItems],
+      data_inizio_trasmissione: contractData.dataDecorrenza,
+      data_fine_trasmissione: contractData.dataScadenza,
+      stato_programmazione: 'IN_PALINSESTO',
       note: `Contratto Radio Monte Serra S.r.l. regolarmente attivato e sottoscritto. ${contractData.noteContratto}`
-    };
+    } as LeadRow;
 
-    // Sposta/aggiunge in cima alla lista contratti attivi
-    setLeads(prev => [newContractLead, ...prev.filter(l => l.nome_azienda_evento.toLowerCase() !== clientName.toLowerCase())]);
+    // Aggiorna lista e salva su localStorage
+    updateLeadsAndPersist(prev => [newContractLead, ...prev.filter(l => l.id !== (editingLeadId || '') && l.nome_azienda_evento.toLowerCase() !== clientName.toLowerCase())]);
 
-    // Ripulisce completamente il preventivatore
+    // Ripulisce preventivatore
     resetQuoteBuilder();
 
     // Chiudi modali
     setShowContractModal(false);
     setShowQuoteModal(false);
+    setShowPdfModal(false);
 
     alert(`🎉 Contratto ${contractData.numero} per "${clientName}" attivato con successo!\n\n• Valore Contratto: € ${contractData.totaleNetto.toLocaleString('it-IT')}\n• Spostato in "CONTRATTI ATTIVI" sulla Dashboard\n• Preventivatore azzerato e pronto per la prossima pratica.`);
   }
@@ -853,27 +1316,158 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             </div>
                           )}
 
-                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
                             📍 {l.comune} ({l.provincia})
                           </div>
 
-                          <div className="lead-footer">
-                            <span style={{ fontWeight: 800, color: 'var(--accent-blue)' }}>
+                          {l.referente && (
+                            <div style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '4px' }}>
+                              👤 <strong>{l.referente}</strong> {l.telefono ? `• 📞 ${l.telefono}` : ''}
+                            </div>
+                          )}
+
+                          {l.plafond_totale_spot && l.plafond_totale_spot > 0 ? (
+                            <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '3px' }}>
+                              📻 <strong>{l.plafond_totale_spot} spot</strong> {l.data_inizio_trasmissione && l.data_fine_trasmissione ? `(dal ${l.data_inizio_trasmissione} al ${l.data_fine_trasmissione})` : ''}
+                            </div>
+                          ) : null}
+
+                          {l.tipo_produzione_spot && (
+                            <div style={{ fontSize: '10px', color: '#fb7185', marginTop: '2px', fontWeight: 700 }}>
+                              🎙️ Produzione: {l.tipo_produzione_spot === 'DIRITTI_LIBERI_TOSCANA' ? 'Diritti Liberi Toscana (169€)' : 'Solo RT+RF (100€)'}
+                            </div>
+                          )}
+
+                          <div className="lead-footer" style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                            <span style={{ fontWeight: 900, color: 'var(--accent-green)', fontSize: '14px' }}>
                               € {(l.valore_contratto || l.valore_preventivo).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                             </span>
-                            {col.phase === 'PREVENTIVO INVIATO' ? (
-                              <button className="btn btn-xs" style={{ background: '#f59e0b', color: '#000', fontWeight: 800 }} onClick={() => openRemindModal(l)}>
+                            <span style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase' }}>
+                              {col.phase === 'PREVENTIVO INVIATO' ? 'In Trattativa' : col.phase}
+                            </span>
+                          </div>
+
+                          {/* BARRA AZIONI OPERATIVE RAPIDE KANBAN */}
+                          {col.phase === 'PREVENTIVO INVIATO' && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
+                                onClick={() => openEditQuoteModal(l)}
+                                title="Modifica il preventivo (aggiungi, togli o varia voci, date e prezzi)"
+                              >
+                                ✏️ Modifica
+                              </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', fontWeight: 700 }}
+                                onClick={() => openProposalA4ForLead(l)}
+                                title="Visualizza e stampa la Proposta Commerciale A4"
+                              >
+                                📄 Proposta A4
+                              </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
+                                onClick={() => openContractForLead(l)}
+                                title="Trasforma direttamente in Contratto Ufficiale RMS"
+                              >
+                                📝 Passa a Contratto RMS
+                              </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 700 }}
+                                onClick={() => openProposalEmailModal(l)}
+                                title="Invia la proposta via email al cliente"
+                              >
+                                ✉️ Invia Email
+                              </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(0, 121, 191, 0.2)', color: '#38bdf8', border: '1px solid rgba(0, 121, 191, 0.4)', fontWeight: 700 }}
+                                onClick={() => openTrelloDispatchModal(l)}
+                                title="Genera scheda per Trello e invia notifica WhatsApp alla collaboratrice esterna"
+                              >
+                                📋 Commessa Trello
+                              </button>
+                              {l.stato_produzione === 'IN_ATTESA_AUDIO_TRELLO' && (
+                                <button
+                                  className="btn btn-xs"
+                                  style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', border: '1px solid rgba(34, 197, 94, 0.4)', fontWeight: 800 }}
+                                  onClick={() => markAudioReceivedInRegia(l)}
+                                  title="Segna il file audio come ricevuto e sblocca per la regia broadcast"
+                                >
+                                  ✅ Audio Ricevuto
+                                </button>
+                              )}
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(234, 179, 8, 0.15)', color: '#facc15', border: '1px solid rgba(234, 179, 8, 0.3)', fontWeight: 700 }}
+                                onClick={() => sendLeadToSchedule(l)}
+                                title="Pianifica nel Palinsesto On-Air"
+                              >
+                                📅 Palinsesto
+                              </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: '#f59e0b', color: '#000', fontWeight: 800 }}
+                                onClick={() => openRemindModal(l)}
+                                title="Sequenza solleciti remind a 3 step"
+                              >
                                 ⏰ Remind
                               </button>
-                            ) : (
-                              <button className="btn btn-xs btn-primary" onClick={() => {
-                                setSelectedLeadForEmail(l);
-                                setShowEmailModal(true);
-                              }}>
-                                ✉️ Dettagli
+                            </div>
+                          )}
+
+                          {col.phase === 'CONTRATTO ATTIVO' && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
+                                onClick={() => openContractForLead(l)}
+                              >
+                                📄 Stampa Contratto RMS
                               </button>
-                            )}
-                          </div>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(0, 121, 191, 0.2)', color: '#38bdf8', border: '1px solid rgba(0, 121, 191, 0.4)', fontWeight: 700 }}
+                                onClick={() => openTrelloDispatchModal(l)}
+                                title="Genera o visualizza scheda Trello per la produzione spot"
+                              >
+                                📋 Commessa Trello
+                              </button>
+                              {l.stato_produzione === 'IN_ATTESA_AUDIO_TRELLO' && (
+                                <button
+                                  className="btn btn-xs"
+                                  style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', border: '1px solid rgba(34, 197, 94, 0.4)', fontWeight: 800 }}
+                                  onClick={() => markAudioReceivedInRegia(l)}
+                                >
+                                  ✅ Audio Ricevuto
+                                </button>
+                              )}
+                              <button
+                                className="btn btn-xs btn-primary"
+                                onClick={() => {
+                                  setSelectedLeadForEmail(l);
+                                  setShowEmailModal(true);
+                                }}
+                              >
+                                ✉️ Notifica On-Air
+                              </button>
+                            </div>
+                          )}
+
+                          {col.phase !== 'PREVENTIVO INVIATO' && col.phase !== 'CONTRATTO ATTIVO' && (
+                            <div style={{ marginTop: '8px' }}>
+                              <button
+                                className="btn btn-xs btn-primary"
+                                style={{ width: '100%' }}
+                                onClick={() => openEditQuoteModal(l)}
+                              >
+                                💼 Crea / Modifica Preventivo
+                              </button>
+                            </div>
+                          )}
                         </div>
                       );
                     })
@@ -928,6 +1522,308 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* CONTENT TAB 4: PRODUZIONE SPOT AUDIO & LISTINO SLA 7GG */}
+      {activeTab === 'production' && (
+        <div style={{ background: 'var(--panel-bg)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🎙️ Pipeline Produzione Spot Audio &amp; Sala Incisione (SLA 7 Giorni)
+              </h3>
+              <p style={{ margin: '6px 0 0', fontSize: '13px', color: 'var(--text-muted)' }}>
+                Gestione operativa: Stesura Copy -&gt; Registrazione Speaker Studio -&gt; Approvazione &amp; Sblocco Regia On-Air. (Listino Ufficiale Toscana Comunica: Solo RT+RF 100€ | Diritti Liberi Toscana 169€)
+              </p>
+            </div>
+            <div style={{ background: 'rgba(244, 63, 94, 0.15)', color: '#fb7185', padding: '6px 12px', borderRadius: '8px', border: '1px solid rgba(244, 63, 94, 0.3)', fontSize: '12px', fontWeight: 800 }}>
+              ⏱️ SLA Standard Produzione: 7 Giorni Lavorativi
+            </div>
+          </div>
+
+          {leads.filter(l => l.stato_produzione && l.stato_produzione !== 'NON_RICHIESTA' || l.quote_items?.some(it => !it.isSpot)).length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px dashed var(--panel-border)' }}>
+              <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎙️</div>
+              <h4 style={{ margin: 0, color: 'var(--text-muted)' }}>Nessun incarico di produzione audio attivo al momento.</h4>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                Crea un preventivo che include la &quot;Realizzazione Spot Audio&quot; o clicca su &quot;🎙️ Produzione&quot; da una scheda trattativa nel Kanban.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))', gap: '16px' }}>
+              {leads.filter(l => l.stato_produzione && l.stato_produzione !== 'NON_RICHIESTA' || l.quote_items?.some(it => !it.isSpot)).map((l, pIdx) => {
+                const isDirittiLiberi = l.tipo_produzione_spot === 'DIRITTI_LIBERI_TOSCANA' || l.quote_items?.some(it => it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA');
+                const stato = l.stato_produzione || 'IN_ATTESA_COPY';
+
+                return (
+                  <div key={pIdx} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '10px', padding: '16px', border: '1px solid var(--panel-border)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                      <div>
+                        <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#fff' }}>{l.nome_azienda_evento}</h4>
+                        <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
+                          👤 {l.referente || 'Referente'} {l.telefono ? `• 📞 ${l.telefono}` : ''}
+                        </div>
+                      </div>
+                      <span className="tag" style={{
+                        background: isDirittiLiberi ? 'rgba(244, 63, 94, 0.2)' : 'rgba(56, 189, 248, 0.2)',
+                        color: isDirittiLiberi ? '#fb7185' : '#38bdf8',
+                        border: isDirittiLiberi ? '1px solid rgba(244, 63, 94, 0.4)' : '1px solid rgba(56, 189, 248, 0.4)',
+                        fontWeight: 800,
+                        fontSize: '11px'
+                      }}>
+                        {isDirittiLiberi ? 'Diritti Liberi Toscana (169€)' : 'Solo RT+RF (100€)'}
+                      </span>
+                    </div>
+
+                    {/* MONITORAGGIO SLA 7 GIORNI */}
+                    <div style={{ background: 'rgba(0,0,0,0.25)', padding: '8px 12px', borderRadius: '6px', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px' }}>
+                      <span style={{ color: '#cbd5e1' }}>
+                        🎯 Scadenza SLA Produzione: <strong>{l.data_scadenza_produzione || 'Entro 7 giorni'}</strong>
+                      </span>
+                      <span style={{ color: stato === 'PRODOTTO_APPROVATO' ? 'var(--accent-green)' : '#facc15', fontWeight: 700 }}>
+                        {stato === 'PRODOTTO_APPROVATO' ? '🟢 Audio Approvato' : '⏱️ In Lavorazione (SLA OK)'}
+                      </span>
+                    </div>
+
+                    {/* STATI PIPELINE PRODUZIONE */}
+                    <div style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
+                      <span style={{
+                        flex: 1, textAlign: 'center', padding: '5px', borderRadius: '4px', fontSize: '10px', fontWeight: 700,
+                        background: stato === 'IN_ATTESA_COPY' ? 'rgba(234, 179, 8, 0.2)' : 'rgba(255,255,255,0.05)',
+                        color: stato === 'IN_ATTESA_COPY' ? '#facc15' : '#64748b',
+                        border: stato === 'IN_ATTESA_COPY' ? '1px solid rgba(234, 179, 8, 0.4)' : '1px solid transparent'
+                      }}>
+                        1. Stesura Copy
+                      </span>
+                      <span style={{
+                        flex: 1, textAlign: 'center', padding: '5px', borderRadius: '4px', fontSize: '10px', fontWeight: 700,
+                        background: stato === 'IN_STUDIO' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255,255,255,0.05)',
+                        color: stato === 'IN_STUDIO' ? '#38bdf8' : '#64748b',
+                        border: stato === 'IN_STUDIO' ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid transparent'
+                      }}>
+                        2. Sala Incisione
+                      </span>
+                      <span style={{
+                        flex: 1, textAlign: 'center', padding: '5px', borderRadius: '4px', fontSize: '10px', fontWeight: 700,
+                        background: stato === 'PRODOTTO_APPROVATO' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255,255,255,0.05)',
+                        color: stato === 'PRODOTTO_APPROVATO' ? '#4ade80' : '#64748b',
+                        border: stato === 'PRODOTTO_APPROVATO' ? '1px solid rgba(34, 197, 94, 0.4)' : '1px solid transparent'
+                      }}>
+                        3. Approvato On-Air
+                      </span>
+                    </div>
+
+                    {/* BOX TESTO COPY AUDIO */}
+                    <div style={{ marginBottom: '12px' }}>
+                      <label style={{ fontSize: '11px', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>
+                        Testo / Note Copywriter per Speaker (Formato 20&quot; - ca. 45 parole):
+                      </label>
+                      <textarea
+                        className="form-textarea"
+                        style={{ height: '65px', fontSize: '12px' }}
+                        value={l.copy_testo || ''}
+                        placeholder="Inserisci il testo dello spot da incidere in sala o le indicazioni del cliente..."
+                        onChange={e => {
+                          const val = e.target.value;
+                          updateLeadsAndPersist(prev => prev.map(item => item.id === l.id ? { ...item, copy_testo: val } : item));
+                        }}
+                      />
+                    </div>
+
+                    {/* PULSANTI DI AVANZAMENTO STATO */}
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {stato === 'IN_ATTESA_COPY' && (
+                        <button
+                          className="btn btn-xs"
+                          style={{ flex: 1, background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700 }}
+                          onClick={() => {
+                            updateLeadsAndPersist(prev => prev.map(item => item.id === l.id ? { ...item, stato_produzione: 'IN_STUDIO' } : item));
+                            alert(`🎙️ Testo approvato! Inviato a Sala di Registrazione per "${l.nome_azienda_evento}".`);
+                          }}
+                        >
+                          🎙️ Invia in Sala Incisione
+                        </button>
+                      )}
+                      {stato === 'IN_STUDIO' && (
+                        <button
+                          className="btn btn-xs"
+                          style={{ flex: 1, background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', border: '1px solid rgba(34, 197, 94, 0.4)', fontWeight: 700 }}
+                          onClick={() => {
+                            updateLeadsAndPersist(prev => prev.map(item => item.id === l.id ? { ...item, stato_produzione: 'PRODOTTO_APPROVATO', stato_programmazione: 'IN_PALINSESTO' } : item));
+                            alert(`✅ File Audio registrato e approvato per "${l.nome_azienda_evento}"!\nSbloccato per la messa in onda.`);
+                          }}
+                        >
+                          ✅ Approva Audio &amp; Sblocca Palinsesto
+                        </button>
+                      )}
+                      {stato === 'PRODOTTO_APPROVATO' && (
+                        <div style={{ width: '100%', textAlign: 'center', fontSize: '11px', color: '#4ade80', fontWeight: 800, padding: '6px', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '6px' }}>
+                          🎉 Audio Pronto in Regia per la Messa in Onda
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* CONTENT TAB 5: PROGRAMMAZIONE ON-AIR */}
+      {activeTab === 'schedules' && (
+        <div style={{ background: 'var(--panel-bg)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
+                📅 Registro Programmazione On-Air &amp; Palinsesto Radio Toscana
+              </h3>
+              <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-muted)' }}>
+                Riepilogo delle trasmissioni programmate, volumi spot giornalieri e sincronizzazione con la regia broadcast.
+              </p>
+            </div>
+          </div>
+
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Cliente / Azienda</th>
+                <th>Copertura &amp; Area</th>
+                <th>Periodo On-Air</th>
+                <th>Spot / Giorno</th>
+                <th>Totale Passaggi</th>
+                <th>Stato Audio Regia</th>
+                <th>Azione</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leads.filter(l => l.fase_commerciale === 'CONTRATTO ATTIVO' || l.fase_commerciale === 'PREVENTIVO INVIATO' || l.stato_programmazione === 'IN_PALINSESTO').map((l, sIdx) => {
+                const isAudioPronto = l.stato_produzione === 'PRODOTTO_APPROVATO' || !l.quote_items?.some(it => !it.isSpot);
+                return (
+                  <tr key={sIdx}>
+                    <td>
+                      <strong>{l.nome_azienda_evento}</strong>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.referente}</div>
+                    </td>
+                    <td><span className="tag">{l.area_target || 'Radio Toscana'}</span></td>
+                    <td>
+                      <strong>
+                        {l.data_inizio_trasmissione && l.data_fine_trasmissione
+                          ? `${l.data_inizio_trasmissione} -&gt; ${l.data_fine_trasmissione}`
+                          : 'Dal 15/09 al 28/09/2026'}
+                      </strong>
+                    </td>
+                    <td><strong>{l.spot_giornalieri || 10} spot/gg</strong></td>
+                    <td><span style={{ fontWeight: 800, color: 'var(--accent-green)' }}>{l.plafond_totale_spot || 140} spot</span></td>
+                    <td>
+                      <span style={{
+                        padding: '3px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700,
+                        background: isAudioPronto ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+                        color: isAudioPronto ? '#4ade80' : '#facc15'
+                      }}>
+                        {isAudioPronto ? '🟢 Audio Pronto' : '🟡 In Produzione'}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-xs btn-primary"
+                        onClick={() => {
+                          setSelectedLeadForEmail(l);
+                          setShowEmailModal(true);
+                        }}
+                      >
+                        ✉️ Invia Prospetto
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* CONTENT TAB 2: CODE DI CONTROLLO */}
+      {activeTab === 'queues' && (
+        <div style={{ background: 'var(--panel-bg)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
+          <h3 style={{ margin: '0 0 16px', fontSize: '18px', fontWeight: 800 }}>
+            🚫 Code di Controllo &amp; Revisione Lead
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '8px', border: '1px solid var(--panel-border)' }}>
+              <h4 style={{ margin: '0 0 10px', color: 'var(--accent-blue)' }}>🕵️‍♂️ Radar Redazione &amp; Scouter Inbound</h4>
+              {leads.filter(l => l.fase_commerciale === 'SCOUTER DISCOVERY').map((l, qIdx) => (
+                <div key={qIdx} style={{ padding: '10px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px', marginBottom: '8px' }}>
+                  <strong>{l.nome_azienda_evento}</strong>
+                  <div style={{ fontSize: '11px', color: '#94a3b8' }}>📍 {l.comune} ({l.provincia})</div>
+                  <div style={{ fontSize: '11px', color: '#cbd5e1', margin: '4px 0' }}>{l.note}</div>
+                  <button className="btn btn-xs btn-primary" onClick={() => openEditQuoteModal(l)}>💼 Crea Preventivo</button>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '8px', border: '1px solid var(--panel-border)' }}>
+              <h4 style={{ margin: '0 0 10px', color: 'var(--accent-yellow)' }}>🟡 Preventivi In Attesa di Riscontro</h4>
+              {leads.filter(l => l.fase_commerciale === 'PREVENTIVO INVIATO').map((l, qIdx) => (
+                <div key={qIdx} style={{ padding: '10px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px', marginBottom: '8px' }}>
+                  <strong>{l.nome_azienda_evento}</strong> — € {l.valore_preventivo}
+                  <div style={{ fontSize: '11px', color: '#94a3b8' }}>Ultimo invio: {l.data_ultimo_invio || 'Recentemente'}</div>
+                  <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
+                    <button className="btn btn-xs" onClick={() => openEditQuoteModal(l)}>✏️ Modifica</button>
+                    <button className="btn btn-xs btn-primary" onClick={() => openRemindModal(l)}>⏰ Remind</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CONTENT TAB 6: UNIVERSAL MEMORY LOCK */}
+      {activeTab === 'memory' && (
+        <div style={{ background: 'var(--panel-bg)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--panel-border)' }}>
+          <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800 }}>
+            🎡 Universal Memory Lock &amp; Storico Clienti (267 Contratti)
+          </h3>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+            Archivio storico delle aziende toscane contrattualizzate. Clicca su &quot;Crea Preventivo&quot; per precompilare il listino con l&apos;ultimo valore di chiusura concordato.
+          </p>
+          <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Azienda / Ditta</th>
+                  <th>Città</th>
+                  <th>Referente</th>
+                  <th>Contratti Storici</th>
+                  <th>Ultimo Investimento</th>
+                  <th>Azione</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(storicoClientiData as HistoricalClient[]).slice(0, 30).map((h, hIdx) => (
+                  <tr key={hIdx}>
+                    <td><strong>{h.ditta}</strong></td>
+                    <td>{h.citta} ({h.provincia})</td>
+                    <td>{h.referente || '—'}</td>
+                    <td><span className="tag">{h.totale_contratti} contratti</span></td>
+                    <td><strong>€ {h.ultimo_prezzo || '—'}</strong></td>
+                    <td>
+                      <button
+                        className="btn btn-xs btn-primary"
+                        onClick={() => {
+                          selectHistoricalClient(h);
+                          setShowQuoteModal(true);
+                        }}
+                      >
+                        💼 Crea Preventivo
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       </div>
@@ -1850,7 +2746,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   style={{ background: 'rgba(234, 179, 8, 0.15)', color: '#facc15', border: '1px solid rgba(234, 179, 8, 0.3)', fontWeight: 700 }}
                   onClick={saveAsQuoteInNegotiation}
                 >
-                  Salva in Trattativa
+                  {editingLeadId ? '💾 Salva Modifiche Preventivo' : '💾 Salva in Trattativa'}
                 </button>
                 <button
                   className="btn"
@@ -1879,7 +2775,57 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               <span style={{ fontWeight: 800, color: '#f43f5e', fontSize: '13px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                 PROPOSTA COMMERCIALE A4 — ANTEPRIMA DI STAMPA
               </span>
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: '#22c55e', color: '#fff', fontWeight: 800 }}
+                  onClick={saveAsQuoteInNegotiation}
+                  title="Salva immediatamente questo preventivo nella colonna Trattative del Kanban"
+                >
+                  💾 Salva nella Dashboard
+                </button>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: '#3b82f6', color: '#fff', fontWeight: 800 }}
+                  onClick={() => {
+                    const currentLead: LeadRow = {
+                      id: editingLeadId || `quote-${Date.now()}`,
+                      nome_azienda_evento: qNome || 'Cliente',
+                      referente: qReferente,
+                      email: qEmail,
+                      telefono: qTelefono,
+                      comune: qComune,
+                      provincia: qProvincia,
+                      piva: qPiva,
+                      sdi: qSdi,
+                      settore: 'B2B',
+                      area_target: quoteItems[0]?.copertura || 'Toscana',
+                      fase_commerciale: 'PREVENTIVO INVIATO',
+                      valore_preventivo: totaleInvestimento,
+                      valore_contratto: 0,
+                      is_cambio_merce: tipoAccordo !== 'STANDARD',
+                      probabilita_chiusura: 70,
+                      quote_items: [...quoteItems],
+                      tipo_accordo: tipoAccordo
+                    };
+                    saveAsQuoteInNegotiation();
+                    openProposalEmailModal(currentLead);
+                  }}
+                  title="Invia la proposta commerciale via email al cliente"
+                >
+                  ✉️ Invia Proposta via Email
+                </button>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: '#a855f7', color: '#fff', fontWeight: 800 }}
+                  onClick={() => {
+                    saveAsQuoteInNegotiation();
+                    openContractGenerator();
+                  }}
+                  title="Trasforma direttamente in Contratto Ufficiale Radio Monte Serra"
+                >
+                  📝 Passa a Contratto RMS
+                </button>
                 <button className="btn btn-primary btn-xs" onClick={handlePrintProposal}>
                   Salva / Stampa in PDF
                 </button>
@@ -2459,6 +3405,237 @@ Radio Toscana
               >
                 🚀 Invia Email Ora
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE EMAIL PROPOSTA COMMERCIALE DEDICATA */}
+      {showProposalEmailModal && selectedLeadForProposalEmail && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '680px' }}>
+            <div className="modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '28px', width: 'auto' }} />
+                <h3 className="modal-title" style={{ margin: 0 }}>✉️ Invia Proposta Commerciale al Cliente</h3>
+              </div>
+              <button className="modal-close" onClick={() => setShowProposalEmailModal(false)}>✕</button>
+            </div>
+
+            <div style={{ background: 'rgba(56, 189, 248, 0.1)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(56, 189, 248, 0.2)', marginBottom: '14px', fontSize: '12px' }}>
+              Committente: <strong style={{ color: '#fff' }}>{selectedLeadForProposalEmail.nome_azienda_evento}</strong>
+              {selectedLeadForProposalEmail.referente ? ` • Referente: ${selectedLeadForProposalEmail.referente}` : ''}
+              {` • Valore: € ${selectedLeadForProposalEmail.valore_preventivo.toLocaleString('it-IT')} + IVA`}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Destinatario Email (A:)</label>
+              <input
+                type="email"
+                className="form-input"
+                value={proposalEmailRecipient}
+                onChange={e => setProposalEmailRecipient(e.target.value)}
+                placeholder="es. andrea.berti@coldiretti.it"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Oggetto dell&apos;Email</label>
+              <input
+                type="text"
+                className="form-input"
+                value={proposalEmailSubject}
+                onChange={e => setProposalEmailSubject(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Testo dell&apos;Email Commerciale Ufficiale</label>
+              <textarea
+                className="form-textarea"
+                style={{ height: '220px', fontSize: '12px', lineHeight: 1.4 }}
+                value={proposalEmailBody}
+                onChange={e => setProposalEmailBody(e.target.value)}
+              />
+            </div>
+
+            {proposalEmailSentNotification && (
+              <div style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', padding: '10px', borderRadius: '6px', marginBottom: '12px', textAlign: 'center', fontWeight: 700, fontSize: '12px' }}>
+                ✅ Proposta segnata come inviata! Data di invio aggiornata sul CRM e cronometro remind avviato.
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '8px' }}>
+              <button
+                className="btn btn-xs"
+                style={{ background: 'rgba(255,255,255,0.08)' }}
+                onClick={() => {
+                  navigator.clipboard.writeText(proposalEmailBody);
+                  alert('📋 Testo email copiato negli appunti!');
+                }}
+              >
+                📋 Copia Testo Email
+              </button>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700 }}
+                  onClick={() => {
+                    const mailtoUrl = `mailto:${encodeURIComponent(proposalEmailRecipient)}?subject=${encodeURIComponent(proposalEmailSubject)}&body=${encodeURIComponent(proposalEmailBody)}`;
+                    window.open(mailtoUrl, '_blank');
+                    // Aggiorna data invio
+                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
+                    setProposalEmailSentNotification(true);
+                  }}
+                  title="Apre la bozza già pronta nel tuo client email di default (Outlook, Thunderbird, ecc.)"
+                >
+                  📧 Apri nel Client Email (Outlook)
+                </button>
+
+                <button
+                  className="btn btn-primary btn-xs"
+                  onClick={() => {
+                    // Salva timestamp invio sul lead
+                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
+                    setProposalEmailSentNotification(true);
+                    setTimeout(() => {
+                      setShowProposalEmailModal(false);
+                      alert(`🚀 Proposta Commerciale per "${selectedLeadForProposalEmail.nome_azienda_evento}" registrata come inviata!`);
+                    }, 800);
+                  }}
+                >
+                  ✅ Segna come Inviata al Cliente
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE GENERATORE SCHEDA TRELLO & NOTIFICA WHATSAPP */}
+      {showTrelloDispatchModal && selectedLeadForTrello && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '720px' }}>
+            <div className="modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '24px' }}>📋</span>
+                <div>
+                  <h3 className="modal-title" style={{ margin: 0 }}>Genera Scheda Trello Ufficiale &amp; WhatsApp</h3>
+                  <p style={{ margin: '3px 0 0', fontSize: '11px', color: '#94a3b8' }}>
+                    Commessa di Produzione Audio Spot per collaboratrice esterna
+                  </p>
+                </div>
+              </div>
+              <button className="modal-close" onClick={() => setShowTrelloDispatchModal(false)}>✕</button>
+            </div>
+
+            {/* BOX ANTEPRIMA CARD TRELLO */}
+            <div style={{ background: 'rgba(0, 121, 191, 0.12)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(0, 121, 191, 0.3)', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  📌 ANTEPRIMA SCHEDA TRELLO
+                </span>
+                <span style={{ fontSize: '11px', background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.4)', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                  🚨 Scadenza Audio: {trelloCardDueDate}
+                </span>
+              </div>
+              <div style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', marginBottom: '6px' }}>
+                {trelloCardTitle}
+              </div>
+              <div style={{ fontSize: '11px', color: '#cbd5e1' }}>
+                Committente: <strong>{selectedLeadForTrello.nome_azienda_evento}</strong> • Referente: <strong>{selectedLeadForTrello.referente || '—'}</strong> ({selectedLeadForTrello.telefono || selectedLeadForTrello.email || '—'})
+              </div>
+            </div>
+
+            {/* CAMPI DI MODIFICA TITOLO E DESCRIZIONE TRELLO */}
+            <div className="form-group">
+              <label className="form-label">Titolo Card Trello</label>
+              <input
+                type="text"
+                className="form-input"
+                value={trelloCardTitle}
+                onChange={e => setTrelloCardTitle(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Descrizione Dettagliata &amp; Checklist (Formato Trello Markdown)</label>
+              <textarea
+                className="form-textarea"
+                style={{ height: '170px', fontSize: '11px', fontFamily: 'monospace', lineHeight: 1.35 }}
+                value={trelloCardDescription}
+                onChange={e => setTrelloCardDescription(e.target.value)}
+              />
+            </div>
+
+            {/* SEZIONE NOTIFICA WHATSAPP RAPIDA */}
+            <div style={{ background: 'rgba(34, 197, 94, 0.1)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(34, 197, 94, 0.25)', marginBottom: '16px' }}>
+              <label style={{ fontSize: '11px', fontWeight: 800, color: '#4ade80', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                <span>💬</span> Messaggio WhatsApp di Notifica Rapida per la Collaboratrice:
+              </label>
+              <textarea
+                className="form-textarea"
+                style={{ height: '70px', fontSize: '11.5px', marginBottom: '8px' }}
+                value={trelloWaMessage}
+                onChange={e => setTrelloWaMessage(e.target.value)}
+              />
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: '#22c55e', color: '#ffffff', fontWeight: 800 }}
+                  onClick={() => {
+                    const waUrl = `https://wa.me/?text=${encodeURIComponent(trelloWaMessage)}`;
+                    window.open(waUrl, '_blank');
+                  }}
+                  title="Apre WhatsApp Web / Desktop con il messaggio precompilato pronto per l'invio"
+                >
+                  📲 Apri Chat WhatsApp con Notifica
+                </button>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(255,255,255,0.08)', color: '#fff' }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(trelloWaMessage);
+                    alert('📋 Messaggio WhatsApp copiato negli appunti!');
+                  }}
+                >
+                  📋 Copia Testo WhatsApp
+                </button>
+              </div>
+            </div>
+
+            {/* AZIONI DI CHIUSURA */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <button
+                className="btn btn-xs"
+                style={{ background: 'rgba(255,255,255,0.08)' }}
+                onClick={() => {
+                  const fullCardText = `${trelloCardTitle}\n\nSCADENZA: ${trelloCardDueDate}\n\n${trelloCardDescription}`;
+                  navigator.clipboard.writeText(fullCardText);
+                  alert('📋 Testo completo della Card Trello copiato negli appunti!');
+                }}
+              >
+                📋 Copia Testo Card per Trello
+              </button>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: '#0079bf', color: '#ffffff', fontWeight: 800 }}
+                  onClick={() => window.open(trelloBoardUrl, '_blank')}
+                  title="Apre la bacheca Trello in un nuovo tab"
+                >
+                  🌐 Apri Bacheca Trello
+                </button>
+
+                <button
+                  className="btn btn-primary btn-xs"
+                  onClick={markAsDispatchedToTrello}
+                >
+                  ✅ Segna come Inviata a Trello
+                </button>
+              </div>
             </div>
           </div>
         </div>
