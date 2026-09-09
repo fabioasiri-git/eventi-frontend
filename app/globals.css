@@ -475,7 +475,7 @@ select option, .form-select option, .form-input option {
     overflow: visible !important;
   }
 
-  /* Rendi visibile ESCLUSIVAMENTE il foglio A4 attivo (#printable-proposal o #printable-contract) */
+  /* Rendi visibile ESCLUSIVAMENTE il documento attivo in fase di stampa */
   #printable-proposal,
   #printable-proposal *,
   #printable-contract,
@@ -483,15 +483,24 @@ select option, .form-select option, .form-input option {
     visibility: visible !important;
   }
 
-  #printable-proposal,
-  #printable-contract {
+  /* Isolamento: se stiamo stampando il Contratto, nascondi il Preventivo e viceversa */
+  body.printing-contract #printable-proposal {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  body.printing-proposal #printable-contract {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  #printable-proposal {
     position: relative !important;
     left: 0 !important;
     top: 0 !important;
     width: 100% !important;
-    max-width: 190mm !important;
+    max-width: 195mm !important;
     margin: 0 auto !important;
-    padding: 16px 20px !important;
+    padding: 12px 18px !important;
     background: #ffffff !important;
     box-shadow: none !important;
     border: none !important;
@@ -502,9 +511,52 @@ select option, .form-select option, .form-input option {
     break-inside: avoid !important;
   }
 
-  /* Evita interruzioni di pagina indesiderate */
-  table, tr, td, th, .proposal-card {
+  #printable-contract {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 195mm !important;
+    margin: 0 auto !important;
+    padding: 10px 16px !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  /* Pagina 1 e Pagina 2 del Contratto Ufficiale RMS */
+  .contract-page-1 {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    min-height: 260mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  .contract-page-2 {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-before: always !important;
+    break-before: page !important;
+    min-height: 260mm !important;
+    margin-top: 10mm !important;
+    padding-top: 5mm !important;
+  }
+
+  /* Salto pagina forzato */
+  .contract-page-break {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* Evita interruzioni di pagina indesiderate all'interno di tabelle e box */
+  table, tr, td, th, .proposal-card, .contract-box {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 }
+

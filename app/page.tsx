@@ -76,6 +76,7 @@ interface LeadRow {
   flag_ricorrente?: boolean;
   data_prossimo_contatto?: string;
   tipo_produzione_spot?: string;
+  numero_preventivo?: string;
   numero_contratto?: string;
   stato_programmazione?: string;
   data_invio_programmazione?: string;
@@ -112,6 +113,8 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     tipo_contratto: 'SPOT_TABELLARE',
     valore_preventivo: 1000,
     valore_contratto: 0,
+    numero_preventivo: 'PREV-2026/001',
+    numero_contratto: '2026/001-RMS',
     plafond_totale_spot: 180,
     spot_rimasti: 180,
     is_cambio_merce: false,
@@ -427,6 +430,10 @@ export default function LeadEngineDashboard() {
   }
 
   function handlePrintProposal() {
+    if (typeof document !== 'undefined') {
+      document.body.classList.add('printing-proposal');
+      document.body.classList.remove('printing-contract');
+    }
     const sanitizedClient = (qNome || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
     const dateStr = new Date().toLocaleDateString('it-IT').replace(/\//g, '-');
     const originalTitle = document.title;
@@ -436,6 +443,9 @@ export default function LeadEngineDashboard() {
     window.print();
     setTimeout(() => {
       document.title = originalTitle;
+      if (typeof document !== 'undefined') {
+        document.body.classList.remove('printing-proposal');
+      }
     }, 1500);
   }
 
@@ -514,9 +524,43 @@ export default function LeadEngineDashboard() {
     }
   }
 
+  // Stato Modale Contratto: Distinzione se è già attivo (confermato) o ancora da attivare
+  const [isContractAlreadyActive, setIsContractAlreadyActive] = useState(false);
+  const [currentQuoteNumber, setCurrentQuoteNumber] = useState('PREV-2026/001');
+
+  // Helper Generazione Numerazione Progressiva Reale Preventivi (es. PREV-2026/001)
+  function getNextQuoteNumber(currentLeads: LeadRow[]): string {
+    let maxNum = 0;
+    for (const l of currentLeads) {
+      if (l.numero_preventivo) {
+        const m = l.numero_preventivo.match(/PREV-2026\/(\d+)/i);
+        if (m) {
+          const n = parseInt(m[1], 10);
+          if (n > maxNum) maxNum = n;
+        }
+      }
+    }
+    return `PREV-2026/${String(maxNum + 1).padStart(3, '0')}`;
+  }
+
+  // Helper Generazione Numerazione Progressiva Reale Contratti RMS (es. 2026/001-RMS)
+  function getNextContractNumber(currentLeads: LeadRow[]): string {
+    let maxNum = 0;
+    for (const l of currentLeads) {
+      if (l.numero_contratto) {
+        const m = l.numero_contratto.match(/2026\/(\d+)-RMS/i);
+        if (m) {
+          const n = parseInt(m[1], 10);
+          if (n > maxNum) maxNum = n;
+        }
+      }
+    }
+    return `2026/${String(maxNum + 1).padStart(3, '0')}-RMS`;
+  }
+
   // Bozza Contratto Monte Serra State
   const [contractData, setContractData] = useState({
-    numero: '',
+    numero: '2026/001-RMS',
     dataDecorrenza: '',
     dataScadenza: '',
     committente: '',
@@ -535,10 +579,12 @@ export default function LeadEngineDashboard() {
     totaleNetto: 0,
     totaleBarter: 0,
     modalitaPagamento: 'Bonifico bancario 30gg d.f. f.m.',
-    noteContratto: ''
+    noteContratto: '',
+    bancaAppoggio: '',
+    iban: ''
   });
 
-  const STORAGE_KEY = 'rt_lead_engine_leads_v3';
+  const STORAGE_KEY = 'rt_lead_engine_leads_v4';
 
   // Helper Persistenza Reale (LocalStorage + Memoria)
   function updateLeadsAndPersist(updater: (prev: LeadRow[]) => LeadRow[]) {
@@ -560,11 +606,12 @@ export default function LeadEngineDashboard() {
       try {
         localStorage.removeItem('rt_lead_engine_leads_v1');
         localStorage.removeItem('rt_lead_engine_leads_v2');
+        localStorage.removeItem('rt_lead_engine_leads_v3');
         localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_LEADS_POOL));
       } catch (e) {}
     }
     setLeads(INITIAL_LEADS_POOL);
-    alert('Pipeline bonificata: visualizzata solo la pratica reale Coldiretti Toscana in PREVENTIVI IN TRATTATIVA.');
+    alert('Pipeline bonificata: visualizzata solo la pratica reale Coldiretti Toscana con Contratto 2026/001-RMS e Preventivo PREV-2026/001.');
   }
 
   // Caricamento Dati Iniziali con Fallback Deterministico
@@ -574,6 +621,7 @@ export default function LeadEngineDashboard() {
         // Pulizia forzata delle vecchie cache con mockup di test
         localStorage.removeItem('rt_lead_engine_leads_v1');
         localStorage.removeItem('rt_lead_engine_leads_v2');
+        localStorage.removeItem('rt_lead_engine_leads_v3');
 
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
@@ -581,9 +629,15 @@ export default function LeadEngineDashboard() {
           if (Array.isArray(parsed) && parsed.length > 0) {
             // Bonifica automatica: elimina i mockup di test 'asfalti-ruge' e 'comune-greve'
             const cleaned = parsed.filter((l: any) => l.id !== 'asfalti-ruge-2026' && l.id !== 'comune-greve-2026');
-            // Assicura che Coldiretti sia presente ed esattamente nella fase PREVENTIVO INVIATO
+            // Assicura che Coldiretti sia presente ed abbia i codici progressivi
             const hasColdiretti = cleaned.some((l: any) => l.id === 'coldiretti-toscana-2026');
-            const finalList = hasColdiretti ? cleaned : [...INITIAL_LEADS_POOL, ...cleaned];
+            const finalList = hasColdiretti 
+              ? cleaned.map((l: any) => l.id === 'coldiretti-toscana-2026' ? {
+                  ...l,
+                  numero_contratto: l.numero_contratto || '2026/001-RMS',
+                  numero_preventivo: l.numero_preventivo || 'PREV-2026/001'
+                } : l)
+              : [...INITIAL_LEADS_POOL, ...cleaned];
             setLeads(finalList);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(finalList));
             return;
@@ -630,8 +684,12 @@ export default function LeadEngineDashboard() {
   const totaleListino = quoteItems.reduce((acc, curr) => acc + Number(curr.prezzoListino || curr.valore || 0), 0);
   const scontoApplicato = Math.max(0, totaleListino - totaleInvestimento);
 
-  // Stampa / Salva in PDF Contratto Ufficiale RMS
+  // Stampa / Salva in PDF Contratto Ufficiale RMS (Bifacciale 2 Pagine)
   function handlePrintContract() {
+    if (typeof document !== 'undefined') {
+      document.body.classList.add('printing-contract');
+      document.body.classList.remove('printing-proposal');
+    }
     const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
     const dateStr = new Date().toLocaleDateString('it-IT').replace(/\//g, '-');
     const originalTitle = document.title;
@@ -639,6 +697,9 @@ export default function LeadEngineDashboard() {
     window.print();
     setTimeout(() => {
       document.title = originalTitle;
+      if (typeof document !== 'undefined') {
+        document.body.classList.remove('printing-contract');
+      }
     }, 1500);
   }
 
@@ -732,11 +793,15 @@ export default function LeadEngineDashboard() {
     };
 
     updateLeadsAndPersist(prev => {
+      const existingLead = editingLeadId ? prev.find(l => l.id === editingLeadId) : null;
+      const assignedQuoteNum = existingLead?.numero_preventivo || currentQuoteNumber || getNextQuoteNumber(prev);
+      setCurrentQuoteNumber(assignedQuoteNum);
+
       if (editingLeadId) {
         // Aggiorna lead esistente in-place
         return prev.map(l => {
           if (l.id === editingLeadId) {
-            return { ...l, ...updatedLeadData };
+            return { ...l, ...updatedLeadData, numero_preventivo: assignedQuoteNum };
           }
           return l;
         });
@@ -747,7 +812,8 @@ export default function LeadEngineDashboard() {
           settore: 'B2B / Servizi',
           valore_contratto: 0,
           is_cambio_merce: tipoAccordo !== 'STANDARD',
-          ...updatedLeadData
+          ...updatedLeadData,
+          numero_preventivo: assignedQuoteNum
         } as LeadRow;
         return [newLead, ...prev.filter(l => l.nome_azienda_evento.toLowerCase() !== clientName.toLowerCase())];
       }
@@ -771,6 +837,8 @@ export default function LeadEngineDashboard() {
     setTipoAccordo(lead.tipo_accordo || 'STANDARD');
     if (lead.barter_radio) setBarterRadio(lead.barter_radio);
     if (lead.barter_ascoltatori) setBarterAscoltatori(lead.barter_ascoltatori);
+
+    setCurrentQuoteNumber(lead.numero_preventivo || getNextQuoteNumber(leads));
 
     if (lead.quote_items && lead.quote_items.length > 0) {
       setQuoteItems([...lead.quote_items]);
@@ -817,8 +885,10 @@ export default function LeadEngineDashboard() {
       ? 'Radio Firenze 88.7'
       : ((mainSpot?.copertura || lead.area_target || '').includes('Combinata') ? 'Radio Toscana + Radio Firenze' : 'Radio Toscana');
 
+    const contractNum = lead.numero_contratto || getNextContractNumber(leads);
+
     setContractData({
-      numero: lead.numero_contratto || `2026/${Math.floor(1000 + Math.random() * 9000)}-RMS`,
+      numero: contractNum,
       dataDecorrenza: mainSpot?.dataInizio || lead.data_inizio_trasmissione || '2026-09-15',
       dataScadenza: mainSpot?.dataFine || lead.data_fine_trasmissione || '2026-09-28',
       committente: lead.nome_azienda_evento,
@@ -837,8 +907,11 @@ export default function LeadEngineDashboard() {
       totaleNetto: totalVal,
       totaleBarter: lead.tipo_accordo === 'STANDARD' ? 0 : Math.round(totalVal / 2),
       modalitaPagamento: lead.tipo_accordo === 'BARTER_PURO' ? '100% Cambio Merce / Barter' : 'Bonifico bancario 30gg d.f. f.m.',
-      noteContratto: `Formula Accordo: ${lead.tipo_accordo || 'STANDARD'}. ${summaryItems}`
+      noteContratto: `Formula Accordo: ${lead.tipo_accordo || 'STANDARD'}. ${summaryItems}`,
+      bancaAppoggio: '',
+      iban: ''
     });
+    setIsContractAlreadyActive(lead.fase_commerciale === 'CONTRATTO ATTIVO');
     setShowContractModal(true);
   }
 
@@ -1145,8 +1218,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
       ? 'Radio Firenze 88.7'
       : (mainSpot?.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : 'Radio Toscana');
 
+    const nextNum = getNextContractNumber(leads);
+
     setContractData({
-      numero: `2026/${Math.floor(1000 + Math.random() * 9000)}-RMS`,
+      numero: nextNum,
       dataDecorrenza: mainSpot?.dataInizio || '2026-09-15',
       dataScadenza: mainSpot?.dataFine || '2026-09-28',
       committente: qNome || 'Azienda Committente',
@@ -1165,8 +1240,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
       totaleNetto: totaleInvestimento,
       totaleBarter: tipoAccordo === 'STANDARD' ? 0 : Math.round(totaleInvestimento / 2),
       modalitaPagamento: tipoAccordo === 'BARTER_PURO' ? '100% Cambio Merce / Barter' : 'Bonifico bancario 30gg d.f. f.m.',
-      noteContratto: `Formula Accordo: ${tipoAccordo}. ${summaryItems}`
+      noteContratto: `Formula Accordo: ${tipoAccordo}. ${summaryItems}`,
+      bancaAppoggio: '',
+      iban: ''
     });
+    setIsContractAlreadyActive(false);
     setShowContractModal(true);
   }
 
@@ -2919,7 +2997,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     </span>
                   </div>
                   <div style={{ fontSize: '10px', color: '#474350', fontWeight: 700 }}>
-                    Rif. RT-2026/09-{String(new Date().getDate()).padStart(2, '0')} • Data: {new Date().toLocaleDateString('it-IT')}
+                    N. Prev: <span style={{ color: '#D43F4A', fontWeight: 800 }}>{currentQuoteNumber || 'PREV-2026/001'}</span> • Data: {new Date().toLocaleDateString('it-IT')}
                   </div>
                   <div style={{ fontSize: '8.5px', color: '#94a3b8' }}>
                     Validità offerta: 30 giorni data emissione
@@ -3135,7 +3213,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   Modello Ufficiale
                 </span>
               </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button className="btn btn-primary btn-xs" onClick={handlePrintContract} style={{ background: '#0284c7', borderColor: '#0ea5e9' }}>
                   Salva / Stampa Contratto in PDF
                 </button>
@@ -3147,21 +3225,41 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 >
                   ✉️ Invia Contratto al Cliente (CC Amministrazione)
                 </button>
-                <button className="btn btn-xs" onClick={confirmAndActivateContract} style={{ background: '#16a34a', color: '#ffffff', fontWeight: 700, borderColor: '#22c55e' }}>
-                  Conferma &amp; Attiva Contratto
-                </button>
+                {isContractAlreadyActive ? (
+                  <span 
+                    style={{ 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      gap: '6px', 
+                      background: 'rgba(22, 163, 74, 0.2)', 
+                      color: '#4ade80', 
+                      border: '1px solid rgba(34, 197, 94, 0.4)', 
+                      borderRadius: '4px', 
+                      padding: '4px 10px', 
+                      fontSize: '11px', 
+                      fontWeight: 800, 
+                      letterSpacing: '0.03em' 
+                    }}
+                  >
+                    🟢 Contratto Attivo &amp; Convalidato (In Palinsesto)
+                  </span>
+                ) : (
+                  <button className="btn btn-xs" onClick={confirmAndActivateContract} style={{ background: '#16a34a', color: '#ffffff', fontWeight: 700, borderColor: '#22c55e' }}>
+                    Conferma &amp; Attiva Contratto
+                  </button>
+                )}
                 <button className="modal-close" onClick={() => setShowContractModal(false)}>✕</button>
               </div>
             </div>
 
-            {/* FOGLIO A4 STAMPABILE CONTRATTO RADIO MONTE SERRA S.R.L. */}
+            {/* DOCUMENTO UFFICIALE A4 CONTRATTO RADIO MONTE SERRA S.R.L. - 2 PAGINE FRONTE E RETRO */}
             <div
               className="a4-page-preview printable-document"
               id="printable-contract"
               style={{
                 background: '#ffffff',
                 color: '#111111',
-                padding: '16px 22px',
+                padding: '16px 20px',
                 margin: '12px auto',
                 width: '210mm',
                 maxWidth: '100%',
@@ -3169,155 +3267,259 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 boxSizing: 'border-box',
                 fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
                 position: 'relative',
-                fontSize: '10.5px',
-                lineHeight: 1.35
+                fontSize: '10px',
+                lineHeight: 1.3
               }}
             >
-              {/* HEADER COMMISSIONE PUBBLICITARIA RMS */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #1e293b', paddingBottom: '10px', marginBottom: '10px', position: 'relative' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                  <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '40px', width: 'auto', objectFit: 'contain' }} />
-                  <img src="/logo_radio_firenze.png" alt="Radio Firenze" style={{ height: '22px', width: 'auto', objectFit: 'contain' }} />
-                  <div style={{ borderLeft: '1.5px solid #cbd5e1', paddingLeft: '10px' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 900, color: '#0f172a', letterSpacing: '0.04em' }}>RADIO MONTE SERRA S.r.l.</div>
-                    <div style={{ fontSize: '8px', color: '#64748b' }}>Via de&apos; Pucci, 2 • 50122 Firenze • Tel. 055/285030 • P.IVA 04472740481</div>
-                    <div style={{ fontSize: '8px', color: '#94a3b8' }}>CCIAA Firenze n. 453074 • info@radiotoscana.it • commerciale@radiotoscana.it</div>
+              {/* ========================================================================= */}
+              {/* ===== PAGINA 1: COMMISSIONE PUBBLICITARIA (MODULO ISTITUZIONALE FRONTE) ===== */}
+              {/* ========================================================================= */}
+              <div className="contract-page-1" style={{ minHeight: '260mm', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div>
+                  {/* HEADER COMMISSIONE PUBBLICITARIA RMS */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #1e293b', paddingBottom: '8px', marginBottom: '8px', position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '38px', width: 'auto', objectFit: 'contain' }} />
+                      <img src="/logo_radio_firenze.png" alt="Radio Firenze" style={{ height: '22px', width: 'auto', objectFit: 'contain' }} />
+                      <div style={{ borderLeft: '1.5px solid #cbd5e1', paddingLeft: '10px' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 900, color: '#0f172a', letterSpacing: '0.04em' }}>RADIO MONTE SERRA S.r.l.</div>
+                        <div style={{ fontSize: '7.5px', color: '#64748b' }}>Via de&apos; Pucci, 2 • 50122 Firenze • Tel. 055/285030 • Fax 055/283793 • P.IVA 04472740481</div>
+                        <div style={{ fontSize: '7.5px', color: '#94a3b8' }}>CCIAA Firenze n. 453074 • info@radiotoscana.it • commerciale@radiotoscana.it</div>
+                      </div>
+                    </div>
+
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '8px', fontWeight: 900, background: '#1e293b', color: '#ffffff', padding: '3px 8px', borderRadius: '3px', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'inline-block', marginBottom: '2px' }}>
+                        COMMISSIONE PUBBLICITARIA — COPIA PER RADIO TOSCANA
+                      </span>
+                      <div style={{ fontSize: '10.5px', color: '#0f172a', fontWeight: 900 }}>
+                        N. Comm: <span style={{ color: '#D43F4A' }}>{contractData.numero}</span> • Data: {new Date().toLocaleDateString('it-IT')}
+                      </div>
+                      <div style={{ fontSize: '8.5px', color: '#475569' }}>Agente di Riferimento: <strong>Fabio Asiri</strong></div>
+                    </div>
+                  </div>
+
+                  {/* BOX DATI COMMITTENTE & GARANTE */}
+                  <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '7px 9px', marginBottom: '7px', background: '#f8fafc' }}>
+                    <div style={{ fontSize: '8.5px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '3px', borderBottom: '1px solid #e2e8f0', paddingBottom: '2px' }}>
+                      1. Dati Anagrafici Committente &amp; Garante
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '8px', fontSize: '9px' }}>
+                      <div>
+                        <div><strong>Ditta Committente:</strong> {contractData.committente || '—'}</div>
+                        <div><strong>Garante / Legale Rappr.:</strong> {contractData.referente || '—'}</div>
+                        <div><strong>Sede Legale / Indirizzo:</strong> {contractData.indirizzo || '—'}</div>
+                      </div>
+                      <div>
+                        <div><strong>Partita IVA / C.F.:</strong> {contractData.piva || '—'}</div>
+                        <div><strong>Codice SDI / PEC:</strong> {contractData.sdi || '—'}</div>
+                        <div><strong>Telefono / Email:</strong> {contractData.telefono || qTelefono || '—'} • {contractData.email || qEmail || '—'}</div>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: '4px', fontSize: '7.2px', color: '#64748b', fontStyle: 'italic', borderTop: '1px dashed #e2e8f0', paddingTop: '2px' }}>
+                      Il Committente conferma con la presente commissione l&apos;impegno ad effettuare pubblicità riguardante la ditta nel nome e nell&apos;interesse della quale agisce come garante, tramite le emittenti Radio Toscana e/o Radio Firenze, testate edite da Radio Monte Serra s.r.l., in seguito definita Emittente.
+                    </div>
+                  </div>
+
+                  {/* TABELLA PROGRAMMAZIONE SPATIALI E SPOT */}
+                  <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', overflow: 'hidden', marginBottom: '7px' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '8.5px', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ background: '#1e293b', color: '#ffffff' }}>
+                          <th style={{ padding: '4px 6px', fontWeight: 800 }}>Mezzo / Canale</th>
+                          <th style={{ padding: '4px 6px', fontWeight: 800 }}>Formato</th>
+                          <th style={{ padding: '4px 6px', fontWeight: 800 }}>Quantità Spot &amp; Periodo</th>
+                          <th style={{ padding: '4px 6px', fontWeight: 800 }}>Fascia Oraria</th>
+                          <th style={{ padding: '4px 6px', fontWeight: 800 }}>Area Diffusione</th>
+                          <th style={{ padding: '4px 6px', fontWeight: 800, textAlign: 'right' }}>Prezzo Spazi</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                          <td style={{ padding: '5px 6px', fontWeight: 700, color: '#D43F4A' }}>{contractData.mezzo}</td>
+                          <td style={{ padding: '5px 6px', fontWeight: 800 }}>{contractData.formato}</td>
+                          <td style={{ padding: '5px 6px' }}>
+                            <strong>{contractData.quantitaSpot} spot</strong> complessivi<br/>
+                            <span style={{ fontSize: '7.2px', color: '#64748b' }}>Dal {contractData.dataDecorrenza} al {contractData.dataScadenza}</span>
+                          </td>
+                          <td style={{ padding: '5px 6px' }}>07:00 – 21:00 (Rotazione)</td>
+                          <td style={{ padding: '5px 6px' }}>{contractData.area}</td>
+                          <td style={{ padding: '5px 6px', textAlign: 'right', fontWeight: 800 }}>€ {contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</td>
+                        </tr>
+                        {contractData.prezzoProduzione > 0 && (
+                          <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+                            <td colSpan={5} style={{ padding: '4px 6px' }}>
+                              <strong>Materiale Pubblicitario:</strong> Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane
+                            </td>
+                            <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 800 }}>
+                              € {contractData.prezzoProduzione.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* RIEPILOGO ECONOMICO & CONDIZIONI DI PAGAMENTO */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '7px', marginBottom: '7px' }}>
+                    <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '5px 7px', background: '#f8fafc' }}>
+                      <div style={{ fontSize: '8px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', marginBottom: '2px' }}>
+                        Condizioni di Pagamento
+                      </div>
+                      <div style={{ fontSize: '9px', fontWeight: 700, color: '#0f172a' }}>
+                        {contractData.modalitaPagamento}
+                      </div>
+                      <div style={{ fontSize: '7.5px', color: '#64748b', marginTop: '2px' }}>
+                        Accredito: Radio Monte Serra S.r.l. presso Banca d&apos;appoggio emittente.
+                      </div>
+                    </div>
+
+                    <div style={{ border: '1.5px solid #1e293b', borderRadius: '4px', padding: '5px 7px', background: '#1e293b', color: '#ffffff', textAlign: 'right' }}>
+                      <div style={{ fontSize: '7.5px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        TOTALE COMPLESSIVO (IVA ESCLUSA)
+                      </div>
+                      <div style={{ fontSize: '15px', fontWeight: 900, color: '#ffffff' }}>
+                        € {contractData.totaleNetto.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                      </div>
+                      <div style={{ fontSize: '6.5px', color: '#cbd5e1' }}>
+                        IVA 22% a norma di legge a carico del committente
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BOX COORDINATE BANCARIE & DELEGA RID / SDD */}
+                  <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '6px 8px', marginBottom: '7px', background: '#f8fafc' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '2px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '8px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        Delega di Pagamento sul Conto Corrente Bancario (R.I.D. / SDD Core)
+                      </span>
+                      <span style={{ fontSize: '7.2px', color: '#64748b' }}>
+                        Cod. Azienda Creditrice: <strong>2026-RMS</strong>
+                      </span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.8fr', gap: '8px', fontSize: '8.5px', marginBottom: '4px' }}>
+                      <div><strong>Banca d&apos;appoggio:</strong> {contractData.bancaAppoggio || 'Banca del Committente'}</div>
+                      <div><strong>IBAN:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{contractData.iban || 'IT __ _ _____ _____ ________________________'}</span></div>
+                    </div>
+                    <div style={{ fontSize: '6.8px', color: '#64748b', lineHeight: 1.2, fontStyle: 'italic' }}>
+                      Il sottoscritto autorizza la Banca a margine ad addebitare sul c/c indicato, nella data di scadenza dell&apos;obbligazione o data prorogata d&apos;iniziativa del creditore (ferma restando la valuta originaria concordata), tutti gli ordini di incasso elettronici inviati dall&apos;Azienda e contrassegnati con le coordinate dell&apos;Azienda creditrice Radio Monte Serra S.r.l., a condizione che vi siano disponibilità sufficienti e senza necessità per la Banca di inviare la relativa contabile di addebito.
+                    </div>
                   </div>
                 </div>
 
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '8px', fontWeight: 900, background: '#1e293b', color: '#ffffff', padding: '3px 8px', borderRadius: '3px', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'inline-block', marginBottom: '3px' }}>
-                    COMMISSIONE PUBBLICITARIA — COPIA PER RADIO TOSCANA
-                  </span>
-                  <div style={{ fontSize: '10px', color: '#0f172a', fontWeight: 800 }}>
-                    N. Comm: <span style={{ color: '#D43F4A' }}>{contractData.numero}</span> • Data: {new Date().toLocaleDateString('it-IT')}
+                <div>
+                  {/* SOTTOSCRIZIONE ORDINARIA EMITTENTE & COMMITTENTE */}
+                  <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '6px 8px', marginBottom: '5px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', fontSize: '8px' }}>
+                      <div>Luogo e data: <strong>Firenze, lì {new Date().toLocaleDateString('it-IT')}</strong></div>
+                      <div style={{ fontSize: '7px', color: '#64748b' }}>Il presente rapporto è regolato dalle condizioni esposte e da quelle generali a tergo</div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', paddingTop: '3px', borderTop: '1px solid #e2e8f0' }}>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '7.5px', color: '#64748b', marginBottom: '20px' }}>PER L&apos;EMITTENTE (Radio Monte Serra S.r.l.)</div>
+                        <div style={{ borderBottom: '1px solid #94a3b8', width: '80%', margin: '0 auto 2px' }}></div>
+                        <div style={{ fontSize: '8px', fontWeight: 700 }}>Fabio Asiri — Direzione Commerciale</div>
+                      </div>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '7.5px', color: '#64748b', marginBottom: '20px' }}>IL COMMITTENTE (Timbro e Firma)</div>
+                        <div style={{ borderBottom: '1px solid #94a3b8', width: '80%', margin: '0 auto 2px' }}></div>
+                        <div style={{ fontSize: '8px', fontWeight: 700 }}>{contractData.committente || 'Firma Legale Rappresentante'}</div>
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: '8.5px', color: '#475569' }}>Agente di Riferimento: <strong>Fabio Asiri</strong></div>
+
+                  {/* CLAUSOLE VESSATORIE ART. 1341 E 1342 C.C. */}
+                  <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', padding: '5px 7px', fontSize: '6.5px', color: '#64748b', lineHeight: 1.2, background: '#fafafa' }}>
+                    <p style={{ margin: '0 0 2px 0' }}>
+                      <strong>Approvazione Specifica Clausole ex Artt. 1341 e 1342 C.C.:</strong> Dopo attenta lettura delle condizioni generali di commissione riportate a tergo, si approvano specificatamente le seguenti clausole: 1. DURATA DELLA COMMISSIONE - 2. EFFICACIA E DIVIETO DI CESSIONE - 3. SOTTOSCRIZIONE AGENZIA - 4. REVOCA COMMISSIONE (PENALE 75%) - 5. CESSIONE AZIENDA - 6. RESPONSABILITÀ E MANLEVA MATERIALE - 7. DIRITTI PROPRIETÀ MATERIALE - 8. TERMINI CONSEGNA (10GG) - 9. PROGRAMMAZIONE - 10. MODIFICA PROGRAMMAZIONE (±30 MIN) - 11. RECLAMI (DECADENZA 30GG) - 12. SANZIONI OMESSO PAGAMENTO (INTERESSI D.LGS 231/02) - 13. AUTODISCIPLINA PUBBLICITARIA - 14. ESCLUSIVA - 15. MEZZI IN CONCESSIONE - 16. SPESE DI BOLLO E REGISTRO - 17. COMPETENZA ESCLUSIVA FORO DI FIRENZE - 18. INTERDIPENDENZA CLAUSOLE.
+                    </p>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '15px', marginTop: '2px' }}>
+                      <span style={{ fontSize: '7.2px', fontWeight: 800, color: '#1e293b' }}>Firma per approvazione specifica del Committente:</span>
+                      <div style={{ borderBottom: '1px solid #94a3b8', width: '160px', height: '12px' }}></div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* BOX DATI COMMITTENTE & GARANTE */}
-              <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '8px 10px', marginBottom: '8px', background: '#f8fafc' }}>
-                <div style={{ fontSize: '8.5px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px', borderBottom: '1px solid #e2e8f0', paddingBottom: '2px' }}>
-                  1. Dati Anagrafici Committente &amp; Garante
+              {/* ========================================================================= */}
+              {/* ===== PAGINA 2: CONDIZIONI GENERALI DI COMMISSIONE (RETRO LEGALE INTEGRALE) ===== */}
+              {/* ========================================================================= */}
+              <div className="contract-page-2 contract-page-break" style={{ pageBreakBefore: 'always', breakBefore: 'page', marginTop: '20px', paddingTop: '15px', borderTop: '2px dashed #94a3b8' }}>
+                <div style={{ textAlign: 'center', borderBottom: '1.5px solid #1e293b', paddingBottom: '6px', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: 900, color: '#0f172a', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    CONDIZIONI GENERALI DI COMMISSIONE — RADIO MONTE SERRA S.R.L.
+                  </div>
+                  <div style={{ fontSize: '7px', color: '#64748b' }}>
+                    Condizioni disciplinanti la diffusione e programmazione dei comunicati pubblicitari sulle emittenti Radio Toscana e Radio Firenze
+                  </div>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '8px', fontSize: '9.5px' }}>
+
+                {/* TESTO INTEGRALE DEI 18 ARTICOLI IN FORMATO A DUE COLONNE */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '6.4px', lineHeight: 1.25, color: '#334155', textAlign: 'justify' }}>
                   <div>
-                    <div><strong>Ditta Committente:</strong> {contractData.committente || '—'}</div>
-                    <div><strong>Garante / Legale Rappr.:</strong> {contractData.referente || '—'}</div>
-                    <div><strong>Sede Legale / Indirizzo:</strong> {contractData.indirizzo || '—'}</div>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>1. DURATA DELLA COMMISSIONE:</strong> La presente commissione viene stipulata dalle parti per la durata di 12 mesi decorrenti dalla data del perfezionamento secondo le modalità di seguito esposte. Le parti convengono di adottare, ai fini della validità della convenzione, la forma scritta per la conclusione del contratto e per ogni clausola aggiuntiva, modificativa o risolutiva. Se per fatto della ditta Committente lo spazio impegnato non risultasse completamente utilizzato entro i termini convenuti, l&apos;Emittente si riserva il diritto di pretendere, a titolo di risarcimento del danno, una somma pari al 75% del costo della pubblicità non utilizzata.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>2. EFFICACIA E DIVIETO DI CESSIONE DELLA COMMISSIONE:</strong> La presente commissione impegna immediatamente e irrevocabilmente la ditta Committente: non è utilizzabile a favore di terzi ed è soggetta ad accettazione da parte dell&apos;Emittente. L&apos;esecuzione parziale non costituisce accettazione della totalità della commissione.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>3. SOTTOSCRIZIONE DA PARTE DI AGENZIA PUBBLICITARIA:</strong> Qualora la presente commissione venga sottoscritta da Agenzia Pubblicitaria per conto di proprio cliente, la medesima Agenzia dovrà fornire adeguata giustificazione scritta dei suoi poteri nelle forme di cui all&apos;art. 1393 c.c. e sarà comunque responsabile in solido con la rappresentante cliente per tutti gli obblighi derivanti dal presente contratto.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>4. REVOCA DELLA COMMISSIONE:</strong> La commissione può essere revocata solo con il consenso scritto dell&apos;Emittente che è autorizzata a pretendere a titolo di rimborso spese il 75% dell&apos;importo della commissione.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>5. CESSIONE DELL&apos;AZIENDA:</strong> Nel caso di cessione dell&apos;azienda da parte della ditta Committente, questa si obbliga a far subentrare il cessionario nei diritti e obblighi di cui alla presente commissione, salvo facoltà dell&apos;Emittente di risolvere la commissione entro 30 giorni dalla comunicazione della cessione. Il cedente è, comunque, responsabile insieme al cessionario delle obbligazioni assunte e dei corrispettivi già maturati.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>6. RESPONSABILITÀ ED OBBLIGHI CIRCA IL MATERIALE PUBBLICITARIO:</strong> Il materiale necessario per le inserzioni pubblicitarie oggetto della presente commissione è fornito dalla ditta Committente (anche se prodotto dall&apos;Emittente); la ditta Committente resta piena ed esclusiva responsabile nei confronti del Fisco, degli Editori, del Pubblico e dei terzi in genere per la pubblicazione dei messaggi pubblicitari; garantisce il proprio diritto all&apos;uso dei testi, slogan pubblicitari, marchi e altre figurazioni, nonché la loro liceità obbligandosi alla manleva nei confronti dell&apos;Emittente. Il materiale pubblicitario sarà programmato solo dopo la dichiarazione di espressa approvazione da parte dell&apos;Emittente che può modificarlo e respingerlo a suo insindacabile giudizio. La ditta Committente dichiara fin da ora di approvare il contenuto del materiale mandato in programmazione rinunciando a ogni e qualsiasi azione nei confronti dell&apos;Emittente per eventuali danni che essa ditta Committente dovesse subire nella preparazione e programmazione del materiale stesso.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>7. DIRITTI INERENTI LA PROPRIETÀ DEL MATERIALE:</strong> L&apos;Emittente conserva tutti i diritti inerenti alla proprietà del materiale pubblicitario prodotto suo tramite, ivi comprendendosi espressamente il diritto esclusivo alla utilizzazione tecnica e lo sfruttamento economico. In difetto di richiesta scritta e di restituzione l&apos;Emittente ha altresì la facoltà di distruggere il materiale pubblicitario decorsi 90 giorni dalla data della sua ultima pubblicazione. Il materiale fornito dalla ditta Committente non verrà restituito dall&apos;Emittente se non a seguito di esplicita richiesta scritta della Committente da fare pervenire tramite raccomandata con r.r. o PEC entro il termine essenziale di 30 giorni dall&apos;ultima pubblicazione.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>8. TERMINI CONSEGNA MATERIALE:</strong> La ditta Committente si obbliga a sua cura e sue spese all&apos;approntamento del materiale necessario per la preparazione dei comunicati pubblicitari che dovranno essere consegnati, già conformi ai requisiti richiesti per il mezzo, all&apos;Emittente almeno 10 giorni prima della partenza della pubblicità. La durata e lo spazio del materiale da programmare non potrà essere superiore a quanto concordato nella presente commissione: in caso contrario l&apos;Emittente è fin da ora autorizzata a procedere ai tagli necessari per ridurre lo spazio o la durata del comunicato come concordato nella presente.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>9. PROGRAMMAZIONE:</strong> La programmazione è quella indicata nella apposita griglia esplicativa riportata nel fronte che le parti dichiarano di avere comunemente concordato con la firma della presente commissione.
+                    </p>
                   </div>
+
                   <div>
-                    <div><strong>Partita IVA / C.F.:</strong> {contractData.piva || '—'}</div>
-                    <div><strong>Codice SDI / PEC:</strong> {contractData.sdi || '—'}</div>
-                    <div><strong>Telefono / Email:</strong> {contractData.telefono || qTelefono || '—'} • {contractData.email || qEmail || '—'}</div>
-                  </div>
-                </div>
-                <div style={{ marginTop: '5px', fontSize: '7.5px', color: '#64748b', fontStyle: 'italic', borderTop: '1px dashed #e2e8f0', paddingTop: '3px' }}>
-                  Il Committente conferma con la presente commissione l&apos;impegno ad effettuare pubblicità riguardante la ditta nel nome e nell&apos;interesse della quale agisce come garante, tramite le emittenti Radio Toscana e/o Radio Firenze, testate edite da Radio Monte Serra s.r.l., in seguito definita Emittente.
-                </div>
-              </div>
-
-              {/* TABELLA PROGRAMMAZIONE SPATIALI E SPOT */}
-              <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', overflow: 'hidden', marginBottom: '8px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9px', textAlign: 'left' }}>
-                  <thead>
-                    <tr style={{ background: '#1e293b', color: '#ffffff' }}>
-                      <th style={{ padding: '5px 8px', fontWeight: 800 }}>Mezzo / Canale</th>
-                      <th style={{ padding: '5px 8px', fontWeight: 800 }}>Formato</th>
-                      <th style={{ padding: '5px 8px', fontWeight: 800 }}>Quantità Spot &amp; Periodo</th>
-                      <th style={{ padding: '5px 8px', fontWeight: 800 }}>Fascia Oraria</th>
-                      <th style={{ padding: '5px 8px', fontWeight: 800 }}>Area Diffusione</th>
-                      <th style={{ padding: '5px 8px', fontWeight: 800, textAlign: 'right' }}>Prezzo Spazi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                      <td style={{ padding: '6px 8px', fontWeight: 700, color: '#D43F4A' }}>{contractData.mezzo}</td>
-                      <td style={{ padding: '6px 8px', fontWeight: 800 }}>{contractData.formato}</td>
-                      <td style={{ padding: '6px 8px' }}>
-                        <strong>{contractData.quantitaSpot} spot</strong> complessivi<br/>
-                        <span style={{ fontSize: '7.5px', color: '#64748b' }}>Dal {contractData.dataDecorrenza} al {contractData.dataScadenza}</span>
-                      </td>
-                      <td style={{ padding: '6px 8px' }}>07:00 – 21:00 (Rotazione)</td>
-                      <td style={{ padding: '6px 8px' }}>{contractData.area}</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800 }}>€ {contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</td>
-                    </tr>
-                    {contractData.prezzoProduzione > 0 && (
-                      <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
-                        <td colSpan={5} style={{ padding: '5px 8px' }}>
-                          <strong>Materiale Pubblicitario:</strong> Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane
-                        </td>
-                        <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>
-                          € {contractData.prezzoProduzione.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* RIEPILOGO ECONOMICO & CONDIZIONI DI PAGAMENTO */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '8px', marginBottom: '8px' }}>
-                <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '6px 8px', background: '#f8fafc' }}>
-                  <div style={{ fontSize: '8.5px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', marginBottom: '3px' }}>
-                    Condizioni di Pagamento
-                  </div>
-                  <div style={{ fontSize: '9.5px', fontWeight: 700, color: '#0f172a' }}>
-                    {contractData.modalitaPagamento}
-                  </div>
-                  <div style={{ fontSize: '8px', color: '#64748b', marginTop: '3px' }}>
-                    Coordinate per accredito: Radio Monte Serra S.r.l. presso Banca d&apos;appoggio emittente.
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>10. MODIFICA DELLA PROGRAMMAZIONE:</strong> Qualsiasi richiesta di modifica o temporanea sospensione che la ditta Committente dovesse avanzare dovrà pervenire all&apos;Emittente almeno 7 giorni prima dell&apos;inizio previsto della programmazione per le modifiche e 30 giorni per le sospensioni. Gli orari di trasmissione della pubblicità possono variare in più o in meno di circa 30 minuti rispetto a quelli convenuti per esigenze di programmazione. Se per qualsivoglia causa o ragione l&apos;Emittente non potesse trasmettere, sia parzialmente che totalmente la pubblicità concordata, il contratto è da ritenersi risolto a tutti gli effetti, obbligandosi a restituire alla ditta Committente le somme già ricevute a titolo di acconto ed eccedenti l&apos;importo della pubblicità già trasmessa, senza interessi e rivalutazione monetaria. Le parti concordano e limitano la responsabilità dell&apos;Emittente solo per le ipotesi di colpa grave e individuano come unica ed esclusiva forma di risarcimento la gratuita ripetizione della trasmissione del messaggio pubblicitario rettificato.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>11. RECLAMI:</strong> Eventuali reclami della ditta Committente per irregolarità nelle programmazioni pubblicitarie dovranno essere presentati, a pena di decadenza, entro 30 giorni dalla avvenuta uscita pubblicitaria, a mezzo raccomandata con ricevuta di ritorno o PEC. Viene espressamente convenuto e sottoscritto che la proposizione del reclamo non ha efficacia sospensiva sul pagamento del corrispettivo pattuito, che pertanto dovrà essere interamente versato alle scadenze previste: l&apos;inosservanza di quanto sopra comporta l&apos;improcedibilità del reclamo e la risoluzione del contratto per fatto e colpa della ditta Committente. Ai fini della contestazione faranno fede ad ogni effetto i log della regia e le risultanze dell&apos;Emittente.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>12. SANZIONI PER OMESSO O INCOMPLETO PAGAMENTO NEI TERMINI:</strong> I pagamenti comprensivi di corrispettivi e spese dovranno essere effettuati nei termini pattuiti. Nel caso di mancato rispetto di tale adempimento da parte della ditta Committente, l&apos;Emittente ha il diritto di risolvere il contratto e sospendere la pubblicità addebitando alla ditta Committente i due terzi dell&apos;importo impegnato e non usufruito a titolo di penale. In ogni caso di ritardato pagamento verranno addebitati alla ditta Committente gli interessi di mora al tasso commerciale corrente ai sensi del D.Lgs. 231/2002 unitamente alle spese legali e di recupero. La ditta Committente autorizza l&apos;Emittente all&apos;emissione di ricevute bancarie o alla riscossione tramite R.I.D./SDD per l&apos;ammontare del prezzo pattuito nella presente commissione.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>13. CODICE DI AUTODISCIPLINA PUBBLICITARIA:</strong> La ditta Committente dichiara di accettare senza riserve il Codice di Autodisciplina Pubblicitaria che sa di essere obbligatorio anche per il mezzo e inoltre la competenza del Comitato di Accertamento e del Giurì, impegnandosi a conformarsi in via definitiva alle decisioni di quest&apos;ultimo anche in ordine all&apos;eventuale pubblicazione delle decisioni.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>14. ESCLUSIVA:</strong> Non sono ammesse clausole di esclusiva o divieti di pubblicità nei confronti di concorrenti della Committente, clausole che comunque, anche se apposte dalla ditta Committente, verranno considerate nulle. L&apos;Emittente potrà trasmettere, contestualmente a ciascun ordine, comunicati di aziende e prodotti concorrenti. Parimenti la ditta Committente non vanta alcun diritto di utilizzare spazi speciali salvo casi da decidersi con apposito accordo scritto con l&apos;Emittente.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>15. MEZZI IN CONCESSIONE:</strong> Per gli spazi pubblicitari concessi su mezzi terzi, valgono integralmente le disposizioni e i regolamenti tecnici stabiliti dall&apos;Emittente e dalla concessionaria Radio Monte Serra S.r.l.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>16. SPESE DI BOLLO E DI REGISTRO:</strong> Le spese di bollo e di registro del presente atto anche per il caso d&apos;uso, eventuali imposte e tasse governative, i diritti SIAE, le spese di incasso tra cui quelle di sconto, sono a carico esclusivo della ditta Committente che si obbliga a pagarli a semplice richiesta dell&apos;Emittente.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>17. COMPETENZA TERRITORIALE ESCLUSIVA:</strong> Competente a decidere in merito a qualsiasi controversia, contestazione o vertenza giudiziaria dipendente dalla presente commissione o connessa alla sua validità, efficacia, interpretazione ed esecuzione è esclusivamente il Foro di Firenze.
+                    </p>
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      <strong>18. INTERDIPENDENZA ED ESSENZIALITÀ DELLE CLAUSOLE:</strong> Tutte le condizioni suscritte si considerano conosciute e accettate dalla ditta Committente al momento della sottoscrizione della commissione. Esse sono tutte essenziali per l&apos;Emittente e vincolanti per la ditta Committente.
+                    </p>
                   </div>
                 </div>
 
-                <div style={{ border: '1.5px solid #1e293b', borderRadius: '4px', padding: '6px 8px', background: '#1e293b', color: '#ffffff', textAlign: 'right' }}>
-                  <div style={{ fontSize: '8px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    TOTALE COMPLESSIVO (IVA ESCLUSA)
-                  </div>
-                  <div style={{ fontSize: '16px', fontWeight: 900, color: '#ffffff' }}>
-                    € {contractData.totaleNetto.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                  </div>
-                  <div style={{ fontSize: '7px', color: '#cbd5e1' }}>
-                    IVA 22% a norma di legge a carico del committente
-                  </div>
-                </div>
-              </div>
-
-              {/* ARTICOLO CLAUSOLA TUTELA SPOT */}
-              <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', padding: '5px 7px', marginBottom: '8px', fontSize: '7.5px', color: '#475569', lineHeight: 1.25, background: '#fafafa' }}>
-                <strong>Art. Tutela Materiale Pubblicitario:</strong> Il materiale audio fornito rimane di proprietà del produttore ed è concesso in licenza per la sola diffusione sulle emittenti Radio Toscana e Radio Firenze e streaming collegato. Sono escluse senza espressa autorizzazione scritta diffusioni su circuiti multi-emittente, network nazionali, piattaforme streaming musicali terze e campagne digitali web a pagamento.
-              </div>
-
-              {/* DOPPIA FIRMA & APPROVAZIONE ART. 1341 C.C. */}
-              <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '6px 8px', marginBottom: '6px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', fontSize: '8.5px' }}>
-                  <div>Luogo e data: <strong>Firenze, lì {new Date().toLocaleDateString('it-IT')}</strong></div>
-                  <div style={{ fontSize: '7.5px', color: '#64748b' }}>Redatto in conformità alle Condizioni Generali di Commissione</div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', paddingTop: '4px', borderTop: '1px solid #e2e8f0' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '8px', color: '#64748b', marginBottom: '22px' }}>PER L&apos;EMITTENTE (Radio Monte Serra S.r.l.)</div>
-                    <div style={{ borderBottom: '1px solid #94a3b8', width: '80%', margin: '0 auto 3px' }}></div>
-                    <div style={{ fontSize: '8.5px', fontWeight: 700 }}>Fabio Asiri — Direzione Commerciale</div>
-                  </div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '8px', color: '#64748b', marginBottom: '22px' }}>IL COMMITTENTE (Timbro e Firma)</div>
-                    <div style={{ borderBottom: '1px solid #94a3b8', width: '80%', margin: '0 auto 3px' }}></div>
-                    <div style={{ fontSize: '8.5px', fontWeight: 700 }}>{contractData.committente || 'Firma Legale Rappresentante'}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* CLAUSOLE VESSATORIE 1341 CC */}
-              <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', padding: '5px 7px', fontSize: '6.8px', color: '#64748b', lineHeight: 1.2 }}>
-                <p style={{ margin: '0 0 3px 0' }}>
-                  <strong>Approvazione Specifica Clausole ex Art. 1341 e 1342 C.C.:</strong> Dopo attenta lettura delle condizioni generali di commissione, si approvano specificatamente le seguenti clausole: 1. Durata della commissione - 2. Efficacia e divieto di cessione - 4. Revoca della commissione (penale 75%) - 6. Responsabilità e manleva materiale pubblicitario - 7. Proprietà materiale e diritti d&apos;autore - 10. Modifica programmazione e limite risarcimento - 11. Decadenza reclami 30gg - 12. Sanzioni omesso pagamento - 14. Divieto clausole esclusiva - 16. Foro competente esclusivo Firenze.
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '15px', marginTop: '3px' }}>
-                  <span style={{ fontSize: '7.5px', fontWeight: 800, color: '#1e293b' }}>Firma per approvazione specifica:</span>
-                  <div style={{ borderBottom: '1px solid #94a3b8', width: '160px', height: '12px' }}></div>
+                <div style={{ marginTop: '8px', borderTop: '1px solid #cbd5e1', paddingTop: '4px', textAlign: 'center', fontSize: '6.5px', color: '#64748b' }}>
+                  Radio Monte Serra S.r.l. • Sede Legale ed Amministrativa: Via de&apos; Pucci, 2 - 50122 Firenze • Tel. 055/285030 • Fax 055/283793 • P.IVA 04472740481 • CCIAA Firenze n. 453074
                 </div>
               </div>
             </div>
