@@ -181,6 +181,13 @@ export default function LeadEngineDashboard() {
   const [proposalEmailBody, setProposalEmailBody] = useState('');
   const [proposalEmailSentNotification, setProposalEmailSentNotification] = useState(false);
 
+  // Modale Invio Email Contratto con Allegato PDF & CC Amministrazione
+  const [showContractEmailModal, setShowContractEmailModal] = useState(false);
+  const [contractEmailRecipient, setContractEmailRecipient] = useState('');
+  const [contractEmailCc, setContractEmailCc] = useState('amministrazione@radiotoscana.it');
+  const [contractEmailSubject, setContractEmailSubject] = useState('');
+  const [contractEmailBody, setContractEmailBody] = useState('');
+
   // Modale Generatore Scheda Trello Ufficiale & WhatsApp Push
   const [showTrelloDispatchModal, setShowTrelloDispatchModal] = useState(false);
   const [selectedLeadForTrello, setSelectedLeadForTrello] = useState<LeadRow | null>(null);
@@ -833,6 +840,49 @@ export default function LeadEngineDashboard() {
       noteContratto: `Formula Accordo: ${lead.tipo_accordo || 'STANDARD'}. ${summaryItems}`
     });
     setShowContractModal(true);
+  }
+
+  // Apertura Modale Invio Email Contratto con CC Amministrazione & Allegato PDF
+  function openContractEmailModal() {
+    const comm = contractData.committente || qNome || 'Cliente';
+    const ref = contractData.referente || qReferente || 'Referente';
+    const emailTo = contractData.email || qEmail || 'toscana@coldiretti.it';
+    const num = contractData.numero;
+
+    setContractEmailRecipient(emailTo);
+    setContractEmailCc('amministrazione@radiotoscana.it');
+    setContractEmailSubject(`Radio Toscana (Radio Monte Serra S.r.l.) — Trasmissione Contratto Pubblicitario n. ${num} per ${comm}`);
+
+    const body = `Gentile ${ref} / Spett.le ${comm},
+
+in riferimento agli accordi commerciali intercorsi per la campagna on-air su Radio Toscana (Radio Monte Serra S.r.l.), Le trasmettiamo in allegato la Commissione Pubblicitaria ufficiale n. ${num}.
+
+📋 RIEPILOGO ESTREMI DELLA CAMPAGNA PUBBLICITARIA:
+• Committente: ${comm}
+• Mezzo: ${contractData.mezzo} (${contractData.area})
+• Quantità Spot: ${contractData.quantitaSpot} passaggi da ${contractData.formato}
+• Periodo di Trasmissione: Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}
+• Tariffa Spazi Pubblicitari: € ${contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+${contractData.prezzoProduzione > 0 ? `• Quota Produzione Spot (Diritti Liberi): € ${contractData.prezzoProduzione.toLocaleString('it-IT', { minimumFractionDigits: 2 })}\n` : ''}• TOTALE NETTO DI CAMPAGNA: € ${contractData.totaleNetto.toLocaleString('it-IT', { minimumFractionDigits: 2 })} + IVA
+• Modalità di Pagamento: ${contractData.modalitaPagamento}
+
+📌 ISTRUZIONI PER IL PERFEZIONAMENTO:
+Si prega cortesemente di:
+1. Stampare e restituire la presente commissione timbrata e siglata per accettazione in calce;
+2. Confermare il Codice Destinatario SDI e indirizzo PEC per l'emissione della relativa fattura elettronica.
+
+La presente comunicazione è trasmessa in copia conoscenza alla nostra Direzione Amministrativa (amministrazione@radiotoscana.it) per l'apertura della posizione contabile e la corretta registrazione fiscale.
+
+Restiamo a completa disposizione per qualsiasi chiarimento operativo e per la ricezione del materiale audio per la messa in onda.
+
+Cordiali saluti,
+
+Fabio Asiri — Direzione Commerciale Radio Toscana
+Radio Monte Serra S.r.l. • Via de' Pucci, 2 • 50122 Firenze
+Cell: 347 6818595 • Email: commerciale@radiotoscana.it`;
+
+    setContractEmailBody(body);
+    setShowContractEmailModal(true);
   }
 
   // Apertura Modale Invio Email Proposta Commerciale
@@ -3089,6 +3139,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 <button className="btn btn-primary btn-xs" onClick={handlePrintContract} style={{ background: '#0284c7', borderColor: '#0ea5e9' }}>
                   Salva / Stampa Contratto in PDF
                 </button>
+                <button 
+                  className="btn btn-xs" 
+                  onClick={openContractEmailModal}
+                  style={{ background: 'rgba(234, 179, 8, 0.2)', color: '#facc15', fontWeight: 700, borderColor: 'rgba(234, 179, 8, 0.4)' }}
+                  title="Prepara l'email formale con il Contratto allegato per il cliente e in CC ad amministrazione@radiotoscana.it"
+                >
+                  ✉️ Invia Contratto al Cliente (CC Amministrazione)
+                </button>
                 <button className="btn btn-xs" onClick={confirmAndActivateContract} style={{ background: '#16a34a', color: '#ffffff', fontWeight: 700, borderColor: '#22c55e' }}>
                   Conferma &amp; Attiva Contratto
                 </button>
@@ -3504,7 +3562,154 @@ Radio Toscana
         </div>
       )}
 
-      {/* MODALE GENERATORE SCHEDA TRELLO & NOTIFICA WHATSAPP */}
+      {/* MODALE TRASMISSIONE CONTRATTO UFFICIALE RMS CON ALLEGATO PDF & CC AMMINISTRAZIONE */}
+      {showContractEmailModal && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '720px' }}>
+            <div className="modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '28px', width: 'auto' }} />
+                <div>
+                  <h3 className="modal-title" style={{ margin: 0 }}>📝 Trasmissione Contratto Ufficiale RMS con Allegato PDF</h3>
+                  <div style={{ fontSize: '11px', color: '#94a3b8' }}>Invio formale al committente con copia automatica all&apos;amministrazione</div>
+                </div>
+              </div>
+              <button className="modal-close" onClick={() => setShowContractEmailModal(false)}>✕</button>
+            </div>
+
+            {/* BOX RIEPILOGO PRATICA */}
+            <div style={{ background: 'rgba(56, 189, 248, 0.1)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(56, 189, 248, 0.2)', marginBottom: '14px', fontSize: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  Committente: <strong style={{ color: '#fff' }}>{contractData.committente}</strong>
+                  {contractData.referente ? ` • Referente: ${contractData.referente}` : ''}
+                  <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                    Contratto n. <strong>{contractData.numero}</strong> • Periodo: {contractData.dataDecorrenza} / {contractData.dataScadenza}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 900, color: 'var(--accent-green)' }}>
+                    € {contractData.totaleNetto.toLocaleString('it-IT', { minimumFractionDigits: 2 })} + IVA
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#38bdf8' }}>{contractData.quantitaSpot} Spot ({contractData.formato})</div>
+                </div>
+              </div>
+            </div>
+
+            {/* BOX ALLEGATO PDF EVIDENZIATO */}
+            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '8px', padding: '10px 14px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '22px' }}>📄</span>
+                <div>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#34d399' }}>
+                    Allegato Contratto: Contratto_RMS_{contractData.numero.replace(/\//g, '_')}.pdf
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#94a3b8' }}>
+                    Documento A4 ufficiale pronto per essere allegato e sottoscritto dal legale rappresentante
+                  </div>
+                </div>
+              </div>
+              <button
+                className="btn btn-xs"
+                style={{ background: '#0284c7', color: '#fff', fontWeight: 700, borderColor: '#0ea5e9', padding: '6px 12px' }}
+                onClick={handlePrintContract}
+                title="Salva o visualizza il PDF ufficiale prima di trasmetterlo"
+              >
+                📥 Scarica / Visiona PDF
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
+              <div className="form-group">
+                <label className="form-label">Destinatario Email (A: Cliente)</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  value={contractEmailRecipient}
+                  onChange={e => setContractEmailRecipient(e.target.value)}
+                  placeholder="es. toscana@coldiretti.it"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Copia Conoscenza Obbligatoria (CC: Amministrazione)</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  value={contractEmailCc}
+                  onChange={e => setContractEmailCc(e.target.value)}
+                  style={{ background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.3)', color: '#facc15', fontWeight: 700 }}
+                  title="Indirizzo per presa in carico contabile e fatturazione elettronica"
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Oggetto dell&apos;Email Ufficiale</label>
+              <input
+                type="text"
+                className="form-input"
+                value={contractEmailSubject}
+                onChange={e => setContractEmailSubject(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Testo dell&apos;Email di Trasmissione Contratto (Modificabile)</label>
+              <textarea
+                className="form-textarea"
+                style={{ height: '180px', fontSize: '11.5px', lineHeight: 1.45, fontFamily: 'monospace' }}
+                value={contractEmailBody}
+                onChange={e => setContractEmailBody(e.target.value)}
+              />
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '8px' }}>
+              <button
+                className="btn btn-xs"
+                style={{ background: 'rgba(255,255,255,0.08)' }}
+                onClick={() => {
+                  navigator.clipboard.writeText(contractEmailBody);
+                  alert('📋 Testo email di trasmissione copiato negli appunti!');
+                }}
+              >
+                📋 Copia Testo Email
+              </button>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700 }}
+                  onClick={() => {
+                    handlePrintContract();
+                    const mailtoUrl = `mailto:${encodeURIComponent(contractEmailRecipient)}?cc=${encodeURIComponent(contractEmailCc)}&subject=${encodeURIComponent(contractEmailSubject)}&body=${encodeURIComponent(contractEmailBody)}`;
+                    window.open(mailtoUrl, '_blank');
+                    confirmAndActivateContract();
+                    setShowContractEmailModal(false);
+                  }}
+                  title="Scarica il PDF e apre la bozza con A e CC amministrazione su Outlook"
+                >
+                  📥 Scarica PDF &amp; Apri Outlook (CC Amministrazione)
+                </button>
+
+                <button
+                  className="btn btn-primary btn-xs"
+                  style={{ background: '#16a34a', borderColor: '#22c55e', color: '#fff', fontWeight: 800 }}
+                  onClick={() => {
+                    handlePrintContract();
+                    confirmAndActivateContract();
+                    setShowContractEmailModal(false);
+                    alert(`🎉 Contratto ${contractData.numero} per "${contractData.committente}" registrato come trasmesso con CC ad amministrazione@radiotoscana.it e spostato in CONTRATTI ATTIVI!`);
+                  }}
+                  title="Registra l'invio al cliente e CC amministrazione e attiva il contratto nel CRM"
+                >
+                  ✅ Conferma Invio &amp; Sposta in Contratti Attivi
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {showTrelloDispatchModal && selectedLeadForTrello && (
         <div className="modal-overlay">
           <div className="modal-content" style={{ maxWidth: '720px' }}>
