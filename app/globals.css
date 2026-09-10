@@ -518,11 +518,15 @@ select option, .form-select option, .form-input option {
     width: 100% !important;
     max-width: 195mm !important;
     margin: 0 auto !important;
-    padding: 10px 16px !important;
+    padding: 0 !important;
     background: #ffffff !important;
     box-shadow: none !important;
     border: none !important;
     overflow: visible !important;
+  }
+
+  .screen-only-page-divider {
+    display: none !important;
   }
 
   /* Pagina 1 e Pagina 2 del Contratto Ufficiale RMS */
@@ -531,10 +535,15 @@ select option, .form-select option, .form-input option {
     break-inside: avoid !important;
     page-break-after: always !important;
     break-after: page !important;
-    min-height: 260mm !important;
+    min-height: 270mm !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
+    padding: 8mm 10mm !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
   }
 
   .contract-page-2 {
@@ -542,9 +551,15 @@ select option, .form-select option, .form-input option {
     break-inside: avoid !important;
     page-break-before: always !important;
     break-before: page !important;
-    min-height: 260mm !important;
-    margin-top: 10mm !important;
-    padding-top: 5mm !important;
+    min-height: 270mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 8mm 10mm !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin-top: 0 !important;
   }
 
   /* Salto pagina forzato */
