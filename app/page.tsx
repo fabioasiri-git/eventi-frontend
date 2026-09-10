@@ -588,13 +588,19 @@ export default function LeadEngineDashboard() {
 
   const STORAGE_KEY = 'rt_lead_engine_leads_v4';
 
-  // Helper Persistenza Reale (LocalStorage + Memoria)
+  // Helper Persistenza Reale (Cloud Supabase + LocalStorage + Memoria)
   function updateLeadsAndPersist(updater: (prev: LeadRow[]) => LeadRow[]) {
     setLeads(prev => {
       const next = updater(prev);
       if (typeof window !== 'undefined') {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          // Sincronizza istantaneamente in background con Supabase Cloud
+          fetch('/api/leads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ leads: next })
+          }).catch(err => console.error('Cloud Supabase sync error:', err));
         } catch (e) {
           console.error('LocalStorage write error', e);
         }
@@ -603,83 +609,51 @@ export default function LeadEngineDashboard() {
     });
   }
 
-  function handleResetToCleanState() {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.removeItem('rt_lead_engine_leads_v1');
-        localStorage.removeItem('rt_lead_engine_leads_v2');
-        localStorage.removeItem('rt_lead_engine_leads_v3');
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_LEADS_POOL));
-      } catch (e) {}
-    }
-    setLeads(INITIAL_LEADS_POOL);
-    alert('Pipeline bonificata: visualizzata solo la pratica reale Coldiretti Toscana con Contratto 2026/001-RMS e Preventivo PREV-2026/001.');
-  }
-
-  // Caricamento Dati Iniziali con Fallback Deterministico
+  // Caricamento Dati Iniziali: Cloud Supabase con Fallback su LocalStorage
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        // Pulizia forzata delle vecchie cache con mockup di test
-        localStorage.removeItem('rt_lead_engine_leads_v1');
-        localStorage.removeItem('rt_lead_engine_leads_v2');
-        localStorage.removeItem('rt_lead_engine_leads_v3');
+    async function loadData() {
+      // 1. Carica subito da cache locale per visualizzazione istantanea
+      if (typeof window !== 'undefined') {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              const cleaned = parsed.filter((l: any) => l.id !== 'asfalti-ruge-2026' && l.id !== 'comune-greve-2026');
+              setLeads(cleaned);
+            }
+          }
+        } catch (e) {}
+      }
 
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            // Bonifica automatica: elimina i mockup di test 'asfalti-ruge' e 'comune-greve'
-            const cleaned = parsed.filter((l: any) => l.id !== 'asfalti-ruge-2026' && l.id !== 'comune-greve-2026');
-            // Assicura che Coldiretti sia presente ed abbia i codici progressivi
-            const hasColdiretti = cleaned.some((l: any) => l.id === 'coldiretti-toscana-2026');
-            const finalList = hasColdiretti 
-              ? cleaned.map((l: any) => l.id === 'coldiretti-toscana-2026' ? {
-                  ...l,
-                  numero_contratto: l.numero_contratto || '2026/001-RMS',
-                  numero_preventivo: l.numero_preventivo || 'PREV-2026/001'
-                } : l)
-              : [...INITIAL_LEADS_POOL, ...cleaned];
-            setLeads(finalList);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(finalList));
+      // 2. Sincronizzazione in tempo reale dal Cloud Supabase (Centralizzato)
+      try {
+        const res = await fetch('/api/leads');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.leads) && json.leads.length > 0) {
+            setLeads(json.leads);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(json.leads));
+            }
             return;
           }
         }
-      } catch (e) {
-        console.error('Errore lettura localStorage', e);
+      } catch (err) {
+        console.log('Supabase cloud fetch fallback:', err);
       }
-    }
-    // Inizializza con pool pulito contenente solo Coldiretti Toscana in trattativa
-    setLeads(INITIAL_LEADS_POOL);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_LEADS_POOL));
-      } catch (e) {}
-    }
-  }, []);
 
-  async function fetchSupabaseLeads() {
-    try {
-      const res = await fetch('https://dunogeleekgqztkrlxsz.supabase.co/rest/v1/rt_lead_engine_pool?select=*', {
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bm9nZWxlZWtncXp0a3JseHN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0OTE2OTEsImV4cCI6MjA3MDA2NzY5MX0.b_-Jc1Q2914-9988_0',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bm9nZWxlZWtncXp0a3JseHN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0OTE2OTEsImV4cCI6MjA3MDA2NzY5MX0.b_-Jc1Q2914-9988_0',
-          'Accept-Profile': 'rt_lead_engine'
-        }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          updateLeadsAndPersist(prev => {
-            const ids = new Set(data.map((d: any) => String(d.id)));
-            return [...data, ...prev.filter(l => !ids.has(String(l.id)))];
-          });
-        }
+      // 3. Fallback se DB vuoto: inizializza con pool ufficiale
+      setLeads(INITIAL_LEADS_POOL);
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_LEADS_POOL));
+        } catch (e) {}
       }
-    } catch (e) {
-      console.log('Supabase sync skipped, fallback to local pool');
     }
-  }
+
+    loadData();
+  }, []);
 
   // Calcolo Totali Preventivo Modulare Dinamico
   const totaleInvestimento = quoteItems.reduce((acc, curr) => acc + Number(curr.valore || 0), 0);
@@ -1336,8 +1310,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
           <div className="brand-text">
             <h1>
               Radio Toscana Commerciale{' '}
-              <span style={{ fontSize: '12px', background: 'rgba(225,29,72,0.25)', color: '#f43f5e', border: '1px solid rgba(225,29,72,0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
-                v7.7.0 - Cloud Vault &amp; Modern UX Engine
+              <span style={{ fontSize: '12px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', padding: '2px 8px', borderRadius: '6px', marginLeft: '8px', fontWeight: 800 }}>
+                v7.8.0 — Cloud Sync Live &amp; Contratto A4 Pro
               </span>
             </h1>
             <p>Lead Engine &amp; CRM Cloud — Sincronizzato con Cassaforte Cloud Supabase</p>
@@ -1362,14 +1336,6 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
           <button className="btn" onClick={() => alert('Cassaforte Cloud Supabase: system_vault connesso e sincronizzato!')}>
             🔒 Cloud Vault OK
-          </button>
-          <button 
-            className="btn"
-            style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', fontSize: '11px', fontWeight: 700 }}
-            onClick={handleResetToCleanState}
-            title="Ripristina la pipeline pulita con solo la pratica reale Coldiretti in trattativa"
-          >
-            🧹 Reset / Solo Coldiretti
           </button>
           <button className="btn btn-primary" onClick={() => setShowQuoteModal(true)}>
             ➕ Nuovo Preventivo Modulare
@@ -3426,82 +3392,63 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   </div>
 
                   {/* RIEPILOGO ECONOMICO & CONDIZIONI DI PAGAMENTO */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '12px', marginBottom: '12px' }}>
-                    <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '8px 12px', background: '#f8fafc' }}>
-                      <div style={{ fontSize: '9px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', marginBottom: '3px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '14px', marginBottom: '16px' }}>
+                    <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '12px 14px', background: '#f8fafc' }}>
+                      <div style={{ fontSize: '9.5px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', marginBottom: '4px', letterSpacing: '0.04em' }}>
                         Condizioni di Pagamento
                       </div>
-                      <div style={{ fontSize: '10px', fontWeight: 700, color: '#0f172a' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 800, color: '#0f172a' }}>
                         {contractData.modalitaPagamento}
                       </div>
-                      <div style={{ fontSize: '8px', color: '#64748b', marginTop: '3px' }}>
-                        Accredito: Radio Monte Serra S.r.l. presso Banca d&apos;appoggio emittente.
+                      <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '5px', lineHeight: 1.35 }}>
+                        Accredito a favore di <strong>Radio Monte Serra S.r.l.</strong> presso istituto bancario d&apos;appoggio dell&apos;Emittente.
                       </div>
                     </div>
 
-                    <div style={{ border: '1.5px solid #1e293b', borderRadius: '4px', padding: '8px 12px', background: '#1e293b', color: '#ffffff', textAlign: 'right' }}>
-                      <div style={{ fontSize: '8px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ border: '1.5px solid #1e293b', borderRadius: '4px', padding: '12px 14px', background: '#1e293b', color: '#ffffff', textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <div style={{ fontSize: '8.5px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>
                         TOTALE COMPLESSIVO (IVA ESCLUSA)
                       </div>
-                      <div style={{ fontSize: '17px', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
+                      <div style={{ fontSize: '18px', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
                         € {contractData.totaleNetto.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                       </div>
-                      <div style={{ fontSize: '7.5px', color: '#cbd5e1' }}>
+                      <div style={{ fontSize: '8px', color: '#cbd5e1', marginTop: '2px' }}>
                         IVA 22% a norma di legge a carico del committente
                       </div>
-                    </div>
-                  </div>
-
-                  {/* BOX COORDINATE BANCARIE & DELEGA RID / SDD */}
-                  <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '9px 12px', marginBottom: '12px', background: '#f8fafc' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '3px', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '9px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                        Delega di Pagamento sul Conto Corrente Bancario (R.I.D. / SDD Core)
-                      </span>
-                      <span style={{ fontSize: '8px', color: '#64748b' }}>
-                        Cod. Azienda Creditrice: <strong>2026-RMS</strong>
-                      </span>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.8fr', gap: '12px', fontSize: '9.5px', marginBottom: '6px' }}>
-                      <div><strong>Banca d&apos;appoggio:</strong> {contractData.bancaAppoggio || 'Banca del Committente'}</div>
-                      <div><strong>IBAN:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '10px' }}>{contractData.iban || 'IT __ _ _____ _____ ________________________'}</span></div>
-                    </div>
-                    <div style={{ fontSize: '7.6px', color: '#64748b', lineHeight: 1.3, fontStyle: 'italic' }}>
-                      Il sottoscritto autorizza la Banca a margine ad addebitare sul c/c indicato, nella data di scadenza dell&apos;obbligazione o data prorogata d&apos;iniziativa del creditore (ferma restando la valuta originaria concordata), tutti gli ordini di incasso elettronici inviati dall&apos;Azienda e contrassegnati con le coordinate dell&apos;Azienda creditrice Radio Monte Serra S.r.l., a condizione che vi siano disponibilità sufficienti e senza necessità per la Banca di inviare la relativa contabile di addebito.
                     </div>
                   </div>
                 </div>
 
                 <div>
                   {/* SOTTOSCRIZIONE ORDINARIA EMITTENTE & COMMITTENTE */}
-                  <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '9px 12px', marginBottom: '10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', fontSize: '8.5px' }}>
+                  <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '12px 16px', marginBottom: '14px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '9px' }}>
                       <div>Luogo e data: <strong>Firenze, lì {new Date().toLocaleDateString('it-IT')}</strong></div>
-                      <div style={{ fontSize: '7.8px', color: '#64748b' }}>Il presente rapporto è regolato dalle condizioni esposte e da quelle generali a tergo</div>
+                      <div style={{ fontSize: '8px', color: '#64748b' }}>Il presente rapporto è regolato dalle condizioni esposte e da quelle generali a tergo</div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', paddingTop: '6px', borderTop: '1px solid #e2e8f0' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', paddingTop: '8px', borderTop: '1px solid #e2e8f0' }}>
                       <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '8.5px', color: '#64748b', marginBottom: '32px' }}>PER L&apos;EMITTENTE (Radio Monte Serra S.r.l.)</div>
+                        <div style={{ fontSize: '9px', color: '#64748b', marginBottom: '38px' }}>PER L&apos;EMITTENTE (Radio Monte Serra S.r.l.)</div>
                         <div style={{ borderBottom: '1px solid #94a3b8', width: '80%', margin: '0 auto 4px' }}></div>
-                        <div style={{ fontSize: '9px', fontWeight: 700 }}>Fabio Asiri — Direzione Commerciale</div>
+                        <div style={{ fontSize: '9.5px', fontWeight: 700 }}>Fabio Asiri — Direzione Commerciale</div>
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '8.5px', color: '#64748b', marginBottom: '32px' }}>IL COMMITTENTE (Timbro e Firma)</div>
+                        <div style={{ fontSize: '9px', color: '#64748b', marginBottom: '38px' }}>IL COMMITTENTE (Timbro e Firma)</div>
                         <div style={{ borderBottom: '1px solid #94a3b8', width: '80%', margin: '0 auto 4px' }}></div>
-                        <div style={{ fontSize: '9px', fontWeight: 700 }}>{contractData.committente || 'Firma Legale Rappresentante'}</div>
+                        <div style={{ fontSize: '9.5px', fontWeight: 700 }}>{contractData.committente || 'Firma Legale Rappresentante'}</div>
                       </div>
                     </div>
                   </div>
 
                   {/* CLAUSOLE VESSATORIE ART. 1341 E 1342 C.C. */}
-                  <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', padding: '8px 10px', fontSize: '7.4px', color: '#64748b', lineHeight: 1.3, background: '#fafafa' }}>
-                    <p style={{ margin: '0 0 4px 0' }}>
+                  <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', padding: '9px 12px', fontSize: '7.6px', color: '#64748b', lineHeight: 1.35, background: '#fafafa' }}>
+                    <p style={{ margin: '0 0 5px 0' }}>
                       <strong>Approvazione Specifica Clausole ex Artt. 1341 e 1342 C.C.:</strong> Dopo attenta lettura delle condizioni generali di commissione riportate a tergo, si approvano specificatamente le seguenti clausole: 1. DURATA DELLA COMMISSIONE - 2. EFFICACIA E DIVIETO DI CESSIONE - 3. SOTTOSCRIZIONE AGENZIA - 4. REVOCA COMMISSIONE (PENALE 75%) - 5. CESSIONE AZIENDA - 6. RESPONSABILITÀ E MANLEVA MATERIALE - 7. DIRITTI PROPRIETÀ MATERIALE - 8. TERMINI CONSEGNA (10GG) - 9. PROGRAMMAZIONE - 10. MODIFICA PROGRAMMAZIONE (±30 MIN) - 11. RECLAMI (DECADENZA 30GG) - 12. SANZIONI OMESSO PAGAMENTO (INTERESSI D.LGS 231/02) - 13. AUTODISCIPLINA PUBBLICITARIA - 14. ESCLUSIVA - 15. MEZZI IN CONCESSIONE - 16. SPESE DI BOLLO E REGISTRO - 17. COMPETENZA ESCLUSIVA FORO DI FIRENZE - 18. INTERDIPENDENZA CLAUSOLE.
                     </p>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '15px', marginTop: '4px' }}>
-                      <span style={{ fontSize: '8px', fontWeight: 800, color: '#1e293b' }}>Firma per approvazione specifica del Committente:</span>
-                      <div style={{ borderBottom: '1px solid #94a3b8', width: '180px', height: '14px' }}></div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '15px', marginTop: '6px' }}>
+                      <span style={{ fontSize: '8.2px', fontWeight: 800, color: '#1e293b' }}>Firma per approvazione specifica del Committente:</span>
+                      <div style={{ borderBottom: '1px solid #94a3b8', width: '200px', height: '14px' }}></div>
                     </div>
                   </div>
                 </div>
@@ -3585,7 +3532,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         <strong>11. RECLAMI:</strong> Eventuali reclami della ditta Committente per irregolarità nelle programmazioni pubblicitarie dovranno essere presentati, a pena di decadenza, entro 30 giorni dalla avvenuta uscita pubblicitaria, a mezzo raccomandata con ricevuta di ritorno o PEC. Viene espressamente convenuto e sottoscritto che la proposizione del reclamo non ha efficacia sospensiva sul pagamento del corrispettivo pattuito, che pertanto dovrà essere interamente versato alle scadenze previste: l&apos;inosservanza di quanto sopra comporta l&apos;improcedibilità del reclamo e la risoluzione del contratto per fatto e colpa della ditta Committente. Ai fini della contestazione faranno fede ad ogni effetto i log della regia e le risultanze dell&apos;Emittente.
                       </p>
                       <p style={{ margin: '0 0 8px 0' }}>
-                        <strong>12. SANZIONI PER OMESSO O INCOMPLETO PAGAMENTO NEI TERMINI:</strong> I pagamenti comprensivi di corrispettivi e spese dovranno essere effettuati nei termini pattuiti. Nel caso di mancato rispetto di tale adempimento da parte della ditta Committente, l&apos;Emittente ha il diritto di risolvere il contratto e sospendere la pubblicità addebitando alla ditta Committente i due terzi dell&apos;importo impegnato e non usufruito a titolo di penale. In ogni caso di ritardato pagamento verranno addebitati alla ditta Committente gli interessi di mora al tasso commerciale corrente ai sensi del D.Lgs. 231/2002 unitamente alle spese legali e di recupero. La ditta Committente autorizza l&apos;Emittente all&apos;emissione di ricevute bancarie o alla riscossione tramite R.I.D./SDD per l&apos;ammontare del prezzo pattuito nella presente commissione.
+                        <strong>12. SANZIONI PER OMESSO O INCOMPLETO PAGAMENTO NEI TERMINI:</strong> I pagamenti comprensivi di corrispettivi e spese dovranno essere effettuati nei termini pattuiti. Nel caso di mancato rispetto di tale adempimento da parte della ditta Committente, l&apos;Emittente ha il diritto di risolvere il contratto e sospendere la pubblicità addebitando alla ditta Committente i due terzi dell&apos;importo impegnato e non usufruito a titolo di penale. In ogni caso di ritardato pagamento verranno addebitati alla ditta Committente gli interessi di mora al tasso commerciale corrente ai sensi del D.Lgs. 231/2002 unitamente alle spese legali e di recupero. La ditta Committente autorizza l&apos;Emittente all&apos;emissione di ricevute bancarie o all&apos;incasso a mezzo bonifico bancario per l&apos;ammontare del prezzo pattuito nella presente commissione.
                       </p>
                       <p style={{ margin: '0 0 8px 0' }}>
                         <strong>13. CODICE DI AUTODISCIPLINA PUBBLICITARIA:</strong> La ditta Committente dichiara di accettare senza riserve il Codice di Autodisciplina Pubblicitaria che sa di essere obbligatorio anche per il mezzo e inoltre la competenza del Comitato di Accertamento e del Giurì, impegnandosi a conformarsi in via definitiva alle decisioni di quest&apos;ultimo anche in ordine all&apos;eventuale pubblicazione delle decisioni.
