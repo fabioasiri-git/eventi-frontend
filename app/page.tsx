@@ -174,26 +174,27 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     comune: 'Firenze',
     provincia: 'FI',
     area_target: 'Radio Toscana Area 1 + Bus ATAF Firenze',
-    fase_commerciale: 'CONTRATTO ATTIVO',
+    fase_commerciale: 'PREVENTIVO INVIATO',
     tipo_contratto: 'SPOT_TABELLARE',
     valore_preventivo: 2400,
-    valore_contratto: 2400,
-    numero_contratto: '2026/09-FIVAG',
+    valore_contratto: 0,
+    numero_preventivo: 'PREV-2026/002',
+    numero_contratto: '',
     plafond_totale_spot: 100,
     spot_rimasti: 100,
     is_cambio_merce: false,
-    probabilita_chiusura: 100,
+    probabilita_chiusura: 80,
     anno_riferimento: '2026',
     data_preventivo: '2026-09-11',
     data_ultimo_invio: '2026-09-11',
     tipo_accordo: 'STANDARD',
-    stato_produzione: 'IN_STUDIO',
+    stato_produzione: 'IN_ATTESA_COPY',
     data_scadenza_produzione: '2026-09-25',
     copy_testo: 'FIVAG CISL Firenze: valorizzazione e tutela del commercio ambulante su aree pubbliche (Spot audio 20" per Radio Toscana + Grafica Maxiside 190x220 per Bus ATAF).',
     data_inizio_trasmissione: '2026-10-06',
     data_fine_trasmissione: '2026-11-02',
     spot_giornalieri: 10,
-    stato_programmazione: 'PROGRAMMATO',
+    stato_programmazione: 'IN_ATTESA_CONFERMA',
     quote_items: [
       {
         id: 'it-fivag-1',
@@ -236,7 +237,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         tipoProduzione: 'SOLO_RT_RF'
       }
     ],
-    note: 'Commissione Radio Monte Serra S.r.l. sottoscritta l\'11/09/2026. Campagna integrata Radio Toscana (100 spot da 20", 10 spot/gg dal 19/10 al 01/11) + 3 Maxiside Bus ATAF Firenze (190x220) per 4 settimane (06/10 - 02/11/2026). Materiale pubblicitario: 1 spot audio + grafica 1 maxiside (200€). Pagamento: Bonifico 30 gg DF FM.'
+    note: 'Proposta Preventivo Rif. PREV-2026/002 per FIVAG CISL Firenze: campagna integrata Radio Toscana (100 spot Area 1) + 3 Maxiside Bus ATAF Firenze per 4 settimane + realizzazione spot audio e grafica (Totale € 2.400,00 + IVA). In fase di preventivo, contratto da formalizzare.'
   },
   {
     id: 'tinghi-motors-settembre-2026',

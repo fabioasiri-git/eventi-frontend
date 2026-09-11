@@ -1363,14 +1363,6 @@
     "piva": "CF 94233520488",
     "contratti": [
       {
-        "anno": "2026",
-        "data": "11/09/2026",
-        "prezzo": 2400,
-        "spot": "100 spot (Area 1) + 3 Maxiside Bus ATAF (4 sett.)",
-        "file": "Contratto Fivag Cisl 1 novembre 11.09.26.pdf",
-        "referente": "Donatella Santini"
-      },
-      {
         "anno": "2023",
         "data": "17/1/2023",
         "prezzo": 1450,
@@ -1427,9 +1419,9 @@
         "referente": "Donatella Santini"
       }
     ],
-    "totale_contratti": 8,
-    "ultimo_prezzo": 2400,
-    "ultimo_anno": "2026"
+    "totale_contratti": 7,
+    "ultimo_prezzo": 1450,
+    "ultimo_anno": "2023"
   },
   {
     "ditta": "FONDAZIONE PUBBLICHE ASSISTENZE - IMPRESA SOCIALE",
