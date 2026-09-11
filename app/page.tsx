@@ -237,6 +237,60 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
       }
     ],
     note: 'Commissione Radio Monte Serra S.r.l. sottoscritta l\'11/09/2026. Campagna integrata Radio Toscana (100 spot da 20", 10 spot/gg dal 19/10 al 01/11) + 3 Maxiside Bus ATAF Firenze (190x220) per 4 settimane (06/10 - 02/11/2026). Materiale pubblicitario: 1 spot audio + grafica 1 maxiside (200€). Pagamento: Bonifico 30 gg DF FM.'
+  },
+  {
+    id: 'tinghi-motors-settembre-2026',
+    nome_azienda_evento: 'TINGHI MOTORS SRL',
+    referente: 'EVA SINOSINI',
+    email: 'eva.sinosini@tinghimotors.it',
+    telefono: '0571 944444',
+    piva: '00918250481',
+    sdi: '0RBL7JD',
+    settore: 'Automotive / Concessionaria Renault Dacia',
+    comune: 'Empoli',
+    provincia: 'FI',
+    area_target: 'Radio Toscana Area 1 (FI - PO - PT)',
+    fase_commerciale: 'CONTRATTO ATTIVO',
+    tipo_contratto: 'SPOT_TABELLARE',
+    valore_preventivo: 375,
+    valore_contratto: 375,
+    numero_contratto: '2026/09-TINGHI',
+    plafond_totale_spot: 72,
+    spot_rimasti: 72,
+    is_cambio_merce: false,
+    probabilita_chiusura: 100,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-09-11',
+    data_ultimo_invio: '2026-09-11',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'PRONTO_IN_ONDA',
+    data_scadenza_produzione: '2026-09-07',
+    copy_testo: 'Promozione Tinghi Motors Concessionaria Ufficiale Renault e Dacia Empoli (Spot 20" rotazione M, P, S).',
+    data_inizio_trasmissione: '2026-09-07',
+    data_fine_trasmissione: '2026-09-18',
+    spot_giornalieri: 6,
+    stato_programmazione: 'IN_ONDA',
+    quote_items: [
+      {
+        id: 'it-tinghi-1',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        dettagli: '6 spot/gg per 12 gg dal 07/09 al 18/09 (72 spot da 20")',
+        fascia: 'Fasce M, P, S (07.00 – 21.00 a rotazione)',
+        periodo: 'Dal 07/09/2026 al 18/09/2026 (12 gg)',
+        prezzoListino: 648,
+        valore: 375,
+        isSpot: true,
+        dataInizio: '2026-09-07',
+        dataFine: '2026-09-18',
+        spotGiornalieri: 6,
+        giorniTotali: 12,
+        spotTotali: 72,
+        spotOmaggio: 0,
+        formatoSecondi: 20
+      }
+    ],
+    note: 'Commissione Radio Monte Serra S.r.l. sottoscritta l\'11/09/2026 da Asiri Fabio per TINGHI MOTORS SRL. Campagna Radio Toscana Area 1 (72 spot da 20", 6 spot/gg dal 07/09 al 18/09/2026, rotazione M, P, S). Totale netto spazi € 375,00 + IVA. Bonifico 60 gg DF. Cod. Destinatario: 0RBL7JD.'
   }
 ];
 

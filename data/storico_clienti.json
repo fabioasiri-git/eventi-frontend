@@ -2425,10 +2425,18 @@
         "spot": "420",
         "file": "Contratto TINGHI MOTORS  11.05.26.xls",
         "referente": ""
+      },
+      {
+        "anno": "2026",
+        "data": "11/9/2026",
+        "prezzo": 375,
+        "spot": "72",
+        "file": "Contratto TINGHI MOTORS  11.09.26.pdf",
+        "referente": "EVA SINOSINI"
       }
     ],
-    "totale_contratti": 7,
-    "ultimo_prezzo": 1260,
+    "totale_contratti": 8,
+    "ultimo_prezzo": 375,
     "ultimo_anno": "2026"
   },
   {
