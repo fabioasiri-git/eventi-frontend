@@ -161,6 +161,82 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
       }
     ],
     note: 'Proposta Rif. RT-2026/09-04 per 180 spot tabellari Area 1 + Realizzazione Spot Diritti Liberi.'
+  },
+  {
+    id: 'fivag-cisl-firenze-2026',
+    nome_azienda_evento: 'FIVAG CISL FIRENZE',
+    referente: 'Donatella Santini',
+    email: 'donatella.caf@gmail.com',
+    telefono: '055 285030',
+    piva: 'CF 94233520488',
+    sdi: '',
+    settore: 'Associazioni di Categoria / Ambulanti',
+    comune: 'Firenze',
+    provincia: 'FI',
+    area_target: 'Radio Toscana Area 1 + Bus ATAF Firenze',
+    fase_commerciale: 'CONTRATTO ATTIVO',
+    tipo_contratto: 'SPOT_TABELLARE',
+    valore_preventivo: 2400,
+    valore_contratto: 2400,
+    numero_contratto: '2026/09-FIVAG',
+    plafond_totale_spot: 100,
+    spot_rimasti: 100,
+    is_cambio_merce: false,
+    probabilita_chiusura: 100,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-09-11',
+    data_ultimo_invio: '2026-09-11',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'IN_STUDIO',
+    data_scadenza_produzione: '2026-09-25',
+    copy_testo: 'FIVAG CISL Firenze: valorizzazione e tutela del commercio ambulante su aree pubbliche (Spot audio 20" per Radio Toscana + Grafica Maxiside 190x220 per Bus ATAF).',
+    data_inizio_trasmissione: '2026-10-06',
+    data_fine_trasmissione: '2026-11-02',
+    spot_giornalieri: 10,
+    stato_programmazione: 'PROGRAMMATO',
+    quote_items: [
+      {
+        id: 'it-fivag-1',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        dettagli: '10 spot/gg per 14 gg dal 19/10 al 01/11 (80 spot paganti + 20 OMAGGIO da 20")',
+        fascia: 'Fasce M, P, S (07.00 – 21.00 a rotazione)',
+        periodo: 'Dal 19/10/2026 al 01/11/2026 (14 gg)',
+        prezzoListino: 900,
+        valore: 350,
+        isSpot: true,
+        dataInizio: '2026-10-19',
+        dataFine: '2026-11-01',
+        spotGiornalieri: 10,
+        giorniTotali: 14,
+        spotTotali: 80,
+        spotOmaggio: 20,
+        formatoSecondi: 20
+      },
+      {
+        id: 'it-fivag-2',
+        tipo: 'Affissioni Dinamiche Bus ATAF',
+        copertura: 'Comune di Firenze / Rete Urbana ATAF',
+        dettagli: '3 Maxiside (formato 190x220 cm) su Bus ATAF Firenze per 4 settimane',
+        fascia: 'Dinamica Urbana',
+        periodo: 'Dal 06/10/2026 al 02/11/2026 (4 settimane)',
+        prezzoListino: 2400,
+        valore: 1850,
+        isSpot: false
+      },
+      {
+        id: 'it-fivag-3',
+        tipo: 'Materiale Pubblicitario & Grafica',
+        copertura: 'Produzione Radio Toscana + Grafica ATAF',
+        dettagli: 'Realizzazione 1 spot audio 20" + Adattamento grafico per 1 Maxiside Bus (190x220)',
+        fascia: 'Costo Una Tantum',
+        periodo: 'Consegna entro 25/09/2026',
+        prezzoListino: 200,
+        valore: 200,
+        tipoProduzione: 'SOLO_RT_RF'
+      }
+    ],
+    note: 'Commissione Radio Monte Serra S.r.l. sottoscritta l\'11/09/2026. Campagna integrata Radio Toscana (100 spot da 20", 10 spot/gg dal 19/10 al 01/11) + 3 Maxiside Bus ATAF Firenze (190x220) per 4 settimane (06/10 - 02/11/2026). Materiale pubblicitario: 1 spot audio + grafica 1 maxiside (200€). Pagamento: Bonifico 30 gg DF FM.'
   }
 ];
 
@@ -619,8 +695,14 @@ export default function LeadEngineDashboard() {
           if (saved) {
             const parsed = JSON.parse(saved);
             if (Array.isArray(parsed) && parsed.length > 0) {
-              const cleaned = parsed.filter((l: any) => l.id !== 'asfalti-ruge-2026' && l.id !== 'comune-greve-2026');
-              setLeads(cleaned);
+              const existingIds = new Set(parsed.map((l: any) => l.id));
+              const merged = [...parsed];
+              for (const initLead of INITIAL_LEADS_POOL) {
+                if (!existingIds.has(initLead.id)) {
+                  merged.push(initLead);
+                }
+              }
+              setLeads(merged);
             }
           }
         } catch (e) {}
@@ -632,9 +714,25 @@ export default function LeadEngineDashboard() {
         if (res.ok) {
           const json = await res.json();
           if (json.success && Array.isArray(json.leads) && json.leads.length > 0) {
-            setLeads(json.leads);
+            const existingIds = new Set(json.leads.map((l: any) => l.id));
+            const merged = [...json.leads];
+            let needsSync = false;
+            for (const initLead of INITIAL_LEADS_POOL) {
+              if (!existingIds.has(initLead.id)) {
+                merged.push(initLead);
+                needsSync = true;
+              }
+            }
+            setLeads(merged);
             if (typeof window !== 'undefined') {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(json.leads));
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            }
+            if (needsSync) {
+              fetch('/api/leads', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ leads: merged })
+              }).catch(() => {});
             }
             return;
           }
