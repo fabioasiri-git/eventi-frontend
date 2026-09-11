@@ -109,41 +109,42 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     comune: 'Firenze',
     provincia: 'FI',
     area_target: 'Radio Toscana Area 1 (FI - PO - PT)',
-    fase_commerciale: 'PREVENTIVO INVIATO',
+    fase_commerciale: 'CONTRATTO ATTIVO',
     tipo_contratto: 'SPOT_TABELLARE',
     valore_preventivo: 1000,
-    valore_contratto: 0,
+    valore_contratto: 1000,
     numero_preventivo: 'PREV-2026/001',
     numero_contratto: '2026/001-RMS',
     plafond_totale_spot: 180,
     spot_rimasti: 180,
     is_cambio_merce: false,
-    probabilita_chiusura: 70,
+    probabilita_chiusura: 100,
     anno_riferimento: '2026',
     data_preventivo: '2026-09-04',
-    data_ultimo_invio: '2026-09-04',
+    data_ultimo_invio: '2026-09-11',
     tipo_accordo: 'STANDARD',
-    stato_produzione: 'IN_ATTESA_COPY',
-    data_scadenza_produzione: '2026-09-16',
-    copy_testo: 'Promozione e valorizzazione eccellenze agroalimentari toscane (Spot 20" - Diritti Liberi Toscana).',
-    data_inizio_trasmissione: '2026-09-09',
+    stato_produzione: 'PRONTO_IN_ONDA',
+    data_scadenza_produzione: '2026-09-10',
+    copy_testo: 'Campagna "Villaggio Coldiretti" (File audio: S:\\Spot\\2026\\B VILLAGGIO COLDIRETTI.mp3 caricato in regia broadcast).',
+    data_inizio_trasmissione: '2026-09-10',
     data_fine_trasmissione: '2026-09-17',
-    spot_giornalieri: 20,
+    spot_giornalieri: 22,
+    stato_programmazione: 'IN_ONDA',
     quote_items: [
       {
         id: 'it-coldiretti-1',
         tipo: 'Spot Radiofonici Tabellari',
         copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
-        dettagli: '20 spot/gg per 9 gg (180 spot paganti da 20")',
-        fascia: '07.00 – 21.00 a rotazione',
-        periodo: 'Dal 09/09/2026 al 17/09/2026 (9 gg)',
+        dettagli: '180 spot tabellari da 20" (22-23 spot/gg dal 10/09 al 17/09)',
+        fascia: 'Fasce M, P, S (06.58 – 20.58 a rotazione)',
+        periodo: 'Dal 10/09/2026 al 17/09/2026 (8 gg)',
         prezzoListino: 1620,
         valore: 831,
         isSpot: true,
-        dataInizio: '2026-09-09',
+        dataInizio: '2026-09-10',
         dataFine: '2026-09-17',
-        spotGiornalieri: 20,
-        giorniTotali: 9,
+        spotGiornalieri: 22,
+        giorniTotali: 8,
         spotTotali: 180,
         spotOmaggio: 0,
         formatoSecondi: 20
@@ -152,7 +153,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         id: 'it-coldiretti-2',
         tipo: 'Realizzazione Spot Audio',
         copertura: 'Diffusione Emittenti Toscana',
-        dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane',
+        dettagli: 'Realizzazione copy + Registrazione file B VILLAGGIO COLDIRETTI.mp3',
         fascia: 'Costo Una Tantum',
         periodo: '',
         prezzoListino: 169,
@@ -160,7 +161,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         tipoProduzione: 'DIRITTI_LIBERI_TOSCANA'
       }
     ],
-    note: 'Proposta Rif. RT-2026/09-04 per 180 spot tabellari Area 1 + Realizzazione Spot Diritti Liberi.'
+    note: 'Commissione Radio Monte Serra S.r.l. n. 2026/001-RMS (Rif. Programmazione Regia n. 2023/14208) per la campagna "Villaggio Coldiretti". 180 spot Area 1 FIRENZE dal 10/09 al 17/09/2026. File in onda: S:\\Spot\\2026\\B VILLAGGIO COLDIRETTI.mp3. Totale netto: € 1.000,00 + IVA.'
   },
   {
     id: 'fivag-cisl-firenze-2026',
@@ -311,6 +312,7 @@ export default function LeadEngineDashboard() {
   const [showProposalEmailModal, setShowProposalEmailModal] = useState(false);
   const [selectedLeadForProposalEmail, setSelectedLeadForProposalEmail] = useState<LeadRow | null>(null);
   const [proposalEmailRecipient, setProposalEmailRecipient] = useState('');
+  const [proposalEmailCc, setProposalEmailCc] = useState('amministrazione@radiotoscana.it');
   const [proposalEmailSubject, setProposalEmailSubject] = useState('');
   const [proposalEmailBody, setProposalEmailBody] = useState('');
   const [proposalEmailSentNotification, setProposalEmailSentNotification] = useState(false);
@@ -1091,6 +1093,7 @@ Cell: 347 6818595 • Email: commerciale@radiotoscana.it`;
   function openProposalEmailModal(lead: LeadRow) {
     setSelectedLeadForProposalEmail(lead);
     setProposalEmailRecipient(lead.email || 'commerciale@radiotoscana.it');
+    setProposalEmailCc('amministrazione@radiotoscana.it');
     const rif = `RT-2026/09-${new Date().getDate().toString().padStart(2, '0')}`;
     setProposalEmailSubject(`Radio Toscana — Proposta Commerciale per ${lead.nome_azienda_evento} (Rif. ${rif})`);
 
@@ -3870,15 +3873,29 @@ Radio Toscana
               {` • Valore: € ${selectedLeadForProposalEmail.valore_preventivo.toLocaleString('it-IT')} + IVA`}
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Destinatario Email (A:)</label>
-              <input
-                type="email"
-                className="form-input"
-                value={proposalEmailRecipient}
-                onChange={e => setProposalEmailRecipient(e.target.value)}
-                placeholder="es. andrea.berti@coldiretti.it"
-              />
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
+              <div className="form-group">
+                <label className="form-label">Destinatario Email (A: Cliente)</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  value={proposalEmailRecipient}
+                  onChange={e => setProposalEmailRecipient(e.target.value)}
+                  placeholder="es. andrea.berti@coldiretti.it"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Copia Conoscenza Obbligatoria (CC: Amministrazione)</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  value={proposalEmailCc}
+                  onChange={e => setProposalEmailCc(e.target.value)}
+                  style={{ background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.3)', color: '#facc15', fontWeight: 700 }}
+                  title="Indirizzo per presa in carico contabile e archivio preventivi"
+                />
+              </div>
             </div>
 
             <div className="form-group">
@@ -3903,7 +3920,7 @@ Radio Toscana
 
             {proposalEmailSentNotification && (
               <div style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', padding: '10px', borderRadius: '6px', marginBottom: '12px', textAlign: 'center', fontWeight: 700, fontSize: '12px' }}>
-                ✅ Proposta segnata come inviata! Data di invio aggiornata sul CRM e cronometro remind avviato.
+                ✅ Proposta segnata come inviata con CC amministrazione! Data di invio aggiornata sul CRM e cronometro remind avviato.
               </div>
             )}
 
@@ -3924,15 +3941,15 @@ Radio Toscana
                   className="btn btn-xs"
                   style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700 }}
                   onClick={() => {
-                    const mailtoUrl = `mailto:${encodeURIComponent(proposalEmailRecipient)}?subject=${encodeURIComponent(proposalEmailSubject)}&body=${encodeURIComponent(proposalEmailBody)}`;
+                    const mailtoUrl = `mailto:${encodeURIComponent(proposalEmailRecipient)}?cc=${encodeURIComponent(proposalEmailCc)}&subject=${encodeURIComponent(proposalEmailSubject)}&body=${encodeURIComponent(proposalEmailBody)}`;
                     window.open(mailtoUrl, '_blank');
                     // Aggiorna data invio
                     updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
                     setProposalEmailSentNotification(true);
                   }}
-                  title="Apre la bozza già pronta nel tuo client email di default (Outlook, Thunderbird, ecc.)"
+                  title="Apre la bozza già pronta con A: e CC: amministrazione nel tuo client email di default (Outlook, Thunderbird, ecc.)"
                 >
-                  📧 Apri nel Client Email (Outlook)
+                  📧 Apri nel Client Email (Outlook con CC)
                 </button>
 
                 <button
