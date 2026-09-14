@@ -445,7 +445,23 @@ select option, .form-select option, .form-input option {
     display: none !important;
   }
 
-  /* Resetta overlay e wrapper modali: azzera fixed, z-index, altezze e sfondi scuri */
+  /* Se non è in corso una stampa esplicita di documento A4, nascondi qualsiasi modale */
+  body:not(.printing-contract):not(.printing-proposal) .modal-overlay {
+    display: none !important;
+  }
+
+  /* Nascondi tassativamente in stampa controlli interattivi, pulsanti, input e header modale */
+  .modal-header,
+  .form-group,
+  .btn,
+  .modal-close,
+  input,
+  textarea,
+  select {
+    display: none !important;
+  }
+
+  /* Resetta overlay e wrapper modali quando contengono un documento da stampare */
   .modal-overlay {
     position: static !important;
     display: block !important;

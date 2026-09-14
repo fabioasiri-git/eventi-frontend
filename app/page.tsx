@@ -324,6 +324,7 @@ export default function LeadEngineDashboard() {
   const [contractEmailSubject, setContractEmailSubject] = useState('');
   const [contractEmailBody, setContractEmailBody] = useState('');
   const [isGeneratingEml, setIsGeneratingEml] = useState(false);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
   // Modale Generatore Scheda Trello Ufficiale & WhatsApp Push
   const [showTrelloDispatchModal, setShowTrelloDispatchModal] = useState(false);
@@ -831,6 +832,83 @@ export default function LeadEngineDashboard() {
   const totaleInvestimento = quoteItems.reduce((acc, curr) => acc + Number(curr.valore || 0), 0);
   const totaleListino = quoteItems.reduce((acc, curr) => acc + Number(curr.prezzoListino || curr.valore || 0), 0);
   const scontoApplicato = Math.max(0, totaleListino - totaleInvestimento);
+
+  // Download Diretto PDF Ufficiale RMS (2 Pagine A4 Perfette via html2pdf)
+  async function downloadContractPdfDirect() {
+    setIsDownloadingPdf(true);
+    try {
+      const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
+      const num = (contractData.numero || 'Ufficiale').replace(/[/\\?%*:|"<>]/g, '_');
+      const filename = `Contratto_RMS_${num}_${sanitizedClient}.pdf`;
+
+      const targetEl = document.getElementById('printable-contract-pdf') || document.getElementById('printable-contract');
+      const h2p = await getHtml2Pdf();
+      if (h2p && targetEl) {
+        const opt = {
+          margin: 0,
+          filename: filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: 794
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: {
+            mode: ['css', 'legacy'],
+            before: '.html2pdf__page-break'
+          }
+        };
+        await h2p().set(opt).from(targetEl).save();
+      } else {
+        handlePrintContract();
+      }
+    } catch (e) {
+      console.error('Errore download PDF contratto:', e);
+      handlePrintContract();
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  }
+
+  // Download Diretto PDF Ufficiale Proposta Commerciale A4
+  async function downloadProposalPdfDirect() {
+    setIsDownloadingPdf(true);
+    try {
+      const sanitizedClient = (qNome || selectedLeadForProposalEmail?.nome_azienda_evento || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
+      const filename = `Proposta_Commerciale_RT_${sanitizedClient}.pdf`;
+
+      const targetEl = document.getElementById('printable-proposal-card') || document.getElementById('printable-proposal');
+      const h2p = await getHtml2Pdf();
+      if (h2p && targetEl) {
+        const opt = {
+          margin: 0,
+          filename: filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: 794
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        await h2p().set(opt).from(targetEl).save();
+      } else {
+        handlePrintProposal();
+      }
+    } catch (e) {
+      console.error('Errore download PDF proposta:', e);
+      handlePrintProposal();
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  }
 
   // Stampa / Salva in PDF Contratto Ufficiale RMS (Bifacciale 2 Pagine)
   function handlePrintContract() {
@@ -3476,8 +3554,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 >
                   📝 Passa a Contratto RMS
                 </button>
-                <button className="btn btn-primary btn-xs" onClick={handlePrintProposal}>
-                  Salva / Stampa in PDF
+                <button
+                  className="btn btn-primary btn-xs"
+                  onClick={downloadProposalPdfDirect}
+                  disabled={isDownloadingPdf}
+                  style={{ background: '#0284c7', borderColor: '#0ea5e9' }}
+                  title="Scarica direttamente il documento PDF A4 della Proposta Commerciale"
+                >
+                  {isDownloadingPdf ? '⏳ Generazione PDF...' : '📥 Scarica Proposta in PDF'}
                 </button>
                 <button className="modal-close" onClick={() => setShowPdfModal(false)}>✕</button>
               </div>
@@ -3744,9 +3828,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   Modello Ufficiale
                 </span>
               </div>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <button className="btn btn-primary btn-xs" onClick={handlePrintContract} style={{ background: '#0284c7', borderColor: '#0ea5e9' }}>
-                  Salva / Stampa Contratto in PDF
+                <button
+                  className="btn btn-primary btn-xs"
+                  onClick={downloadContractPdfDirect}
+                  disabled={isDownloadingPdf}
+                  style={{ background: '#0284c7', borderColor: '#0ea5e9' }}
+                  title="Scarica direttamente il documento PDF A4 del Contratto Ufficiale RMS"
+                >
+                  {isDownloadingPdf ? '⏳ Generazione PDF...' : '📥 Scarica Contratto in PDF'}
                 </button>
                 <button 
                   className="btn btn-xs" 
@@ -4591,11 +4680,12 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
               </div>
               <button
                 className="btn btn-xs"
-                style={{ background: '#0284c7', color: '#fff', fontWeight: 700, borderColor: '#0ea5e9', padding: '6px 12px' }}
-                onClick={handlePrintContract}
-                title="Salva o visualizza il PDF ufficiale prima di trasmetterlo"
+                style={{ background: '#0284c7', color: '#fff', fontWeight: 700, borderColor: '#0ea5e9', padding: '6px 14px' }}
+                onClick={downloadContractPdfDirect}
+                disabled={isDownloadingPdf}
+                title="Scarica direttamente il documento PDF A4 ufficiale (2 pagine fronte/retro)"
               >
-                📥 Scarica / Visiona PDF
+                {isDownloadingPdf ? '⏳ Generazione PDF...' : '📥 Scarica Contratto PDF'}
               </button>
             </div>
 
