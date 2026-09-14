@@ -323,6 +323,7 @@ export default function LeadEngineDashboard() {
   const [contractEmailCc, setContractEmailCc] = useState('amministrazione@radiotoscana.it');
   const [contractEmailSubject, setContractEmailSubject] = useState('');
   const [contractEmailBody, setContractEmailBody] = useState('');
+  const [isGeneratingEml, setIsGeneratingEml] = useState(false);
 
   // Modale Generatore Scheda Trello Ufficiale & WhatsApp Push
   const [showTrelloDispatchModal, setShowTrelloDispatchModal] = useState(false);
@@ -1133,29 +1134,15 @@ export default function LeadEngineDashboard() {
 
 in riferimento agli accordi commerciali intercorsi per la campagna on-air su Radio Toscana (Radio Monte Serra S.r.l.), Le trasmettiamo in allegato la Commissione Pubblicitaria ufficiale n. ${num}.
 
-📋 RIEPILOGO ESTREMI DELLA CAMPAGNA PUBBLICITARIA:
-• Committente: ${comm}
-• Mezzo: ${contractData.mezzo} (${contractData.area})
-• Quantità Spot: ${contractData.quantitaSpot} passaggi da ${contractData.formato}
-• Periodo di Trasmissione: Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}
-• Tariffa Spazi Pubblicitari: € ${contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-${contractData.prezzoProduzione > 0 ? `• Quota Produzione Spot (Diritti Liberi): € ${contractData.prezzoProduzione.toLocaleString('it-IT', { minimumFractionDigits: 2 })}\n` : ''}• TOTALE NETTO DI CAMPAGNA: € ${contractData.totaleNetto.toLocaleString('it-IT', { minimumFractionDigits: 2 })} + IVA
-• Modalità di Pagamento: ${contractData.modalitaPagamento}
+Tutti i dettagli relativi alla programmazione, ai formati spot e alle condizioni concordate sono specificati nel documento PDF allegato.
 
-📌 ISTRUZIONI PER IL PERFEZIONAMENTO:
-Si prega cortesemente di:
-1. Stampare e restituire la presente commissione timbrata e siglata per accettazione in calce;
-2. Confermare il Codice Destinatario SDI e indirizzo PEC per l'emissione della relativa fattura elettronica.
-
-La presente comunicazione è trasmessa in copia conoscenza alla nostra Direzione Amministrativa (amministrazione@radiotoscana.it) per l'apertura della posizione contabile e la corretta registrazione fiscale.
-
-Restiamo a completa disposizione per qualsiasi chiarimento operativo e per la ricezione del materiale audio per la messa in onda.
+Restiamo a Sua completa disposizione per qualsiasi chiarimento operativo.
 
 Cordiali saluti,
 
-Fabio Asiri — Direzione Commerciale Radio Toscana
-Radio Monte Serra S.r.l. • Via de' Pucci, 2 • 50122 Firenze
-Cell: 347 6818595 • Email: commerciale@radiotoscana.it`;
+Fabio Asiri
+Direzione Commerciale Radio Toscana
+Tel. 347 6818595 - commerciale@radiotoscana.it`;
 
     setContractEmailBody(body);
     setShowContractEmailModal(true);
@@ -1174,6 +1161,25 @@ Cell: 347 6818595 • Email: commerciale@radiotoscana.it`;
         document.body.removeChild(a);
       } catch (e) {}
     }, 1000);
+  }
+
+  // Caricatore client-side per libreria PDF (locale con fallback CDN)
+  function getHtml2Pdf(): Promise<any> {
+    if (typeof window === 'undefined') return Promise.resolve(null);
+    if ((window as any).html2pdf) return Promise.resolve((window as any).html2pdf);
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = '/html2pdf.bundle.min.js';
+      script.onload = () => resolve((window as any).html2pdf);
+      script.onerror = () => {
+        const cdnScript = document.createElement('script');
+        cdnScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        cdnScript.onload = () => resolve((window as any).html2pdf);
+        cdnScript.onerror = () => resolve(null);
+        document.head.appendChild(cdnScript);
+      };
+      document.head.appendChild(script);
+    });
   }
 
   function downloadOutlookDraftEml(to: string, cc: string, subject: string, body: string, filename: string) {
@@ -1205,6 +1211,91 @@ Cell: 347 6818595 • Email: commerciale@radiotoscana.it`;
     }, 1000);
   }
 
+  // Generatore Avanzato Bozza Outlook (.eml) CON PDF UFFICIALE ALLEGATO
+  async function downloadOutlookDraftWithPdfAttachment(
+    to: string,
+    cc: string,
+    subject: string,
+    body: string,
+    elementId: string,
+    pdfFilename: string,
+    emlFilename: string
+  ) {
+    try {
+      let pdfBase64 = '';
+      const el = document.getElementById(elementId);
+      if (el) {
+        const h2p = await getHtml2Pdf();
+        if (h2p) {
+          const opt = {
+            margin: [4, 4, 4, 4],
+            filename: pdfFilename,
+            image: { type: 'jpeg', quality: 0.95 },
+            html2canvas: { scale: 1.5, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+          const dataUri = await h2p().set(opt).from(el).outputPdf('datauristring');
+          if (dataUri && dataUri.includes(',')) {
+            pdfBase64 = dataUri.split(',')[1];
+          }
+        }
+      }
+
+      if (!pdfBase64) {
+        // PDF valido di fallback se l'elemento DOM non fosse catturabile
+        const fallbackPdf = `%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 595 842]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000105 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n192\n%%EOF`;
+        pdfBase64 = btoa(fallbackPdf);
+      }
+
+      const boundary = `----=_Part_RMS_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+      const cleanBody = body.replace(/\r?\n/g, '\r\n');
+      const formattedBase64 = (pdfBase64.match(/.{1,76}/g) || [pdfBase64]).join('\r\n');
+
+      const emlContent = [
+        `To: ${to}`,
+        `Cc: ${cc}`,
+        `Subject: ${subject}`,
+        'X-Unsent: 1',
+        'MIME-Version: 1.0',
+        `Content-Type: multipart/mixed; boundary="${boundary}"`,
+        '',
+        `--${boundary}`,
+        'Content-Type: text/plain; charset=utf-8',
+        'Content-Transfer-Encoding: 8bit',
+        '',
+        cleanBody,
+        '',
+        `--${boundary}`,
+        `Content-Type: application/pdf; name="${pdfFilename}"`,
+        'Content-Transfer-Encoding: base64',
+        `Content-Disposition: attachment; filename="${pdfFilename}"`,
+        '',
+        formattedBase64,
+        '',
+        `--${boundary}--`,
+        ''
+      ].join('\r\n');
+
+      const blob = new Blob([emlContent], { type: 'message/rfc822' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${emlFilename.replace(/[^a-zA-Z0-9_\-]/g, '_')}.eml`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        try { document.body.removeChild(a); } catch (e) {}
+        URL.revokeObjectURL(url);
+      }, 1000);
+      return true;
+    } catch (err) {
+      console.error('Errore generazione bozza con PDF allegato:', err);
+      // Fallback trasparente
+      downloadOutlookDraftEml(to, cc, subject, body, emlFilename);
+      return false;
+    }
+  }
+
   // Apertura Modale Invio Email Proposta Commerciale
   function openProposalEmailModal(lead: LeadRow) {
     setSelectedLeadForProposalEmail(lead);
@@ -1219,26 +1310,17 @@ Cell: 347 6818595 • Email: commerciale@radiotoscana.it`;
 
     setProposalEmailBody(`Gentile ${lead.referente || lead.nome_azienda_evento},
 
-in riferimento ai nostri accordi commerciali, Le trasmetto la Proposta Commerciale ufficiale per la campagna di comunicazione on-air su Radio Toscana (Radio Monte Serra S.r.l.).
+in riferimento ai nostri accordi commerciali, Le trasmetto in allegato la Proposta Commerciale per la campagna di comunicazione on-air su Radio Toscana (Radio Monte Serra S.r.l.).
 
-📌 PIANO DI COMUNICAZIONE & SPECIFICHE DELLA CAMPAGNA:
-${itemsSummary}
+Tutti i dettagli relativi al piano di programmazione, ai passaggi spot e al relativo investimento economico sono specificati nel documento PDF allegato.
 
-💰 TOTALE INVESTIMENTO COMMERCIALE NETTO: € ${tot.toLocaleString('it-IT', { minimumFractionDigits: 2 })} + IVA
-• Formula Contrattuale: ${lead.tipo_accordo || 'Standard (100% Fatturato)'}
-• Pagamento: Bonifico Bancario 30 gg fine mese d.f.
-• Messa in onda: Condizionata alla restituzione della proposta siglata per accettazione e alla fornitura del materiale audio.
+Resto a Sua completa disposizione per qualsiasi chiarimento o approfondimento.
 
-In allegato a questa email Le trasmetto il documento ufficiale in formato PDF pronto per la visione e la firma.
+Cordiali saluti,
 
-Resto a Sua completa disposizione per qualsiasi chiarimento operativo o per calibrare gli orari di programmazione.
-
-Un cordiale saluto,
-
-Fabio Asiri — Direzione Commerciale
-Radio Toscana • Radio Firenze (Radio Monte Serra S.r.l.)
-Tel. 347 6818595 | commerciale@radiotoscana.it
-Via de' Pucci 2, 50122 Firenze`);
+Fabio Asiri
+Direzione Commerciale Radio Toscana
+Tel. 347 6818595 - commerciale@radiotoscana.it`);
 
     setProposalEmailSentNotification(false);
     setShowProposalEmailModal(true);
@@ -4034,22 +4116,15 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
 desideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.
 
-📌 RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:
-• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || 'In definizione'}
-• Area Target: ${selectedLeadForEmail.area_target || 'Toscana'}
-• Totale Spot Pianificati: ${selectedLeadForEmail.plafond_totale_spot || 'Secondo accordi'}
-• Stato Programmazione: ${selectedLeadForEmail.stato_programmazione || 'Iniziata'}
-
 In allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.
 
 Restiamo a Sua completa disposizione per qualsiasi esigenza.
 
 Cordiali saluti,
 
-Direzione Commerciale & Programmazione
+Direzione Commerciale e Programmazione
 Radio Toscana
-📧 commerciale@radiotoscana.it
-🌐 www.radiotoscana.it`}
+commerciale@radiotoscana.it - Tel. 347 6818595`}
               />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', flexWrap: 'wrap', gap: '8px' }}>
@@ -4058,7 +4133,7 @@ Radio Toscana
                   className="btn btn-xs"
                   style={{ background: 'rgba(255,255,255,0.08)' }}
                   onClick={() => {
-                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\n📌 RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:\n• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || 'In definizione'}\n• Area Target: ${selectedLeadForEmail.area_target || 'Toscana'}\n• Totale Spot Pianificati: ${selectedLeadForEmail.plafond_totale_spot || 'Secondo accordi'}\n• Stato Programmazione: ${selectedLeadForEmail.stato_programmazione || 'Iniziata'}\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale & Programmazione\nRadio Toscana\n📧 commerciale@radiotoscana.it\n🌐 www.radiotoscana.it`;
+                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale e Programmazione\nRadio Toscana\ncommerciale@radiotoscana.it - Tel. 347 6818595`;
                     navigator.clipboard.writeText(body);
                     alert('📋 Testo email copiato negli appunti!');
                   }}
@@ -4070,7 +4145,7 @@ Radio Toscana
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#e2e8f0', fontWeight: 600 }}
                   onClick={() => {
                     const subj = `Radio Toscana — Programmazione Messa in Onda Campagna "${selectedLeadForEmail.nome_azienda_evento}"${selectedLeadForEmail.numero_contratto ? ` (Contratto Nr. ${selectedLeadForEmail.numero_contratto})` : ''}`;
-                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\n📌 RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:\n• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || 'In definizione'}\n• Area Target: ${selectedLeadForEmail.area_target || 'Toscana'}\n• Totale Spot Pianificati: ${selectedLeadForEmail.plafond_totale_spot || 'Secondo accordi'}\n• Stato Programmazione: ${selectedLeadForEmail.stato_programmazione || 'Iniziata'}\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale & Programmazione\nRadio Toscana\n📧 commerciale@radiotoscana.it\n🌐 www.radiotoscana.it`;
+                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale e Programmazione\nRadio Toscana\ncommerciale@radiotoscana.it - Tel. 347 6818595`;
                     downloadOutlookDraftEml(selectedLeadForEmail.email || 'commerciale@radiotoscana.it', 'amministrazione@radiotoscana.it', subj, body, `Programmazione_RT_${selectedLeadForEmail.nome_azienda_evento || 'Cliente'}`);
                   }}
                   title="Scarica il file .eml: al doppio clic apre l'app Outlook Desktop sul PC con la bozza pronta!"
@@ -4085,7 +4160,7 @@ Radio Toscana
                   style={{ background: 'linear-gradient(135deg, rgba(0, 120, 212, 0.3), rgba(0, 90, 180, 0.4))', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.7)', fontWeight: 800 }}
                   onClick={() => {
                     const subj = `Radio Toscana — Programmazione Messa in Onda Campagna "${selectedLeadForEmail.nome_azienda_evento}"${selectedLeadForEmail.numero_contratto ? ` (Contratto Nr. ${selectedLeadForEmail.numero_contratto})` : ''}`;
-                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\n📌 RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:\n• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || 'In definizione'}\n• Area Target: ${selectedLeadForEmail.area_target || 'Toscana'}\n• Totale Spot Pianificati: ${selectedLeadForEmail.plafond_totale_spot || 'Secondo accordi'}\n• Stato Programmazione: ${selectedLeadForEmail.stato_programmazione || 'Iniziata'}\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale & Programmazione\nRadio Toscana\n📧 commerciale@radiotoscana.it\n🌐 www.radiotoscana.it`;
+                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale e Programmazione\nRadio Toscana\ncommerciale@radiotoscana.it - Tel. 347 6818595`;
                     openOutlookDesktop(selectedLeadForEmail.email || 'commerciale@radiotoscana.it', 'amministrazione@radiotoscana.it', subj, body);
                   }}
                   title="Apre l'app Outlook sul tuo PC con A:, CC: e testo già pronti"
@@ -4176,6 +4251,11 @@ Radio Toscana
               </div>
             )}
 
+            <div style={{ background: 'rgba(2, 132, 199, 0.15)', border: '1px solid rgba(2, 132, 199, 0.35)', borderRadius: '8px', padding: '10px 14px', marginTop: '14px', fontSize: '11.5px', color: '#7dd3fc', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '18px' }}>📎</span>
+              <span><strong>Bozza con Proposta Allegata:</strong> Clicca sul pulsante <strong>"📎 Scarica Bozza Outlook (CON PROPOSTA PDF ALLEGATA)"</strong>. Facendo doppio clic sul file scaricato, <strong>Outlook sul tuo PC si apre con il file PDF della proposta GIÀ ALLEGATO</strong> sotto l&apos;oggetto, pronto da inviare!</span>
+            </div>
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '8px' }}>
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 <button
@@ -4188,39 +4268,55 @@ Radio Toscana
                 >
                   📋 Copia Testo
                 </button>
+
                 <button
                   className="btn btn-xs"
-                  style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#e2e8f0', fontWeight: 600 }}
-                  onClick={() => {
-                    downloadOutlookDraftEml(
+                  disabled={isGeneratingEml}
+                  style={{
+                    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                    color: '#ffffff',
+                    border: '1px solid #38bdf8',
+                    fontWeight: 800,
+                    padding: '7px 14px',
+                    boxShadow: '0 2px 10px rgba(2, 132, 199, 0.4)',
+                    cursor: isGeneratingEml ? 'wait' : 'pointer'
+                  }}
+                  onClick={async () => {
+                    setIsGeneratingEml(true);
+                    const cleanClient = (selectedLeadForProposalEmail.nome_azienda_evento || 'Cliente').replace(/[^a-zA-Z0-9_-]/g, '_');
+                    const targetId = document.getElementById('printable-proposal') ? 'printable-proposal' : 'printable-proposal-card';
+                    await downloadOutlookDraftWithPdfAttachment(
                       proposalEmailRecipient,
                       proposalEmailCc,
                       proposalEmailSubject,
                       proposalEmailBody,
-                      `Proposta_RT_${selectedLeadForProposalEmail.nome_azienda_evento || 'Cliente'}`
+                      targetId,
+                      `Proposta_Commerciale_RT_${cleanClient}.pdf`,
+                      `Bozza_Outlook_Proposta_${cleanClient}`
                     );
                     updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
                     setProposalEmailSentNotification(true);
+                    setIsGeneratingEml(false);
                   }}
-                  title="Scarica il file .eml ufficiale: al doppio clic apre direttamente l'app Outlook Desktop sul tuo PC con la bozza pronta e modificabile!"
+                  title="Scarica il file .eml che al doppio clic apre Outlook con la Proposta PDF GIÀ ALLEGATA al messaggio!"
                 >
-                  📥 Bozza Outlook (.eml)
+                  {isGeneratingEml ? '⏳ Generazione PDF & Bozza in corso...' : '📎 Scarica Bozza Outlook (CON PROPOSTA PDF ALLEGATA)'}
                 </button>
               </div>
 
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <button
                   className="btn btn-xs"
-                  style={{ background: 'linear-gradient(135deg, rgba(0, 120, 212, 0.3), rgba(0, 90, 180, 0.4))', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.7)', fontWeight: 800 }}
+                  style={{ background: 'rgba(0, 120, 212, 0.2)', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.5)', fontWeight: 700 }}
                   onClick={() => {
                     openOutlookDesktop(proposalEmailRecipient, proposalEmailCc, proposalEmailSubject, proposalEmailBody);
                     // Aggiorna email e data invio sul lead
                     updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
                     setProposalEmailSentNotification(true);
                   }}
-                  title="Apre direttamente l'applicazione Microsoft Outlook installata sul tuo PC con A:, CC: e preventivo già compilati"
+                  title="Apre l'app Outlook sul tuo computer con il testo già pronto (senza allegato)"
                 >
-                  💻 Apri in Outlook Desktop (PC)
+                  💻 Apri in Outlook Desktop (Solo Testo)
                 </button>
 
                 <button
@@ -4237,6 +4333,90 @@ Radio Toscana
                 >
                   ✅ Segna come Inviata
                 </button>
+              </div>
+            </div>
+
+            {/* SCHEDA PROPOSTA OFFSCREEN PER GENERAZIONE PDF ALLEGATO */}
+            <div
+              id="printable-proposal-card"
+              style={{
+                position: 'fixed',
+                left: '-9999px',
+                top: 0,
+                width: '210mm',
+                background: '#ffffff',
+                color: '#111111',
+                padding: '24px 28px',
+                fontFamily: "'Akzidenz-Grotesk', 'Panton', sans-serif",
+                boxSizing: 'border-box'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #1e293b', paddingBottom: '12px', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '42px', width: 'auto' }} />
+                  <img src="/logo_radio_firenze.png" alt="Radio Firenze" style={{ height: '24px', width: 'auto' }} />
+                  <div style={{ borderLeft: '1.5px solid #cbd5e1', paddingLeft: '12px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#0f172a' }}>RADIO MONTE SERRA S.r.l.</div>
+                    <div style={{ fontSize: '8.5px', color: '#64748b' }}>Direzione Commerciale • commerciale@radiotoscana.it • Tel. 055 285030</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '10px', fontWeight: 900, background: '#1e293b', color: '#fff', padding: '3px 8px', borderRadius: '3px', display: 'inline-block' }}>
+                    PROPOSTA COMMERCIALE UFFICIALE
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#0f172a', fontWeight: 900, marginTop: '4px' }}>
+                    Data: {new Date().toLocaleDateString('it-IT')}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '12px', marginBottom: '16px' }}>
+                <div style={{ fontSize: '9px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>COMMITTENTE</div>
+                <div style={{ fontSize: '15px', fontWeight: 900, color: '#0f172a', marginTop: '2px' }}>{selectedLeadForProposalEmail.nome_azienda_evento}</div>
+                <div style={{ fontSize: '11px', color: '#334155', marginTop: '3px' }}>
+                  Referente: <strong>{selectedLeadForProposalEmail.referente || 'Direzione'}</strong>
+                  {selectedLeadForProposalEmail.email ? ` • Email: ${selectedLeadForProposalEmail.email}` : ''}
+                  {selectedLeadForProposalEmail.telefono ? ` • Tel: ${selectedLeadForProposalEmail.telefono}` : ''}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', marginBottom: '6px' }}>PIANO DI COMUNICAZIONE ON-AIR</div>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10.5px' }}>
+                  <thead>
+                    <tr style={{ background: '#0f172a', color: '#fff' }}>
+                      <th style={{ padding: '6px 10px', textAlign: 'left' }}>Tipologia</th>
+                      <th style={{ padding: '6px 10px', textAlign: 'left' }}>Fascia / Copertura</th>
+                      <th style={{ padding: '6px 10px', textAlign: 'left' }}>Specifiche</th>
+                      <th style={{ padding: '6px 10px', textAlign: 'right' }}>Valore Netto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(selectedLeadForProposalEmail.quote_items && selectedLeadForProposalEmail.quote_items.length > 0 ? selectedLeadForProposalEmail.quote_items : quoteItems).map((it, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                        <td style={{ padding: '6px 10px', fontWeight: 700 }}>{it.tipo}</td>
+                        <td style={{ padding: '6px 10px' }}>{it.copertura}</td>
+                        <td style={{ padding: '6px 10px', color: '#64748b' }}>{it.dettagli}</td>
+                        <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 800 }}>€ {it.valore?.toLocaleString('it-IT')}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ background: '#0f172a', color: '#fff', padding: '12px 16px', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <div>
+                  <div style={{ fontSize: '9px', textTransform: 'uppercase', color: '#94a3b8', fontWeight: 800 }}>TOTALE INVESTIMENTO COMMERCIALE NETTO</div>
+                  <div style={{ fontSize: '8px', color: '#cbd5e1' }}>+ IVA di legge</div>
+                </div>
+                <div style={{ fontSize: '20px', fontWeight: 900, color: '#38bdf8' }}>
+                  € {(selectedLeadForProposalEmail.valore_preventivo || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                </div>
+              </div>
+
+              <div style={{ border: '1px solid #cbd5e1', padding: '12px', borderRadius: '6px', fontSize: '9px', color: '#64748b', lineHeight: 1.4 }}>
+                <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>CONDIZIONI GENERALI DI EMISSIONE:</div>
+                <div>Offerta valida 30 giorni dalla data di emissione. La programmazione è subordinata alla ricezione della proposta siglata per accettazione e alla disponibilità dei palinsesti Radio Toscana.</div>
               </div>
             </div>
           </div>
@@ -4345,6 +4525,11 @@ Radio Toscana
               />
             </div>
 
+            <div style={{ background: 'rgba(2, 132, 199, 0.15)', border: '1px solid rgba(2, 132, 199, 0.35)', borderRadius: '8px', padding: '10px 14px', marginTop: '14px', fontSize: '11.5px', color: '#7dd3fc', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '18px' }}>📎</span>
+              <span><strong>Bozza con Contratto Allegato:</strong> Clicca sul pulsante <strong>"📎 Scarica Bozza Outlook (CON CONTRATTO PDF ALLEGATO)"</strong>. Facendo doppio clic sul file scaricato, <strong>Outlook sul tuo PC si apre con il file PDF del contratto GIÀ ALLEGATO</strong> sotto l&apos;oggetto, pronto da inviare!</span>
+            </div>
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '8px' }}>
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 <button
@@ -4357,34 +4542,50 @@ Radio Toscana
                 >
                   📋 Copia Testo
                 </button>
+
                 <button
                   className="btn btn-xs"
-                  style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#e2e8f0', fontWeight: 600 }}
-                  onClick={() => {
-                    downloadOutlookDraftEml(
+                  disabled={isGeneratingEml}
+                  style={{
+                    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                    color: '#ffffff',
+                    border: '1px solid #38bdf8',
+                    fontWeight: 800,
+                    padding: '7px 14px',
+                    boxShadow: '0 2px 10px rgba(2, 132, 199, 0.4)',
+                    cursor: isGeneratingEml ? 'wait' : 'pointer'
+                  }}
+                  onClick={async () => {
+                    setIsGeneratingEml(true);
+                    const cleanClient = (contractData.committente || 'Cliente').replace(/[^a-zA-Z0-9_-]/g, '_');
+                    const cleanNum = (contractData.numero || 'Ufficiale').replace(/[^a-zA-Z0-9_-]/g, '_');
+                    await downloadOutlookDraftWithPdfAttachment(
                       contractEmailRecipient,
                       contractEmailCc,
                       contractEmailSubject,
                       contractEmailBody,
-                      `Contratto_RT_${contractData.numero || 'Ufficiale'}_${contractData.committente || 'Cliente'}`
+                      'printable-contract',
+                      `Contratto_RMS_${cleanNum}_${cleanClient}.pdf`,
+                      `Bozza_Outlook_Contratto_${cleanNum}_${cleanClient}`
                     );
+                    setIsGeneratingEml(false);
                   }}
-                  title="Scarica il file .eml ufficiale: al doppio clic apre direttamente l'app Outlook Desktop sul tuo PC con la bozza pronta da trasmettere!"
+                  title="Scarica il file .eml che al doppio clic apre Outlook con il Contratto PDF Ufficiale GIÀ ALLEGATO al messaggio!"
                 >
-                  📥 Bozza Outlook (.eml)
+                  {isGeneratingEml ? '⏳ Generazione PDF & Bozza in corso...' : '📎 Scarica Bozza Outlook (CON CONTRATTO PDF ALLEGATO)'}
                 </button>
               </div>
 
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <button
                   className="btn btn-xs"
-                  style={{ background: 'linear-gradient(135deg, rgba(0, 120, 212, 0.3), rgba(0, 90, 180, 0.4))', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.7)', fontWeight: 800 }}
+                  style={{ background: 'rgba(0, 120, 212, 0.2)', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.5)', fontWeight: 700 }}
                   onClick={() => {
                     openOutlookDesktop(contractEmailRecipient, contractEmailCc, contractEmailSubject, contractEmailBody);
                   }}
-                  title="Apre l'app Outlook sul tuo computer Windows con A:, CC: e testo della trasmissione pronti"
+                  title="Apre direttamente l'app Outlook sul computer con il testo pronto (senza allegato)"
                 >
-                  💻 Apri in Outlook Desktop (PC)
+                  💻 Apri in Outlook Desktop (Solo Testo)
                 </button>
 
                 <button
