@@ -854,7 +854,19 @@ export default function LeadEngineDashboard() {
             logging: false,
             scrollX: 0,
             scrollY: 0,
-            windowWidth: 794
+            windowWidth: 794,
+            onclone: (clonedDoc: any) => {
+              const el = clonedDoc.getElementById('printable-contract-pdf') || clonedDoc.getElementById('printable-contract');
+              if (el) {
+                el.style.position = 'static';
+                el.style.left = '0';
+                el.style.top = '0';
+                el.style.zIndex = '999999';
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+                el.style.opacity = '1';
+              }
+            }
           },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
           pagebreak: {
@@ -894,7 +906,19 @@ export default function LeadEngineDashboard() {
             logging: false,
             scrollX: 0,
             scrollY: 0,
-            windowWidth: 794
+            windowWidth: 794,
+            onclone: (clonedDoc: any) => {
+              const el = clonedDoc.getElementById('printable-proposal-card') || clonedDoc.getElementById('printable-proposal');
+              if (el) {
+                el.style.position = 'static';
+                el.style.left = '0';
+                el.style.top = '0';
+                el.style.zIndex = '999999';
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+                el.style.opacity = '1';
+              }
+            }
           },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
@@ -1334,7 +1358,29 @@ Tel. 347 6818595 - commerciale@radiotoscana.it`;
               logging: false,
               scrollX: 0,
               scrollY: 0,
-              windowWidth: 794
+              windowWidth: 794,
+              onclone: (clonedDoc: any) => {
+                const el1 = clonedDoc.getElementById('printable-contract-pdf') || clonedDoc.getElementById('printable-contract');
+                if (el1) {
+                  el1.style.position = 'static';
+                  el1.style.left = '0';
+                  el1.style.top = '0';
+                  el1.style.zIndex = '999999';
+                  el1.style.display = 'block';
+                  el1.style.visibility = 'visible';
+                  el1.style.opacity = '1';
+                }
+                const el2 = clonedDoc.getElementById('printable-proposal-card') || clonedDoc.getElementById('printable-proposal');
+                if (el2) {
+                  el2.style.position = 'static';
+                  el2.style.left = '0';
+                  el2.style.top = '0';
+                  el2.style.zIndex = '999999';
+                  el2.style.display = 'block';
+                  el2.style.visibility = 'visible';
+                  el2.style.opacity = '1';
+                }
+              }
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: {
@@ -4544,8 +4590,10 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
               id="printable-proposal-card"
               style={{
                 position: 'fixed',
-                left: '-9999px',
+                left: 0,
                 top: 0,
+                zIndex: -9999,
+                pointerEvents: 'none',
                 width: '210mm',
                 height: '296mm',
                 maxHeight: '296mm',
@@ -5104,8 +5152,10 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
         id="printable-contract-pdf"
         style={{
           position: 'fixed',
-          left: '-9999px',
+          left: 0,
           top: 0,
+          zIndex: -9999,
+          pointerEvents: 'none',
           width: '210mm',
           boxSizing: 'border-box',
           fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
