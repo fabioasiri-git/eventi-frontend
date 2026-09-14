@@ -2136,6 +2136,19 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             </div>
                           )}
 
+                          {l.stato_produzione === 'IN_ATTESA_AUDIO_TRELLO' && (
+                            <div style={{ fontSize: '10.5px', color: '#38bdf8', background: 'rgba(56, 189, 248, 0.12)', padding: '4px 8px', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.3)', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <span>📋</span>
+                              <span><strong>Commessa inviata a Edi (Trello)</strong> {l.data_scadenza_produzione ? `• Scad: ${l.data_scadenza_produzione}` : ''}</span>
+                            </div>
+                          )}
+                          {l.stato_produzione === 'PRODOTTO_APPROVATO' && (
+                            <div style={{ fontSize: '10.5px', color: '#4ade80', background: 'rgba(34, 197, 94, 0.12)', padding: '4px 8px', borderRadius: '4px', border: '1px solid rgba(34, 197, 94, 0.3)', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <span>🟢</span>
+                              <span><strong>Master Audio Pronto in Regia</strong></span>
+                            </div>
+                          )}
+
                           {col.phase === 'CONTRATTO ATTIVO' && (
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
                               <button
@@ -2324,8 +2337,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       <span style={{ color: '#cbd5e1' }}>
                         🎯 Scadenza SLA Produzione: <strong>{l.data_scadenza_produzione || 'Entro 7 giorni'}</strong>
                       </span>
-                      <span style={{ color: stato === 'PRODOTTO_APPROVATO' ? 'var(--accent-green)' : '#facc15', fontWeight: 700 }}>
-                        {stato === 'PRODOTTO_APPROVATO' ? '🟢 Audio Approvato' : '⏱️ In Lavorazione (SLA OK)'}
+                      <span style={{ color: stato === 'PRODOTTO_APPROVATO' ? 'var(--accent-green)' : (stato === 'IN_ATTESA_AUDIO_TRELLO' ? '#38bdf8' : '#facc15'), fontWeight: 700 }}>
+                        {stato === 'PRODOTTO_APPROVATO' ? '🟢 Audio Approvato' : (stato === 'IN_ATTESA_AUDIO_TRELLO' ? '🟡 Inviata a Edi (Attesa Audio Trello)' : '⏱️ In Lavorazione (SLA OK)')}
                       </span>
                     </div>
 
@@ -2341,11 +2354,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       </span>
                       <span style={{
                         flex: 1, textAlign: 'center', padding: '5px', borderRadius: '4px', fontSize: '10px', fontWeight: 700,
-                        background: stato === 'IN_STUDIO' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255,255,255,0.05)',
-                        color: stato === 'IN_STUDIO' ? '#38bdf8' : '#64748b',
-                        border: stato === 'IN_STUDIO' ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid transparent'
+                        background: stato === 'IN_ATTESA_AUDIO_TRELLO' || stato === 'IN_STUDIO' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255,255,255,0.05)',
+                        color: stato === 'IN_ATTESA_AUDIO_TRELLO' || stato === 'IN_STUDIO' ? '#38bdf8' : '#64748b',
+                        border: stato === 'IN_ATTESA_AUDIO_TRELLO' || stato === 'IN_STUDIO' ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid transparent'
                       }}>
-                        2. Sala Incisione
+                        {stato === 'IN_ATTESA_AUDIO_TRELLO' ? '2. Inviato a Edi (Trello)' : '2. Sala Incisione'}
                       </span>
                       <span style={{
                         flex: 1, textAlign: 'center', padding: '5px', borderRadius: '4px', fontSize: '10px', fontWeight: 700,
@@ -2473,7 +2486,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         background: isAudioPronto ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)',
                         color: isAudioPronto ? '#4ade80' : '#facc15'
                       }}>
-                        {isAudioPronto ? '🟢 Audio Pronto' : '🟡 In Produzione'}
+                        {isAudioPronto ? '🟢 Audio Pronto' : (l.stato_produzione === 'IN_ATTESA_AUDIO_TRELLO' ? '🟡 In Produzione Edi (Trello)' : '🟡 In Attesa Copy')}
                       </span>
                     </td>
                     <td>
