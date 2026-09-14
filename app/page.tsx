@@ -325,6 +325,8 @@ export default function LeadEngineDashboard() {
   const [contractEmailBody, setContractEmailBody] = useState('');
   const [isGeneratingEml, setIsGeneratingEml] = useState(false);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+  const [isPdfRendering, setIsPdfRendering] = useState(false);
+  const [isProposalPdfRendering, setIsProposalPdfRendering] = useState(false);
 
   // Modale Generatore Scheda Trello Ufficiale & WhatsApp Push
   const [showTrelloDispatchModal, setShowTrelloDispatchModal] = useState(false);
@@ -836,6 +838,9 @@ export default function LeadEngineDashboard() {
   // Download Diretto PDF Ufficiale RMS (2 Pagine A4 Perfette via html2pdf)
   async function downloadContractPdfDirect() {
     setIsDownloadingPdf(true);
+    setIsPdfRendering(true);
+    await new Promise(r => setTimeout(r, 150));
+    setIsDownloadingPdf(true);
     try {
       const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
       const num = (contractData.numero || 'Ufficiale').replace(/[/\\?%*:|"<>]/g, '_');
@@ -882,12 +887,16 @@ export default function LeadEngineDashboard() {
       console.error('Errore download PDF contratto:', e);
       handlePrintContract();
     } finally {
+      setIsPdfRendering(false);
       setIsDownloadingPdf(false);
     }
   }
 
   // Download Diretto PDF Ufficiale Proposta Commerciale A4
   async function downloadProposalPdfDirect() {
+    setIsDownloadingPdf(true);
+    setIsProposalPdfRendering(true);
+    await new Promise(r => setTimeout(r, 150));
     setIsDownloadingPdf(true);
     try {
       const sanitizedClient = (qNome || selectedLeadForProposalEmail?.nome_azienda_evento || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
@@ -930,6 +939,7 @@ export default function LeadEngineDashboard() {
       console.error('Errore download PDF proposta:', e);
       handlePrintProposal();
     } finally {
+      setIsProposalPdfRendering(false);
       setIsDownloadingPdf(false);
     }
   }
@@ -1335,6 +1345,12 @@ Tel. 347 6818595 - commerciale@radiotoscana.it`;
     pdfFilename: string,
     emlFilename: string
   ) {
+    if (elementId.includes('contract')) {
+      setIsPdfRendering(true);
+    } else {
+      setIsProposalPdfRendering(true);
+    }
+    await new Promise(r => setTimeout(r, 150));
     try {
       let pdfBase64 = '';
       // Preferenza assoluta per i contenitori A4 calibrati al millimetro per la stampa PDF
@@ -1455,8 +1471,12 @@ Tel. 347 6818595 - commerciale@radiotoscana.it`;
         try { document.body.removeChild(a); } catch (e) {}
         URL.revokeObjectURL(url);
       }, 1000);
+      setIsPdfRendering(false);
+      setIsProposalPdfRendering(false);
       return true;
     } catch (err) {
+      setIsPdfRendering(false);
+      setIsProposalPdfRendering(false);
       console.error('Errore generazione bozza con PDF allegato:', err);
       downloadOutlookDraftEml(to, cc, subject, body, emlFilename);
       return false;
@@ -4585,29 +4605,31 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
               </div>
             </div>
 
-            {/* SCHEDA PROPOSTA OFFSCREEN PER GENERAZIONE PDF ALLEGATO */}
-            <div
-              id="printable-proposal-card"
-              style={{
-                position: 'fixed',
-                left: 0,
-                top: 0,
-                zIndex: -9999,
-                pointerEvents: 'none',
-                width: '210mm',
-                height: '296mm',
-                maxHeight: '296mm',
-                background: '#ffffff',
-                color: '#111111',
-                padding: '14mm 16mm',
-                fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                boxSizing: 'border-box',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                overflow: 'hidden'
-              }}
-            >
+            {/* SCHEDA PROPOSTA RENDERING DEDICATO ALLA GENERAZIONE PDF */}
+            {(isProposalPdfRendering || isGeneratingEml) && (
+              <div
+                id="printable-proposal-card"
+                style={{
+                  position: 'fixed',
+                  left: '50%',
+                  top: '20px',
+                  transform: 'translateX(-50%)',
+                  zIndex: 999999,
+                  width: '210mm',
+                  height: '296mm',
+                  maxHeight: '296mm',
+                  background: '#ffffff',
+                  color: '#111111',
+                  padding: '14mm 16mm',
+                  fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                  boxSizing: 'border-box',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  overflow: 'hidden',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.6)'
+                }}
+              >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #1e293b', paddingBottom: '12px', marginBottom: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '42px', width: 'auto' }} />
@@ -4676,6 +4698,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                 <div>Offerta valida 30 giorni dalla data di emissione. La programmazione è subordinata alla ricezione della proposta siglata per accettazione e alla disponibilità dei palinsesti Radio Toscana.</div>
               </div>
             </div>
+          )}
           </div>
         </div>
       )}
@@ -5146,23 +5169,24 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
         </div>
       )}
       {/* ========================================================================= */}
-      {/* ===== CONTENITORE OFFSCREEN DEDICATO ALLA STAMPA PDF PERFETTA IN A4 ===== */}
+      {/* ===== CONTENITORE RENDERING PDF ATTIVATO SOLO DURANTE IL DOWNLOAD ===== */}
       {/* ========================================================================= */}
-      <div
-        id="printable-contract-pdf"
-        style={{
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          zIndex: -9999,
-          pointerEvents: 'none',
-          width: '210mm',
-          boxSizing: 'border-box',
-          fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-          background: '#ffffff',
-          color: '#111111'
-        }}
-      >
+      {isPdfRendering && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 999999, background: 'rgba(11, 15, 25, 0.94)', backdropFilter: 'blur(8px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', overflowY: 'auto', padding: '40px 0' }}>
+          <div style={{ color: '#38bdf8', fontSize: '15px', fontWeight: 800, marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span>⏳</span> Generazione documento PDF Contratto Ufficiale A4 in corso...
+          </div>
+          <div
+            id="printable-contract-pdf"
+            style={{
+              width: '210mm',
+              boxSizing: 'border-box',
+              fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+              background: '#ffffff',
+              color: '#111111',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.6)'
+            }}
+          >
         {/* --- PAGINA 1: MODULO COMMISSIONE UFFICIALE (ESATTAMENTE 1 PAGINA A4) --- */}
         <div
           style={{
@@ -5481,6 +5505,8 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
           </div>
         </div>
       </div>
+    </div>
+  )}
 
     </div>
   );
