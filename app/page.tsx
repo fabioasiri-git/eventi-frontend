@@ -4224,20 +4224,6 @@ Radio Toscana
                 </button>
 
                 <button
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(14, 165, 233, 0.12)', color: '#38bdf8', border: '1px solid rgba(14, 165, 233, 0.3)', fontWeight: 600 }}
-                  onClick={() => {
-                    const outlookWebUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(proposalEmailRecipient)}&cc=${encodeURIComponent(proposalEmailCc)}&subject=${encodeURIComponent(proposalEmailSubject)}&body=${encodeURIComponent(proposalEmailBody)}`;
-                    window.open(outlookWebUrl, '_blank');
-                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
-                    setProposalEmailSentNotification(true);
-                  }}
-                  title="Apre la bozza pronta su Outlook Web (Microsoft 365)"
-                >
-                  🌐 Outlook Web (365)
-                </button>
-
-                <button
                   className="btn btn-primary btn-xs"
                   onClick={() => {
                     // Salva email e timestamp invio sul lead
@@ -4399,18 +4385,6 @@ Radio Toscana
                   title="Apre l'app Outlook sul tuo computer Windows con A:, CC: e testo della trasmissione pronti"
                 >
                   💻 Apri in Outlook Desktop (PC)
-                </button>
-
-                <button
-                  className="btn btn-xs"
-                  style={{ background: 'rgba(14, 165, 233, 0.12)', color: '#38bdf8', border: '1px solid rgba(14, 165, 233, 0.3)', fontWeight: 600 }}
-                  onClick={() => {
-                    const outlookWebUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(contractEmailRecipient)}&cc=${encodeURIComponent(contractEmailCc)}&subject=${encodeURIComponent(contractEmailSubject)}&body=${encodeURIComponent(contractEmailBody)}`;
-                    window.open(outlookWebUrl, '_blank');
-                  }}
-                  title="Apre la bozza pronta su Outlook Web (Microsoft 365)"
-                >
-                  🌐 Outlook Web (365)
                 </button>
 
                 <button
