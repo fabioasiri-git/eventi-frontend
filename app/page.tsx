@@ -2186,8 +2186,16 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       />
                     </div>
 
-                    {/* PULSANTI DI AVANZAMENTO STATO */}
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    {/* PULSANTI DI AVANZAMENTO STATO & TRELLO */}
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      <button
+                        className="btn btn-xs"
+                        style={{ background: 'rgba(0, 121, 191, 0.2)', color: '#38bdf8', border: '1px solid rgba(0, 121, 191, 0.4)', fontWeight: 700 }}
+                        onClick={() => openTrelloDispatchModal(l)}
+                        title="Genera scheda per Trello e invia notifica WhatsApp alla collaboratrice esterna"
+                      >
+                        📋 Commessa Trello &amp; WA
+                      </button>
                       {stato === 'IN_ATTESA_COPY' && (
                         <button
                           className="btn btn-xs"
@@ -2213,8 +2221,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         </button>
                       )}
                       {stato === 'PRODOTTO_APPROVATO' && (
-                        <div style={{ width: '100%', textAlign: 'center', fontSize: '11px', color: '#4ade80', fontWeight: 800, padding: '6px', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '6px' }}>
-                          🎉 Audio Pronto in Regia per la Messa in Onda
+                        <div style={{ flex: 1, textAlign: 'center', fontSize: '11px', color: '#4ade80', fontWeight: 800, padding: '6px', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '6px' }}>
+                          🎉 Audio Pronto in Regia
                         </div>
                       )}
                     </div>
