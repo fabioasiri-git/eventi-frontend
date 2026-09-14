@@ -835,59 +835,156 @@ export default function LeadEngineDashboard() {
   const totaleListino = quoteItems.reduce((acc, curr) => acc + Number(curr.prezzoListino || curr.valore || 0), 0);
   const scontoApplicato = Math.max(0, totaleListino - totaleInvestimento);
 
-  // Download Diretto PDF Ufficiale RMS (2 Pagine A4 Perfette via html2pdf)
-  async function downloadContractPdfDirect() {
-    setIsDownloadingPdf(true);
+  // Caricatore robusto motori di rendering PDF (html2canvas & jsPDF)
+  async function getPdfEngines(): Promise<{ html2canvas: any; jsPDF: any }> {
+    if (typeof window === 'undefined') throw new Error('Window not defined');
+    const win = window as any;
+
+    const findEngines = () => {
+      const h2c = win.html2canvas;
+      const jsp = (win.jspdf && win.jspdf.jsPDF) || win.jsPDF;
+      if (h2c && jsp) return { html2canvas: h2c, jsPDF: jsp };
+      return null;
+    };
+
+    const existing = findEngines();
+    if (existing) return existing;
+
+    // 1. Carica bundle locale html2pdf che esporta sia html2canvas che jsPDF
+    await new Promise<void>((resolve) => {
+      if (document.querySelector('script[data-engine="local-pdf"]')) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.setAttribute('data-engine', 'local-pdf');
+      script.src = '/html2pdf.bundle.min.js';
+      script.onload = () => resolve();
+      script.onerror = () => resolve();
+      document.head.appendChild(script);
+    });
+
+    const afterLocal = findEngines();
+    if (afterLocal) return afterLocal;
+
+    // 2. Fallback sicuro da CDN ufficiale cdnjs
+    await Promise.all([
+      new Promise<void>((resolve) => {
+        if (win.html2canvas) return resolve();
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload = () => resolve();
+        s.onerror = () => resolve();
+        document.head.appendChild(s);
+      }),
+      new Promise<void>((resolve) => {
+        if ((win.jspdf && win.jspdf.jsPDF) || win.jsPDF) return resolve();
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        s.onload = () => resolve();
+        s.onerror = () => resolve();
+        document.head.appendChild(s);
+      })
+    ]);
+
+    const finalEngines = findEngines();
+    if (!finalEngines) throw new Error('Motori di rendering PDF non disponibili');
+    return finalEngines;
+  }
+
+  // Generatore Ufficiale Contratto RMS A4 (Esattamente 2 Pagine A4 Perfette)
+  async function generateContractPdfDoc(): Promise<{ pdf: any; base64: string; filename: string }> {
     setIsPdfRendering(true);
-    await new Promise(r => setTimeout(r, 150));
-    setIsDownloadingPdf(true);
+    await new Promise(r => setTimeout(r, 250));
     try {
+      const { html2canvas, jsPDF } = await getPdfEngines();
+      const page1 = document.getElementById('contract-page-1');
+      const page2 = document.getElementById('contract-page-2');
+      if (!page1 || !page2) throw new Error('Pagine del contratto non trovate nel DOM');
+
+      // Cattura Pagina 1
+      const canvas1 = await html2canvas(page1, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      });
+
+      // Cattura Pagina 2
+      const canvas2 = await html2canvas(page2, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      });
+
+      // Crea documento A4 (210 x 297 mm)
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      const img1 = canvas1.toDataURL('image/jpeg', 0.98);
+      pdf.addImage(img1, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+
+      pdf.addPage();
+      const img2 = canvas2.toDataURL('image/jpeg', 0.98);
+      pdf.addImage(img2, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+
       const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
       const num = (contractData.numero || 'Ufficiale').replace(/[/\\?%*:|"<>]/g, '_');
       const filename = `Contratto_RMS_${num}_${sanitizedClient}.pdf`;
 
-      const targetEl = document.getElementById('printable-contract-pdf') || document.getElementById('printable-contract');
-      const h2p = await getHtml2Pdf();
-      if (h2p && targetEl) {
-        const opt = {
-          margin: 0,
-          filename: filename,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            scrollX: 0,
-            scrollY: 0,
-            windowWidth: 794,
-            onclone: (clonedDoc: any) => {
-              const el = clonedDoc.getElementById('printable-contract-pdf') || clonedDoc.getElementById('printable-contract');
-              if (el) {
-                el.style.position = 'static';
-                el.style.left = '0';
-                el.style.top = '0';
-                el.style.zIndex = '999999';
-                el.style.display = 'block';
-                el.style.visibility = 'visible';
-                el.style.opacity = '1';
-              }
-            }
-          },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak: {
-            mode: ['css', 'legacy'],
-            before: '.html2pdf__page-break'
-          }
-        };
-        await h2p().set(opt).from(targetEl).save();
-      } else {
-        handlePrintContract();
-      }
+      const dataUri = pdf.output('datauristring');
+      const base64 = dataUri.split(',')[1] || '';
+
+      return { pdf, base64, filename };
+    } finally {
+      setIsPdfRendering(false);
+    }
+  }
+
+  // Generatore Ufficiale Proposta Commerciale A4 (Esattamente 1 Pagina A4 Perfetta)
+  async function generateProposalPdfDoc(): Promise<{ pdf: any; base64: string; filename: string }> {
+    setIsProposalPdfRendering(true);
+    await new Promise(r => setTimeout(r, 250));
+    try {
+      const { html2canvas, jsPDF } = await getPdfEngines();
+      const page = document.getElementById('printable-proposal-card');
+      if (!page) throw new Error('Elemento scheda proposta non trovato');
+
+      const canvas = await html2canvas(page, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      });
+
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      const img = canvas.toDataURL('image/jpeg', 0.98);
+      pdf.addImage(img, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+
+      const sanitizedClient = (qNome || selectedLeadForProposalEmail?.nome_azienda_evento || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
+      const filename = `Proposta_Commerciale_RT_${sanitizedClient}.pdf`;
+
+      const dataUri = pdf.output('datauristring');
+      const base64 = dataUri.split(',')[1] || '';
+
+      return { pdf, base64, filename };
+    } finally {
+      setIsProposalPdfRendering(false);
+    }
+  }
+
+  // Download Diretto PDF Ufficiale RMS (2 Pagine A4 Perfette)
+  async function downloadContractPdfDirect() {
+    setIsDownloadingPdf(true);
+    try {
+      const { pdf, filename } = await generateContractPdfDoc();
+      pdf.save(filename);
     } catch (e) {
       console.error('Errore download PDF contratto:', e);
       handlePrintContract();
     } finally {
-      setIsPdfRendering(false);
       setIsDownloadingPdf(false);
     }
   }
@@ -895,51 +992,13 @@ export default function LeadEngineDashboard() {
   // Download Diretto PDF Ufficiale Proposta Commerciale A4
   async function downloadProposalPdfDirect() {
     setIsDownloadingPdf(true);
-    setIsProposalPdfRendering(true);
-    await new Promise(r => setTimeout(r, 150));
-    setIsDownloadingPdf(true);
     try {
-      const sanitizedClient = (qNome || selectedLeadForProposalEmail?.nome_azienda_evento || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
-      const filename = `Proposta_Commerciale_RT_${sanitizedClient}.pdf`;
-
-      const targetEl = document.getElementById('printable-proposal-card') || document.getElementById('printable-proposal');
-      const h2p = await getHtml2Pdf();
-      if (h2p && targetEl) {
-        const opt = {
-          margin: 0,
-          filename: filename,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            scrollX: 0,
-            scrollY: 0,
-            windowWidth: 794,
-            onclone: (clonedDoc: any) => {
-              const el = clonedDoc.getElementById('printable-proposal-card') || clonedDoc.getElementById('printable-proposal');
-              if (el) {
-                el.style.position = 'static';
-                el.style.left = '0';
-                el.style.top = '0';
-                el.style.zIndex = '999999';
-                el.style.display = 'block';
-                el.style.visibility = 'visible';
-                el.style.opacity = '1';
-              }
-            }
-          },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        await h2p().set(opt).from(targetEl).save();
-      } else {
-        handlePrintProposal();
-      }
+      const { pdf, filename } = await generateProposalPdfDoc();
+      pdf.save(filename);
     } catch (e) {
       console.error('Errore download PDF proposta:', e);
       handlePrintProposal();
     } finally {
-      setIsProposalPdfRendering(false);
       setIsDownloadingPdf(false);
     }
   }
@@ -1345,70 +1404,22 @@ Tel. 347 6818595 - commerciale@radiotoscana.it`;
     pdfFilename: string,
     emlFilename: string
   ) {
-    if (elementId.includes('contract')) {
-      setIsPdfRendering(true);
-    } else {
-      setIsProposalPdfRendering(true);
-    }
-    await new Promise(r => setTimeout(r, 150));
     try {
       let pdfBase64 = '';
-      // Preferenza assoluta per i contenitori A4 calibrati al millimetro per la stampa PDF
-      let targetEl = document.getElementById(elementId);
-      if (elementId === 'printable-contract' && document.getElementById('printable-contract-pdf')) {
-        targetEl = document.getElementById('printable-contract-pdf');
-      } else if (elementId === 'printable-proposal' && document.getElementById('printable-proposal-card')) {
-        targetEl = document.getElementById('printable-proposal-card');
-      }
+      let finalAttachmentName = pdfFilename;
 
-      if (targetEl) {
-        const h2p = await getHtml2Pdf();
-        if (h2p) {
-          const opt = {
-            margin: 0,
-            filename: pdfFilename,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-              scale: 2,
-              useCORS: true,
-              logging: false,
-              scrollX: 0,
-              scrollY: 0,
-              windowWidth: 794,
-              onclone: (clonedDoc: any) => {
-                const el1 = clonedDoc.getElementById('printable-contract-pdf') || clonedDoc.getElementById('printable-contract');
-                if (el1) {
-                  el1.style.position = 'static';
-                  el1.style.left = '0';
-                  el1.style.top = '0';
-                  el1.style.zIndex = '999999';
-                  el1.style.display = 'block';
-                  el1.style.visibility = 'visible';
-                  el1.style.opacity = '1';
-                }
-                const el2 = clonedDoc.getElementById('printable-proposal-card') || clonedDoc.getElementById('printable-proposal');
-                if (el2) {
-                  el2.style.position = 'static';
-                  el2.style.left = '0';
-                  el2.style.top = '0';
-                  el2.style.zIndex = '999999';
-                  el2.style.display = 'block';
-                  el2.style.visibility = 'visible';
-                  el2.style.opacity = '1';
-                }
-              }
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: {
-              mode: ['css', 'legacy'],
-              before: '.html2pdf__page-break'
-            }
-          };
-          const dataUri = await h2p().set(opt).from(targetEl).outputPdf('datauristring');
-          if (dataUri && dataUri.includes(',')) {
-            pdfBase64 = dataUri.split(',')[1];
-          }
+      try {
+        if (elementId.includes('contract')) {
+          const doc = await generateContractPdfDoc();
+          pdfBase64 = doc.base64;
+          finalAttachmentName = doc.filename;
+        } else {
+          const doc = await generateProposalPdfDoc();
+          pdfBase64 = doc.base64;
+          finalAttachmentName = doc.filename;
         }
+      } catch (docErr) {
+        console.error('Errore generazione documento PDF:', docErr);
       }
 
       if (!pdfBase64) {
@@ -1452,7 +1463,7 @@ Tel. 347 6818595 - commerciale@radiotoscana.it`;
         `--${boundaryMixed}`,
         `Content-Type: application/pdf; name="${pdfFilename}"`,
         'Content-Transfer-Encoding: base64',
-        `Content-Disposition: attachment; filename="${pdfFilename}"`,
+        `Content-Disposition: attachment; filename="${finalAttachmentName || pdfFilename}"`,
         '',
         formattedBase64,
         '',
@@ -4608,28 +4619,41 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
             {/* SCHEDA PROPOSTA RENDERING DEDICATO ALLA GENERAZIONE PDF */}
             {(isProposalPdfRendering || isGeneratingEml) && (
               <div
-                id="printable-proposal-card"
                 style={{
                   position: 'fixed',
-                  left: '50%',
-                  top: '20px',
-                  transform: 'translateX(-50%)',
+                  inset: 0,
                   zIndex: 999999,
-                  width: '210mm',
-                  height: '296mm',
-                  maxHeight: '296mm',
-                  background: '#ffffff',
-                  color: '#111111',
-                  padding: '14mm 16mm',
-                  fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                  boxSizing: 'border-box',
+                  background: 'rgba(11, 15, 25, 0.95)',
+                  backdropFilter: 'blur(8px)',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  overflow: 'hidden',
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.6)'
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  overflowY: 'auto',
+                  padding: '40px 0'
                 }}
               >
+                <div style={{ color: '#38bdf8', fontSize: '15px', fontWeight: 800, marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span>⏳</span> Generazione documento PDF Proposta Commerciale A4 in corso...
+                </div>
+                <div
+                  id="printable-proposal-card"
+                  style={{
+                    width: '210mm',
+                    height: '296mm',
+                    maxHeight: '296mm',
+                    background: '#ffffff',
+                    color: '#111111',
+                    padding: '14mm 16mm',
+                    fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                    boxSizing: 'border-box',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    overflow: 'hidden',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.6)'
+                  }}
+                >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #1e293b', paddingBottom: '12px', marginBottom: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '42px', width: 'auto' }} />
@@ -4697,6 +4721,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                 <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>CONDIZIONI GENERALI DI EMISSIONE:</div>
                 <div>Offerta valida 30 giorni dalla data di emissione. La programmazione è subordinata alla ricezione della proposta siglata per accettazione e alla disponibilità dei palinsesti Radio Toscana.</div>
               </div>
+            </div>
             </div>
           )}
           </div>
@@ -5189,6 +5214,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
           >
         {/* --- PAGINA 1: MODULO COMMISSIONE UFFICIALE (ESATTAMENTE 1 PAGINA A4) --- */}
         <div
+          id="contract-page-1"
           style={{
             width: '210mm',
             height: '296mm',
@@ -5199,9 +5225,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            overflow: 'hidden',
-            pageBreakAfter: 'always',
-            breakAfter: 'page'
+            overflow: 'hidden'
           }}
         >
           <div>
@@ -5406,11 +5430,9 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
           </div>
         </div>
 
-        {/* --- INTERRUZIONE DI PAGINA FISICA PERFETTA HTML2PDF --- */}
-        <div className="html2pdf__page-break" style={{ pageBreakBefore: 'always', breakBefore: 'page' }}></div>
-
         {/* --- PAGINA 2: CONDIZIONI GENERALI DI COMMISSIONE (RETRO LEGALE INTEGRALE) --- */}
         <div
+          id="contract-page-2"
           style={{
             width: '210mm',
             height: '296mm',
@@ -5421,9 +5443,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            overflow: 'hidden',
-            pageBreakAfter: 'avoid',
-            breakAfter: 'avoid'
+            overflow: 'hidden'
           }}
         >
           <div>
