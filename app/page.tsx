@@ -3828,6 +3828,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   Modello Ufficiale
                 </span>
               </div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button
                   className="btn btn-primary btn-xs"
                   onClick={downloadContractPdfDirect}
