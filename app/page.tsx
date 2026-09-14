@@ -1161,6 +1161,50 @@ Cell: 347 6818595 • Email: commerciale@radiotoscana.it`;
     setShowContractEmailModal(true);
   }
 
+  // Funzioni Helper per apertura e generazione bozza Outlook sul PC
+  function openOutlookDesktop(to: string, cc: string, subject: string, body: string) {
+    const mailtoUrl = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const a = document.createElement('a');
+    a.href = mailtoUrl;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      try {
+        document.body.removeChild(a);
+      } catch (e) {}
+    }, 1000);
+  }
+
+  function downloadOutlookDraftEml(to: string, cc: string, subject: string, body: string, filename: string) {
+    const cleanFilename = (filename || 'bozza_email').replace(/[^a-zA-Z0-9_\-]/g, '_');
+    const emlContent = [
+      `To: ${to}`,
+      `Cc: ${cc}`,
+      `Subject: ${subject}`,
+      'X-Unsent: 1',
+      'MIME-Version: 1.0',
+      'Content-Type: text/plain; charset=utf-8',
+      'Content-Transfer-Encoding: 8bit',
+      '',
+      body
+    ].join('\r\n');
+
+    const blob = new Blob([emlContent], { type: 'message/rfc822' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${cleanFilename}.eml`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      try {
+        document.body.removeChild(a);
+      } catch (e) {}
+      URL.revokeObjectURL(url);
+    }, 1000);
+  }
+
   // Apertura Modale Invio Email Proposta Commerciale
   function openProposalEmailModal(lead: LeadRow) {
     setSelectedLeadForProposalEmail(lead);
@@ -4008,17 +4052,56 @@ Radio Toscana
 🌐 www.radiotoscana.it`}
               />
             </div>
-            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button className="btn" onClick={() => setShowEmailModal(false)}>Annulla</button>
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  alert(`Email di Programmazione On-Air inviata con successo a ${selectedLeadForEmail.nome_azienda_evento}!`);
-                  setShowEmailModal(false);
-                }}
-              >
-                🚀 Invia Email Ora
-              </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
+                  onClick={() => {
+                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\n📌 RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:\n• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || 'In definizione'}\n• Area Target: ${selectedLeadForEmail.area_target || 'Toscana'}\n• Totale Spot Pianificati: ${selectedLeadForEmail.plafond_totale_spot || 'Secondo accordi'}\n• Stato Programmazione: ${selectedLeadForEmail.stato_programmazione || 'Iniziata'}\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale & Programmazione\nRadio Toscana\n📧 commerciale@radiotoscana.it\n🌐 www.radiotoscana.it`;
+                    navigator.clipboard.writeText(body);
+                    alert('📋 Testo email copiato negli appunti!');
+                  }}
+                >
+                  📋 Copia Testo
+                </button>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#e2e8f0', fontWeight: 600 }}
+                  onClick={() => {
+                    const subj = `Radio Toscana — Programmazione Messa in Onda Campagna "${selectedLeadForEmail.nome_azienda_evento}"${selectedLeadForEmail.numero_contratto ? ` (Contratto Nr. ${selectedLeadForEmail.numero_contratto})` : ''}`;
+                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\n📌 RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:\n• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || 'In definizione'}\n• Area Target: ${selectedLeadForEmail.area_target || 'Toscana'}\n• Totale Spot Pianificati: ${selectedLeadForEmail.plafond_totale_spot || 'Secondo accordi'}\n• Stato Programmazione: ${selectedLeadForEmail.stato_programmazione || 'Iniziata'}\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale & Programmazione\nRadio Toscana\n📧 commerciale@radiotoscana.it\n🌐 www.radiotoscana.it`;
+                    downloadOutlookDraftEml(selectedLeadForEmail.email || 'commerciale@radiotoscana.it', 'amministrazione@radiotoscana.it', subj, body, `Programmazione_RT_${selectedLeadForEmail.nome_azienda_evento || 'Cliente'}`);
+                  }}
+                  title="Scarica il file .eml: al doppio clic apre l'app Outlook Desktop sul PC con la bozza pronta!"
+                >
+                  📥 Bozza Outlook (.eml)
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'linear-gradient(135deg, rgba(0, 120, 212, 0.3), rgba(0, 90, 180, 0.4))', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.7)', fontWeight: 800 }}
+                  onClick={() => {
+                    const subj = `Radio Toscana — Programmazione Messa in Onda Campagna "${selectedLeadForEmail.nome_azienda_evento}"${selectedLeadForEmail.numero_contratto ? ` (Contratto Nr. ${selectedLeadForEmail.numero_contratto})` : ''}`;
+                    const body = `Gentile ${selectedLeadForEmail.nome_azienda_evento},\n\ndesideriamo confermarLe che la Sua campagna pubblicitaria è stata regolarmente pianificata ed è pronta per la messa in onda sulle nostre frequenze.\n\n📌 RIEPILOGO DELLA PROGRAMMAZIONE ON-AIR:\n• Contratto di Riferimento: Nr. ${selectedLeadForEmail.numero_contratto || 'In definizione'}\n• Area Target: ${selectedLeadForEmail.area_target || 'Toscana'}\n• Totale Spot Pianificati: ${selectedLeadForEmail.plafond_totale_spot || 'Secondo accordi'}\n• Stato Programmazione: ${selectedLeadForEmail.stato_programmazione || 'Iniziata'}\n\nIn allegato a questa email trova il prospetto ufficiale della Programmazione On-Air con la scansione esatta di tutti gli orari di trasmissione giornalieri.\n\nRestiamo a Sua completa disposizione per qualsiasi esigenza.\n\nCordiali saluti,\n\nDirezione Commerciale & Programmazione\nRadio Toscana\n📧 commerciale@radiotoscana.it\n🌐 www.radiotoscana.it`;
+                    openOutlookDesktop(selectedLeadForEmail.email || 'commerciale@radiotoscana.it', 'amministrazione@radiotoscana.it', subj, body);
+                  }}
+                  title="Apre l'app Outlook sul tuo PC con A:, CC: e testo già pronti"
+                >
+                  💻 Apri in Outlook Desktop (PC)
+                </button>
+                <button
+                  className="btn btn-primary btn-xs"
+                  onClick={() => {
+                    alert(`Email di Programmazione On-Air per "${selectedLeadForEmail.nome_azienda_evento}" registrata come inviata!`);
+                    setShowEmailModal(false);
+                  }}
+                >
+                  ✅ Segna come Inviata
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -4094,31 +4177,64 @@ Radio Toscana
             )}
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '8px' }}>
-              <button
-                className="btn btn-xs"
-                style={{ background: 'rgba(255,255,255,0.08)' }}
-                onClick={() => {
-                  navigator.clipboard.writeText(proposalEmailBody);
-                  alert('📋 Testo email copiato negli appunti!');
-                }}
-              >
-                📋 Copia Testo Email
-              </button>
-
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 <button
                   className="btn btn-xs"
-                  style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700 }}
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
                   onClick={() => {
-                    const mailtoUrl = `mailto:${encodeURIComponent(proposalEmailRecipient)}?cc=${encodeURIComponent(proposalEmailCc)}&subject=${encodeURIComponent(proposalEmailSubject)}&body=${encodeURIComponent(proposalEmailBody)}`;
-                    window.open(mailtoUrl, '_blank');
+                    navigator.clipboard.writeText(proposalEmailBody);
+                    alert('📋 Testo email copiato negli appunti!');
+                  }}
+                >
+                  📋 Copia Testo
+                </button>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#e2e8f0', fontWeight: 600 }}
+                  onClick={() => {
+                    downloadOutlookDraftEml(
+                      proposalEmailRecipient,
+                      proposalEmailCc,
+                      proposalEmailSubject,
+                      proposalEmailBody,
+                      `Proposta_RT_${selectedLeadForProposalEmail.nome_azienda_evento || 'Cliente'}`
+                    );
+                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
+                    setProposalEmailSentNotification(true);
+                  }}
+                  title="Scarica il file .eml ufficiale: al doppio clic apre direttamente l'app Outlook Desktop sul tuo PC con la bozza pronta e modificabile!"
+                >
+                  📥 Bozza Outlook (.eml)
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'linear-gradient(135deg, rgba(0, 120, 212, 0.3), rgba(0, 90, 180, 0.4))', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.7)', fontWeight: 800 }}
+                  onClick={() => {
+                    openOutlookDesktop(proposalEmailRecipient, proposalEmailCc, proposalEmailSubject, proposalEmailBody);
                     // Aggiorna email e data invio sul lead
                     updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
                     setProposalEmailSentNotification(true);
                   }}
-                  title="Apre la bozza già pronta con A: e CC: amministrazione nel tuo client email di default (Outlook, Thunderbird, ecc.)"
+                  title="Apre direttamente l'applicazione Microsoft Outlook installata sul tuo PC con A:, CC: e preventivo già compilati"
                 >
-                  📧 Apri nel Client Email (Outlook con CC)
+                  💻 Apri in Outlook Desktop (PC)
+                </button>
+
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(14, 165, 233, 0.12)', color: '#38bdf8', border: '1px solid rgba(14, 165, 233, 0.3)', fontWeight: 600 }}
+                  onClick={() => {
+                    const outlookWebUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(proposalEmailRecipient)}&cc=${encodeURIComponent(proposalEmailCc)}&subject=${encodeURIComponent(proposalEmailSubject)}&body=${encodeURIComponent(proposalEmailBody)}`;
+                    window.open(outlookWebUrl, '_blank');
+                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
+                    setProposalEmailSentNotification(true);
+                  }}
+                  title="Apre la bozza pronta su Outlook Web (Microsoft 365)"
+                >
+                  🌐 Outlook Web (365)
                 </button>
 
                 <button
@@ -4133,7 +4249,7 @@ Radio Toscana
                     }, 800);
                   }}
                 >
-                  ✅ Segna come Inviata al Cliente
+                  ✅ Segna come Inviata
                 </button>
               </div>
             </div>
@@ -4244,38 +4360,63 @@ Radio Toscana
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '8px' }}>
-              <button
-                className="btn btn-xs"
-                style={{ background: 'rgba(255,255,255,0.08)' }}
-                onClick={() => {
-                  navigator.clipboard.writeText(contractEmailBody);
-                  alert('📋 Testo email di trasmissione copiato negli appunti!');
-                }}
-              >
-                📋 Copia Testo Email
-              </button>
-
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 <button
                   className="btn btn-xs"
-                  style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700 }}
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
                   onClick={() => {
-                    handlePrintContract();
-                    const mailtoUrl = `mailto:${encodeURIComponent(contractEmailRecipient)}?cc=${encodeURIComponent(contractEmailCc)}&subject=${encodeURIComponent(contractEmailSubject)}&body=${encodeURIComponent(contractEmailBody)}`;
-                    window.open(mailtoUrl, '_blank');
-                    confirmAndActivateContract();
-                    setShowContractEmailModal(false);
+                    navigator.clipboard.writeText(contractEmailBody);
+                    alert('📋 Testo email di trasmissione copiato negli appunti!');
                   }}
-                  title="Scarica il PDF e apre la bozza con A e CC amministrazione su Outlook"
                 >
-                  📥 Scarica PDF &amp; Apri Outlook (CC Amministrazione)
+                  📋 Copia Testo
+                </button>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#e2e8f0', fontWeight: 600 }}
+                  onClick={() => {
+                    downloadOutlookDraftEml(
+                      contractEmailRecipient,
+                      contractEmailCc,
+                      contractEmailSubject,
+                      contractEmailBody,
+                      `Contratto_RT_${contractData.numero || 'Ufficiale'}_${contractData.committente || 'Cliente'}`
+                    );
+                  }}
+                  title="Scarica il file .eml ufficiale: al doppio clic apre direttamente l'app Outlook Desktop sul tuo PC con la bozza pronta da trasmettere!"
+                >
+                  📥 Bozza Outlook (.eml)
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'linear-gradient(135deg, rgba(0, 120, 212, 0.3), rgba(0, 90, 180, 0.4))', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.7)', fontWeight: 800 }}
+                  onClick={() => {
+                    openOutlookDesktop(contractEmailRecipient, contractEmailCc, contractEmailSubject, contractEmailBody);
+                  }}
+                  title="Apre l'app Outlook sul tuo computer Windows con A:, CC: e testo della trasmissione pronti"
+                >
+                  💻 Apri in Outlook Desktop (PC)
+                </button>
+
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(14, 165, 233, 0.12)', color: '#38bdf8', border: '1px solid rgba(14, 165, 233, 0.3)', fontWeight: 600 }}
+                  onClick={() => {
+                    const outlookWebUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(contractEmailRecipient)}&cc=${encodeURIComponent(contractEmailCc)}&subject=${encodeURIComponent(contractEmailSubject)}&body=${encodeURIComponent(contractEmailBody)}`;
+                    window.open(outlookWebUrl, '_blank');
+                  }}
+                  title="Apre la bozza pronta su Outlook Web (Microsoft 365)"
+                >
+                  🌐 Outlook Web (365)
                 </button>
 
                 <button
                   className="btn btn-primary btn-xs"
                   style={{ background: '#16a34a', borderColor: '#22c55e', color: '#fff', fontWeight: 800 }}
                   onClick={() => {
-                    handlePrintContract();
                     confirmAndActivateContract();
                     setShowContractEmailModal(false);
                     alert(`🎉 Contratto ${contractData.numero} per "${contractData.committente}" registrato come trasmesso con CC ad amministrazione@radiotoscana.it e spostato in CONTRATTI ATTIVI!`);
