@@ -338,6 +338,18 @@ export default function LeadEngineDashboard() {
   // Stato Modifica Preventivo Esistente (Edit in Place)
   const [editingLeadId, setEditingLeadId] = useState<string | number | null>(null);
 
+  // Stato Modifica Anagrafica & Recapiti Diretti (Referente, Email, Telefono, P.IVA, SDI, Comune)
+  const [showEditContactModal, setShowEditContactModal] = useState(false);
+  const [selectedLeadForContactEdit, setSelectedLeadForContactEdit] = useState<LeadRow | null>(null);
+  const [cNomeAzienda, setCNomeAzienda] = useState('');
+  const [cReferente, setCReferente] = useState('');
+  const [cEmail, setCEmail] = useState('');
+  const [cTelefono, setCTelefono] = useState('');
+  const [cComune, setCComune] = useState('');
+  const [cProvincia, setCProvincia] = useState('');
+  const [cPiva, setCPiva] = useState('');
+  const [cSdi, setCSdi] = useState('');
+
   // Remind Modal a 3 Step (Lavoro Ufficio 18:30)
   const [showRemindModal, setShowRemindModal] = useState(false);
   const [selectedQuoteForRemind, setSelectedQuoteForRemind] = useState<LeadRow | null>(null);
@@ -954,6 +966,66 @@ export default function LeadEngineDashboard() {
     alert(`✅ Preventivo per "${clientName}" (€ ${totaleInvestimento.toLocaleString('it-IT')}) salvato con successo in "PREVENTIVI IN TRATTATIVA"!`);
   }
 
+  // Apertura Modale Modifica Rapida Anagrafica e Recapiti
+  function openEditContactModal(lead: LeadRow) {
+    setSelectedLeadForContactEdit(lead);
+    setCNomeAzienda(lead.nome_azienda_evento || '');
+    setCReferente(lead.referente || '');
+    setCEmail(lead.email || '');
+    setCTelefono(lead.telefono || '');
+    setCComune(lead.comune || '');
+    setCProvincia(lead.provincia || '');
+    setCPiva(lead.piva || '');
+    setCSdi(lead.sdi || '');
+    setShowEditContactModal(true);
+  }
+
+  // Salvataggio Rapido Recapiti e Referente in-place (Persistenza Supabase + LocalStorage)
+  function handleSaveContact() {
+    if (!selectedLeadForContactEdit) return;
+    const leadId = selectedLeadForContactEdit.id;
+    const updatedName = cNomeAzienda.trim() || selectedLeadForContactEdit.nome_azienda_evento;
+    const updatedRef = cReferente.trim();
+    const updatedEmail = cEmail.trim();
+    const updatedTel = cTelefono.trim();
+    const updatedComune = cComune.trim();
+    const updatedProv = cProvincia.trim();
+    const updatedPiva = cPiva.trim();
+    const updatedSdi = cSdi.trim();
+
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === leadId) {
+        return {
+          ...l,
+          nome_azienda_evento: updatedName,
+          referente: updatedRef,
+          email: updatedEmail,
+          telefono: updatedTel,
+          comune: updatedComune,
+          provincia: updatedProv,
+          piva: updatedPiva,
+          sdi: updatedSdi
+        };
+      }
+      return l;
+    }));
+
+    // Se è attualmente caricato anche nel preventivatore, sincronizza
+    if (editingLeadId === leadId) {
+      setQNome(updatedName);
+      setQReferente(updatedRef);
+      setQEmail(updatedEmail);
+      setQTelefono(updatedTel);
+      setQComune(updatedComune);
+      setQProvincia(updatedProv);
+      setQPiva(updatedPiva);
+      setQSdi(updatedSdi);
+    }
+
+    setShowEditContactModal(false);
+    alert(`✅ Recapiti e referente aggiornati per "${updatedName}"!`);
+  }
+
   // Funzione Modifica Preventivo Esistente (Edit in Place con Autocompilazione Totale)
   function openEditQuoteModal(lead: LeadRow) {
     setEditingLeadId(lead.id || null);
@@ -1290,7 +1362,7 @@ Grazie e buon lavoro!`;
       id: editingLeadId || `contract-${Date.now()}`,
       nome_azienda_evento: clientName,
       referente: contractData.referente,
-      email: contractData.email || qEmail,
+      email: (typeof contractEmailRecipient !== 'undefined' && contractEmailRecipient.trim()) || contractData.email || qEmail,
       telefono: contractData.telefono || qTelefono,
       comune: qComune,
       provincia: qProvincia,
@@ -1602,15 +1674,32 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             </div>
                           )}
 
-                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
-                            📍 {l.comune} ({l.provincia})
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px' }}>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                              📍 {l.comune} ({l.provincia})
+                            </div>
+                            <button 
+                              className="btn btn-xs"
+                              style={{ background: 'rgba(56, 189, 248, 0.12)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontSize: '10px', padding: '2px 7px', fontWeight: 700 }}
+                              onClick={(e) => { e.stopPropagation(); openEditContactModal(l); }}
+                              title="Modifica referente, email, telefono e dati anagrafici"
+                            >
+                              ✏️ Recapiti
+                            </button>
                           </div>
 
-                          {l.referente && (
-                            <div style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '4px' }}>
-                              👤 <strong>{l.referente}</strong> {l.telefono ? `• 📞 ${l.telefono}` : ''}
+                          <div 
+                            style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '4px', cursor: 'pointer', background: 'rgba(255,255,255,0.03)', padding: '5px 8px', borderRadius: '5px', border: '1px solid rgba(255,255,255,0.06)' }}
+                            onClick={() => openEditContactModal(l)}
+                            title="Clicca per modificare referente e recapiti"
+                          >
+                            <div>👤 <strong>{l.referente || <span style={{ color: '#eab308' }}>Nessun referente (clicca per aggiungere)</span>}</strong></div>
+                            <div style={{ color: '#94a3b8', fontSize: '10.5px', marginTop: '2px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                              <span>📞 {l.telefono || <span style={{ color: '#64748b' }}>N/D</span>}</span>
+                              <span>•</span>
+                              <span>✉️ {l.email || <span style={{ color: '#64748b' }}>N/D</span>}</span>
                             </div>
-                          )}
+                          </div>
 
                           {l.plafond_totale_spot && l.plafond_totale_spot > 0 ? (
                             <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '3px' }}>
@@ -1636,6 +1725,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           {/* BARRA AZIONI OPERATIVE RAPIDE KANBAN */}
                           {col.phase === 'PREVENTIVO INVIATO' && (
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)', fontWeight: 800 }}
+                                onClick={() => openEditContactModal(l)}
+                                title="Modifica recapiti diretti, referente, email e telefono"
+                              >
+                                👤 Recapiti
+                              </button>
                               <button
                                 className="btn btn-xs"
                                 style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontWeight: 700 }}
@@ -1709,6 +1806,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
                               <button
                                 className="btn btn-xs"
+                                style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)', fontWeight: 800 }}
+                                onClick={() => openEditContactModal(l)}
+                                title="Modifica recapiti diretti, referente, email e telefono"
+                              >
+                                👤 Recapiti
+                              </button>
+                              <button
+                                className="btn btn-xs"
                                 style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
                                 onClick={() => openContractForLead(l)}
                               >
@@ -1744,13 +1849,21 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           )}
 
                           {col.phase !== 'PREVENTIVO INVIATO' && col.phase !== 'CONTRATTO ATTIVO' && (
-                            <div style={{ marginTop: '8px' }}>
+                            <div style={{ marginTop: '8px', display: 'flex', gap: '5px' }}>
                               <button
                                 className="btn btn-xs btn-primary"
-                                style={{ width: '100%' }}
+                                style={{ flex: 1 }}
                                 onClick={() => openEditQuoteModal(l)}
                               >
-                                💼 Crea / Modifica Preventivo
+                                💼 Preventivo
+                              </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)', fontWeight: 800 }}
+                                onClick={() => openEditContactModal(l)}
+                                title="Modifica recapiti diretti, referente, email e telefono"
+                              >
+                                👤 Recapiti
                               </button>
                             </div>
                           )}
@@ -2240,20 +2353,76 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="form-group">
               <div>
-                <label className="form-label">Referente Commerciale Cliente</label>
-                <input type="text" className="form-input" value={qReferente} onChange={e => setQReferente(e.target.value)} />
+                <label className="form-label">👤 Referente Commerciale Cliente</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={qReferente} 
+                  onChange={e => setQReferente(e.target.value)} 
+                  placeholder="es. Donatella Santini"
+                />
               </div>
               <div>
-                <label className="form-label">Comune &amp; Provincia</label>
-                <input type="text" className="form-input" value={qComune ? `${qComune} (${qProvincia})` : ''} onChange={e => setQComune(e.target.value)} />
+                <label className="form-label">✉️ Email Diretta Cliente (per Invio Proposte)</label>
+                <input 
+                  type="email" 
+                  className="form-input" 
+                  value={qEmail} 
+                  onChange={e => setQEmail(e.target.value)} 
+                  placeholder="es. santini@fivagcisl.it"
+                />
               </div>
               <div>
-                <label className="form-label">Partita IVA / SDI</label>
-                <input type="text" className="form-input" value={qPiva ? `${qPiva} / ${qSdi}` : ''} onChange={e => setQPiva(e.target.value)} />
+                <label className="form-label">📞 Telefono / Cellulare</label>
+                <input 
+                  type="tel" 
+                  className="form-input" 
+                  value={qTelefono} 
+                  onChange={e => setQTelefono(e.target.value)} 
+                  placeholder="es. 335 1234567 o 055 285030"
+                />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '8px' }}>
+                <div>
+                  <label className="form-label">📍 Comune</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={qComune} 
+                    onChange={e => setQComune(e.target.value)} 
+                    placeholder="es. Firenze"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Provincia</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={qProvincia} 
+                    onChange={e => setQProvincia(e.target.value)} 
+                    placeholder="es. FI"
+                  />
+                </div>
               </div>
               <div>
-                <label className="form-label">Recapiti Diretti (Tel / Email)</label>
-                <input type="text" className="form-input" value={`${qTelefono} | ${qEmail}`} onChange={e => setQTelefono(e.target.value)} />
+                <label className="form-label">Partita IVA / Codice Fiscale</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={qPiva} 
+                  onChange={e => setQPiva(e.target.value)} 
+                  placeholder="es. 04472740481 o CF 94233520488"
+                />
+              </div>
+              <div>
+                <label className="form-label">Codice Destinatario SDI / PEC</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={qSdi} 
+                  onChange={e => setQSdi(e.target.value)} 
+                  placeholder="es. 0RBL7JD o pec@..."
+                />
               </div>
             </div>
 
@@ -3943,8 +4112,8 @@ Radio Toscana
                   onClick={() => {
                     const mailtoUrl = `mailto:${encodeURIComponent(proposalEmailRecipient)}?cc=${encodeURIComponent(proposalEmailCc)}&subject=${encodeURIComponent(proposalEmailSubject)}&body=${encodeURIComponent(proposalEmailBody)}`;
                     window.open(mailtoUrl, '_blank');
-                    // Aggiorna data invio
-                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
+                    // Aggiorna email e data invio sul lead
+                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
                     setProposalEmailSentNotification(true);
                   }}
                   title="Apre la bozza già pronta con A: e CC: amministrazione nel tuo client email di default (Outlook, Thunderbird, ecc.)"
@@ -3955,8 +4124,8 @@ Radio Toscana
                 <button
                   className="btn btn-primary btn-xs"
                   onClick={() => {
-                    // Salva timestamp invio sul lead
-                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
+                    // Salva email e timestamp invio sul lead
+                    updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
                     setProposalEmailSentNotification(true);
                     setTimeout(() => {
                       setShowProposalEmailModal(false);
@@ -4271,6 +4440,133 @@ Radio Toscana
                   ✅ Segna come Inviata
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE MODIFICA RAPIDA ANAGRAFICA E RECAPITI DIRETTI */}
+      {showEditContactModal && selectedLeadForContactEdit && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '620px' }}>
+            <div className="modal-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '30px', width: 'auto', objectFit: 'contain' }} />
+                <div>
+                  <h3 className="modal-title" style={{ margin: 0 }}>👤 Modifica Recapiti &amp; Referente</h3>
+                  <div style={{ fontSize: '11px', color: '#94a3b8' }}>Aggiorna email, telefono e dati anagrafici del committente</div>
+                </div>
+              </div>
+              <button className="modal-close" onClick={() => setShowEditContactModal(false)}>✕</button>
+            </div>
+
+            <div style={{ background: 'rgba(56, 189, 248, 0.08)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(56, 189, 248, 0.25)', marginBottom: '14px', fontSize: '12px' }}>
+              Committente / Pratica: <strong style={{ color: '#fff' }}>{selectedLeadForContactEdit.nome_azienda_evento}</strong>
+              {selectedLeadForContactEdit.fase_commerciale && (
+                <span style={{ marginLeft: '8px', fontSize: '10px', background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                  {selectedLeadForContactEdit.fase_commerciale}
+                </span>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Nome Azienda / Ragione Sociale</label>
+              <input 
+                type="text" 
+                className="form-input" 
+                value={cNomeAzienda} 
+                onChange={e => setCNomeAzienda(e.target.value)} 
+                placeholder="es. FIVAG CISL FIRENZE"
+              />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="form-group">
+              <div>
+                <label className="form-label">👤 Referente Commerciale</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={cReferente} 
+                  onChange={e => setCReferente(e.target.value)} 
+                  placeholder="es. Donatella Santini"
+                />
+              </div>
+              <div>
+                <label className="form-label">📞 Telefono / Cellulare Diretto</label>
+                <input 
+                  type="tel" 
+                  className="form-input" 
+                  value={cTelefono} 
+                  onChange={e => setCTelefono(e.target.value)} 
+                  placeholder="es. 335 1234567 o 055 285030"
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">✉️ Email Diretta (per Invio Proposte &amp; Contratti)</label>
+              <input 
+                type="email" 
+                className="form-input" 
+                value={cEmail} 
+                onChange={e => setCEmail(e.target.value)} 
+                placeholder="es. santini@fivagcisl.it o nome@azienda.it"
+              />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '12px' }} className="form-group">
+              <div>
+                <label className="form-label">📍 Comune</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={cComune} 
+                  onChange={e => setCComune(e.target.value)} 
+                  placeholder="es. Firenze"
+                />
+              </div>
+              <div>
+                <label className="form-label">Provincia</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={cProvincia} 
+                  onChange={e => setCProvincia(e.target.value)} 
+                  placeholder="es. FI"
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '12px' }} className="form-group">
+              <div>
+                <label className="form-label">Partita IVA / Codice Fiscale</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={cPiva} 
+                  onChange={e => setCPiva(e.target.value)} 
+                  placeholder="es. 04472740481 o CF"
+                />
+              </div>
+              <div>
+                <label className="form-label">Codice Destinatario SDI / PEC</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={cSdi} 
+                  onChange={e => setCSdi(e.target.value)} 
+                  placeholder="es. 0RBL7JD o pec@pec.it"
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '18px', paddingTop: '12px', borderTop: '1px solid var(--panel-border)' }}>
+              <button className="btn btn-xs" style={{ background: 'rgba(255,255,255,0.08)' }} onClick={() => setShowEditContactModal(false)}>
+                Annulla
+              </button>
+              <button className="btn btn-primary btn-xs" style={{ background: '#10b981', borderColor: '#059669', fontWeight: 800, padding: '8px 18px' }} onClick={handleSaveContact}>
+                💾 Salva Recapiti &amp; Referente
+              </button>
             </div>
           </div>
         </div>
