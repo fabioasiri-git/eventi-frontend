@@ -721,6 +721,10 @@ export default function LeadEngineDashboard() {
     mezzo: 'Radio Toscana',
     formato: '20"',
     quantitaSpot: 0,
+    spotPaganti: 0,
+    spotOmaggio: 0,
+    spotTotali: 0,
+    items: [] as QuoteItem[],
     area: 'RT Rete (Tutta la Toscana)',
     prezzoSpazi: 0,
     prezzoProduzione: 0,
@@ -1085,6 +1089,10 @@ export default function LeadEngineDashboard() {
     const prodPrice = items.filter(i => !i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
     const totalVal = lead.valore_preventivo || items.reduce((s, i) => s + (i.valore || 0), 0);
 
+    const totalPaganti = items.filter(i => i.isSpot).reduce((s, i) => s + (i.spotTotali || 0), 0) || mainSpot?.spotTotali || lead.plafond_totale_spot || 0;
+    const totalOmaggi = items.reduce((s, i) => s + (i.spotOmaggio || 0), 0);
+    const totalPassaggi = totalPaganti + totalOmaggi;
+
     const mezzoVal = (mainSpot?.copertura || lead.area_target || '').includes('Firenze') && !(mainSpot?.copertura || lead.area_target || '').includes('Toscana')
       ? 'Radio Firenze 88.7'
       : ((mainSpot?.copertura || lead.area_target || '').includes('Combinata') ? 'Radio Toscana + Radio Firenze' : 'Radio Toscana');
@@ -1104,14 +1112,18 @@ export default function LeadEngineDashboard() {
       email: lead.email || '',
       mezzo: mezzoVal,
       formato: `${mainSpot?.formatoSecondi || 20}"`,
-      quantitaSpot: mainSpot?.spotTotali || lead.plafond_totale_spot || 0,
+      quantitaSpot: totalPaganti,
+      spotPaganti: totalPaganti,
+      spotOmaggio: totalOmaggi,
+      spotTotali: totalPassaggi,
+      items: items,
       area: mainSpot?.copertura || lead.area_target || 'RT Rete (Tutta la Toscana)',
       prezzoSpazi: spacesPrice,
       prezzoProduzione: prodPrice,
       totaleNetto: totalVal,
       totaleBarter: lead.tipo_accordo === 'STANDARD' ? 0 : Math.round(totalVal / 2),
       modalitaPagamento: lead.tipo_accordo === 'BARTER_PURO' ? '100% Cambio Merce / Barter' : 'Bonifico bancario 30gg d.f. f.m.',
-      noteContratto: `Formula Accordo: ${lead.tipo_accordo || 'STANDARD'}. ${summaryItems}`,
+      noteContratto: `Formula Accordo: ${lead.tipo_accordo || 'STANDARD'}.${totalOmaggi > 0 ? ` Include n. ${totalOmaggi} spot OMAGGIO.` : ''} ${summaryItems}`,
       bancaAppoggio: '',
       iban: ''
     });
@@ -1587,6 +1599,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
     const spacesPrice = quoteItems.filter(i => i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
     const prodPrice = quoteItems.filter(i => !i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
 
+    const totalPaganti = quoteItems.filter(i => i.isSpot).reduce((s, i) => s + (i.spotTotali || 0), 0) || mainSpot?.spotTotali || 0;
+    const totalOmaggi = quoteItems.reduce((s, i) => s + (i.spotOmaggio || 0), 0);
+    const totalPassaggi = totalPaganti + totalOmaggi;
+
     const mezzoVal = mainSpot?.copertura?.includes('Firenze') && !mainSpot?.copertura?.includes('Toscana')
       ? 'Radio Firenze 88.7'
       : (mainSpot?.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : 'Radio Toscana');
@@ -1606,14 +1622,18 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
       email: qEmail || '',
       mezzo: mezzoVal,
       formato: `${mainSpot?.formatoSecondi || 20}"`,
-      quantitaSpot: mainSpot?.spotTotali || 0,
+      quantitaSpot: totalPaganti,
+      spotPaganti: totalPaganti,
+      spotOmaggio: totalOmaggi,
+      spotTotali: totalPassaggi,
+      items: quoteItems,
       area: mainSpot?.copertura || 'RT Rete (Tutta la Toscana)',
       prezzoSpazi: spacesPrice,
       prezzoProduzione: prodPrice,
       totaleNetto: totaleInvestimento,
       totaleBarter: tipoAccordo === 'STANDARD' ? 0 : Math.round(totaleInvestimento / 2),
       modalitaPagamento: tipoAccordo === 'BARTER_PURO' ? '100% Cambio Merce / Barter' : 'Bonifico bancario 30gg d.f. f.m.',
-      noteContratto: `Formula Accordo: ${tipoAccordo}. ${summaryItems}`,
+      noteContratto: `Formula Accordo: ${tipoAccordo}.${totalOmaggi > 0 ? ` Include n. ${totalOmaggi} spot OMAGGIO.` : ''} ${summaryItems}`,
       bancaAppoggio: '',
       iban: ''
     });
@@ -3810,24 +3830,71 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         <tr style={{ background: '#1e293b', color: '#ffffff' }}>
                           <th style={{ padding: '7px 10px', fontWeight: 800 }}>Mezzo / Canale</th>
                           <th style={{ padding: '7px 10px', fontWeight: 800 }}>Formato</th>
-                          <th style={{ padding: '7px 10px', fontWeight: 800 }}>Quantità Spot &amp; Periodo</th>
+                          <th style={{ padding: '7px 10px', fontWeight: 800 }}>Quantità Spot &amp; Omaggi</th>
+                          <th style={{ padding: '7px 10px', fontWeight: 800 }}>Periodo di Diffusione</th>
                           <th style={{ padding: '7px 10px', fontWeight: 800 }}>Fascia Oraria</th>
-                          <th style={{ padding: '7px 10px', fontWeight: 800 }}>Area Diffusione</th>
                           <th style={{ padding: '7px 10px', fontWeight: 800, textAlign: 'right' }}>Prezzo Spazi</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                          <td style={{ padding: '8px 10px', fontWeight: 700, color: '#D43F4A' }}>{contractData.mezzo}</td>
-                          <td style={{ padding: '8px 10px', fontWeight: 800 }}>{contractData.formato}</td>
-                          <td style={{ padding: '8px 10px' }}>
-                            <strong>{contractData.quantitaSpot} spot</strong> complessivi<br/>
-                            <span style={{ fontSize: '8px', color: '#64748b' }}>Dal {contractData.dataDecorrenza} al {contractData.dataScadenza}</span>
-                          </td>
-                          <td style={{ padding: '8px 10px' }}>07:00 – 21:00 (Rotazione)</td>
-                          <td style={{ padding: '8px 10px' }}>{contractData.area}</td>
-                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>€ {contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</td>
-                        </tr>
+                        {contractData.items && contractData.items.filter(i => i.isSpot).length > 0 ? (
+                          contractData.items.filter(i => i.isSpot).map((it, idx) => {
+                            const paganti = it.spotTotali || 0;
+                            const omaggi = it.spotOmaggio || 0;
+                            const tot = paganti + omaggi;
+                            return (
+                              <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
+                                <td style={{ padding: '8px 10px', fontWeight: 700, color: '#D43F4A' }}>
+                                  {it.copertura?.includes('Firenze') && !it.copertura?.includes('Toscana')
+                                    ? 'Radio Firenze 88.7'
+                                    : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo))}
+                                </td>
+                                <td style={{ padding: '8px 10px', fontWeight: 800 }}>{it.formatoSecondi || 20}&quot;</td>
+                                <td style={{ padding: '8px 10px' }}>
+                                  <strong>{paganti} spot a tariffa</strong>
+                                  {omaggi > 0 && (
+                                    <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 5px', borderRadius: '3px', marginLeft: '5px', display: 'inline-block' }}>
+                                      + {omaggi} OMAGGIO
+                                    </span>
+                                  )}
+                                  <div style={{ fontSize: '8.5px', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>
+                                    Totale: {tot} passaggi on-air
+                                  </div>
+                                </td>
+                                <td style={{ padding: '8px 10px', fontSize: '8.5px' }}>
+                                  Dal <strong>{it.dataInizio || contractData.dataDecorrenza}</strong><br/>al <strong>{it.dataFine || contractData.dataScadenza}</strong>
+                                </td>
+                                <td style={{ padding: '8px 10px' }}>07:00 – 21:00 (Rotazione)</td>
+                                <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
+                                  € {it.valore.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                            <td style={{ padding: '8px 10px', fontWeight: 700, color: '#D43F4A' }}>{contractData.mezzo}</td>
+                            <td style={{ padding: '8px 10px', fontWeight: 800 }}>{contractData.formato}</td>
+                            <td style={{ padding: '8px 10px' }}>
+                              <strong>{contractData.spotPaganti || contractData.quantitaSpot} spot a tariffa</strong>
+                              {(contractData.spotOmaggio || 0) > 0 && (
+                                <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 5px', borderRadius: '3px', marginLeft: '5px', display: 'inline-block' }}>
+                                  + {contractData.spotOmaggio} OMAGGIO
+                                </span>
+                              )}
+                              <div style={{ fontSize: '8.5px', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>
+                                Totale: {contractData.spotTotali || ((contractData.spotPaganti || contractData.quantitaSpot) + (contractData.spotOmaggio || 0))} passaggi on-air
+                              </div>
+                            </td>
+                            <td style={{ padding: '8px 10px', fontSize: '8.5px' }}>
+                              Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong>
+                            </td>
+                            <td style={{ padding: '8px 10px' }}>07:00 – 21:00 (Rotazione)</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
+                              € {contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                            </td>
+                          </tr>
+                        )}
                         {contractData.prezzoProduzione > 0 && (
                           <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
                             <td colSpan={5} style={{ padding: '7px 10px' }}>
@@ -3841,6 +3908,13 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       </tbody>
                     </table>
                   </div>
+
+                  {/* AGEVOLAZIONE COMMERCIALE OMAGGI IN CONTRATTO */}
+                  {(contractData.spotOmaggio || 0) > 0 && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '4px', padding: '6px 10px', marginBottom: '12px', fontSize: '8.5px', color: '#991b1b', lineHeight: 1.35 }}>
+                      <strong>Agevolazione Commerciale Promozionale:</strong> La presente commissione include <strong>{contractData.spotOmaggio} passaggi spot a titolo di OMAGGIO</strong> regolarmente inseriti nella pianificazione on-air sopraindicata, concessi a titolo promozionale dall&apos;Emittente senza alcun addebito economico per il committente.
+                    </div>
+                  )}
 
                   {/* RIEPILOGO ECONOMICO & CONDIZIONI DI PAGAMENTO */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '14px', marginBottom: '16px' }}>
