@@ -305,6 +305,7 @@ export default function LeadEngineDashboard() {
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [showContractModal, setShowContractModal] = useState(false);
+  const [selectedLeadForContract, setSelectedLeadForContract] = useState<LeadRow | null>(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedLeadForEmail, setSelectedLeadForEmail] = useState<LeadRow | null>(null);
 
@@ -1252,6 +1253,7 @@ export default function LeadEngineDashboard() {
 
   // Passa Direttamente a Contratto RMS dal Lead Kanban
   function openContractForLead(lead: LeadRow) {
+    setSelectedLeadForContract(lead);
     openEditQuoteModal(lead);
     const items = lead.quote_items && lead.quote_items.length > 0 ? lead.quote_items : quoteItems;
     const mainSpot = items.find(it => it.isSpot) || items[0];
@@ -3923,6 +3925,17 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 >
                   ✉️ Invia Contratto al Cliente (CC Amministrazione)
                 </button>
+                <button
+                  className="btn btn-xs"
+                  onClick={() => {
+                    const lead = selectedLeadForContract || leads.find(l => l.nome_azienda_evento === contractData.committente) || leads[0];
+                    if (lead) openTrelloDispatchModal(lead);
+                  }}
+                  style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', fontWeight: 800, borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                  title="Crea la card su Trello nella colonna Da Fare di Edi con checklist automatica e messaggio WhatsApp"
+                >
+                  📋 Commessa Trello &amp; WA per Edi
+                </button>
                 {isContractAlreadyActive ? (
                   <span 
                     style={{ 
@@ -4883,6 +4896,17 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
               </div>
 
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  className="btn btn-xs"
+                  style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 800 }}
+                  onClick={() => {
+                    const lead = selectedLeadForContract || leads.find(l => l.nome_azienda_evento === contractData.committente) || leads[0];
+                    if (lead) openTrelloDispatchModal(lead);
+                  }}
+                  title="Apre la modale di invio commessa a Edi su Trello con checklist automatica e notifica WhatsApp"
+                >
+                  📋 Commessa Trello per Edi
+                </button>
                 <button
                   className="btn btn-xs"
                   style={{ background: 'rgba(0, 120, 212, 0.2)', color: '#60a5fa', border: '1px solid rgba(0, 120, 212, 0.5)', fontWeight: 700 }}
