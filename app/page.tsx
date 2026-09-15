@@ -37,6 +37,10 @@ interface QuoteLineItem {
   periodo: string;
   prezzoListino: number;
   valore: number;
+  // Specifiche per Quantità e Prezzi Unitari (Voce Libera, Citazioni, Formati Extra)
+  quantita?: number;
+  prezzoUnitarioListino?: number;
+  prezzoUnitarioNetto?: number;
   // Specifiche avanzate per Spot Tabellari (Data Inizio, Data Fine, Quantità Giornaliera, Omaggi)
   isSpot?: boolean;
   dataInizio?: string;
@@ -425,6 +429,14 @@ export default function LeadEngineDashboard() {
     const defaultGiornalieri = 10;
     const defaultTotali = 140;
 
+    const initialQuantita = Math.max(1, Number(extraProps?.quantita || 1));
+    const initialUnitarioListino = extraProps?.prezzoUnitarioListino !== undefined 
+      ? extraProps.prezzoUnitarioListino 
+      : Math.round((listino / initialQuantita) * 100) / 100;
+    const initialUnitarioNetto = extraProps?.prezzoUnitarioNetto !== undefined 
+      ? extraProps.prezzoUnitarioNetto 
+      : Math.round((valore / initialQuantita) * 100) / 100;
+
     const newItem: QuoteLineItem = {
       id: `it-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
       tipo,
@@ -434,6 +446,9 @@ export default function LeadEngineDashboard() {
       periodo,
       prezzoListino: listino,
       valore: valore,
+      quantita: initialQuantita,
+      prezzoUnitarioListino: initialUnitarioListino,
+      prezzoUnitarioNetto: initialUnitarioNetto,
       isSpot: isSpotItem,
       dataInizio: isSpotItem ? defaultDataInizio : undefined,
       dataFine: isSpotItem ? defaultDataFine : undefined,
@@ -500,6 +515,46 @@ export default function LeadEngineDashboard() {
 
   function removeQuoteItem(id: string) {
     setQuoteItems(prev => prev.filter(it => it.id !== id));
+  }
+
+  function handleGenericItemChange(id: string, updates: Partial<QuoteLineItem>) {
+    setQuoteItems(prev => prev.map(it => {
+      if (it.id !== id) return it;
+      const updated = { ...it, ...updates };
+
+      const q = Math.max(1, Number(updated.quantita !== undefined ? updated.quantita : (it.quantita || 1)));
+      updated.quantita = q;
+
+      if ('quantita' in updates) {
+        const unitListino = it.prezzoUnitarioListino !== undefined 
+          ? it.prezzoUnitarioListino 
+          : (it.prezzoListino / (it.quantita || 1));
+        const unitNetto = it.prezzoUnitarioNetto !== undefined 
+          ? it.prezzoUnitarioNetto 
+          : (it.valore / (it.quantita || 1));
+        updated.prezzoUnitarioListino = Math.round(unitListino * 100) / 100;
+        updated.prezzoUnitarioNetto = Math.round(unitNetto * 100) / 100;
+        updated.prezzoListino = Math.round(unitListino * q * 100) / 100;
+        updated.valore = Math.round(unitNetto * q * 100) / 100;
+      } else if ('prezzoUnitarioNetto' in updates || 'prezzoUnitarioListino' in updates) {
+        const unitNetto = Number(updated.prezzoUnitarioNetto !== undefined ? updated.prezzoUnitarioNetto : (updated.valore / q));
+        const unitListino = Number(updated.prezzoUnitarioListino !== undefined ? updated.prezzoUnitarioListino : (updated.prezzoListino / q));
+        updated.prezzoUnitarioNetto = Math.round(unitNetto * 100) / 100;
+        updated.prezzoUnitarioListino = Math.round(unitListino * 100) / 100;
+        updated.valore = Math.round(unitNetto * q * 100) / 100;
+        updated.prezzoListino = Math.round(unitListino * q * 100) / 100;
+      } else if ('valore' in updates) {
+        const totVal = Number(updated.valore || 0);
+        updated.valore = totVal;
+        updated.prezzoUnitarioNetto = Math.round((totVal / q) * 100) / 100;
+      } else if ('prezzoListino' in updates) {
+        const totList = Number(updated.prezzoListino || 0);
+        updated.prezzoListino = totList;
+        updated.prezzoUnitarioListino = Math.round((totList / q) * 100) / 100;
+      }
+
+      return updated;
+    }));
   }
 
   function handleSpotFieldChange(id: string, updates: Partial<QuoteLineItem>) {
@@ -1257,7 +1312,7 @@ export default function LeadEngineDashboard() {
     openEditQuoteModal(lead);
     const items = lead.quote_items && lead.quote_items.length > 0 ? lead.quote_items : quoteItems;
     const mainSpot = items.find(it => it.isSpot) || items[0];
-    const summaryItems = items.map(it => `${it.tipo} [${it.copertura}] - ${it.dettagli} (Valore: €${it.valore})`).join(' | ');
+    const summaryItems = items.map(it => `${it.tipo}${it.quantita && it.quantita > 1 && !it.isSpot ? ` (Qtà: ${it.quantita})` : ''} [${it.copertura}] - ${it.dettagli} (Valore: €${it.valore})`).join(' | ');
     const spacesPrice = items.filter(i => i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
     const prodPrice = items.filter(i => !i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
     const totalVal = lead.valore_preventivo || items.reduce((s, i) => s + (i.valore || 0), 0);
@@ -1782,7 +1837,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
   // Apertura Generatore Bozza Contratto Radio Monte Serra
   function openContractGenerator() {
     const mainSpot = quoteItems.find(it => it.isSpot) || quoteItems[0];
-    const summaryItems = quoteItems.map(it => `${it.tipo} [${it.copertura}] - ${it.dettagli} (Valore: €${it.valore})`).join(' | ');
+    const summaryItems = quoteItems.map(it => `${it.tipo}${it.quantita && it.quantita > 1 && !it.isSpot ? ` (Qtà: ${it.quantita})` : ''} [${it.copertura}] - ${it.dettagli} (Valore: €${it.valore})`).join(' | ');
     
     const spacesPrice = quoteItems.filter(i => i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
     const prodPrice = quoteItems.filter(i => !i.isSpot).reduce((s, i) => s + (i.valore || 0), 0);
@@ -3132,10 +3187,15 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       'Fascia concordata',
                       'Periodo concordato',
                       500,
-                      400
+                      400,
+                      {
+                        quantita: 1,
+                        prezzoUnitarioListino: 500,
+                        prezzoUnitarioNetto: 400
+                      }
                     )}
                   >
-                    + Voce Libera
+                    + Voce Libera (con Quantità)
                   </button>
                 </div>
               </div>
@@ -3447,59 +3507,115 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           </div>
                         </div>
                       ) : (
-                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 100px 100px', gap: '8px', alignItems: 'center' }}>
-                          <div>
-                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Dettagli / Passaggi / Formato:</span>
-                            <input
-                              type="text"
-                              className="form-input"
-                              style={{ fontSize: '11px', width: '100%' }}
-                              value={it.dettagli}
-                              onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
-                              placeholder='es. 10 spot/gg x 14 gg (140 passaggi da 20")'
-                            />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {/* RIGA 1: DETTAGLI, FASCIA, PERIODO */}
+                          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px', alignItems: 'center' }}>
+                            <div>
+                              <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Dettagli / Passaggi / Formato:</span>
+                              <input
+                                type="text"
+                                className="form-input"
+                                style={{ fontSize: '11px', width: '100%' }}
+                                value={it.dettagli}
+                                onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
+                                placeholder='es. Prestazione concordata / Dettagli voce'
+                              />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Fascia Oraria:</span>
+                              <input
+                                type="text"
+                                className="form-input"
+                                style={{ fontSize: '11px', width: '100%' }}
+                                value={it.fascia}
+                                onChange={e => updateQuoteItem(it.id, 'fascia', e.target.value)}
+                                placeholder="es. 07.00 - 21.00"
+                              />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Periodo / Validità:</span>
+                              <input
+                                type="text"
+                                className="form-input"
+                                style={{ fontSize: '11px', width: '100%' }}
+                                value={it.periodo}
+                                onChange={e => updateQuoteItem(it.id, 'periodo', e.target.value)}
+                                placeholder="es. Settembre 2026"
+                              />
+                            </div>
                           </div>
-                          <div>
-                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Fascia Oraria:</span>
-                            <input
-                              type="text"
-                              className="form-input"
-                              style={{ fontSize: '11px', width: '100%' }}
-                              value={it.fascia}
-                              onChange={e => updateQuoteItem(it.id, 'fascia', e.target.value)}
-                              placeholder="es. 07.00 - 21.00"
-                            />
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Periodo / Validità:</span>
-                            <input
-                              type="text"
-                              className="form-input"
-                              style={{ fontSize: '11px', width: '100%' }}
-                              value={it.periodo}
-                              onChange={e => updateQuoteItem(it.id, 'periodo', e.target.value)}
-                              placeholder="es. Settembre 2026"
-                            />
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Listino (€):</span>
-                            <input
-                              type="number"
-                              className="form-input"
-                              style={{ fontSize: '12px', width: '100%', textAlign: 'right' }}
-                              value={it.prezzoListino}
-                              onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
-                            />
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Riservato (€):</span>
-                            <input
-                              type="number"
-                              className="form-input"
-                              style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.35)' }}
-                              value={it.valore}
-                              onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
-                            />
+
+                          {/* RIGA 2: GESTIONE QUANTITÀ, PREZZI UNITARI E TOTALI */}
+                          <div style={{
+                            background: 'rgba(255, 255, 255, 0.03)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                            borderRadius: '6px',
+                            padding: '8px 10px',
+                            display: 'grid',
+                            gridTemplateColumns: '80px 110px 110px 120px 130px auto',
+                            gap: '8px',
+                            alignItems: 'center'
+                          }}>
+                            <div>
+                              <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, display: 'block', marginBottom: '2px' }}>Quantità:</span>
+                              <input
+                                type="number"
+                                min={1}
+                                className="form-input"
+                                style={{ fontSize: '12px', width: '100%', textAlign: 'center', fontWeight: 800, borderColor: 'rgba(56, 189, 248, 0.4)', color: '#38bdf8' }}
+                                value={it.quantita !== undefined ? it.quantita : 1}
+                                onChange={e => handleGenericItemChange(it.id, { quantita: Number(e.target.value) })}
+                              />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Listino Cad. (€):</span>
+                              <input
+                                type="number"
+                                className="form-input"
+                                style={{ fontSize: '11px', width: '100%', textAlign: 'right' }}
+                                value={it.prezzoUnitarioListino !== undefined ? it.prezzoUnitarioListino : Math.round((it.prezzoListino / (it.quantita || 1)) * 100) / 100}
+                                onChange={e => handleGenericItemChange(it.id, { prezzoUnitarioListino: Number(e.target.value) })}
+                              />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Riservato Cad. (€):</span>
+                              <input
+                                type="number"
+                                className="form-input"
+                                style={{ fontSize: '11px', width: '100%', textAlign: 'right' }}
+                                value={it.prezzoUnitarioNetto !== undefined ? it.prezzoUnitarioNetto : Math.round((it.valore / (it.quantita || 1)) * 100) / 100}
+                                onChange={e => handleGenericItemChange(it.id, { prezzoUnitarioNetto: Number(e.target.value) })}
+                              />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Tot. Listino (€):</span>
+                              <input
+                                type="number"
+                                className="form-input"
+                                style={{ fontSize: '12px', width: '100%', textAlign: 'right' }}
+                                value={it.prezzoListino}
+                                onChange={e => handleGenericItemChange(it.id, { prezzoListino: Number(e.target.value) })}
+                              />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, display: 'block', marginBottom: '2px' }}>Tot. Riservato (€):</span>
+                              <input
+                                type="number"
+                                className="form-input"
+                                style={{ fontSize: '12px', width: '100%', textAlign: 'right', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                                value={it.valore}
+                                onChange={e => handleGenericItemChange(it.id, { valore: Number(e.target.value) })}
+                              />
+                            </div>
+                            <div style={{ fontSize: '10px', color: '#94a3b8', display: 'flex', alignItems: 'center' }}>
+                              {(it.quantita || 1) > 1 ? (
+                                <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                                  {(it.quantita || 1)}x prestazioni
+                                </span>
+                              ) : (
+                                <span style={{ color: '#64748b' }}>Prestazione singola</span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       )}
@@ -3765,6 +3881,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                               <span style={{ fontWeight: 800, color: '#1e293b' }}>{it.tipo}</span>
+                              {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                                <span style={{ fontSize: '7.5px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd', padding: '1px 5px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                  Qtà: {it.quantita}
+                                </span>
+                              ) : null}
                               {it.spotOmaggio && it.spotOmaggio > 0 ? (
                                 <span style={{ fontSize: '7.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 4px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                   + {it.spotOmaggio} OMAGGIO
@@ -3787,6 +3908,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           </td>
                           <td style={{ padding: '6px 8px', color: '#334155', verticalAlign: 'top' }}>
                             <div style={{ lineHeight: 1.35 }}>{it.dettagli}</div>
+                            {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                              <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>
+                                • {it.quantita} prestazioni a € {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })} cad.
+                              </div>
+                            ) : null}
                             {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' && (
                               <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>
                                 Ambito: Diritti di diffusione per emittenti toscane
@@ -3799,10 +3925,20 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             )}
                           </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right', color: '#94a3b8', verticalAlign: 'top', textDecoration: it.prezzoListino && it.prezzoListino > it.valore ? 'line-through' : 'none' }}>
-                          € {Number(it.prezzoListino || it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                          <div>€ {Number(it.prezzoListino || it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}</div>
+                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                            <div style={{ fontSize: '8px', color: '#94a3b8' }}>
+                              (€ {Number(it.prezzoUnitarioListino || (it.prezzoListino / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
+                            </div>
+                          ) : null}
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, color: '#1e293b', fontSize: '11px', verticalAlign: 'top' }}>
-                          € {Number(it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                          <div>€ {Number(it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}</div>
+                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                            <div style={{ fontSize: '8px', color: '#0284c7', fontWeight: 700 }}>
+                              (€ {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
+                            </div>
+                          ) : null}
                         </td>
                         </tr>
                       );
@@ -4723,10 +4859,31 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                   <tbody>
                     {(selectedLeadForProposalEmail.quote_items && selectedLeadForProposalEmail.quote_items.length > 0 ? selectedLeadForProposalEmail.quote_items : quoteItems).map((it, idx) => (
                       <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#fff' : '#f8fafc' }}>
-                        <td style={{ padding: '6px 10px', fontWeight: 700 }}>{it.tipo}</td>
+                        <td style={{ padding: '6px 10px', fontWeight: 700 }}>
+                          {it.tipo}
+                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                            <span style={{ marginLeft: '6px', fontSize: '8.5px', background: '#e0f2fe', color: '#0369a1', padding: '1px 5px', borderRadius: '3px', fontWeight: 800 }}>
+                              Qtà: {it.quantita}
+                            </span>
+                          ) : null}
+                        </td>
                         <td style={{ padding: '6px 10px' }}>{it.copertura}</td>
-                        <td style={{ padding: '6px 10px', color: '#64748b' }}>{it.dettagli}</td>
-                        <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 800 }}>€ {it.valore?.toLocaleString('it-IT')}</td>
+                        <td style={{ padding: '6px 10px', color: '#64748b' }}>
+                          <div>{it.dettagli}</div>
+                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                            <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 600, marginTop: '2px' }}>
+                              • {it.quantita} prestazioni a € {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })} cad.
+                            </div>
+                          ) : null}
+                        </td>
+                        <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 800 }}>
+                          <div>€ {it.valore?.toLocaleString('it-IT')}</div>
+                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                            <div style={{ fontSize: '8px', color: '#64748b', fontWeight: 500 }}>
+                              (€ {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
+                            </div>
+                          ) : null}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
