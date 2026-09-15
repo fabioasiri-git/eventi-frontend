@@ -377,6 +377,9 @@ export default function LeadEngineDashboard() {
   const [qPiva, setQPiva] = useState('');
   const [qSdi, setQSdi] = useState('');
 
+  // Modale Legenda Prodotti & Guida Formati Radiofonici
+  const [showProductLegendModal, setShowProductLegendModal] = useState(false);
+
   // Moduli Preventivo Modulare Dinamico
   const [quoteItems, setQuoteItems] = useState<QuoteLineItem[]>([
     {
@@ -2873,7 +2876,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
             {/* MODULI DI ACQUISTO MODULARE RADIO TOSCANA */}
             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px', border: '1px solid var(--panel-border)', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <div>
                   <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#fff', margin: 0 }}>
                     Moduli Campagna &amp; Voci Preventivo ({quoteItems.length} voci attive)
@@ -2882,6 +2885,27 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     Aggiungi e personalizza le linee di programmazione per emittente, fascia, listino e prezzo riservato
                   </div>
                 </div>
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{
+                    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                    color: '#ffffff',
+                    fontWeight: 800,
+                    border: '1px solid #38bdf8',
+                    padding: '6px 14px',
+                    borderRadius: '6px',
+                    boxShadow: '0 2px 10px rgba(2, 132, 199, 0.35)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                  onClick={() => setShowProductLegendModal(true)}
+                  title="Apri la guida completa ai prodotti: specifiche tecniche, orari, conduttori e leve commerciali"
+                >
+                  📖 Legenda &amp; Guida Prodotti Radio
+                </button>
               </div>
 
               {/* PULSANTIERA AGGIUNTA RAPIDA MODULI UFFICIALI RADIO TOSCANA */}
@@ -3151,11 +3175,16 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     onClick={() => addQuoteItem(
                       'Presenza in Onda durante Masti Sciò',
                       'Radio Toscana Rete',
-                      'Intervento in diretta on-air durante Masti Sciò (durata max 5 minuti con Massimo Galli)',
-                      '17.00 – 19.00 Masti Sciò',
+                      'Intervento in diretta on-air durante Masti Sciò (durata max 5 minuti con Alessandro Masti)',
+                      '08.00 – 10.00 Masti Sciò',
                       'Data concordata',
                       250,
-                      250
+                      250,
+                      {
+                        quantita: 1,
+                        prezzoUnitarioListino: 250,
+                        prezzoUnitarioNetto: 250
+                      }
                     )}
                   >
                     + Presenza Masti Sciò max 5\' (€250)
@@ -3698,6 +3727,176 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   Genera Bozza Contratto RMS
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE LEGENDA & GUIDA PRODOTTI RADIOFONICI */}
+      {showProductLegendModal && (
+        <div className="modal-overlay" style={{ zIndex: 100000 }}>
+          <div className="modal-content" style={{ maxWidth: '850px', maxHeight: '90vh', overflowY: 'auto', background: 'var(--panel-bg, #0f172a)', border: '1px solid var(--panel-border, #334155)', borderRadius: '12px', padding: '24px' }}>
+            <div className="modal-header" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '12px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ fontSize: '26px' }}>📖</span>
+                <div>
+                  <h3 className="modal-title" style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#fff' }}>Legenda &amp; Guida Prodotti Radiofonici</h3>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
+                    Specifiche tecniche, orari, conduttori e obiettivi di marketing per i format di Radio Toscana &amp; Radio Firenze
+                  </div>
+                </div>
+              </div>
+              <button className="modal-close" onClick={() => setShowProductLegendModal(false)} style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '18px', cursor: 'pointer' }}>✕</button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '6px 0' }}>
+              
+              {/* SPOT TABELLARI */}
+              <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '8px', padding: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#38bdf8' }}>📻 Spot Radiofonici Tabellari (10", 20", 30")</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>ALTA FREQUENZA</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 600 }}>Da € 3,50 a € 25,50/spot a listino</span>
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  Il comunicato pubblicitario registrato trasmesso nei cluster pubblicitari orari a rotazione (07:00 – 21:00) o nelle fasce di massimo ascolto (Drive Time). Ideale per promozioni commerciali, eventi con data fissa, saldi, aperture o per creare una forte memorizzazione del brand nel tempo.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <span>🎯 <strong>Obiettivo:</strong> Notorietà &amp; Conversione</span>
+                  <span>📍 <strong>Bacini:</strong> Rete Toscana, Area 1 (FI-PO-PT), Area 2 (Costa), Area 3 (Sud), Radio Firenze 95.4 FM, RT+RF Combinata</span>
+                </div>
+              </div>
+
+              {/* MASTI SCIO' */}
+              <div style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '8px', padding: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#fbbf24' }}>🎙️ Presenza On-Air durante "Masti Sciò" (max 5 minuti)</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>DRIVE TIME MATTINA (08:00 – 10:00)</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 800 }}>€ 250,00 + IVA</span>
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  Intervento in diretta on-air (in studio o telefonico) all'interno dello storico morning show condotto da <strong>Alessandro Masti</strong>, in onda dalle <strong>08:00 alle 10:00</strong>. È la fascia di maggior ascolto radiofonico della giornata: la spontaneità, il tono empatico e la simpatia di Alessandro Masti garantiscono un'attenzione e un ritorno d'immagine immediati.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <span>🎯 <strong>Obiettivo:</strong> Altissimo Impatto &amp; Coinvolgimento Diretto</span>
+                  <span>⏰ <strong>Orario:</strong> Dalle 08:00 alle 10:00 con Alessandro Masti</span>
+                </div>
+              </div>
+
+              {/* CITAZIONE ON-AIR */}
+              <div style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '8px', padding: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#34d399' }}>🗣️ Citazione On-Air (Live Read / Speaker Endorsement)</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>CONSIGLIO CONDUTTORE</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#34d399', fontWeight: 800 }}>€ 30,00 + IVA / cad.</span>
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  Citazione spontanea letta a voce viva dai conduttori durante la diretta dei programmi. Non viene percepita come un break pubblicitario ma come una segnalazione editoriale o un consiglio personale dello speaker, superando le barriere di diffidenza dell'ascoltatore.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <span>🎯 <strong>Obiettivo:</strong> Credibilità &amp; Coinvolgimento Spontaneo</span>
+                  <span>📝 <strong>Materiale:</strong> Include copy per citazione redatto dalla nostra redazione</span>
+                </div>
+              </div>
+
+              {/* PILLOLA INFORMATIVA / INTERVISTA */}
+              <div style={{ background: 'rgba(168, 85, 247, 0.08)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '8px', padding: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#c084fc' }}>🎙️ Pillola Informativa / Intervista Tematica</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>STORYTELLING &amp; BRAND AUTHORITY</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#c084fc', fontWeight: 800 }}>1ª Messa in onda € 150,00 | Repliche € 100,00</span>
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  Mini-format editoriale (durata 60–90 secondi) che dà voce diretta al titolare, manager o professionista dell'azienda. Include la registrazione dell'intervista con un giornalista di Radio Toscana, post-produzione, colonna sonora e montaggio a regola d'arte. Le repliche permettono di massimizzare la copertura in diversi orari.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <span>🎯 <strong>Obiettivo:</strong> Autorevolezza, Posizionamento &amp; Storytelling B2B/B2C</span>
+                  <span>🎧 <strong>Produzione:</strong> Realizzazione intervista + montaggio broadcast inclusi</span>
+                </div>
+              </div>
+
+              {/* DJ SET + PROMO RADIO */}
+              <div style={{ background: 'rgba(234, 179, 8, 0.08)', border: '1px solid rgba(234, 179, 8, 0.25)', borderRadius: '8px', padding: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#eab308' }}>🎧 DJ Set dal Vivo + Promo Radio (5 Citazioni)</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(234, 179, 8, 0.2)', color: '#eab308', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>EVENTI &amp; INAUGURAZIONI</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#eab308', fontWeight: 800 }}>€ 500,00 + IVA</span>
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  Pacchetto completo per eventi, inaugurazioni di negozi, saloni o feste aziendali: include la presenza di un DJ ufficiale di Radio Toscana con console e selezione musicale per l'evento, abbinato a una campagna on-air di <strong>5 citazioni promozionali</strong> trasmesse nei giorni precedenti per invitare il pubblico all'evento.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <span>🎯 <strong>Obiettivo:</strong> Portare presenze fisiche all'evento e creare atmosfera</span>
+                  <span>🎉 <strong>Comprende:</strong> Performance DJ in loco + 5 citazioni on-air teaser</span>
+                </div>
+              </div>
+
+              {/* PRESENTAZIONE EVENTO */}
+              <div style={{ background: 'rgba(236, 72, 153, 0.08)', border: '1px solid rgba(236, 72, 153, 0.25)', borderRadius: '8px', padding: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#f472b6' }}>🎤 Presentazione / Moderazione Evento</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(236, 72, 153, 0.2)', color: '#f472b6', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>CONDUZIONE SUL PALCO</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#f472b6', fontWeight: 800 }}>€ 400,00 + IVA</span>
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  Conduzione professionale, moderazione e presentazione sul palco a cura di una voce o volto noto di Radio Toscana. Ideale per sfilate, premiazioni sportive, convention aziendali, cene di gala o fiere di settore che richiedono un ritmo dinamico e grande professionalità.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <span>🎯 <strong>Obiettivo:</strong> Eleganza, Prestigio &amp; Riconoscibilità</span>
+                  <span>✨ <strong>Ruolo:</strong> Presentatore ufficiale Radio Toscana sul palco</span>
+                </div>
+              </div>
+
+              {/* PRODUZIONE SPOT AUDIO */}
+              <div style={{ background: 'rgba(212, 63, 74, 0.08)', border: '1px solid rgba(212, 63, 74, 0.3)', borderRadius: '8px', padding: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#f87171' }}>🎛️ Realizzazione Spot Audio (Studio di Registrazione &amp; Copy)</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(212, 63, 74, 0.2)', color: '#f87171', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>PRODUZIONE BROADCAST</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#f87171', fontWeight: 800 }}>Solo RT+RF € 100,00 | Diritti Liberi Toscana € 169,00</span>
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  Servizio completo di creatività e produzione sonora: stesura del testo pubblicitario (copywriting mirato), doppiaggio con speaker pubblicitari professionisti a livello nazionale, sonorizzazione con basi musicali licenziate e mastering a norma broadcast.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <span>• <strong>Solo RT+RF (€100):</strong> Diritti riservati per la messa in onda su Radio Toscana e Radio Firenze.</span>
+                  <span>• <strong>Diritti Liberi Toscana (€169):</strong> Cessione dei diritti del file audio per trasmissione su qualsiasi altra emittente toscana.</span>
+                </div>
+              </div>
+
+              {/* VOCE FUORI LISTINO / VOCE LIBERA */}
+              <div style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '8px', padding: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc' }}>⚙️ Voce Fuori Listino / Progetti Personalizzati (con Quantità)</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(255, 255, 255, 0.15)', color: '#f8fafc', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>SU MISURA</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>Quantità e Prezzi Unitari Modificabili</span>
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                  Modulo flessibile per gestire qualsiasi prestazione concordata fuori standard: sponsorizzazioni esclusive di rubriche (Meteo, Traffico, GR Notizie), dirette esterne con regia mobile, concorsi a premi o pacchetti multi-prestazione. Prevede la gestione nativa delle quantità e il calcolo automatico dei totali.
+                </p>
+              </div>
+
+            </div>
+
+            <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '14px', display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn btn-primary btn-sm" onClick={() => setShowProductLegendModal(false)} style={{ fontWeight: 800, padding: '8px 20px' }}>
+                Chiudi Legenda
+              </button>
             </div>
           </div>
         </div>
