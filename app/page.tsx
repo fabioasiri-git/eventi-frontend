@@ -385,6 +385,7 @@ export default function LeadEngineDashboard() {
   const [legendCustomPrezzo, setLegendCustomPrezzo] = useState(400);
   const [legendCustomListino, setLegendCustomListino] = useState(500);
   const [legendSuccessMsg, setLegendSuccessMsg] = useState<string | null>(null);
+  const [includeLegendInPdf, setIncludeLegendInPdf] = useState(true);
 
   // Moduli Preventivo Modulare Dinamico
   const [quoteItems, setQuoteItems] = useState<QuoteLineItem[]>([
@@ -1007,13 +1008,13 @@ export default function LeadEngineDashboard() {
     }
   }
 
-  // Generatore Ufficiale Proposta Commerciale A4 (Esattamente 1 Pagina A4 Perfetta)
+  // Generatore Ufficiale Proposta Commerciale A4 (1 o 2 Pagine con Allegato Formati per il Cliente)
   async function generateProposalPdfDoc(): Promise<{ pdf: any; base64: string; filename: string }> {
     setIsProposalPdfRendering(true);
     await new Promise(r => setTimeout(r, 250));
     try {
       const { html2canvas, jsPDF } = await getPdfEngines();
-      const page = document.getElementById('printable-proposal-card');
+      const page = document.getElementById('printable-proposal-card') || document.getElementById('printable-proposal');
       if (!page) throw new Error('Elemento scheda proposta non trovato');
 
       const canvas = await html2canvas(page, {
@@ -1027,6 +1028,22 @@ export default function LeadEngineDashboard() {
       const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
       const img = canvas.toDataURL('image/jpeg', 0.98);
       pdf.addImage(img, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+
+      if (includeLegendInPdf) {
+        const page2 = document.getElementById('printable-proposal-legend-card') || document.getElementById('printable-proposal-page-2');
+        if (page2) {
+          const canvas2 = await html2canvas(page2, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false
+          });
+          pdf.addPage();
+          const img2 = canvas2.toDataURL('image/jpeg', 0.98);
+          pdf.addImage(img2, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+        }
+      }
 
       const sanitizedClient = (qNome || selectedLeadForProposalEmail?.nome_azienda_evento || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
       const filename = `Proposta_Commerciale_RT_${sanitizedClient}.pdf`;
@@ -2891,27 +2908,6 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     Aggiungi e personalizza le linee di programmazione per emittente, fascia, listino e prezzo riservato
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-xs"
-                  style={{
-                    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-                    color: '#ffffff',
-                    fontWeight: 800,
-                    border: '1px solid #38bdf8',
-                    padding: '6px 14px',
-                    borderRadius: '6px',
-                    boxShadow: '0 2px 10px rgba(2, 132, 199, 0.35)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                  onClick={() => setShowProductLegendModal(true)}
-                  title="Apri la guida completa ai prodotti: specifiche tecniche, orari, conduttori e leve commerciali"
-                >
-                  📖 Legenda &amp; Guida Prodotti Radio
-                </button>
               </div>
 
               {/* PULSANTIERA AGGIUNTA RAPIDA MODULI UFFICIALI RADIO TOSCANA */}
@@ -4222,6 +4218,19 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   📝 Passa a Contratto RMS
                 </button>
                 <button
+                  className="btn btn-xs"
+                  style={{
+                    background: includeLegendInPdf ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.08)',
+                    color: includeLegendInPdf ? '#38bdf8' : '#94a3b8',
+                    border: `1px solid ${includeLegendInPdf ? '#38bdf8' : 'rgba(255, 255, 255, 0.2)'}`,
+                    fontWeight: 800
+                  }}
+                  onClick={() => setIncludeLegendInPdf(!includeLegendInPdf)}
+                  title="Attiva o disattiva la Guida Formati in 2ª pagina per il cliente"
+                >
+                  {includeLegendInPdf ? '📑 2 Pagine (con Guida Formati Cliente)' : '📄 1 Pagina (Solo Offerta)'}
+                </button>
+                <button
                   className="btn btn-primary btn-xs"
                   onClick={downloadProposalPdfDirect}
                   disabled={isDownloadingPdf}
@@ -4498,6 +4507,182 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               </div>
 
             </div>
+
+            {/* SECONDA PAGINA A4: ALLEGATO GUIDA FORMATI RADIOFONICI PER IL CLIENTE */}
+            {includeLegendInPdf && (
+              <div
+                className="a4-page-preview printable-document"
+                id="printable-proposal-page-2"
+                style={{
+                  background: '#ffffff',
+                  color: '#111111',
+                  padding: '16px 22px',
+                  margin: '20px auto 10px auto',
+                  width: '210mm',
+                  maxWidth: '100%',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                  boxSizing: 'border-box',
+                  fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+                  position: 'relative',
+                  pageBreakBefore: 'always',
+                  breakBefore: 'page'
+                }}
+              >
+                {/* HEADER SECONDA PAGINA */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #474350', paddingBottom: '12px', marginBottom: '14px', position: 'relative' }}>
+                  <div style={{ position: 'absolute', bottom: '-2.5px', left: 0, width: '90px', height: '2.5px', background: '#D43F4A' }}></div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <img
+                      src="/logo_radio_toscana.png"
+                      alt="Radio Toscana - Solo Toscana | Solo Hit"
+                      style={{ height: '42px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                    />
+                    <div style={{ borderLeft: '1px solid #cbd5e1', paddingLeft: '12px' }}>
+                      <div style={{ fontSize: '8px', color: '#64748b', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>ALLEGATO TECNICO &amp; INFORMATIVO</div>
+                      <div style={{ fontSize: '11px', fontWeight: 900, color: '#474350', letterSpacing: '0.04em' }}>GUIDA AI FORMATI PUBBLICITARI ON-AIR</div>
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', marginBottom: '4px' }}>
+                      <img
+                        src="/logo_radio_firenze.png"
+                        alt="88.7 Radio Firenze"
+                        style={{ height: '20px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                      />
+                      <span style={{ fontSize: '8px', fontWeight: 800, background: '#f1f5f9', color: '#474350', border: '1px solid #cbd5e1', padding: '2px 6px', borderRadius: '3px', textTransform: 'uppercase' }}>
+                        PAGINA 2 DI 2
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '9.5px', color: '#474350', fontWeight: 700 }}>
+                      Allegato a Prev: <span style={{ color: '#D43F4A', fontWeight: 800 }}>{currentQuoteNumber || 'PREV-2026/001'}</span>
+                    </div>
+                    <div style={{ fontSize: '8.5px', color: '#64748b' }}>
+                      Committente: <strong>{qNome || 'Cliente'}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* TITOLO INTRODUTTIVO PER IL CLIENTE */}
+                <div style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '6px', border: '1px solid #e2e8f0', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '9px', fontWeight: 900, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    SCHEDA TECNICA &amp; MODALITÀ DI TRASMISSIONE FORMAT RADIO TOSCANA &amp; RADIO FIRENZE
+                  </div>
+                  <div style={{ fontSize: '8px', color: '#64748b', marginTop: '2px' }}>
+                    Descrizione operativa dei moduli di pianificazione per illustrare al cliente le caratteristiche di trasmissione e i vantaggi commerciali.
+                  </div>
+                </div>
+
+                {/* GRIGLIA FORMATI PER IL CLIENTE */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '14px' }}>
+                  
+                  {/* SPOT */}
+                  <div style={{ border: '1px solid #e2e8f0', borderRadius: '6px', padding: '8px 10px', background: '#ffffff' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#0369a1' }}>📻 Spot Radiofonici Tabellari (10", 20", 30")</span>
+                      <span style={{ fontSize: '7.5px', background: '#e0f2fe', color: '#0369a1', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>ALTA FREQUENZA</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Comunicato pubblicitario registrato trasmesso nei cluster pubblicitari orari a rotazione (07:00 – 21:00) o nelle fasce di massimo ascolto (Drive Time). Ideale per eventi, aperture, promozioni e forte memorizzazione del brand.
+                    </p>
+                  </div>
+
+                  {/* MASTI SCIO' */}
+                  <div style={{ border: '1px solid #fde68a', borderRadius: '6px', padding: '8px 10px', background: '#fffbeb' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#b45309' }}>🎙️ Presenza On-Air durante "Masti Sciò"</span>
+                      <span style={{ fontSize: '7.5px', background: '#fef3c7', color: '#b45309', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>DRIVE TIME (08:00 – 10:00)</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Intervento in diretta on-air (in studio o telefonico, max 5 minuti) all&apos;interno dello storico morning show condotto da <strong>Alessandro Masti</strong> dalle <strong>08:00 alle 10:00</strong>. Massimi ascolti della giornata, tono empatico e immediato ritorno d&apos;immagine.
+                    </p>
+                  </div>
+
+                  {/* CITAZIONI ON-AIR */}
+                  <div style={{ border: '1px solid #a7f3d0', borderRadius: '6px', padding: '8px 10px', background: '#f0fdf4' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#047857' }}>🗣️ Citazione On-Air (Live Read / Speaker Endorsement)</span>
+                      <span style={{ fontSize: '7.5px', background: '#dcfce7', color: '#047857', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>VOCE VIVA CONDUTTORI</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Citazione spontanea letta a voce viva dai conduttori durante la diretta dei programmi, percepita come consiglio editoriale e personale. Include la redazione del copy a cura della redazione giornalistica di Radio Toscana.
+                    </p>
+                  </div>
+
+                  {/* PILLOLA INFORMATIVA */}
+                  <div style={{ border: '1px solid #e9d5ff', borderRadius: '6px', padding: '8px 10px', background: '#faf5ff' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#7e22ce' }}>🎙️ Pillola Informativa / Intervista Tematica</span>
+                      <span style={{ fontSize: '7.5px', background: '#f3e8ff', color: '#7e22ce', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>STORYTELLING &amp; BRAND</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Mini-format di approfondimento (60–90 secondi) che dà voce diretta al titolare o professionista. Include registrazione intervista con giornalista, post-produzione, sonorizzazione e montaggio a norma broadcast.
+                    </p>
+                  </div>
+
+                  {/* DJ SET + PROMO */}
+                  <div style={{ border: '1px solid #fed7aa', borderRadius: '6px', padding: '8px 10px', background: '#fff7ed' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#c2410c' }}>🎧 DJ Set dal Vivo + Promo Radio (5 Citazioni)</span>
+                      <span style={{ fontSize: '7.5px', background: '#ffedd5', color: '#c2410c', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>EVENTI IN LOCO</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Presenza di un DJ ufficiale con console e selezione musicale personalizzata per eventi o inaugurazioni, abbinata a una campagna on-air di 5 citazioni promozionali nei giorni precedenti per invitare gli ascoltatori.
+                    </p>
+                  </div>
+
+                  {/* PRESENTAZIONE PALCO */}
+                  <div style={{ border: '1px solid #fbcfe8', borderRadius: '6px', padding: '8px 10px', background: '#fdf2f8' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#be185d' }}>🎤 Presentazione / Moderazione Evento</span>
+                      <span style={{ fontSize: '7.5px', background: '#fce7f3', color: '#be185d', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>SUL PALCO</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Conduzione sul palco e presentazione a cura di una voce o volto noto di Radio Toscana: garantisce ritmo dinamico, eleganza e grande professionalità per serate di gala, premiazioni, sfilate o convention aziendali.
+                    </p>
+                  </div>
+
+                  {/* PRODUZIONE SPOT AUDIO */}
+                  <div style={{ gridColumn: 'span 2', border: '1px solid #fecaca', borderRadius: '6px', padding: '8px 10px', background: '#fef2f2' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#b91c1c' }}>🎛️ Realizzazione Spot Audio Broadcast (Studio &amp; Copywriting)</span>
+                      <span style={{ fontSize: '7.5px', background: '#fee2e2', color: '#b91c1c', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>PRODUZIONE STUDIO</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Servizio completo di creatività sonora: stesura testo (copywriting), doppiaggio con speaker nazionali, sonorizzazione su basi licenziate e mastering broadcast. Disponibile sia per diffusione RT+RF che con cessione dei Diritti Liberi per tutta la Toscana.
+                    </p>
+                  </div>
+
+                </div>
+
+                {/* SOUNDWAVE CLAIM BACKGROUND CORPORATE RADIO TOSCANA */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px', opacity: 0.9 }}>
+                  <svg width="108" height="26" viewBox="0 0 128 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {[2, 4, 2, 3, 1, 1, 3, 2, 4, 2, 1, 3, 2, 4, 5, 4, 6, 4, 3, 1].map((count, cIdx) => (
+                      <g key={cIdx}>
+                        {Array.from({ length: count }).map((_, dIdx) => (
+                          <circle
+                            key={dIdx}
+                            cx={3 + cIdx * 6.4}
+                            cy={35 - dIdx * 6.4}
+                            r={2.4}
+                            fill="#BD323D"
+                          />
+                        ))}
+                      </g>
+                    ))}
+                  </svg>
+                </div>
+
+                {/* FOOTER UFFICIALE CARTA INTESTATA */}
+                <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '6px', textAlign: 'center', fontSize: '8px', color: '#64748b', lineHeight: 1.4 }}>
+                  <div style={{ fontWeight: 800, color: '#D43F4A', fontSize: '9px', marginBottom: '1px' }}>Radio Toscana • Radio Firenze</div>
+                  <div>Direzione e sede: Via de&apos; Pucci 2, 50122 Firenze • Tel. 055 285030 • radiomonteserra@pec.it • www.radiotoscana.it</div>
+                  <div>Radio Monte Serra S.r.l. — P.IVA 04472740481 • C.F. 00940130503 • CCIAA Firenze 453074</div>
+                </div>
+
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -5364,6 +5549,182 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                 <div>Offerta valida 30 giorni dalla data di emissione. La programmazione è subordinata alla ricezione della proposta siglata per accettazione e alla disponibilità dei palinsesti Radio Toscana.</div>
               </div>
             </div>
+
+            {includeLegendInPdf && (
+              <div
+                id="printable-proposal-legend-card"
+                style={{
+                  width: '210mm',
+                  height: '296mm',
+                  maxHeight: '296mm',
+                  background: '#ffffff',
+                  color: '#111111',
+                  padding: '14mm 16mm',
+                  fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                  boxSizing: 'border-box',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  overflow: 'hidden',
+                  marginTop: '30px',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.6)'
+                }}
+              >
+                {/* HEADER SECONDA PAGINA */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2.5px solid #474350', paddingBottom: '12px', marginBottom: '14px', position: 'relative' }}>
+                  <div style={{ position: 'absolute', bottom: '-2.5px', left: 0, width: '90px', height: '2.5px', background: '#D43F4A' }}></div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <img
+                      src="/logo_radio_toscana.png"
+                      alt="Radio Toscana"
+                      style={{ height: '42px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                    />
+                    <div style={{ borderLeft: '1px solid #cbd5e1', paddingLeft: '12px' }}>
+                      <div style={{ fontSize: '8px', color: '#64748b', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>ALLEGATO TECNICO &amp; INFORMATIVO</div>
+                      <div style={{ fontSize: '11px', fontWeight: 900, color: '#474350', letterSpacing: '0.04em' }}>GUIDA AI FORMATI PUBBLICITARI ON-AIR</div>
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', marginBottom: '4px' }}>
+                      <img
+                        src="/logo_radio_firenze.png"
+                        alt="Radio Firenze"
+                        style={{ height: '20px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                      />
+                      <span style={{ fontSize: '8px', fontWeight: 800, background: '#f1f5f9', color: '#474350', border: '1px solid #cbd5e1', padding: '2px 6px', borderRadius: '3px', textTransform: 'uppercase' }}>
+                        PAGINA 2 DI 2
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '9.5px', color: '#474350', fontWeight: 700 }}>
+                      Allegato a Prev: <span style={{ color: '#D43F4A', fontWeight: 800 }}>{currentQuoteNumber || 'PREV-2026/001'}</span>
+                    </div>
+                    <div style={{ fontSize: '8.5px', color: '#64748b' }}>
+                      Committente: <strong>{qNome || selectedLeadForProposalEmail?.nome_azienda_evento || 'Cliente'}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* TITOLO INTRODUTTIVO PER IL CLIENTE */}
+                <div style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '6px', border: '1px solid #e2e8f0', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '9px', fontWeight: 900, color: '#474350', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    SCHEDA TECNICA &amp; MODALITÀ DI TRASMISSIONE FORMAT RADIO TOSCANA &amp; RADIO FIRENZE
+                  </div>
+                  <div style={{ fontSize: '8px', color: '#64748b', marginTop: '2px' }}>
+                    Descrizione operativa dei moduli di pianificazione per illustrare al cliente le caratteristiche di trasmissione e i vantaggi commerciali.
+                  </div>
+                </div>
+
+                {/* GRIGLIA FORMATI PER IL CLIENTE */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '14px' }}>
+                  
+                  {/* SPOT */}
+                  <div style={{ border: '1px solid #e2e8f0', borderRadius: '6px', padding: '8px 10px', background: '#ffffff' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#0369a1' }}>📻 Spot Radiofonici Tabellari (10", 20", 30")</span>
+                      <span style={{ fontSize: '7.5px', background: '#e0f2fe', color: '#0369a1', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>ALTA FREQUENZA</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Comunicato pubblicitario registrato trasmesso nei cluster pubblicitari orari a rotazione (07:00 – 21:00) o nelle fasce di massimo ascolto (Drive Time). Ideale per eventi, aperture, promozioni e forte memorizzazione del brand.
+                    </p>
+                  </div>
+
+                  {/* MASTI SCIO' */}
+                  <div style={{ border: '1px solid #fde68a', borderRadius: '6px', padding: '8px 10px', background: '#fffbeb' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#b45309' }}>🎙️ Presenza On-Air durante "Masti Sciò"</span>
+                      <span style={{ fontSize: '7.5px', background: '#fef3c7', color: '#b45309', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>DRIVE TIME (08:00 – 10:00)</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Intervento in diretta on-air (in studio o telefonico, max 5 minuti) all&apos;interno dello storico morning show condotto da <strong>Alessandro Masti</strong> dalle <strong>08:00 alle 10:00</strong>. Massimi ascolti della giornata, tono empatico e immediato ritorno d&apos;immagine.
+                    </p>
+                  </div>
+
+                  {/* CITAZIONI ON-AIR */}
+                  <div style={{ border: '1px solid #a7f3d0', borderRadius: '6px', padding: '8px 10px', background: '#f0fdf4' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#047857' }}>🗣️ Citazione On-Air (Live Read / Speaker Endorsement)</span>
+                      <span style={{ fontSize: '7.5px', background: '#dcfce7', color: '#047857', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>VOCE VIVA CONDUTTORI</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Citazione spontanea letta a voce viva dai conduttori durante la diretta dei programmi, percepita come consiglio editoriale e personale. Include la redazione del copy a cura della redazione giornalistica di Radio Toscana.
+                    </p>
+                  </div>
+
+                  {/* PILLOLA INFORMATIVA */}
+                  <div style={{ border: '1px solid #e9d5ff', borderRadius: '6px', padding: '8px 10px', background: '#faf5ff' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#7e22ce' }}>🎙️ Pillola Informativa / Intervista Tematica</span>
+                      <span style={{ fontSize: '7.5px', background: '#f3e8ff', color: '#7e22ce', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>STORYTELLING &amp; BRAND</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Mini-format di approfondimento (60–90 secondi) che dà voce diretta al titolare o professionista. Include registrazione intervista con giornalista, post-produzione, sonorizzazione e montaggio a norma broadcast.
+                    </p>
+                  </div>
+
+                  {/* DJ SET + PROMO */}
+                  <div style={{ border: '1px solid #fed7aa', borderRadius: '6px', padding: '8px 10px', background: '#fff7ed' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#c2410c' }}>🎧 DJ Set dal Vivo + Promo Radio (5 Citazioni)</span>
+                      <span style={{ fontSize: '7.5px', background: '#ffedd5', color: '#c2410c', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>EVENTI IN LOCO</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Presenza di un DJ ufficiale con console e selezione musicale personalizzata per eventi o inaugurazioni, abbinata a una campagna on-air di 5 citazioni promozionali nei giorni precedenti per invitare gli ascoltatori.
+                    </p>
+                  </div>
+
+                  {/* PRESENTAZIONE PALCO */}
+                  <div style={{ border: '1px solid #fbcfe8', borderRadius: '6px', padding: '8px 10px', background: '#fdf2f8' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#be185d' }}>🎤 Presentazione / Moderazione Evento</span>
+                      <span style={{ fontSize: '7.5px', background: '#fce7f3', color: '#be185d', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>SUL PALCO</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Conduzione sul palco e presentazione a cura di una voce o volto noto di Radio Toscana: garantisce ritmo dinamico, eleganza e grande professionalità per serate di gala, premiazioni, sfilate o convention aziendali.
+                    </p>
+                  </div>
+
+                  {/* PRODUZIONE SPOT AUDIO */}
+                  <div style={{ gridColumn: 'span 2', border: '1px solid #fecaca', borderRadius: '6px', padding: '8px 10px', background: '#fef2f2' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 900, color: '#b91c1c' }}>🎛️ Realizzazione Spot Audio Broadcast (Studio &amp; Copywriting)</span>
+                      <span style={{ fontSize: '7.5px', background: '#fee2e2', color: '#b91c1c', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>PRODUZIONE STUDIO</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '8px', color: '#475569', lineHeight: 1.35 }}>
+                      Servizio completo di creatività sonora: stesura testo (copywriting), doppiaggio con speaker nazionali, sonorizzazione su basi licenziate e mastering broadcast. Disponibile sia per diffusione RT+RF che con cessione dei Diritti Liberi per tutta la Toscana.
+                    </p>
+                  </div>
+
+                </div>
+
+                {/* SOUNDWAVE CLAIM BACKGROUND CORPORATE RADIO TOSCANA */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px', opacity: 0.9 }}>
+                  <svg width="108" height="26" viewBox="0 0 128 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {[2, 4, 2, 3, 1, 1, 3, 2, 4, 2, 1, 3, 2, 4, 5, 4, 6, 4, 3, 1].map((count, cIdx) => (
+                      <g key={cIdx}>
+                        {Array.from({ length: count }).map((_, dIdx) => (
+                          <circle
+                            key={dIdx}
+                            cx={3 + cIdx * 6.4}
+                            cy={35 - dIdx * 6.4}
+                            r={2.4}
+                            fill="#BD323D"
+                          />
+                        ))}
+                      </g>
+                    ))}
+                  </svg>
+                </div>
+
+                {/* FOOTER UFFICIALE CARTA INTESTATA */}
+                <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '6px', textAlign: 'center', fontSize: '8px', color: '#64748b', lineHeight: 1.4 }}>
+                  <div style={{ fontWeight: 800, color: '#D43F4A', fontSize: '9px', marginBottom: '1px' }}>Radio Toscana • Radio Firenze</div>
+                  <div>Direzione e sede: Via de&apos; Pucci 2, 50122 Firenze • Tel. 055 285030 • radiomonteserra@pec.it • www.radiotoscana.it</div>
+                  <div>Radio Monte Serra S.r.l. — P.IVA 04472740481 • C.F. 00940130503 • CCIAA Firenze 453074</div>
+                </div>
+
+              </div>
+            )}
             </div>
           )}
           </div>

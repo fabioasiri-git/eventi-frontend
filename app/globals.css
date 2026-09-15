@@ -526,13 +526,16 @@ select option, .form-select option, .form-input option {
   /* Rendi visibile ESCLUSIVAMENTE il documento attivo in fase di stampa */
   #printable-proposal,
   #printable-proposal *,
+  #printable-proposal-page-2,
+  #printable-proposal-page-2 *,
   #printable-contract,
   #printable-contract * {
     visibility: visible !important;
   }
 
   /* Isolamento: se stiamo stampando il Contratto, nascondi il Preventivo e viceversa */
-  body.printing-contract #printable-proposal {
+  body.printing-contract #printable-proposal,
+  body.printing-contract #printable-proposal-page-2 {
     display: none !important;
     visibility: hidden !important;
   }
@@ -555,6 +558,24 @@ select option, .form-select option, .form-input option {
     overflow: visible !important;
     page-break-after: avoid !important;
     break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  #printable-proposal-page-2 {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 195mm !important;
+    margin: 0 auto !important;
+    padding: 12px 18px !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+    page-break-before: always !important;
+    break-before: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
