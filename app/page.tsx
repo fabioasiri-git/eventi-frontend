@@ -379,6 +379,12 @@ export default function LeadEngineDashboard() {
 
   // Modale Legenda Prodotti & Guida Formati Radiofonici
   const [showProductLegendModal, setShowProductLegendModal] = useState(false);
+  const [legendCustomNome, setLegendCustomNome] = useState('Voce Fuori Listino / Personalizzata');
+  const [legendCustomDettagli, setLegendCustomDettagli] = useState('');
+  const [legendCustomQuantita, setLegendCustomQuantita] = useState(1);
+  const [legendCustomPrezzo, setLegendCustomPrezzo] = useState(400);
+  const [legendCustomListino, setLegendCustomListino] = useState(500);
+  const [legendSuccessMsg, setLegendSuccessMsg] = useState<string | null>(null);
 
   // Moduli Preventivo Modulare Dinamico
   const [quoteItems, setQuoteItems] = useState<QuoteLineItem[]>([
@@ -3742,12 +3748,19 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 <div>
                   <h3 className="modal-title" style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#fff' }}>Legenda &amp; Guida Prodotti Radiofonici</h3>
                   <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
-                    Specifiche tecniche, orari, conduttori e obiettivi di marketing per i format di Radio Toscana &amp; Radio Firenze
+                    Specifiche tecniche, orari, conduttori e inserimento rapido nel preventivo per i format di Radio Toscana &amp; Radio Firenze
                   </div>
                 </div>
               </div>
               <button className="modal-close" onClick={() => setShowProductLegendModal(false)} style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '18px', cursor: 'pointer' }}>✕</button>
             </div>
+
+            {legendSuccessMsg && (
+              <div style={{ marginBottom: '14px', background: 'rgba(34, 197, 94, 0.15)', border: '1px solid #22c55e', color: '#86efac', padding: '10px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: 700, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>{legendSuccessMsg}</span>
+                <button onClick={() => setLegendSuccessMsg(null)} style={{ background: 'transparent', border: 'none', color: '#86efac', cursor: 'pointer', fontSize: '14px', fontWeight: 900 }}>✕</button>
+              </div>
+            )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '6px 0' }}>
               
@@ -3776,7 +3789,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <span style={{ fontSize: '14px', fontWeight: 900, color: '#fbbf24' }}>🎙️ Presenza On-Air durante "Masti Sciò" (max 5 minuti)</span>
                     <span style={{ fontSize: '10px', background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>DRIVE TIME MATTINA (08:00 – 10:00)</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 800 }}>€ 250,00 + IVA</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '12px', color: '#fbbf24', fontWeight: 800 }}>€ 250,00 + IVA</span>
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => {
+                        addQuoteItem(
+                          'Presenza On-Air durante "Masti Sciò" (max 5 min)',
+                          'Radio Toscana Rete (Tutta la Toscana)',
+                          'Intervento in diretta on-air (in studio o telefonico) all\'interno dello storico morning show condotto da Alessandro Masti (08:00 – 10:00)',
+                          '08:00 – 10:00',
+                          '',
+                          250,
+                          250,
+                          { quantita: 1, prezzoUnitarioListino: 250, prezzoUnitarioNetto: 250 }
+                        );
+                        setLegendSuccessMsg('✅ Presenza "Masti Sciò" con Alessandro Masti inserita nel preventivo!');
+                      }}
+                      style={{ background: '#f59e0b', color: '#000', fontWeight: 800, fontSize: '11px', padding: '4px 10px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                    >
+                      ➕ Inserisci
+                    </button>
+                  </div>
                 </div>
                 <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
                   Intervento in diretta on-air (in studio o telefonico) all'interno dello storico morning show condotto da <strong>Alessandro Masti</strong>, in onda dalle <strong>08:00 alle 10:00</strong>. È la fascia di maggior ascolto radiofonico della giornata: la spontaneità, il tono empatico e la simpatia di Alessandro Masti garantiscono un'attenzione e un ritorno d'immagine immediati.
@@ -3794,7 +3828,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <span style={{ fontSize: '14px', fontWeight: 900, color: '#34d399' }}>🗣️ Citazione On-Air (Live Read / Speaker Endorsement)</span>
                     <span style={{ fontSize: '10px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>CONSIGLIO CONDUTTORE</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#34d399', fontWeight: 800 }}>€ 30,00 + IVA / cad.</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '12px', color: '#34d399', fontWeight: 800 }}>€ 30,00 + IVA / cad.</span>
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => {
+                        addQuoteItem(
+                          'Citazione On-Air (Live Read / Speaker Endorsement)',
+                          'Radio Toscana Rete (Tutta la Toscana)',
+                          'Citazione spontanea letta a voce viva dai conduttori durante la diretta dei programmi. Include copy per citazione redatto dalla nostra redazione.',
+                          'Rotazione Programmi',
+                          '',
+                          30,
+                          30,
+                          { quantita: 1, prezzoUnitarioListino: 30, prezzoUnitarioNetto: 30 }
+                        );
+                        setLegendSuccessMsg('✅ Citazione On-Air (€ 30 cad.) inserita nel preventivo!');
+                      }}
+                      style={{ background: '#10b981', color: '#000', fontWeight: 800, fontSize: '11px', padding: '4px 10px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                    >
+                      ➕ Inserisci
+                    </button>
+                  </div>
                 </div>
                 <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
                   Citazione spontanea letta a voce viva dai conduttori durante la diretta dei programmi. Non viene percepita come un break pubblicitario ma come una segnalazione editoriale o un consiglio personale dello speaker, superando le barriere di diffidenza dell'ascoltatore.
@@ -3812,7 +3867,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <span style={{ fontSize: '14px', fontWeight: 900, color: '#c084fc' }}>🎙️ Pillola Informativa / Intervista Tematica</span>
                     <span style={{ fontSize: '10px', background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>STORYTELLING &amp; BRAND AUTHORITY</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#c084fc', fontWeight: 800 }}>1ª Messa in onda € 150,00 | Repliche € 100,00</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '12px', color: '#c084fc', fontWeight: 800 }}>Da € 150,00</span>
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => {
+                        addQuoteItem(
+                          'Pillola Informativa / Intervista Tematica (1ª Messa in Onda)',
+                          'Radio Toscana Rete (Tutta la Toscana)',
+                          'Mini-format editoriale (durata 60–90 secondi) con registrazione intervista a giornalista + montaggio broadcast e sonorizzazione',
+                          'Rotazione Giornaliera',
+                          '',
+                          150,
+                          150,
+                          { quantita: 1, prezzoUnitarioListino: 150, prezzoUnitarioNetto: 150 }
+                        );
+                        setLegendSuccessMsg('✅ Pillola Informativa (€ 150) inserita nel preventivo!');
+                      }}
+                      style={{ background: '#c084fc', color: '#000', fontWeight: 800, fontSize: '11px', padding: '4px 10px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                    >
+                      ➕ Inserisci
+                    </button>
+                  </div>
                 </div>
                 <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
                   Mini-format editoriale (durata 60–90 secondi) che dà voce diretta al titolare, manager o professionista dell'azienda. Include la registrazione dell'intervista con un giornalista di Radio Toscana, post-produzione, colonna sonora e montaggio a regola d'arte. Le repliche permettono di massimizzare la copertura in diversi orari.
@@ -3830,7 +3906,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <span style={{ fontSize: '14px', fontWeight: 900, color: '#eab308' }}>🎧 DJ Set dal Vivo + Promo Radio (5 Citazioni)</span>
                     <span style={{ fontSize: '10px', background: 'rgba(234, 179, 8, 0.2)', color: '#eab308', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>EVENTI &amp; INAUGURAZIONI</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#eab308', fontWeight: 800 }}>€ 500,00 + IVA</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '12px', color: '#eab308', fontWeight: 800 }}>€ 500,00 + IVA</span>
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => {
+                        addQuoteItem(
+                          'DJ Set dal Vivo + Promo Radio (5 Citazioni)',
+                          'In Loco + Radio Toscana',
+                          'Presenza DJ ufficiale Radio Toscana con console e selezione musicale + campagna di 5 citazioni teaser on-air prima dell\'evento',
+                          'Evento dal Vivo',
+                          '',
+                          500,
+                          500,
+                          { quantita: 1, prezzoUnitarioListino: 500, prezzoUnitarioNetto: 500 }
+                        );
+                        setLegendSuccessMsg('✅ Pacchetto DJ Set + Promo Radio (€ 500) inserito nel preventivo!');
+                      }}
+                      style={{ background: '#eab308', color: '#000', fontWeight: 800, fontSize: '11px', padding: '4px 10px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                    >
+                      ➕ Inserisci
+                    </button>
+                  </div>
                 </div>
                 <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
                   Pacchetto completo per eventi, inaugurazioni di negozi, saloni o feste aziendali: include la presenza di un DJ ufficiale di Radio Toscana con console e selezione musicale per l'evento, abbinato a una campagna on-air di <strong>5 citazioni promozionali</strong> trasmesse nei giorni precedenti per invitare il pubblico all'evento.
@@ -3848,7 +3945,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <span style={{ fontSize: '14px', fontWeight: 900, color: '#f472b6' }}>🎤 Presentazione / Moderazione Evento</span>
                     <span style={{ fontSize: '10px', background: 'rgba(236, 72, 153, 0.2)', color: '#f472b6', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>CONDUZIONE SUL PALCO</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#f472b6', fontWeight: 800 }}>€ 400,00 + IVA</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '12px', color: '#f472b6', fontWeight: 800 }}>€ 400,00 + IVA</span>
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => {
+                        addQuoteItem(
+                          'Presentazione / Moderazione Evento',
+                          'In Loco sul Palco',
+                          'Conduzione professionale, moderazione e presentazione sul palco a cura di voce/volto noto di Radio Toscana',
+                          'Presenza Evento',
+                          '',
+                          400,
+                          400,
+                          { quantita: 1, prezzoUnitarioListino: 400, prezzoUnitarioNetto: 400 }
+                        );
+                        setLegendSuccessMsg('✅ Conduzione/Moderazione Evento (€ 400) inserita nel preventivo!');
+                      }}
+                      style={{ background: '#f472b6', color: '#000', fontWeight: 800, fontSize: '11px', padding: '4px 10px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                    >
+                      ➕ Inserisci
+                    </button>
+                  </div>
                 </div>
                 <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
                   Conduzione professionale, moderazione e presentazione sul palco a cura di una voce o volto noto di Radio Toscana. Ideale per sfilate, premiazioni sportive, convention aziendali, cene di gala o fiere di settore che richiedono un ritmo dinamico e grande professionalità.
@@ -3866,7 +3984,46 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <span style={{ fontSize: '14px', fontWeight: 900, color: '#f87171' }}>🎛️ Realizzazione Spot Audio (Studio di Registrazione &amp; Copy)</span>
                     <span style={{ fontSize: '10px', background: 'rgba(212, 63, 74, 0.2)', color: '#f87171', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>PRODUZIONE BROADCAST</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#f87171', fontWeight: 800 }}>Solo RT+RF € 100,00 | Diritti Liberi Toscana € 169,00</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => {
+                        addQuoteItem(
+                          'Realizzazione Spot Audio',
+                          'Diffusione Radio Toscana + Radio Firenze',
+                          'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
+                          'Costo Una Tantum',
+                          '',
+                          100,
+                          100,
+                          { quantita: 1, prezzoUnitarioListino: 100, prezzoUnitarioNetto: 100, tipoProduzione: 'SOLO_RT_RF' }
+                        );
+                        setLegendSuccessMsg('✅ Realizzazione Spot RT+RF (€ 100) inserita nel preventivo!');
+                      }}
+                      style={{ background: '#f87171', color: '#000', fontWeight: 800, fontSize: '11px', padding: '4px 8px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                    >
+                      ➕ RT+RF (€100)
+                    </button>
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => {
+                        addQuoteItem(
+                          'Realizzazione Spot Audio',
+                          'Diritti Liberi per Tutta la Toscana',
+                          'Realizzazione copy + Registrazione professionale + Cessione diritti di trasmissione su tutte le emittenti toscane',
+                          'Costo Una Tantum',
+                          '',
+                          169,
+                          169,
+                          { quantita: 1, prezzoUnitarioListino: 169, prezzoUnitarioNetto: 169, tipoProduzione: 'DIRITTI_LIBERI_TOSCANA' }
+                        );
+                        setLegendSuccessMsg('✅ Realizzazione Spot Diritti Liberi (€ 169) inserita nel preventivo!');
+                      }}
+                      style={{ background: '#f87171', color: '#000', fontWeight: 800, fontSize: '11px', padding: '4px 8px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                    >
+                      ➕ Diritti Liberi (€169)
+                    </button>
+                  </div>
                 </div>
                 <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
                   Servizio completo di creatività e produzione sonora: stesura del testo pubblicitario (copywriting mirato), doppiaggio con speaker pubblicitari professionisti a livello nazionale, sonorizzazione con basi musicali licenziate e mastering a norma broadcast.
@@ -3877,23 +4034,126 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 </div>
               </div>
 
-              {/* VOCE FUORI LISTINO / VOCE LIBERA */}
-              <div style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '8px', padding: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' }}>
+              {/* VOCE FUORI LISTINO / VOCE LIBERA CON CONFIGURATORE INTERATTIVO DIRETTO */}
+              <div style={{ background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95))', border: '1px solid #38bdf8', borderRadius: '10px', padding: '16px', boxShadow: '0 4px 20px rgba(56, 189, 248, 0.15)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px', marginBottom: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc' }}>⚙️ Voce Fuori Listino / Progetti Personalizzati (con Quantità)</span>
-                    <span style={{ fontSize: '10px', background: 'rgba(255, 255, 255, 0.15)', color: '#f8fafc', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>SU MISURA</span>
+                    <span style={{ fontSize: '15px', fontWeight: 900, color: '#38bdf8' }}>⚙️ Voce Fuori Listino / Progetti Personalizzati (Inserisci da qui)</span>
+                    <span style={{ fontSize: '10px', background: 'rgba(56, 189, 248, 0.25)', color: '#38bdf8', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>CONFIGURATORE RAPIDO</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>Quantità e Prezzi Unitari Modificabili</span>
+                  <span style={{ fontSize: '12px', color: '#4ade80', fontWeight: 800 }}>
+                    Totale Netto: € {(Number(legendCustomQuantita || 1) * Number(legendCustomPrezzo || 0)).toLocaleString('it-IT')} + IVA
+                  </span>
                 </div>
-                <p style={{ margin: '0 0 8px 0', fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.5 }}>
-                  Modulo flessibile per gestire qualsiasi prestazione concordata fuori standard: sponsorizzazioni esclusive di rubriche (Meteo, Traffico, GR Notizie), dirette esterne con regia mobile, concorsi a premi o pacchetti multi-prestazione. Prevede la gestione nativa delle quantità e il calcolo automatico dei totali.
+                <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: '#cbd5e1', lineHeight: 1.4 }}>
+                  Configura qui sotto qualsiasi prestazione speciale concordata con il cliente (sponsorizzazioni rubriche, pacchetti speciali, dirette esterne, ecc.). Cliccando su <strong>"Inserisci nel Preventivo"</strong> verrà aggiunta istantaneamente con le quantità e i prezzi specificati.
                 </p>
+
+                {/* CAMPI DI CONFIGURAZIONE DIRETTA */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{ display: 'block', fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, marginBottom: '4px', textTransform: 'uppercase' }}>Titolo / Descrizione Voce</label>
+                    <input 
+                      type="text" 
+                      className="form-control"
+                      value={legendCustomNome} 
+                      onChange={e => setLegendCustomNome(e.target.value)} 
+                      placeholder="es. Sponsorizzazione Rubrica Meteo / Diretta Esterna"
+                      style={{ width: '100%', fontSize: '12px', padding: '6px 10px', background: '#090d16', border: '1px solid #334155', color: '#fff', borderRadius: '6px' }}
+                    />
+                  </div>
+
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{ display: 'block', fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, marginBottom: '4px', textTransform: 'uppercase' }}>Dettagli Prestazione (Opzionale)</label>
+                    <input 
+                      type="text" 
+                      className="form-control"
+                      value={legendCustomDettagli} 
+                      onChange={e => setLegendCustomDettagli(e.target.value)} 
+                      placeholder="es. Presenza del logo su grafiche social + 3 citazioni giornaliere"
+                      style={{ width: '100%', fontSize: '12px', padding: '6px 10px', background: '#090d16', border: '1px solid #334155', color: '#fff', borderRadius: '6px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, marginBottom: '4px', textTransform: 'uppercase' }}>Quantità</label>
+                    <input 
+                      type="number" 
+                      min="1"
+                      className="form-control"
+                      value={legendCustomQuantita} 
+                      onChange={e => setLegendCustomQuantita(Math.max(1, parseInt(e.target.value) || 1))} 
+                      style={{ width: '100%', fontSize: '12px', padding: '6px 10px', background: '#090d16', border: '1px solid #334155', color: '#fff', borderRadius: '6px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, marginBottom: '4px', textTransform: 'uppercase' }}>Prezzo Unit. Netto (€)</label>
+                    <input 
+                      type="number" 
+                      min="0"
+                      className="form-control"
+                      value={legendCustomPrezzo} 
+                      onChange={e => setLegendCustomPrezzo(Math.max(0, parseFloat(e.target.value) || 0))} 
+                      style={{ width: '100%', fontSize: '12px', padding: '6px 10px', background: '#090d16', border: '1px solid #334155', color: '#fff', borderRadius: '6px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, marginBottom: '4px', textTransform: 'uppercase' }}>Prezzo Unit. Listino (€)</label>
+                    <input 
+                      type="number" 
+                      min="0"
+                      className="form-control"
+                      value={legendCustomListino} 
+                      onChange={e => setLegendCustomListino(Math.max(0, parseFloat(e.target.value) || 0))} 
+                      style={{ width: '100%', fontSize: '12px', padding: '6px 10px', background: '#090d16', border: '1px solid #334155', color: '#fff', borderRadius: '6px' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                    <button 
+                      className="btn btn-primary"
+                      onClick={() => {
+                        const q = Math.max(1, Number(legendCustomQuantita || 1));
+                        const nettoUnit = Number(legendCustomPrezzo || 0);
+                        const listinoUnit = Number(legendCustomListino || nettoUnit);
+                        const totaleNetto = q * nettoUnit;
+                        const totaleListino = q * listinoUnit;
+                        const nomeVoce = legendCustomNome.trim() || 'Voce Fuori Listino';
+                        const desc = legendCustomDettagli.trim() || `Accordo personalizzato fuori listino standard: ${q} prestaz. a € ${nettoUnit} cad.`;
+
+                        addQuoteItem(
+                          nomeVoce,
+                          'Accordo Fuori Listino / Personalizzato',
+                          desc,
+                          'Personalizzata',
+                          '',
+                          totaleListino,
+                          totaleNetto,
+                          {
+                            quantita: q,
+                            prezzoUnitarioNetto: nettoUnit,
+                            prezzoUnitarioListino: listinoUnit,
+                            isCustom: true
+                          }
+                        );
+                        setLegendSuccessMsg(`✅ "${nomeVoce}" (${q} pz × € ${nettoUnit}) inserita con successo nel preventivo!`);
+                      }}
+                      style={{ width: '100%', height: '36px', background: 'linear-gradient(135deg, #0284c7, #2563eb)', border: 'none', color: '#fff', fontWeight: 900, fontSize: '12px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+                    >
+                      ➕ Inserisci Questa Voce nel Preventivo
+                    </button>
+                  </div>
+                </div>
               </div>
 
             </div>
 
-            <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '14px', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '11px', color: '#64748b' }}>
+                💡 Suggerimento: Puoi aggiungere più voci consecutive chiudendo la legenda solo al termine della composizione.
+              </span>
               <button className="btn btn-primary btn-sm" onClick={() => setShowProductLegendModal(false)} style={{ fontWeight: 800, padding: '8px 20px' }}>
                 Chiudi Legenda
               </button>

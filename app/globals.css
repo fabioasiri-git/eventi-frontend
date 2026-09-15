@@ -1,3 +1,35 @@
+@font-face {
+  font-family: 'Akzidenz-Grotesk';
+  src: url('/fonts/akzidenzgrotesk-bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Akzidenz-Grotesk';
+  src: url('/fonts/akzidenzgrotesk-bold.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Panton';
+  src: url('/fonts/panton-narrow-black.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Panton Narrow';
+  src: url('/fonts/panton-narrow-black.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg-dark: #090d16;
   --panel-bg: rgba(18, 24, 38, 0.85);
