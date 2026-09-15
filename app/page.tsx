@@ -385,7 +385,7 @@ export default function LeadEngineDashboard() {
   const [legendCustomPrezzo, setLegendCustomPrezzo] = useState(400);
   const [legendCustomListino, setLegendCustomListino] = useState(500);
   const [legendSuccessMsg, setLegendSuccessMsg] = useState<string | null>(null);
-  const [includeLegendInPdf, setIncludeLegendInPdf] = useState(true);
+  const [includeLegendInPdf, setIncludeLegendInPdf] = useState(false);
 
   // Moduli Preventivo Modulare Dinamico
   const [quoteItems, setQuoteItems] = useState<QuoteLineItem[]>([
@@ -3715,6 +3715,30 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 >
                   {editingLeadId ? '💾 Salva Modifiche Preventivo' : '💾 Salva in Trattativa'}
                 </button>
+                <label 
+                  style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    gap: '6px', 
+                    background: includeLegendInPdf ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)', 
+                    border: `1px solid ${includeLegendInPdf ? '#38bdf8' : 'rgba(255, 255, 255, 0.1)'}`, 
+                    padding: '4px 10px', 
+                    borderRadius: '6px', 
+                    cursor: 'pointer',
+                    userSelect: 'none'
+                  }}
+                  title="Opzionale: spunta solo per nuovi clienti se vuoi allegare la Guida ai Formati in 2ª pagina; per clienti ricorrenti lascia deselezionato (1 pagina)"
+                >
+                  <input
+                    type="checkbox"
+                    checked={includeLegendInPdf}
+                    onChange={e => setIncludeLegendInPdf(e.target.checked)}
+                    style={{ cursor: 'pointer', accentColor: '#38bdf8' }}
+                  />
+                  <span style={{ fontSize: '11px', color: includeLegendInPdf ? '#38bdf8' : '#94a3b8', fontWeight: includeLegendInPdf ? 700 : 500 }}>
+                    {includeLegendInPdf ? '📖 Allega Guida Formati (2ª Pag.)' : '📄 1 Pagina (Clienti Ricorrenti)'}
+                  </span>
+                </label>
                 <button
                   className="btn"
                   style={{ background: 'rgba(168,85,247,0.2)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.4)', fontWeight: 700 }}
@@ -4217,19 +4241,31 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 >
                   📝 Passa a Contratto RMS
                 </button>
-                <button
-                  className="btn btn-xs"
+                <label
                   style={{
-                    background: includeLegendInPdf ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.08)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: includeLegendInPdf ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)',
                     color: includeLegendInPdf ? '#38bdf8' : '#94a3b8',
-                    border: `1px solid ${includeLegendInPdf ? '#38bdf8' : 'rgba(255, 255, 255, 0.2)'}`,
-                    fontWeight: 800
+                    border: `1px solid ${includeLegendInPdf ? '#38bdf8' : 'rgba(255, 255, 255, 0.15)'}`,
+                    padding: '4px 10px',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    userSelect: 'none'
                   }}
-                  onClick={() => setIncludeLegendInPdf(!includeLegendInPdf)}
-                  title="Attiva o disattiva la Guida Formati in 2ª pagina per il cliente"
+                  title="Opzionale: spunta solo per nuovi clienti per allegare la Guida ai Formati (2ª pag.); lascia deselezionato per clienti ricorrenti (1 pagina)"
                 >
-                  {includeLegendInPdf ? '📑 2 Pagine (con Guida Formati Cliente)' : '📄 1 Pagina (Solo Offerta)'}
-                </button>
+                  <input
+                    type="checkbox"
+                    checked={includeLegendInPdf}
+                    onChange={e => setIncludeLegendInPdf(e.target.checked)}
+                    style={{ cursor: 'pointer', accentColor: '#38bdf8' }}
+                  />
+                  <span style={{ fontSize: '11px', fontWeight: 800 }}>
+                    {includeLegendInPdf ? '📖 2ª Pagina (Guida Formati Nuovi Clienti)' : '📄 1 Pagina (Clienti Ricorrenti)'}
+                  </span>
+                </label>
                 <button
                   className="btn btn-primary btn-xs"
                   onClick={downloadProposalPdfDirect}
