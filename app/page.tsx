@@ -693,6 +693,7 @@ export default function LeadEngineDashboard() {
   }
 
   function selectHistoricalClient(client: HistoricalClient) {
+    setEditingLeadId(null);
     setSelectedHistory(client);
     setQNome(client.ditta);
     setQReferente(client.referente || '');
@@ -1195,10 +1196,15 @@ export default function LeadEngineDashboard() {
 
     updateLeadsAndPersist(prev => {
       const existingLead = editingLeadId ? prev.find(l => l.id === editingLeadId) : null;
-      const assignedQuoteNum = existingLead?.numero_preventivo || currentQuoteNumber || getNextQuoteNumber(prev);
+      // Salvaguardia: se il nome azienda è cambiato rispetto al lead in modifica, crea un nuovo lead separato
+      const isSameCompany = existingLead && (
+        existingLead.nome_azienda_evento.trim().toLowerCase() === clientName.trim().toLowerCase()
+      );
+      const isEditing = Boolean(editingLeadId && isSameCompany);
+      const assignedQuoteNum = (isEditing ? existingLead?.numero_preventivo : null) || currentQuoteNumber || getNextQuoteNumber(prev);
       setCurrentQuoteNumber(assignedQuoteNum);
 
-      if (editingLeadId) {
+      if (isEditing) {
         // Aggiorna lead esistente in-place
         return prev.map(l => {
           if (l.id === editingLeadId) {
@@ -1207,7 +1213,7 @@ export default function LeadEngineDashboard() {
           return l;
         });
       } else {
-        // Crea nuovo lead
+        // Crea nuovo lead separato
         const newLead: LeadRow = {
           id: `quote-${Date.now()}`,
           settore: 'B2B / Servizi',
@@ -1221,6 +1227,7 @@ export default function LeadEngineDashboard() {
     });
 
     setShowQuoteModal(false);
+    resetQuoteBuilder();
     alert(`✅ Preventivo per "${clientName}" (€ ${totaleInvestimento.toLocaleString('it-IT')}) salvato con successo in "PREVENTIVI IN TRATTATIVA"!`);
   }
 
@@ -1980,7 +1987,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
           <button className="btn" onClick={() => alert('Cassaforte Cloud Supabase: system_vault connesso e sincronizzato!')}>
             🔒 Cloud Vault OK
           </button>
-          <button className="btn btn-primary" onClick={() => setShowQuoteModal(true)}>
+          <button className="btn btn-primary" onClick={() => { resetQuoteBuilder(); setShowQuoteModal(true); }}>
             ➕ Nuovo Preventivo Modulare
           </button>
         </div>
