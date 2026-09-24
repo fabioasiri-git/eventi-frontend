@@ -198,6 +198,28 @@ async function pollRadioToscana() {
   }
 }
 
+// 3b. Radio Firenze (REST API)
+async function pollRadioFirenze() {
+  try {
+    const res = await fetch("https://sr14.inmystream.it/AudioPlayer/radiofirenze/playerInfo", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      cache: "no-store",
+    });
+    if (!res.ok) return { inserted: false, reason: `http_${res.status}` };
+    const data = await res.json();
+    const np = (data.nowplaying || "").trim();
+    if (!np || !np.includes(" - ")) return { inserted: false, reason: "invalid_format" };
+
+    const parts = np.split(" - ");
+    const artist = parts[0].trim();
+    const title = parts.slice(1).join(" - ").trim();
+
+    return await insertSpin("Radio Firenze", artist, title);
+  } catch (err: any) {
+    return { inserted: false, reason: err.message };
+  }
+}
+
 // 4. RDS Relax (Icecast)
 async function pollRdsRelax() {
   const meta = await fetchIcyMetadata("https://icstream.rds.radio/rdsrelax");
@@ -220,10 +242,11 @@ export async function GET(request: Request) {
   const startTime = Date.now();
   console.log(`[Stream Collector] Starting polling cycle...`);
 
-  const [discoradio, m2o, toscana, rdsRelax, dss] = await Promise.all([
+  const [discoradio, m2o, toscana, firenze, rdsRelax, dss] = await Promise.all([
     pollDiscoradio(),
     pollM2o(),
     pollRadioToscana(),
+    pollRadioFirenze(),
     pollRdsRelax(),
     pollDimensioneSuonoSoft()
   ]);
@@ -233,6 +256,7 @@ export async function GET(request: Request) {
     "Discoradio": discoradio,
     "m2o": m2o,
     "Radio Toscana": toscana,
+    "Radio Firenze": firenze,
     "RDS Relax": rdsRelax,
     "Dimensione Suono Soft": dss
   };
