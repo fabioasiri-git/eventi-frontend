@@ -6,7 +6,7 @@ try:
         port=6543,
         dbname='postgres',
         user='postgres.dunogeleekgqztkrlxsz',
-        password='82PR0wuwHCtbCVdl',
+        password='MyAYJY3sEvmbUqKx',
         connect_timeout=10
     )
     cursor = conn.cursor()

@@ -24,7 +24,7 @@ def main():
     conn = psycopg2.connect(
         dbname='postgres',
         user='postgres.dunogeleekgqztkrlxsz',
-        password='82PR0wuwHCtbCVdl',
+        password='MyAYJY3sEvmbUqKx',
         host='aws-0-eu-west-1.pooler.supabase.com',
         port=6543
     )

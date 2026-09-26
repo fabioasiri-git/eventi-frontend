@@ -94,7 +94,7 @@ def main():
         port=int(env_vars.get("SUPABASE_DB_PORT", "6543")),
         dbname=env_vars.get("SUPABASE_DB_NAME", "postgres"),
         user=env_vars.get("SUPABASE_DB_USER", "postgres.dunogeleekgqztkrlxsz"),
-        password=env_vars.get("SUPABASE_DB_PASSWORD", "82PR0wuwHCtbCVdl"),
+        password=env_vars.get("SUPABASE_DB_PASSWORD", "MyAYJY3sEvmbUqKx"),
         connect_timeout=10
     )
     cursor = conn.cursor()
