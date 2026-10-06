@@ -2117,6 +2117,16 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
             </select>
           </div>
 
+          <a
+            href="/pubblicita"
+            target="_blank"
+            rel="noreferrer"
+            className="btn"
+            style={{ background: '#ff0033', color: '#ffffff', fontWeight: 800, border: '1px solid #ff0033', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}
+            title="Apre la Landing Page Ufficiale /pubblicita in un nuovo tab"
+          >
+            <span>📡</span> Landing /pubblicita
+          </a>
           <button className="btn" onClick={() => alert('Cassaforte Cloud Supabase: system_vault connesso e sincronizzato!')}>
             🔒 Cloud Vault OK
           </button>
