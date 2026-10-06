@@ -459,41 +459,43 @@ export default function LandingPubblicita() {
             flexWrap: 'wrap',
             gap: '32px'
           }}>
-            {/* CLK ITALIA (In risalto speciale) */}
             <div className="font-panton" style={{
               padding: '8px 20px',
               borderRadius: '6px',
               background: '#f8fafc',
-              border: '2px solid #474350',
+              border: '2px solid #D43F4A',
               fontWeight: 900,
               fontStyle: 'italic',
               fontSize: '16px',
               letterSpacing: '0.08em',
-              color: '#474350',
+              color: '#D43F4A',
               transform: 'skewX(-6deg)'
             }}>
               <span style={{ transform: 'skewX(6deg)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ color: '#D43F4A' }}>●</span> CLK ITALIA
+                <span>●</span> COLDIRETTI TOSCANA
               </span>
             </div>
 
             <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
-              CONAD
+              FATTORIA DI LAVACCHIO
             </div>
             <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
-              UNICOOP FIRENZE
+              TINGHI MOTORS
             </div>
             <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
-              BPER BANCA
+              TOSCANA AEROPORTI
             </div>
             <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
-              CHIANTIBANCA
+              MERCATO CENTRALE FIRENZE
             </div>
             <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
-              AUTORICAMBI FIRENZE
+              FIVAG CISL
             </div>
             <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
-              CONSORZIO DEL CHIANTI
+              HICARE SURGERY
+            </div>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
+              CARITAS FIRENZE
             </div>
           </div>
         </div>
@@ -954,7 +956,7 @@ export default function LandingPubblicita() {
                   <input
                     type="text"
                     required
-                    placeholder="es. CLK Italia S.r.l."
+                    placeholder="es. Fattoria di Lavacchio, Tinghi Motors..."
                     value={formData.azienda}
                     onChange={(e) => setFormData({ ...formData, azienda: e.target.value })}
                     style={{
