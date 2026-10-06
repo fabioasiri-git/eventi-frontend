@@ -146,7 +146,7 @@ export default function LandingPubblicita() {
               gap: '6px'
             }}
           >
-            <span>📞 Sede Centrale: 055 285030</span>
+            <span>📞 055 285030</span>
           </a>
         </div>
       </div>
@@ -1029,64 +1029,13 @@ export default function LandingPubblicita() {
                   />
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
-                    Area Territoriale Target
-                  </label>
-                  <select
-                    value={formData.areaInteresse}
-                    onChange={(e) => setFormData({ ...formData, areaInteresse: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '12px 14px',
-                      borderRadius: '8px',
-                      border: '1.5px solid #d1d5db',
-                      fontSize: '15px',
-                      outline: 'none',
-                      background: '#ffffff',
-                      boxSizing: 'border-box'
-                    }}
-                  >
-                    <option value="Tutta la Toscana (Rete Regionale Completa)">Tutta la Toscana (Rete Regionale Completa)</option>
-                    <option value="Area 1 (Firenze, Prato, Pistoia)">Area 1 (Firenze, Prato, Pistoia)</option>
-                    <option value="Area 2 (Pisa, Lucca, Livorno)">Area 2 (Pisa, Lucca, Livorno)</option>
-                    <option value="Area 3 (Arezzo, Siena, Empolese)">Area 3 (Arezzo, Siena, Empolese)</option>
-                    <option value="Area 4 (Digital, Streaming &amp; Web)">Area 4 (Digital, Streaming &amp; Web)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
-                    Formato di Pianificazione
-                  </label>
-                  <select
-                    value={formData.formatoInteresse}
-                    onChange={(e) => setFormData({ ...formData, formatoInteresse: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '12px 14px',
-                      borderRadius: '8px',
-                      border: '1.5px solid #d1d5db',
-                      fontSize: '15px',
-                      outline: 'none',
-                      background: '#ffffff',
-                      boxSizing: 'border-box'
-                    }}
-                  >
-                    <option value="Spot Tabellari 20&quot;-30&quot;">Spot Tabellari 20&quot;-30&quot; (Fasce Top Drive Time)</option>
-                    <option value="Citazione Conduttore / Promoredazionale">Citazione Conduttore / Promoredazionale</option>
-                    <option value="Sponsorizzazione Rubrica (Meteo / Viabilità)">Sponsorizzazione Rubrica (Meteo / Viabilità)</option>
-                    <option value="Pacchetto Speciale Evento sul Territorio">Pacchetto Speciale Evento sul Territorio</option>
-                  </select>
-                </div>
-
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
-                    Obiettivo o Note Aggiuntive
+                    Come possiamo aiutarti? (Note o Obiettivo)
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="es. Promozione nuovo punto vendita, campagna stagionale, notorietà di brand..."
+                    placeholder="es. Vorrei promuovere un nuovo punto vendita, una campagna stagionale, far conoscere la mia attività..."
                     value={formData.note}
                     onChange={(e) => setFormData({ ...formData, note: e.target.value })}
                     style={{
