@@ -811,16 +811,16 @@ export default function LandingPubblicita() {
               </a>
             </div>
 
-            {/* Immagine Firenze Conversion Drive-to-Store */}
+            {/* Immagine Auto Sintonizzata su Radio Toscana */}
             <div style={{
               borderRadius: '16px',
               overflow: 'hidden',
-              boxShadow: '0 20px 45px rgba(71, 67, 80, 0.14)',
+              boxShadow: '0 20px 45px rgba(71, 67, 80, 0.16)',
               border: '4px solid #ffffff'
             }}>
               <img
-                src="/audio_immersion_drivetosite.jpg"
-                alt="Firenze Conversion Drive to Store - Radio Toscana"
+                src="/auto_radio_toscana.jpg"
+                alt="Auto sintonizzata su Radio Toscana 104.7 FM DAB+ lungo le strade della Toscana"
                 style={{ width: '100%', height: 'auto', display: 'block' }}
               />
             </div>
