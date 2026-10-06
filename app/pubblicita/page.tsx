@@ -883,9 +883,9 @@ export default function LandingPubblicita() {
             </div>
 
             <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '12px', border: '1px solid #e5e7eb', borderLeft: '4px solid #474350' }}>
-              <div className="font-panton" style={{ fontSize: '13px', fontWeight: 900, fontStyle: 'italic', color: '#474350' }}>AREA 4 • COSTA & MAREMMA</div>
-              <div className="font-panton" style={{ fontSize: '20px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '4px 0' }}>Versilia, Grosseto, Elba</div>
-              <div style={{ fontSize: '13px', color: '#6b7280' }}>Stagionalità ricca, hospitality, nautica ed eventi estivi di prestigio.</div>
+              <div className="font-panton" style={{ fontSize: '13px', fontWeight: 900, fontStyle: 'italic', color: '#474350' }}>AREA 4 • DIGITAL &amp; MULTIPLATFORM</div>
+              <div className="font-panton" style={{ fontSize: '20px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '4px 0' }}>Streaming, App, Web &amp; Podcast</div>
+              <div style={{ fontSize: '13px', color: '#6b7280' }}>Piattaforma streaming HD, App Radio Toscana, Smart Speaker e canali web per un'audience sempre connessa.</div>
             </div>
           </div>
         </div>
@@ -1059,7 +1059,7 @@ export default function LandingPubblicita() {
                     <option value="Area 1 (Firenze, Prato, Pistoia)">Area 1 (Firenze, Prato, Pistoia)</option>
                     <option value="Area 2 (Pisa, Lucca, Livorno)">Area 2 (Pisa, Lucca, Livorno)</option>
                     <option value="Area 3 (Arezzo, Siena, Empolese)">Area 3 (Arezzo, Siena, Empolese)</option>
-                    <option value="Area 4 (Costa, Versilia, Grosseto)">Area 4 (Costa, Versilia, Grosseto)</option>
+                    <option value="Area 4 (Digital, Streaming &amp; Web)">Area 4 (Digital, Streaming &amp; Web)</option>
                   </select>
                 </div>
 
