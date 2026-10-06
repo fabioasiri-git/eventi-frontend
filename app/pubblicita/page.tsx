@@ -89,7 +89,7 @@ export default function LandingPubblicita() {
         }
       `}} />
 
-      {/* 1. TOP BAR FREQUENZE & BROADCAST REGIONALE */}
+      {/* 1. TOP BAR ISTITUZIONALE & CONTATTI COMMERCIALI */}
       <div style={{
         background: '#474350',
         color: '#ffffff',
@@ -102,54 +102,51 @@ export default function LandingPubblicita() {
         gap: '12px',
         borderBottom: '2px solid #D43F4A'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
-          <span className="font-panton" style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: '#D43F4A',
-            color: '#ffffff',
-            padding: '3px 12px',
-            borderRadius: '4px',
-            fontSize: '13px',
-            fontWeight: 900,
-            fontStyle: 'italic',
-            letterSpacing: '0.08em',
-            transform: 'skewX(-8deg)'
-          }}>
-            <span style={{
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              background: '#ffffff',
-              display: 'inline-block'
-            }}></span>
-            ON AIR LIVE
+        {/* Dati Certificati & Copertura */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <span style={{ color: '#ffffff', fontWeight: 700, fontSize: '13px' }}>
+            🎙️ 298.000 ascoltatori settimanali certificati TER
           </span>
-          <span className="font-panton" style={{ color: '#e2e8f0', fontSize: '13px', letterSpacing: '0.05em' }}>
-            FIRENZE <b>104.7 FM</b> • PISTOIA <b>88.0 FM</b> • COSTA & VERSILIA <b>102.8 FM</b> • <b>DAB+ TOSCANA</b>
+          <span style={{ color: '#94a3b8' }}>•</span>
+          <span className="font-panton" style={{ color: '#e2e8f0', fontSize: '13px', letterSpacing: '0.04em' }}>
+            Copertura Regionale FM & DAB+ Toscana
           </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '18px', fontSize: '12px' }}>
-          <span style={{ color: '#cbd5e1' }}>
-            🎙️ <b>298.000</b> ascoltatori settimanali certificati TER
-          </span>
+        {/* Canali Ufficiali Sede */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', fontSize: '12px' }}>
           <a
-            href="tel:3476818595"
+            href="mailto:commerciale@radiotoscana.it"
             style={{
               color: '#ffffff',
               background: 'rgba(255,255,255,0.12)',
               padding: '4px 12px',
               borderRadius: '9999px',
               textDecoration: 'none',
-              fontWeight: 700,
+              fontWeight: 600,
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px'
             }}
           >
-            <span>Linea Diretta: 347 6818595</span>
+            <span>✉️ commerciale@radiotoscana.it</span>
+          </a>
+
+          <a
+            href="tel:055285030"
+            style={{
+              color: '#ffffff',
+              background: 'rgba(255,255,255,0.12)',
+              padding: '4px 12px',
+              borderRadius: '9999px',
+              textDecoration: 'none',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <span>📞 Sede Centrale: 055 285030</span>
           </a>
         </div>
       </div>
@@ -940,12 +937,9 @@ export default function LandingPubblicita() {
                 <h3 className="font-panton" style={{ fontSize: '26px', fontWeight: 900, fontStyle: 'italic', color: '#166534', marginBottom: '8px' }}>
                   Richiesta Ricevuta con Successo!
                 </h3>
-                <p style={{ color: '#15803d', fontSize: '15px', maxWidth: '520px', margin: '0 auto 20px' }}>
+                <p style={{ color: '#15803d', fontSize: '15px', maxWidth: '520px', margin: '0 auto' }}>
                   L'ufficio commerciale di Radio Toscana prenderà in carico la tua richiesta e ti ricontatterà al recapito indicato.
                 </p>
-                <div style={{ fontSize: '13px', color: '#166534', fontWeight: 700 }}>
-                  Per urgenze immediate: chiama Fabio al <a href="tel:3476818595" style={{ color: '#166534', textDecoration: 'underline' }}>347 6818595</a>.
-                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
@@ -999,7 +993,7 @@ export default function LandingPubblicita() {
                   <input
                     type="tel"
                     required
-                    placeholder="es. 347 1234567"
+                    placeholder="es. 055 1234567"
                     value={formData.telefono}
                     onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
                     style={{
@@ -1189,12 +1183,12 @@ export default function LandingPubblicita() {
 
             <div style={{ display: 'flex', gap: '20px', alignItems: 'center', fontSize: '13px' }}>
               <span style={{ color: '#ffffff', fontWeight: 600 }}>Ufficio Pubblicità:</span>
-              <a href="tel:3476818595" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 800 }}>
-                📞 347 6818595
+              <a href="tel:055285030" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 700 }}>
+                📞 055 285030
               </a>
               <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
-              <a href="mailto:pubblicita@radiotoscana.it" style={{ color: '#ffffff', textDecoration: 'none' }}>
-                ✉️ pubblicita@radiotoscana.it
+              <a href="mailto:commerciale@radiotoscana.it" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 600 }}>
+                ✉️ commerciale@radiotoscana.it
               </a>
             </div>
           </div>
