@@ -821,7 +821,7 @@ export default function LandingPubblicita() {
               border: '4px solid #ffffff'
             }}>
               <img
-                src="/auto_radio_toscana.jpg?v=2026"
+                src="/auto_radio_toscana.jpg?v=2026_v4"
                 alt="Auto sintonizzata su Radio Toscana 104.7 FM DAB+ lungo le strade della Toscana"
                 style={{ width: '100%', height: 'auto', display: 'block' }}
               />
