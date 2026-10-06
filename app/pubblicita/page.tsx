@@ -57,13 +57,35 @@ export default function LandingPubblicita() {
       lineHeight: 1.6,
       overflowX: 'hidden'
     }}>
-      {/* Import Font Ufficiali: Barlow Condensed (per Panton Narrow) + Plus Jakarta Sans (per Akzidenz Grotesk) */}
+      {/* CARICAMENTO FONT UFFICIALI RADIO TOSCANA DA FILE ORIGINALI /fonts */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700;1,800;1,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        
+        @font-face {
+          font-family: 'Panton Narrow';
+          src: url('/fonts/panton-narrow-black.otf') format('opentype');
+          font-weight: 900;
+          font-style: normal;
+          font-display: swap;
+        }
+
+        @font-face {
+          font-family: 'Berthold Akzidenz Grotesk';
+          src: url('/fonts/akzidenzgrotesk-bold.otf') format('opentype');
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+        }
+
         .font-panton {
-          font-family: 'Barlow Condensed', sans-serif;
-          letter-spacing: 0.04em;
+          font-family: 'Panton Narrow', -apple-system, BlinkMacSystemFont, sans-serif !important;
+          letter-spacing: 0.03em;
+        }
+
+        .font-akzidenz {
+          font-family: 'Berthold Akzidenz Grotesk', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        }
+
+        body, div, p, span, a, input, select, textarea, button {
+          font-family: 'Berthold Akzidenz Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
       `}} />
 
