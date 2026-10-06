@@ -102,6 +102,54 @@ interface LeadRow {
 
 const INITIAL_LEADS_POOL: LeadRow[] = [
   {
+    id: 'lead-atom-production-2026',
+    nome_azienda_evento: 'ATOM PRODUCTION SOC. COOP. R.L.',
+    referente: 'Alessandro Pretelli',
+    email: 'info@atomproduction.it',
+    telefono: '348 4921741',
+    piva: '01800660472',
+    sdi: 'G9HZJRW',
+    settore: 'Produzione Eventi / Coldiretti Firenze',
+    comune: 'Quarrata',
+    provincia: 'PT',
+    area_target: 'Radio Toscana (Firenze & Rete Regionale)',
+    fase_commerciale: 'CONTRATTO ATTIVO',
+    tipo_contratto: 'DIRETTA_RADIOFONICA',
+    valore_preventivo: 5000,
+    valore_contratto: 5000,
+    numero_preventivo: 'PREV-2026/004',
+    numero_contratto: '2026/004-RMS',
+    plafond_totale_spot: 10,
+    spot_rimasti: 10,
+    is_cambio_merce: false,
+    probabilita_chiusura: 100,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-10-06',
+    data_ultimo_invio: '2026-10-06',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'PRONTO_IN_ONDA',
+    copy_testo: 'Diretta Radiofonica Mercato Contadino Coldiretti Firenze: 10 puntate on-air (1 puntata al mese da Ottobre 2026 a Giugno 2027).',
+    data_inizio_trasmissione: '2026-10-06',
+    data_fine_trasmissione: '2027-06-30',
+    spot_giornalieri: 1,
+    stato_programmazione: 'IN_ONDA',
+    quote_items: [
+      {
+        id: 'it-atom-1',
+        tipo: 'Diretta Radiofonica On-Air',
+        copertura: 'Radio Toscana (Firenze & Rete)',
+        dettagli: '10 puntate in diretta radiofonica on-air dal Mercato Contadino Coldiretti Firenze (1 puntata al mese)',
+        fascia: 'Mattutina / Weekend',
+        periodo: 'Da Ottobre 2026 a Giugno 2027 (10 mesi)',
+        prezzoListino: 5000,
+        valore: 5000,
+        isSpot: false,
+        quantita: 10
+      }
+    ],
+    note: 'Commissione Radio Monte Serra S.r.l. n. 2026/004-RMS del 06/10/2026 per ATOM PRODUCTION SOC. COOP. R.L. (Alessandro Pretelli per conto Coldiretti Firenze). Oggetto: Diretta Radiofonica Mercato Contadino Coldiretti Firenze (10 puntate, 1 al mese da Ottobre 2026 a Giugno 2027). Totale netto: € 5.000,00 + IVA. Pagamento: Bonifico 30 gg DF FM. SDI: G9HZJRW.'
+  },
+  {
     id: 'coldiretti-toscana-2026',
     nome_azienda_evento: 'Federazione Regionale Coldiretti Toscana',
     referente: 'ANDREA BERTI',
@@ -113,7 +161,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     comune: 'Firenze',
     provincia: 'FI',
     area_target: 'Radio Toscana Area 1 (FI - PO - PT)',
-    fase_commerciale: 'CONTRATTO ATTIVO',
+    fase_commerciale: 'CONTRATTO CHIUSO',
     tipo_contratto: 'SPOT_TABELLARE',
     valore_preventivo: 1000,
     valore_contratto: 1000,
@@ -133,7 +181,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     data_inizio_trasmissione: '2026-09-10',
     data_fine_trasmissione: '2026-09-17',
     spot_giornalieri: 22,
-    stato_programmazione: 'IN_ONDA',
+    stato_programmazione: 'TRASMISSIONE_COMPLETATA',
     quote_items: [
       {
         id: 'it-coldiretti-1',
@@ -256,7 +304,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     comune: 'Empoli',
     provincia: 'FI',
     area_target: 'Radio Toscana Area 1 (FI - PO - PT)',
-    fase_commerciale: 'CONTRATTO ATTIVO',
+    fase_commerciale: 'CONTRATTO CHIUSO',
     tipo_contratto: 'SPOT_TABELLARE',
     valore_preventivo: 375,
     valore_contratto: 375,
@@ -275,7 +323,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     data_inizio_trasmissione: '2026-09-07',
     data_fine_trasmissione: '2026-09-18',
     spot_giornalieri: 6,
-    stato_programmazione: 'IN_ONDA',
+    stato_programmazione: 'TRASMISSIONE_COMPLETATA',
     quote_items: [
       {
         id: 'it-tinghi-1',
@@ -806,7 +854,7 @@ export default function LeadEngineDashboard() {
     iban: ''
   });
 
-  const STORAGE_KEY = 'rt_lead_engine_leads_v4';
+  const STORAGE_KEY = 'rt_lead_engine_leads_v5';
 
   // Helper Persistenza Reale (Cloud Supabase + LocalStorage + Memoria)
   function updateLeadsAndPersist(updater: (prev: LeadRow[]) => LeadRow[]) {

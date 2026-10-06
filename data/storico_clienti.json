@@ -2665,11 +2665,19 @@
         "spot": "75+30 omaggio",
         "file": "Contratto Atom x Coldiretti 03.06.24.xls",
         "referente": "Alessandro pretelli"
+      },
+      {
+        "anno": "2026",
+        "data": "06/10/2026",
+        "prezzo": 5000,
+        "spot": "10 puntate Diretta Radiofonica Mercato Contadino Coldiretti Firenze",
+        "file": "Contratto ATOM PRODUCTION Coldiretti Firenze 06.10.26.pdf",
+        "referente": "Alessandro Pretelli"
       }
     ],
-    "totale_contratti": 1,
-    "ultimo_prezzo": 1000,
-    "ultimo_anno": "2024"
+    "totale_contratti": 2,
+    "ultimo_prezzo": 5000,
+    "ultimo_anno": "2026"
   },
   {
     "ditta": "FONDAZIONE SOLIDARIETÀ CARITAS ONLUS FIRENZE",
