@@ -4158,5 +4158,38 @@
     "totale_contratti": 1,
     "ultimo_prezzo": 1500,
     "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "SOCIETA' AGRICOLA LAVACCHIO SRL",
+    "referente": "LOTTERO FAYE",
+    "indirizzo": "Via Montefiesole, 55",
+    "cap": "50065",
+    "citta": "Pontassieve",
+    "provincia": "FI",
+    "telefono": "055 8317472",
+    "email": "amministrazione@fattorialavacchio.com",
+    "piva": "04984810483",
+    "sdi": "5RUO82D",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "13/07/2026",
+        "prezzo": 630,
+        "spot": "200 spot da 20\" Rete (10 spot/gg x 10 gg)",
+        "file": "Contratto Fattoria Di Lavacchio 13.07.2026.xls",
+        "referente": "LOTTERO FAYE"
+      },
+      {
+        "anno": "2026",
+        "data": "06/10/2026",
+        "prezzo": 549.18,
+        "spot": "Servizi Promozionali (Totale 670€ IVA inclusa)",
+        "file": "Contratto Fattoria di Lavacchio Servizi Promozionali 06.10.26.xlsx",
+        "referente": "LOTTERO FAYE"
+      }
+    ],
+    "totale_contratti": 2,
+    "ultimo_prezzo": 549.18,
+    "ultimo_anno": "2026"
   }
 ]

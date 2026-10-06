@@ -102,6 +102,54 @@ interface LeadRow {
 
 const INITIAL_LEADS_POOL: LeadRow[] = [
   {
+    id: 'lead-fattoria-lavacchio-2026',
+    nome_azienda_evento: "SOCIETA' AGRICOLA LAVACCHIO SRL (Fattoria di Lavacchio)",
+    referente: 'LOTTERO FAYE',
+    email: 'amministrazione@fattorialavacchio.com',
+    telefono: '055 8317472',
+    piva: '04984810483',
+    sdi: '5RUO82D',
+    settore: 'Agricoltura / Agriturismo / Vino & Eventi',
+    comune: 'Pontassieve',
+    provincia: 'FI',
+    area_target: 'Radio Toscana (Rete Regionale)',
+    fase_commerciale: 'CONTRATTO ATTIVO',
+    tipo_contratto: 'SERVIZI_PROMOZIONALI',
+    valore_preventivo: 549.18,
+    valore_contratto: 549.18,
+    numero_preventivo: 'PREV-2026/005',
+    numero_contratto: '2026/005-RMS',
+    plafond_totale_spot: 1,
+    spot_rimasti: 1,
+    is_cambio_merce: false,
+    probabilita_chiusura: 100,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-10-06',
+    data_ultimo_invio: '2026-10-06',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'NON_RICHIESTA',
+    copy_testo: 'Servizi promozionali concordati per Fattoria di Lavacchio (Totale € 670,00 IVA compresa: imponibile € 549,18 + IVA 22% € 120,82).',
+    data_inizio_trasmissione: '2026-10-06',
+    data_fine_trasmissione: '2026-10-31',
+    spot_giornalieri: 1,
+    stato_programmazione: 'IN_ONDA',
+    quote_items: [
+      {
+        id: 'it-lavacchio-1',
+        tipo: 'Servizi Promozionali',
+        copertura: 'Radio Toscana (Rete Regionale)',
+        dettagli: 'Pacchetto servizi promozionali emittente radiofonica (Totale € 670,00 IVA compresa)',
+        fascia: 'Rotazione Generale',
+        periodo: 'Ottobre 2026',
+        prezzoListino: 549.18,
+        valore: 549.18,
+        isSpot: false,
+        quantita: 1
+      }
+    ],
+    note: "Commissione Radio Monte Serra S.r.l. n. 2026/005-RMS del 06/10/2026 per SOCIETA' AGRICOLA LAVACCHIO SRL (Fattoria di Lavacchio). Oggetto: Servizi promozionali. Scorporo IVA 22%: Imponibile € 549,18 + IVA € 120,82 = Totale € 670,00 IVA compresa. Pagamento: Bonifico 30 gg DF FM / Vista fattura. SDI: 5RUO82D."
+  },
+  {
     id: 'lead-atom-production-2026',
     nome_azienda_evento: 'ATOM PRODUCTION SOC. COOP. R.L.',
     referente: 'Alessandro Pretelli',
@@ -854,7 +902,7 @@ export default function LeadEngineDashboard() {
     iban: ''
   });
 
-  const STORAGE_KEY = 'rt_lead_engine_leads_v5';
+  const STORAGE_KEY = 'rt_lead_engine_leads_v6';
 
   // Helper Persistenza Reale (Cloud Supabase + LocalStorage + Memoria)
   function updateLeadsAndPersist(updater: (prev: LeadRow[]) => LeadRow[]) {
