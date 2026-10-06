@@ -9,15 +9,16 @@ export default function LandingPubblicita() {
     telefono: '',
     email: '',
     settore: 'Commercio / Retail',
-    areaInteresse: 'AREA 1 (Firenze, Prato, Pistoia)',
-    formatoInteresse: 'Spot Tabellari 20"',
-    obiettivo: 'Svegliare l\'attenzione dei clienti nel territorio',
+    areaInteresse: 'Area 1 (Firenze, Prato, Pistoia)',
+    formatoInteresse: 'Spot Tabellari 20"-30"',
+    obiettivo: 'Incrementare visite e vendite in Toscana',
     note: ''
   });
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [activeTab, setActiveTab] = useState<'perche' | 'formati' | 'voci' | 'dati'>('perche');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,8 +31,8 @@ export default function LandingPubblicita() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          source: 'Landing Dystopian Monolith Radio Toscana',
-          utm_campaign: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('utm_campaign') || 'dystopian-2026' : 'dystopian-2026'
+          source: 'Landing Elegance Radio Toscana 2026',
+          utm_campaign: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('utm_campaign') || 'radio-rende-2026' : 'radio-rende-2026'
         })
       });
 
@@ -39,10 +40,10 @@ export default function LandingPubblicita() {
       if (json.success) {
         setSubmitted(true);
       } else {
-        setErrorMsg(json.error || 'Errore durante la trasmissione del segnale.');
+        setErrorMsg(json.error || 'Errore durante l\'invio. Riprova tra poco.');
       }
     } catch (err) {
-      setErrorMsg('Interruzione di rete. Riprova tra poco.');
+      setErrorMsg('Interruzione di connessione. Riprova tra poco o chiamaci direttamente.');
     } finally {
       setLoading(false);
     }
@@ -50,671 +51,1328 @@ export default function LandingPubblicita() {
 
   return (
     <div style={{
-      background: '#ffffff',
-      color: '#000000',
-      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+      background: '#fcfcfd',
+      color: '#0f172a',
+      fontFamily: "'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       minHeight: '100vh',
-      lineHeight: 1.5,
-      letterSpacing: '-0.02em',
+      lineHeight: 1.6,
       overflowX: 'hidden'
     }}>
-      {/* GLITCH / PROTOCOL TICKER BIANCO/NERO */}
+      {/* 1. TOP FREQUENCY & TUNER TICKER - SAPORE DI RADIO VERA */}
       <div style={{
-        background: '#000000',
-        color: '#ffffff',
-        fontSize: '11px',
-        fontWeight: 900,
-        padding: '9px 18px',
-        letterSpacing: '0.18em',
-        textTransform: 'uppercase',
+        background: 'linear-gradient(90deg, #0b1120 0%, #1e1b4b 50%, #0b1120 100%)',
+        color: '#f8fafc',
+        fontSize: '12px',
+        padding: '10px 24px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottom: '3px solid #ff0033'
+        flexWrap: 'wrap',
+        gap: '12px',
+        borderBottom: '1px solid rgba(255,255,255,0.08)'
       }}>
-        <span>📡 PROTOCOLLO BROADCAST TOSCANA // 104.7 FM • 98.2 FM • DAB+ ATTIVO</span>
-        <span style={{ color: '#ff0033', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff0033', display: 'inline-block' }}></span>
-          ON AIR LIVE // 298.000 DISPOSITIVI CONNESSI
-        </span>
-      </div>
-
-      {/* HEADER MONOLITICO MINIMALISTA BRUTALIST */}
-      <header style={{
-        padding: '24px 32px',
-        maxWidth: '1360px',
-        margin: '0 auto',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottom: '2px solid #000000'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <img
-            src="/logo_radio_toscana.png"
-            alt="Radio Toscana"
-            style={{
-              height: '52px',
-              width: 'auto',
-              objectFit: 'contain'
-            }}
-          />
-          <div style={{ borderLeft: '2px solid #000000', paddingLeft: '16px' }}>
-            <div style={{ fontSize: '13px', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ff0033' }}>
-              SOLO TOSCANA | SOLO HIT
-            </div>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: '#000000', letterSpacing: '0.04em' }}>
-              DIVISIONE PROPAGANDA &amp; MEDIA // RADIO MONTE SERRA S.R.L.
-            </div>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '7px',
+            background: 'rgba(239, 68, 68, 0.25)',
+            border: '1px solid rgba(239, 68, 68, 0.6)',
+            padding: '3px 10px',
+            borderRadius: '9999px',
+            fontSize: '11px',
+            fontWeight: 800,
+            letterSpacing: '0.06em',
+            color: '#fca5a5'
+          }}>
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: '#ef4444',
+              boxShadow: '0 0 10px #ef4444'
+            }}></span>
+            ON AIR LIVE
+          </span>
+          <span style={{ color: '#94a3b8', fontSize: '12px' }}>
+            FIRENZE <b>104.7 FM</b> • PISTOIA <b>88.0 FM</b> • COSTA & VERSILIA <b>102.8 FM</b> • <b>DAB+ TOSCANA</b>
+          </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '18px', fontSize: '12px' }}>
+          <span style={{ color: '#cbd5e1' }}>
+            🎙️ <b>298.000</b> ascoltatori settimanali certificati
+          </span>
           <a
             href="tel:3476818595"
             style={{
-              color: '#000000',
+              color: '#38bdf8',
               textDecoration: 'none',
-              fontSize: '13px',
-              fontWeight: 900,
-              padding: '10px 18px',
-              border: '2px solid #000000',
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-              background: '#ffffff',
-              boxShadow: '4px 4px 0px #000000'
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            LINEA DIRETTA: <strong>347 6818595</strong>
+            <span>Linea Diretta: 347 6818595</span>
           </a>
-          <a
-            href="#protocollo-trasmissione"
-            style={{
-              background: '#000000',
-              color: '#ffffff',
-              padding: '12px 22px',
-              fontWeight: 900,
-              fontSize: '13px',
-              textDecoration: 'none',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              border: '2px solid #000000',
-              boxShadow: '4px 4px 0px #ff0033'
-            }}
-          >
-            PRENOTA SPAZIO ETERE ➔
-          </a>
+        </div>
+      </div>
+
+      {/* 2. HEADER ELEGANTE CON LOGO ORIGINALE & CALL TO ACTION */}
+      <header style={{
+        background: 'rgba(255, 255, 255, 0.92)',
+        backdropFilter: 'blur(16px)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        borderBottom: '1px solid #e2e8f0',
+        boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.03)'
+      }}>
+        <div style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '16px 24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          {/* Logo Brand */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <img
+              src="/logo_radio_toscana.png"
+              alt="Radio Toscana"
+              style={{
+                height: '52px',
+                width: 'auto',
+                objectFit: 'contain'
+              }}
+            />
+            <div style={{ borderLeft: '1.5px solid #e2e8f0', paddingLeft: '14px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 900, letterSpacing: '0.08em', color: '#e11d48', textTransform: 'uppercase' }}>
+                SOLO TOSCANA • SOLO HIT
+              </div>
+              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>
+                Ufficio Pianificazione Media & Pubblicità 2026
+              </div>
+            </div>
+          </div>
+
+          {/* Navigazione */}
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+            <a href="#perche-la-radio" style={{ textDecoration: 'none', color: '#334155', fontWeight: 600, fontSize: '14px' }}>
+              Perché la Radio Rende
+            </a>
+            <a href="#drivetosite" style={{ textDecoration: 'none', color: '#334155', fontWeight: 600, fontSize: '14px' }}>
+              Drive to Site & Negozio
+            </a>
+            <a href="#voci" style={{ textDecoration: 'none', color: '#334155', fontWeight: 600, fontSize: '14px' }}>
+              Le Nostre Voci
+            </a>
+            <a href="#copertura" style={{ textDecoration: 'none', color: '#334155', fontWeight: 600, fontSize: '14px' }}>
+              Copertura FM & DAB+
+            </a>
+            <a
+              href="#preventivo"
+              style={{
+                background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)',
+                color: '#ffffff',
+                textDecoration: 'none',
+                padding: '10px 22px',
+                borderRadius: '9999px',
+                fontSize: '13px',
+                fontWeight: 700,
+                boxShadow: '0 8px 20px -4px rgba(225, 29, 72, 0.4)',
+                transition: 'all 0.2s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <span>Richiedi Proposta 2026</span>
+              <span>→</span>
+            </a>
+          </nav>
         </div>
       </header>
 
-      {/* HERO SECTION BRUTALISTA // MANIFESTO DISTOPICO */}
+      {/* 3. HERO SECTION ONIRICA & DISTOPICA: "UN POSTO IN PARADISO" */}
       <section style={{
-        maxWidth: '1360px',
-        margin: '0 auto',
-        padding: '70px 32px 60px',
-        display: 'grid',
-        gridTemplateColumns: '1.25fr 0.95fr',
-        gap: '60px',
-        alignItems: 'start'
+        position: 'relative',
+        padding: '70px 24px 90px',
+        overflow: 'hidden',
+        background: 'radial-gradient(ellipse 90% 60% at 50% -10%, rgba(254, 205, 211, 0.4) 0%, rgba(240, 249, 255, 0.5) 45%, #fcfcfd 100%)'
       }}>
-        {/* COLONNA SINISTRA */}
-        <div>
-          <div style={{
-            display: 'inline-block',
-            background: '#000000',
-            color: '#ffffff',
-            padding: '5px 12px',
-            fontSize: '11px',
-            fontWeight: 900,
-            letterSpacing: '0.16em',
-            textTransform: 'uppercase',
-            marginBottom: '24px'
-          }}>
-            [ RAPPORTO SULLA TRASMISSIONE DIRETTA // 2026 ]
+        {/* Glows d'atmosfera */}
+        <div style={{
+          position: 'absolute',
+          top: '10%',
+          left: '15%',
+          width: '380px',
+          height: '380px',
+          background: 'radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(255,255,255,0) 70%)',
+          filter: 'blur(50px)',
+          zIndex: 0
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          right: '12%',
+          width: '420px',
+          height: '420px',
+          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(255,255,255,0) 70%)',
+          filter: 'blur(60px)',
+          zIndex: 0
+        }}></div>
+
+        <div style={{ maxWidth: '1240px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', maxWidth: '880px', margin: '0 auto 48px' }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: '#ffffff',
+              border: '1px solid #fecdd3',
+              borderRadius: '9999px',
+              padding: '6px 18px',
+              fontSize: '12px',
+              fontWeight: 800,
+              color: '#be123c',
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              boxShadow: '0 6px 16px rgba(225, 29, 72, 0.08)',
+              marginBottom: '22px'
+            }}>
+              <span>☁️ CAMPAGNA EDITORIALE 2026 // UN POSTO IN PARADISO</span>
+            </div>
+
+            <h1 style={{
+              fontSize: ' clamp(32px, 4.8vw, 56px)',
+              fontWeight: 900,
+              lineHeight: 1.15,
+              letterSpacing: '-0.03em',
+              color: '#0f172a',
+              marginBottom: '22px'
+            }}>
+              La radio non mostra: <span style={{
+                background: 'linear-gradient(135deg, #e11d48 0%, #a855f7 50%, #2563eb 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: 'inline-block'
+              }}>fa immaginare.</span><br />
+              E ciò che immagini è già tuo.
+            </h1>
+
+            <p style={{
+              fontSize: '18px',
+              color: '#475569',
+              lineHeight: 1.6,
+              maxWidth: '740px',
+              margin: '0 auto 36px',
+              fontWeight: 450
+            }}>
+              Mentre gli schermi affaticano e i social vengono ignorati a colpi di swipe, la voce autentica di <b>Radio Toscana</b> viaggia nell’etere, entra nell’orecchio e accende il desiderio d’acquisto nella mente di <b>298.000 toscani</b> ogni settimana.
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <a
+                href="#preventivo"
+                style={{
+                  background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)',
+                  color: '#ffffff',
+                  textDecoration: 'none',
+                  padding: '16px 36px',
+                  borderRadius: '9999px',
+                  fontSize: '16px',
+                  fontWeight: 800,
+                  boxShadow: '0 12px 28px -6px rgba(225, 29, 72, 0.45)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px'
+                }}
+              >
+                <span>Richiedi una Pianificazione Su Misura</span>
+                <span>🎙️</span>
+              </a>
+
+              <a
+                href="#perche-la-radio"
+                style={{
+                  background: '#ffffff',
+                  color: '#334155',
+                  textDecoration: 'none',
+                  padding: '16px 30px',
+                  borderRadius: '9999px',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  border: '1px solid #cbd5e1',
+                  boxShadow: '0 4px 12px rgba(15, 23, 42, 0.05)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span>Scopri i Dati di Ascolto FCP</span>
+                <span>↓</span>
+              </a>
+            </div>
           </div>
 
-          <h1 style={{
-            fontSize: '56px',
-            lineHeight: 1.02,
-            fontWeight: 900,
-            textTransform: 'uppercase',
-            margin: '0 0 24px',
-            color: '#000000',
-            letterSpacing: '-0.04em'
-          }}>
-            IL DIGITALE È SATURO.<br />
-            LA PUBBLICITÀ VISIVA VIENE IGNORATA.<br />
-            <span style={{ background: '#000000', color: '#ffffff', padding: '0 10px' }}>
-              SOLO LA VOCE RESTA NELLA MENTE.
-            </span>
-          </h1>
-
-          <p style={{
-            fontSize: '19px',
-            lineHeight: 1.5,
-            fontWeight: 500,
-            color: '#262626',
-            margin: '0 0 32px',
-            maxWidth: '640px'
-          }}>
-            Ogni giorno <strong>oltre 100.000 toscani</strong> viaggiano in auto isolati dal rumore del traffico. Non guardano schermi. Non cliccano banner. <strong>Ascoltano.</strong> La radio attraversa le difese cognitive e trasforma il tuo messaggio in un imperativo d&apos;acquisto.
-          </p>
-
-          {/* DATI AUDIENCE BRUTALIST GRID */}
+          {/* VISUAL ONIRICO HERO "UN POSTO IN PARADISO" CON OVERLAY STATISTICHE */}
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '16px',
-            marginBottom: '32px'
+            position: 'relative',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            boxShadow: '0 25px 60px -15px rgba(225, 29, 72, 0.18), 0 0 0 1px rgba(226, 232, 240, 0.8)',
+            background: '#ffffff'
           }}>
-            <div style={{ border: '2px solid #000000', padding: '18px 16px', background: '#ffffff', boxShadow: '4px 4px 0px #000000' }}>
-              <div style={{ fontSize: '38px', fontWeight: 900, lineHeight: 1, color: '#ff0033' }}>298.000</div>
-              <div style={{ fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '6px' }}>
-                CONTATTI SETTIMANA [AUDIRADIO]
-              </div>
-            </div>
-            <div style={{ border: '2px solid #000000', padding: '18px 16px', background: '#ffffff', boxShadow: '4px 4px 0px #000000' }}>
-              <div style={{ fontSize: '38px', fontWeight: 900, lineHeight: 1, color: '#000000' }}>61 MIN</div>
-              <div style={{ fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '6px' }}>
-                IMMERSIONE MEDIA QUOTIDIANA
-              </div>
-            </div>
-            <div style={{ border: '2px solid #000000', padding: '18px 16px', background: '#ffffff', boxShadow: '4px 4px 0px #000000' }}>
-              <div style={{ fontSize: '38px', fontWeight: 900, lineHeight: 1, color: '#000000' }}>67%</div>
-              <div style={{ fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '6px' }}>
-                DECISORI &amp; RESPONSABILI ACQUISTO
-              </div>
-            </div>
-          </div>
+            <img
+              src="/paradiso_etere_radio.jpg"
+              alt="Un Posto in Paradiso - La Radio Rende Radio Toscana"
+              style={{
+                width: '100%',
+                height: 'auto',
+                maxHeight: '600px',
+                objectFit: 'cover',
+                display: 'block'
+              }}
+            />
 
-          {/* ASSERZIONI SCIENTIFICHE POLIMI */}
-          <div style={{
-            borderLeft: '4px solid #ff0033',
-            background: '#f5f5f5',
-            padding: '16px 20px',
-            marginBottom: '10px'
-          }}>
-            <div style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#ff0033', marginBottom: '4px' }}>
-              EVIDENZA CLINICA // POLITECNICO DI MILANO &amp; ASSORADIO 2025:
-            </div>
-            <div style={{ fontSize: '14px', fontWeight: 700, color: '#000000', lineHeight: 1.45 }}>
-              • Il <strong>90% delle risposte</strong> (visita al punto vendita o ricerca web) avviene entro <strong>1 ora e 33 minuti</strong> dalla messa in onda.<br />
-              • Il <strong>75%</strong> degli ascoltatori converte all&apos;istante dallo smartphone durante o subito dopo il viaggio in auto.
+            {/* Floating Pills Statistiche Eteree */}
+            <div style={{
+              position: 'absolute',
+              bottom: '24px',
+              left: '24px',
+              right: '24px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '12px'
+            }}>
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.94)',
+                backdropFilter: 'blur(16px)',
+                padding: '14px 22px',
+                borderRadius: '16px',
+                border: '1px solid rgba(255,255,255,0.8)',
+                boxShadow: '0 10px 25px rgba(15, 23, 42, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px'
+              }}>
+                <div style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  fontSize: '20px'
+                }}>
+                  📈
+                </div>
+                <div>
+                  <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b', fontWeight: 800 }}>
+                    MOLTIPLICATORE MEDIO
+                  </div>
+                  <div style={{ fontSize: '19px', fontWeight: 900, color: '#0f172a' }}>
+                    10€ di Ritorno per 1€ Investito
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.94)',
+                backdropFilter: 'blur(16px)',
+                padding: '14px 22px',
+                borderRadius: '16px',
+                border: '1px solid rgba(255,255,255,0.8)',
+                boxShadow: '0 10px 25px rgba(15, 23, 42, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px'
+              }}>
+                <div style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  fontSize: '20px'
+                }}>
+                  🚗
+                </div>
+                <div>
+                  <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b', fontWeight: 800 }}>
+                    ASCOLTO IN MOBILITÀ
+                  </div>
+                  <div style={{ fontSize: '19px', fontWeight: 900, color: '#0f172a' }}>
+                    75% in Auto & Nei Negozi
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.94)',
+                backdropFilter: 'blur(16px)',
+                padding: '14px 22px',
+                borderRadius: '16px',
+                border: '1px solid rgba(255,255,255,0.8)',
+                boxShadow: '0 10px 25px rgba(15, 23, 42, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px'
+              }}>
+                <div style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  fontSize: '20px'
+                }}>
+                  🛡️
+                </div>
+                <div>
+                  <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b', fontWeight: 800 }}>
+                    RESISTENZA AD-BLOCKER
+                  </div>
+                  <div style={{ fontSize: '19px', fontWeight: 900, color: '#0f172a' }}>
+                    100% Ascolto Reale No-Skip
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* COLONNA DESTRA: TERMINALE DI PRENOTAZIONE ETERE */}
-        <div id="protocollo-trasmissione" style={{
-          border: '3px solid #000000',
-          padding: '36px 32px',
-          background: '#ffffff',
-          boxShadow: '10px 10px 0px #000000',
-          position: 'relative'
-        }}>
-          {submitted ? (
-            <div style={{ textAlign: 'center', padding: '30px 10px' }}>
-              <div style={{ fontSize: '50px', marginBottom: '14px' }}>📡</div>
-              <h3 style={{ fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', margin: '0 0 10px', color: '#000000' }}>
-                SEGNALE ACQUISITO CON SUCCESSO
-              </h3>
-              <p style={{ fontSize: '14px', color: '#404040', lineHeight: 1.6, marginBottom: '24px' }}>
-                La richiesta per <strong>{formData.azienda}</strong> è registrata nel registro centrale di trasmissione di Radio Monte Serra s.r.l.
-                Il responsabile <strong>Fabio Asiri</strong> prenderà contatto telefonico per definire la griglia oraria e il testo del comunicato.
-              </p>
-              <div style={{ border: '2px solid #000000', background: '#000000', color: '#ffffff', padding: '14px', fontSize: '13px', fontWeight: 900, letterSpacing: '0.06em' }}>
-                LINEA D&apos;EMERGENZA DIRETTA: 055 285030 / 347 6818595
-              </div>
+      {/* 4. BRAND PARTNER DI FIDUCIA // CLK ITALIA & GRANDI MARCHI */}
+      <section style={{
+        padding: '38px 24px',
+        background: '#ffffff',
+        borderTop: '1px solid #f1f5f9',
+        borderBottom: '1px solid #f1f5f9'
+      }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{
+            fontSize: '12px',
+            fontWeight: 800,
+            textTransform: 'uppercase',
+            letterSpacing: '0.14em',
+            color: '#94a3b8',
+            marginBottom: '20px'
+          }}>
+            AZIENDE E BRAND CHE SCELGONO RADIO TOSCANA PER CRESCERE SUL TERRITORIO
+          </div>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '36px'
+          }}>
+            {/* CLK ITALIA (In evidenza) */}
+            <div style={{
+              padding: '10px 22px',
+              borderRadius: '12px',
+              background: '#f8fafc',
+              border: '1.5px solid #e2e8f0',
+              fontWeight: 900,
+              fontSize: '15px',
+              letterSpacing: '0.08em',
+              color: '#0f172a',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ color: '#e11d48' }}>●</span> CLK ITALIA
             </div>
-          ) : (
+
+            <div style={{ fontWeight: 800, fontSize: '15px', color: '#475569', letterSpacing: '0.04em' }}>
+              CONAD
+            </div>
+            <div style={{ fontWeight: 800, fontSize: '15px', color: '#475569', letterSpacing: '0.04em' }}>
+              UNICOOP FIRENZE
+            </div>
+            <div style={{ fontWeight: 800, fontSize: '15px', color: '#475569', letterSpacing: '0.04em' }}>
+              BPER BANCA
+            </div>
+            <div style={{ fontWeight: 800, fontSize: '15px', color: '#475569', letterSpacing: '0.04em' }}>
+              CHIANTIBANCA
+            </div>
+            <div style={{ fontWeight: 800, fontSize: '15px', color: '#475569', letterSpacing: '0.04em' }}>
+              AUTORICAMBI FIRENZE
+            </div>
+            <div style={{ fontWeight: 800, fontSize: '15px', color: '#475569', letterSpacing: '0.04em' }}>
+              CONSORZIO DEL CHIANTI
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. SEZIONE "PERCHÉ LA RADIO RENDE": DATI POLIMI / FCP ASSORADIO */}
+      <section id="perche-la-radio" style={{
+        padding: '90px 24px',
+        background: '#ffffff'
+      }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 64px' }}>
+            <span style={{
+              color: '#e11d48',
+              fontWeight: 800,
+              fontSize: '13px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em'
+            }}>
+              I FONDAMENTI SCIENTIFICI DEL MARKETING AUDIO
+            </span>
+            <h2 style={{
+              fontSize: 'clamp(28px, 3.6vw, 42px)',
+              fontWeight: 900,
+              color: '#0f172a',
+              marginTop: '10px',
+              lineHeight: 1.2
+            }}>
+              Perché la Radio Rende Più di Qualsiasi Altro Mezzo?
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '17px', marginTop: '14px' }}>
+              Dalle evidenze della ricerca FCP-Assoradio / Politecnico di Milano e dell'osservatorio "La Radio Rende", ecco come l'audio genera valore tangibile e immediato.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '24px'
+          }}>
+            {/* Card 1: Psicoacustica */}
+            <div style={{
+              background: '#fafafa',
+              borderRadius: '20px',
+              padding: '36px 30px',
+              border: '1px solid #f1f5f9',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '16px',
+                background: '#fee2e2',
+                color: '#e11d48',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '26px',
+                marginBottom: '22px'
+              }}>
+                🧠
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
+                1. L'Effetto Psicoacustico
+              </h3>
+              <p style={{ color: '#475569', fontSize: '15px', lineHeight: 1.6 }}>
+                La voce umana sussurra direttamente nella coscienza dell'ascoltatore. Senza barriere visive, il cervello proietta l'immagine del tuo prodotto in modo personalizzato ed emotivo: <b>ciò che viene immaginato viene ricordato 3 volte più a lungo</b> rispetto a un banner web.
+              </p>
+            </div>
+
+            {/* Card 2: Drive-to-Store & Web */}
+            <div style={{
+              background: '#fafafa',
+              borderRadius: '20px',
+              padding: '36px 30px',
+              border: '1px solid #f1f5f9',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '16px',
+                background: '#e0f2fe',
+                color: '#0284c7',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '26px',
+                marginBottom: '22px'
+              }}>
+                ⚡
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
+                2. Drive-to-Web in 90 Minuti
+              </h3>
+              <p style={{ color: '#475569', fontSize: '15px', lineHeight: 1.6 }}>
+                Il <b>58% degli ascoltatori toscani</b> dichiara di aver effettuato una ricerca su Google o visitato il sito del brand entro un'ora e mezza dal passaggio on-air. La radio è il vero acceleratore del traffico digitale di prossimità.
+              </p>
+            </div>
+
+            {/* Card 3: Zero Skipping */}
+            <div style={{
+              background: '#fafafa',
+              borderRadius: '20px',
+              padding: '36px 30px',
+              border: '1px solid #f1f5f9',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '16px',
+                background: '#fef3c7',
+                color: '#d97706',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '26px',
+                marginBottom: '22px'
+              }}>
+                🛡️
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
+                3. Zero Ad-Blocker, Zero Skip
+              </h3>
+              <p style={{ color: '#475569', fontSize: '15px', lineHeight: 1.6 }}>
+                A differenza di YouTube, Facebook o Spotify, la radio accompagna l'ascoltatore mentre guida verso il lavoro o fa shopping: <b>mani sul volante, occhi sulla strada e orecchie accese sul tuo messaggio</b>. Nessun algoritmo può sopprimere la tua voce.
+              </p>
+            </div>
+
+            {/* Card 4: ROI Moltiplicatore */}
+            <div style={{
+              background: '#fafafa',
+              borderRadius: '20px',
+              padding: '36px 30px',
+              border: '1px solid #f1f5f9',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '16px',
+                background: '#d1fae5',
+                color: '#059669',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '26px',
+                marginBottom: '22px'
+              }}>
+                💶
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
+                4. ROI Moltiplicatore x10
+              </h3>
+              <p style={{ color: '#475569', fontSize: '15px', lineHeight: 1.6 }}>
+                Il costo per mille (CPM) della radio locale è tra i più competitivi del mercato europeo. La costanza di pianificazione garantisce un fatturato generato fino a 10 volte superiore rispetto all'investimento iniziale certificato.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. DRIVE-TO-SITE & LOCAL CONVERSION CON VISUAL FIRENZE / AUTO D'EPOCA */}
+      <section id="drivetosite" style={{
+        padding: '90px 24px',
+        background: 'linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)',
+        borderTop: '1px solid #e2e8f0',
+        borderBottom: '1px solid #e2e8f0'
+      }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+            gap: '48px',
+            alignItems: 'center'
+          }}>
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 900, background: '#ff0033', color: '#ffffff', padding: '3px 8px', letterSpacing: '0.1em' }}>
-                  MODULO INIEZIONE PUBBLICITARIA
-                </span>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: '#737373', letterSpacing: '0.04em' }}>
-                  SLOT LIMITATI Q4
-                </span>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: '#e0f2fe',
+                color: '#0284c7',
+                borderRadius: '9999px',
+                padding: '6px 16px',
+                fontSize: '12px',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                marginBottom: '16px'
+              }}>
+                <span>🚗 DALL'ON-AIR AL NEGOZIO</span>
               </div>
 
-              <h2 style={{ fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', margin: '0 0 6px', letterSpacing: '-0.02em' }}>
-                PRENOTA LO SPAZIO ON-AIR
+              <h2 style={{
+                fontSize: 'clamp(28px, 3.4vw, 42px)',
+                fontWeight: 900,
+                color: '#0f172a',
+                lineHeight: 1.2,
+                marginBottom: '20px'
+              }}>
+                Come Radio Toscana Porta Clienti Fisici e Visite Web al Tuo Brand
               </h2>
-              <p style={{ fontSize: '12.5px', color: '#525252', margin: '0 0 20px', lineHeight: 1.45 }}>
-                Compila i parametri per ricevere la disponibilità immediata nel palinsesto e il preventivo formale RMS.
+
+              <p style={{ color: '#475569', fontSize: '16px', lineHeight: 1.7, marginBottom: '24px' }}>
+                Nel tragitto quotidiano tra Firenze, Prato, Pistoia, la costa e l'entroterra, la radio è la compagnia privilegiata di dirigenti, professionisti e famiglie toscane.
               </p>
 
-              {errorMsg && (
-                <div style={{ border: '2px solid #ff0033', background: '#fff0f0', color: '#ff0033', padding: '10px', fontSize: '12px', fontWeight: 800, marginBottom: '14px' }}>
-                  {errorMsg}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
+                <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <div style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    background: '#e11d48',
+                    color: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 800,
+                    fontSize: '13px',
+                    flexShrink: 0
+                  }}>✓</div>
+                  <div>
+                    <b style={{ color: '#0f172a' }}>67% Responsabili di Acquisto:</b>{' '}
+                    <span style={{ color: '#64748b' }}>Chi ascolta Radio Toscana gestisce il budget familiare o aziendale per acquisti e investimenti.</span>
+                  </div>
                 </div>
-              )}
 
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <div style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    background: '#e11d48',
+                    color: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 800,
+                    fontSize: '13px',
+                    flexShrink: 0
+                  }}>✓</div>
+                  <div>
+                    <b style={{ color: '#0f172a' }}>Effetto Ricordo Immediato:</b>{' '}
+                    <span style={{ color: '#64748b' }}>Gli annunci radiofonici creano familiarità top-of-mind nel momento esatto in cui le persone decidono cosa comprare.</span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <div style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    background: '#e11d48',
+                    color: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 800,
+                    fontSize: '13px',
+                    flexShrink: 0
+                  }}>✓</div>
+                  <div>
+                    <b style={{ color: '#0f172a' }}>Cross-Media Amplifier:</b>{' '}
+                    <span style={{ color: '#64748b' }}>Se hai già campagne social o cartellonistica, la radio aumenta le conversioni digitali del +42%.</span>
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href="#preventivo"
+                style={{
+                  background: '#0f172a',
+                  color: '#ffffff',
+                  textDecoration: 'none',
+                  padding: '14px 30px',
+                  borderRadius: '9999px',
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span>Configura la Tua Campagna Locale</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            {/* Immagine Firenze Surreal Audio Drive-to-Store */}
+            <div style={{
+              borderRadius: '24px',
+              overflow: 'hidden',
+              boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.15)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <img
+                src="/audio_immersion_drivetosite.jpg"
+                alt="Firenze Audio Immersion & Drive to Store"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. I CONDUTTORI: LE VOCI PIÙ AMATE E SEGUITE DI TOSCANA */}
+      <section id="voci" style={{
+        padding: '90px 24px',
+        background: '#ffffff'
+      }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: '760px', margin: '0 auto 60px' }}>
+            <span style={{
+              color: '#e11d48',
+              fontWeight: 800,
+              fontSize: '13px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em'
+            }}>
+              FIDUCIA E AUTOREVOLEZZA SENZA FILTRI
+            </span>
+            <h2 style={{
+              fontSize: 'clamp(28px, 3.4vw, 42px)',
+              fontWeight: 900,
+              color: '#0f172a',
+              marginTop: '10px'
+            }}>
+              Le Voci di Cui i Toscani si Fidano Ogni Giorno
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '17px', marginTop: '12px' }}>
+              Quando uno spot o una citazione esce dalla bocca di un conduttore amato, non è pubblicità: è il consiglio di un amico di famiglia.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: '24px'
+          }}>
+            {/* Alessandro Masti */}
+            <div style={{
+              background: '#f8fafc',
+              borderRadius: '20px',
+              padding: '28px',
+              border: '1px solid #e2e8f0',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '76px',
+                height: '76px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '32px',
+                margin: '0 auto 16px',
+                boxShadow: '0 8px 20px -4px rgba(225, 29, 72, 0.4)'
+              }}>
+                🎙️
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#0f172a' }}>Alessandro Masti</h3>
+              <div style={{ color: '#e11d48', fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>
+                Il Morning Show (Dalle 07:00)
+              </div>
+              <p style={{ color: '#64748b', fontSize: '14px', lineHeight: 1.5 }}>
+                La voce che sveglia tutta la Toscana con ironia graffiante, buonumore contagioso e il massimo picco di ascolto regionale in auto.
+              </p>
+            </div>
+
+            {/* Giovanni Quercioli */}
+            <div style={{
+              background: '#f8fafc',
+              borderRadius: '20px',
+              padding: '28px',
+              border: '1px solid #e2e8f0',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '76px',
+                height: '76px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '32px',
+                margin: '0 auto 16px',
+                boxShadow: '0 8px 20px -4px rgba(2, 132, 199, 0.4)'
+              }}>
+                📻
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#0f172a' }}>Giovanni Quercioli</h3>
+              <div style={{ color: '#0284c7', fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>
+                Attualità & Territorio (12:00 - 15:00)
+              </div>
+              <p style={{ color: '#64748b', fontSize: '14px', lineHeight: 1.5 }}>
+                Punto di riferimento per notizie, economia locale e dibattito. La sua credibilità conferisce autorevolezza istantanea a ogni brand.
+              </p>
+            </div>
+
+            {/* Niccolò Riccetti */}
+            <div style={{
+              background: '#f8fafc',
+              borderRadius: '20px',
+              padding: '28px',
+              border: '1px solid #e2e8f0',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '76px',
+                height: '76px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '32px',
+                margin: '0 auto 16px',
+                boxShadow: '0 8px 20px -4px rgba(124, 58, 237, 0.4)'
+              }}>
+                ⚽
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#0f172a' }}>Niccolò Riccetti</h3>
+              <div style={{ color: '#7c3aed', fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>
+                Sport, Passione Viola & Pomeriggio
+              </div>
+              <p style={{ color: '#64748b', fontSize: '14px', lineHeight: 1.5 }}>
+                Il cuore pulsante dello sport toscano e del commento alla Fiorentina, con un pubblico fedelissimo e attento a ogni dettaglio.
+              </p>
+            </div>
+
+            {/* Roberto Geri */}
+            <div style={{
+              background: '#f8fafc',
+              borderRadius: '20px',
+              padding: '28px',
+              border: '1px solid #e2e8f0',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '76px',
+                height: '76px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '32px',
+                margin: '0 auto 16px',
+                boxShadow: '0 8px 20px -4px rgba(245, 158, 11, 0.4)'
+              }}>
+                🎵
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#0f172a' }}>Roberto Geri</h3>
+              <div style={{ color: '#d97706', fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>
+                Hit Parade, Weekend & Intrattenimento
+              </div>
+              <p style={{ color: '#64748b', fontSize: '14px', lineHeight: 1.5 }}>
+                Il ritmo dei grandi eventi, dei festival e della musica di qualità che accompagna il tempo libero e lo shopping del fine settimana.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. COPERTURA E MODULI PUBBLICITARI DISPONIBILI */}
+      <section id="copertura" style={{
+        padding: '80px 24px',
+        background: '#f8fafc',
+        borderTop: '1px solid #e2e8f0'
+      }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 50px' }}>
+            <span style={{
+              color: '#e11d48',
+              fontWeight: 800,
+              fontSize: '13px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em'
+            }}>
+              FLESSIBILITÀ DI PIANIFICAZIONE TERRITORIALE
+            </span>
+            <h2 style={{
+              fontSize: 'clamp(26px, 3.2vw, 38px)',
+              fontWeight: 900,
+              color: '#0f172a',
+              marginTop: '10px'
+            }}>
+              I 4 Macro-Bacini e i Formati Pubblicitari 2026
+            </h2>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '20px',
+            marginBottom: '40px'
+          }}>
+            <div style={{ background: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#e11d48', textTransform: 'uppercase' }}>AREA 1 • CUORE REGIONALE</div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', margin: '6px 0' }}>Firenze, Prato, Pistoia</div>
+              <div style={{ fontSize: '13px', color: '#64748b' }}>Frequenza 104.7 FM & 88.0 FM. Il bacino a più alta densità commerciale e retail.</div>
+            </div>
+
+            <div style={{ background: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#0284c7', textTransform: 'uppercase' }}>AREA 2 • POLO OCCIDENTALE</div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', margin: '6px 0' }}>Pisa, Lucca, Livorno</div>
+              <div style={{ fontSize: '13px', color: '#64748b' }}>Frequenza 102.8 FM & DAB+. Area ad alto potere d'acquisto, universitaria e logistica.</div>
+            </div>
+
+            <div style={{ background: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#7c3aed', textTransform: 'uppercase' }}>AREA 3 • ENTROTERRA & VALDELSA</div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', margin: '6px 0' }}>Arezzo, Siena, Empolese</div>
+              <div style={{ fontSize: '13px', color: '#64748b' }}>Copertura capillare per artigianato d'eccellenza, turismo, viticoltura e servizi.</div>
+            </div>
+
+            <div style={{ background: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#059669', textTransform: 'uppercase' }}>AREA 4 • COSTA & ARCO TIRRENICO</div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', margin: '6px 0' }}>Versilia, Grosseto, Elba</div>
+              <div style={{ fontSize: '13px', color: '#64748b' }}>Stagionalità forte, ristorazione, hospitality ed eventi esclusivi.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. FORM DI CONTATTO & PREVENTIVATORE INTELLIGENTE */}
+      <section id="preventivo" style={{
+        padding: '90px 24px',
+        background: '#ffffff',
+        position: 'relative'
+      }}>
+        <div style={{ maxWidth: '920px', margin: '0 auto' }}>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: '28px',
+            padding: '48px 40px',
+            boxShadow: '0 25px 60px -15px rgba(15, 23, 42, 0.1), 0 0 0 1px #e2e8f0',
+            position: 'relative'
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: '#fee2e2',
+                color: '#e11d48',
+                borderRadius: '9999px',
+                padding: '6px 16px',
+                fontSize: '12px',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                marginBottom: '12px'
+              }}>
+                <span>🎙️ PROGETTA LA TUA ONDA SONORA</span>
+              </div>
+              <h2 style={{ fontSize: '32px', fontWeight: 900, color: '#0f172a' }}>
+                Richiedi una Proposta Commerciale Riservata
+              </h2>
+              <p style={{ color: '#64748b', fontSize: '15px', marginTop: '8px' }}>
+                Compila i campi: il nostro team pianificazione ti invierà la stima di copertura e il listino agevolato per la tua zona.
+              </p>
+            </div>
+
+            {submitted ? (
+              <div style={{
+                background: '#f0fdf4',
+                border: '1.5px solid #bbf7d0',
+                borderRadius: '20px',
+                padding: '40px',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '52px', marginBottom: '14px' }}>✨</div>
+                <h3 style={{ fontSize: '24px', fontWeight: 900, color: '#166534', marginBottom: '10px' }}>
+                  Richiesta Ricevuta con Successo!
+                </h3>
+                <p style={{ color: '#15803d', fontSize: '16px', maxWidth: '540px', margin: '0 auto 24px' }}>
+                  I dati sono stati trasmessi alla direzione commerciale di Radio Toscana. Ti contatteremo telefonicamente entro poche ore lavorative.
+                </p>
+                <div style={{ fontSize: '13px', color: '#166534', fontWeight: 700 }}>
+                  Per urgenze immediate: chiama Fabio al <a href="tel:3476818595" style={{ color: '#166534', textDecoration: 'underline' }}>347 6818595</a>.
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
-                    1. RAGIONE SOCIALE / INSEGNA IMPRESA *
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>
+                    Nome Azienda / Attività *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="es. TINGHI MOTORS / FATTORIA DI LAVACCHIO"
+                    placeholder="es. CLK Italia S.r.l."
                     value={formData.azienda}
                     onChange={(e) => setFormData({ ...formData, azienda: e.target.value })}
                     style={{
                       width: '100%',
-                      boxSizing: 'border-box',
-                      padding: '12px 14px',
-                      border: '2px solid #000000',
-                      background: '#ffffff',
-                      color: '#000000',
-                      fontSize: '13.5px',
-                      fontWeight: 700,
-                      outline: 'none'
+                      padding: '13px 16px',
+                      borderRadius: '12px',
+                      border: '1.5px solid #cbd5e1',
+                      fontSize: '15px',
+                      outline: 'none',
+                      boxSizing: 'border-box'
                     }}
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
-                      2. REFERENTE
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="es. Titolare / Resp. Mktg"
-                      value={formData.referente}
-                      onChange={(e) => setFormData({ ...formData, referente: e.target.value })}
-                      style={{
-                        width: '100%',
-                        boxSizing: 'border-box',
-                        padding: '12px 14px',
-                        border: '2px solid #000000',
-                        background: '#ffffff',
-                        color: '#000000',
-                        fontSize: '13.5px',
-                        fontWeight: 700,
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
-                      3. CONTATTO TELEFONICO *
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="es. 347 0000000"
-                      value={formData.telefono}
-                      onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                      style={{
-                        width: '100%',
-                        boxSizing: 'border-box',
-                        padding: '12px 14px',
-                        border: '2px solid #000000',
-                        background: '#ffffff',
-                        color: '#000000',
-                        fontSize: '13.5px',
-                        fontWeight: 700,
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>
+                    Nome e Cognome Referente
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="es. Mario Rossi"
+                    value={formData.referente}
+                    onChange={(e) => setFormData({ ...formData, referente: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '13px 16px',
+                      borderRadius: '12px',
+                      border: '1.5px solid #cbd5e1',
+                      fontSize: '15px',
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
-                    4. INDIRIZZO EMAIL UFFICIALE
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>
+                    Telefono Diretto *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="es. 347 1234567"
+                    value={formData.telefono}
+                    onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '13px 16px',
+                      borderRadius: '12px',
+                      border: '1.5px solid #cbd5e1',
+                      fontSize: '15px',
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>
+                    Email Aziendale
                   </label>
                   <input
                     type="email"
-                    placeholder="amministrazione@azienda.it"
+                    placeholder="es. direzione@azienda.it"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     style={{
                       width: '100%',
-                      boxSizing: 'border-box',
-                      padding: '12px 14px',
-                      border: '2px solid #000000',
-                      background: '#ffffff',
-                      color: '#000000',
-                      fontSize: '13.5px',
-                      fontWeight: 700,
-                      outline: 'none'
+                      padding: '13px 16px',
+                      borderRadius: '12px',
+                      border: '1.5px solid #cbd5e1',
+                      fontSize: '15px',
+                      outline: 'none',
+                      boxSizing: 'border-box'
                     }}
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
-                      5. AREA GEOGRAFICA
-                    </label>
-                    <select
-                      value={formData.areaInteresse}
-                      onChange={(e) => setFormData({ ...formData, areaInteresse: e.target.value })}
-                      style={{
-                        width: '100%',
-                        boxSizing: 'border-box',
-                        padding: '11px',
-                        border: '2px solid #000000',
-                        background: '#ffffff',
-                        color: '#000000',
-                        fontSize: '12.5px',
-                        fontWeight: 800,
-                        outline: 'none'
-                      }}
-                    >
-                      <option value="AREA 1 (Firenze, Prato, Pistoia)">AREA 1: Firenze - Prato - Pistoia</option>
-                      <option value="AREA 2 (La Costa: PI, LI, LU, MS)">AREA 2: La Costa (PI, LI, LU, MS)</option>
-                      <option value="AREA 3 (Toscana Interna: AR, SI, GR)">AREA 3: Interna (AR, SI, GR, Mugello)</option>
-                      <option value="TUTTA LA TOSCANA (FM + DAB+ Digitale)">TUTTA LA TOSCANA (FM + DAB+)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
-                      6. VETTORE DI EMISSIONE
-                    </label>
-                    <select
-                      value={formData.formatoInteresse}
-                      onChange={(e) => setFormData({ ...formData, formatoInteresse: e.target.value })}
-                      style={{
-                        width: '100%',
-                        boxSizing: 'border-box',
-                        padding: '11px',
-                        border: '2px solid #000000',
-                        background: '#ffffff',
-                        color: '#000000',
-                        fontSize: '12.5px',
-                        fontWeight: 800,
-                        outline: 'none'
-                      }}
-                    >
-                      <option value="Spot Tabellari 20&quot;">Spot Tabellare da 20&quot; (Fasce M, P, S)</option>
-                      <option value="Primo di Barra (Testa del Cluster)">Primo di Barra (Posizione Esclusiva)</option>
-                      <option value="Morning Show Alessandro Masti">Morning Show Alessandro Masti (08-10)</option>
-                      <option value="Citazione Speaker 30&quot; o 60&quot;">Citazione Speaker in Diretta</option>
-                      <option value="Sponsorizzazione Rubriche / Meteo">Sponsorizzazione Meteo / Notiziari</option>
-                    </select>
-                  </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>
+                    Area Geografica di Interesse
+                  </label>
+                  <select
+                    value={formData.areaInteresse}
+                    onChange={(e) => setFormData({ ...formData, areaInteresse: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '13px 16px',
+                      borderRadius: '12px',
+                      border: '1.5px solid #cbd5e1',
+                      fontSize: '15px',
+                      outline: 'none',
+                      background: '#ffffff',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    <option value="Tutta la Toscana (Rete Regionale Completa)">Tutta la Toscana (Rete Regionale Completa)</option>
+                    <option value="Area 1 (Firenze, Prato, Pistoia)">Area 1 (Firenze, Prato, Pistoia)</option>
+                    <option value="Area 2 (Pisa, Lucca, Livorno)">Area 2 (Pisa, Lucca, Livorno)</option>
+                    <option value="Area 3 (Arezzo, Siena, Empolese)">Area 3 (Arezzo, Siena, Empolese)</option>
+                    <option value="Area 4 (Costa, Versilia, Grosseto)">Area 4 (Costa, Versilia, Grosseto)</option>
+                  </select>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  style={{
-                    marginTop: '8px',
-                    background: '#000000',
-                    color: '#ffffff',
-                    padding: '16px 20px',
-                    border: '2px solid #000000',
-                    fontWeight: 900,
-                    fontSize: '14.5px',
-                    cursor: loading ? 'wait' : 'pointer',
-                    boxShadow: '4px 4px 0px #ff0033',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    transition: 'transform 0.1s'
-                  }}
-                >
-                  {loading ? 'TRASMISSIONE IN CORSO...' : 'INVIA RICHIESTA TRASMISSIONE ON-AIR ➔'}
-                </button>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>
+                    Formato Pubblicitario Desiderato
+                  </label>
+                  <select
+                    value={formData.formatoInteresse}
+                    onChange={(e) => setFormData({ ...formData, formatoInteresse: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '13px 16px',
+                      borderRadius: '12px',
+                      border: '1.5px solid #cbd5e1',
+                      fontSize: '15px',
+                      outline: 'none',
+                      background: '#ffffff',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    <option value="Spot Tabellari 20&quot;-30&quot;">Spot Tabellari 20&quot;-30&quot; (Fasce Top Drive Time)</option>
+                    <option value="Citazione Conduttore / Promoredazionale">Citazione Conduttore / Promoredazionale</option>
+                    <option value="Sponsorizzazione Rubrica (Meteo / Viabilità)">Sponsorizzazione Rubrica (Meteo / Viabilità)</option>
+                    <option value="Pacchetto Speciale Evento sul Territorio">Pacchetto Speciale Evento sul Territorio</option>
+                  </select>
+                </div>
 
-                <div style={{ fontSize: '10.5px', color: '#525252', textAlign: 'center', marginTop: '4px', letterSpacing: '0.02em' }}>
-                  🔒 RISERVATEZZA GARANTITA AI SENSI DEL REG. UE 2016/679. NESSUN VINCOLO.
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>
+                    Obiettivo della Campagna o Note Aggiuntive
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="es. Promozione nuovo punto vendita a Firenze, lancio nuovo prodotto B2B, aumento notorietà..."
+                    value={formData.note}
+                    onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '13px 16px',
+                      borderRadius: '12px',
+                      border: '1.5px solid #cbd5e1',
+                      fontSize: '15px',
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  ></textarea>
+                </div>
+
+                {errorMsg && (
+                  <div style={{ gridColumn: '1 / -1', color: '#b91c1c', background: '#fee2e2', padding: '12px', borderRadius: '10px', fontSize: '14px', fontWeight: 600 }}>
+                    ⚠️ {errorMsg}
+                  </div>
+                )}
+
+                <div style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      width: '100%',
+                      background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '18px 24px',
+                      borderRadius: '14px',
+                      fontSize: '16px',
+                      fontWeight: 800,
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      boxShadow: '0 12px 25px -4px rgba(225, 29, 72, 0.45)',
+                      transition: 'all 0.2s ease',
+                      opacity: loading ? 0.7 : 1
+                    }}
+                  >
+                    {loading ? 'Elaborazione segnale in corso...' : 'Invia Richiesta e Ricevi Proposta Personalizzata →'}
+                  </button>
+                  <div style={{ textAlign: 'center', fontSize: '12px', color: '#94a3b8', marginTop: '12px' }}>
+                    🔒 I tuoi dati sono protetti e trattati esclusivamente dalla direzione commerciale di Radio Toscana. Nessuno spam.
+                  </div>
                 </div>
               </form>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </section>
 
-      {/* IL MANIFESTO DEI 10 PUNTI // PERCHÉ LA RADIO DOMINA IL TERRITORIO */}
-      <section style={{
-        background: '#000000',
-        color: '#ffffff',
-        padding: '80px 32px',
-        borderTop: '3px solid #ff0033',
-        borderBottom: '3px solid #000000'
+      {/* 10. FOOTER ELEGANTE & ISTITUZIONALE */}
+      <footer style={{
+        background: '#0b1120',
+        color: '#94a3b8',
+        padding: '60px 24px 40px',
+        borderTop: '1px solid rgba(255,255,255,0.08)'
       }}>
-        <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '50px', borderBottom: '1px solid #333333', paddingBottom: '20px' }}>
-            <div>
-              <div style={{ fontSize: '12px', fontWeight: 900, color: '#ff0033', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-                ANALISI COMPARATIVA DEI MEDIA // LA RADIO RENDE
-              </div>
-              <h2 style={{ fontSize: '38px', fontWeight: 900, textTransform: 'uppercase', margin: '6px 0 0', letterSpacing: '-0.03em' }}>
-                PERCHÉ LA RADIO BATTE QUALSIASI ALTRO MEZZO
-              </h2>
-            </div>
-            <div style={{ fontSize: '13px', color: '#a3a3a3', fontWeight: 700, textAlign: 'right' }}>
-              FONTE: FCP-ASSORADIO / RICERCHE AUDIRADIO
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '28px' }}>
-            {[
-              {
-                code: '01 // ROI',
-                title: 'HA UN ROI FINO A 10 VOLTE',
-                desc: 'A parità di investimento, la radio batte la stampa e i canali display grazie al minor costo-contatto e all\'altissimo rendimento sulle vendite nel punto vendita.'
-              },
-              {
-                code: '02 // MOMENTO GIUSTO',
-                title: 'INTERCETTA PRIMA DELL\'ACQUISTO',
-                desc: 'Oltre il 70% dell\'ascolto avviene in movimento: la radio è l\'ultimo punto di contatto cognitivo prima che il consumatore entri in un negozio o al supermercato.'
-              },
-              {
-                code: '03 // ANTI-SKIPPING',
-                title: 'L\'ASCOLTO NON VIENE INTERROTTO',
-                desc: 'Mentre i video web vengono saltati dopo 5 secondi e i banner vengono bloccati dagli ad-blocker, lo spot radiofonico viene ascoltato interamente e senza distrazioni.'
-              },
-              {
-                code: '04 // SHARE OF MIND',
-                title: 'AUMENTA LA MEMORIA DEL BRAND',
-                desc: 'La ripetizione ritmica e la componente sonora creano tracce mnemoniche indelebili: quando sorge il bisogno, il tuo marchio è il primo che viene ricordato.'
-              },
-              {
-                code: '05 // DRIVE TO SITE',
-                title: 'ATTIVA IL DIGITALE ALL\'ISTANTE',
-                desc: 'Il 75% dei visitatori stimolati dallo spot accede al sito web via smartphone entro 90 minuti. La radio è il vero acceleratore del traffico web locale.'
-              },
-              {
-                code: '06 // VELOCITÀ DI RILASCIO',
-                title: 'IN ONDA IN MENO DI 48 ORE',
-                desc: 'Nessuna produzione video da settimane: scrittura copy, registrazione speaker professionale in studio e programmazione immediata sui trasmettitori.'
-              }
-            ].map((card, idx) => (
-              <div key={idx} style={{
-                border: '1px solid #262626',
-                background: '#0a0a0a',
-                padding: '30px 24px',
-                position: 'relative'
-              }}>
-                <div style={{ fontSize: '11px', fontWeight: 900, color: '#ff0033', letterSpacing: '0.15em', marginBottom: '10px' }}>
-                  {card.code}
-                </div>
-                <h3 style={{ fontSize: '20px', fontWeight: 900, textTransform: 'uppercase', margin: '0 0 12px', color: '#ffffff' }}>
-                  {card.title}
-                </h3>
-                <p style={{ fontSize: '13.5px', color: '#a3a3a3', margin: 0, lineHeight: 1.6 }}>
-                  {card.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* LA MAPPA DEL TERRITORIO // SPLITTAGGIO GEOGRAFICO */}
-      <section style={{ maxWidth: '1360px', margin: '0 auto', padding: '80px 32px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '50px', alignItems: 'center' }}>
-          <div>
-            <div style={{ fontSize: '11px', fontWeight: 900, color: '#ff0033', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              TARGETING GEOGRAFICO CHIRURGICO
-            </div>
-            <h2 style={{ fontSize: '42px', fontWeight: 900, textTransform: 'uppercase', margin: '0 0 20px', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-              NON PAGHI PER CHI NON TI INTERESSA.
-            </h2>
-            <p style={{ fontSize: '16.5px', color: '#404040', lineHeight: 1.6, margin: '0 0 28px' }}>
-              Grazie alla tecnologia di splittaggio Radio Monte Serra, non sei obbligato ad acquistare l&apos;intera Toscana se la tua attività opera solo a Firenze, Prato o Pistoia. Scegli l&apos;area geografica che genera il tuo fatturato.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div style={{ border: '2px solid #000000', padding: '16px 20px', background: '#f5f5f5' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ fontSize: '16px' }}>AREA 1: FIRENZE • PRATO • PISTOIA</strong>
-                  <span style={{ fontSize: '12px', fontWeight: 900, color: '#ff0033' }}>FM 104.7 • 98.2</span>
-                </div>
-                <div style={{ fontSize: '13px', color: '#525252', marginTop: '4px' }}>
-                  Il motore demografico ed economico della regione. La massima concentrazione di potere d&apos;acquisto.
-                </div>
-              </div>
-
-              <div style={{ border: '2px solid #000000', padding: '16px 20px', background: '#ffffff' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ fontSize: '16px' }}>AREA 2: LA COSTA (PISA, LIVORNO, LUCCA, MASSA)</strong>
-                  <span style={{ fontSize: '12px', fontWeight: 900, color: '#000000' }}>FM 88.0 • 87.9</span>
-                </div>
-                <div style={{ fontSize: '13px', color: '#525252', marginTop: '4px' }}>
-                  Dall&apos;area balneare e portuale fino alla Versilia. Dinamicità commerciale e turistica.
-                </div>
-              </div>
-
-              <div style={{ border: '2px solid #000000', padding: '16px 20px', background: '#ffffff' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ fontSize: '16px' }}>AREA 3: TOSCANA INTERNA (SIENA, AREZZO, GROSSETO)</strong>
-                  <span style={{ fontSize: '12px', fontWeight: 900, color: '#000000' }}>FM 104.7 • 87.8</span>
-                </div>
-                <div style={{ fontSize: '13px', color: '#525252', marginTop: '4px' }}>
-                  Mugello, Valdarno, Valdisieve e le province storiche del centro-sud Toscana.
-                </div>
-              </div>
-            </div>
-          </div>
-
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{
-            border: '3px solid #000000',
-            padding: '36px',
-            background: '#f9f9f9',
-            boxShadow: '10px 10px 0px #000000'
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '30px',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            paddingBottom: '40px',
+            marginBottom: '30px'
           }}>
-            <div style={{ fontSize: '12px', fontWeight: 900, color: '#ff0033', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '8px' }}>
-              LEADERSHIP DIRETTA NELLA MATTINATA
-            </div>
-            <h3 style={{ fontSize: '30px', fontWeight: 900, textTransform: 'uppercase', margin: '0 0 14px', lineHeight: 1.1 }}>
-              IL MORNING SHOW CON ALESSANDRO MASTI (08:00 - 10:00)
-            </h3>
-            <p style={{ fontSize: '14.5px', color: '#404040', lineHeight: 1.6, margin: '0 0 20px' }}>
-              Non è un semplice programma radiofonico: è un rito quotidiano condiviso da decine di migliaia di toscani.
-              Associando il tuo brand o concordando una diretta con Alessandro Masti, acquisisci la sua credibilità e simpatia, superando qualsiasi barriera diffidente del cliente.
-            </p>
-
-            <div style={{ borderTop: '2px dashed #000000', paddingTop: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '24px', fontWeight: 900, color: '#ff0033' }}>PICCO MASSIMO</div>
-                <div style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase' }}>DELL&apos;INTERA GIORNATA</div>
-              </div>
-              <a
-                href="#protocollo-trasmissione"
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <img
+                src="/logo_radio_toscana.png"
+                alt="Radio Toscana"
                 style={{
-                  background: '#000000',
-                  color: '#ffffff',
-                  padding: '10px 16px',
-                  fontWeight: 900,
-                  fontSize: '12px',
-                  textDecoration: 'none',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em'
+                  height: '46px',
+                  width: 'auto',
+                  filter: 'brightness(0) invert(1)'
                 }}
-              >
-                VERIFICA DISPONIBILITÀ MASTI ➔
+              />
+              <div style={{ borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: '14px' }}>
+                <div style={{ color: '#ffffff', fontWeight: 800, fontSize: '13px' }}>
+                  RADIO MONTE SERRA S.R.L.
+                </div>
+                <div style={{ fontSize: '12px', color: '#64748b' }}>
+                  Sede Operativa: Firenze • Editore Radiofonico Regionale
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center', fontSize: '13px' }}>
+              <span style={{ color: '#e2e8f0' }}>Ufficio Commerciale:</span>
+              <a href="tel:3476818595" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 700 }}>
+                📞 347 6818595
+              </a>
+              <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
+              <a href="mailto:pubblicita@radiotoscana.it" style={{ color: '#38bdf8', textDecoration: 'none' }}>
+                ✉️ pubblicita@radiotoscana.it
               </a>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* PARTNER CHE HANNO SCELTO LA VOCE DI RADIO TOSCANA */}
-      <section style={{
-        background: '#f5f5f5',
-        padding: '40px 32px',
-        borderTop: '2px solid #000000',
-        borderBottom: '2px solid #000000'
-      }}>
-        <div style={{ maxWidth: '1360px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ fontSize: '11px', fontWeight: 900, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '18px', color: '#525252' }}>
-            ORGANIZZAZIONI E MARCHI CHE TRASMETTONO SULLE NOSTRE FREQUENZE:
-          </div>
           <div style={{
             display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            gap: '34px',
-            fontSize: '15px',
-            fontWeight: 900,
-            color: '#000000'
+            flexWrap: 'wrap',
+            gap: '16px',
+            fontSize: '12px'
           }}>
-            <span>COLDIRETTI TOSCANA</span>
-            <span>/</span>
-            <span>CLK ITALIA</span>
-            <span>/</span>
-            <span>TINGHI MOTORS (RENAULT-DACIA)</span>
-            <span>/</span>
-            <span>CONFCOMMERCIO</span>
-            <span>/</span>
-            <span>CONFESERCENTI FIRENZE</span>
-            <span>/</span>
-            <span>MERCATO CENTRALE</span>
-            <span>/</span>
-            <span>CARITAS FIRENZE</span>
-            <span>/</span>
-            <span>ESTRA ENERGIA</span>
-            <span>/</span>
-            <span>BEAT FESTIVAL</span>
-            <span>/</span>
-            <span>FATTORIA DI LAVACCHIO</span>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER MONOLITICO */}
-      <footer style={{
-        maxWidth: '1360px',
-        margin: '0 auto',
-        padding: '60px 32px',
-        display: 'grid',
-        gridTemplateColumns: '1.2fr 1fr',
-        gap: '40px',
-        alignItems: 'center'
-      }}>
-        <div>
-          <div style={{ fontSize: '11px', fontWeight: 900, color: '#ff0033', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '6px' }}>
-            UFFICIO COMMERCIALE REGIONALE
-          </div>
-          <h3 style={{ fontSize: '26px', fontWeight: 900, textTransform: 'uppercase', margin: '0 0 10px', color: '#000000' }}>
-            RESPONSABILE PUBBLICITÀ: FABIO ASIRI
-          </h3>
-          <p style={{ fontSize: '14.5px', color: '#525252', margin: '0 0 18px', maxWidth: '520px' }}>
-            Consulenza diretta per pianificazioni mirate, preventivi in giornata e produzioni copy personalizzate per PMI ed eventi in Toscana.
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', fontSize: '14px', fontWeight: 900 }}>
-            <div>TELEFONO: <a href="tel:3476818595" style={{ color: '#000000' }}>347 6818595</a></div>
-            <div>EMAIL: <a href="mailto:fabio.asiri@radiotoscana.it" style={{ color: '#ff0033' }}>fabio.asiri@radiotoscana.it</a></div>
-            <div>CENTRALINO: 055 285030</div>
-          </div>
-        </div>
-
-        <div style={{ textAlign: 'right', fontSize: '12px', color: '#737373', lineHeight: 1.7 }}>
-          <div style={{ fontWeight: 900, color: '#000000', fontSize: '14px' }}>RADIO MONTE SERRA S.R.L.</div>
-          <div>Via de&apos; Pucci, 2 • 50122 Firenze (FI) • P.IVA 04472740481 • CCIAA n. 453074</div>
-          <div style={{ marginTop: '8px' }}>
-            <a href="https://www.radiotoscana.it" target="_blank" rel="noreferrer" style={{ color: '#000000', fontWeight: 900, textDecoration: 'underline' }}>
-              WWW.RADIOTOSCANA.IT
-            </a>
+            <div>
+              © 2026 Radio Toscana (Radio Monte Serra S.r.l.) - Tutti i diritti riservati. P.IVA 01228220508.
+            </div>
+            <div>
+              Dati di ascolto certificati TER (Tavolo Editori Radio) • Monitoraggio AGCOM • Modello FCP-Assoradio
+            </div>
           </div>
         </div>
       </footer>
