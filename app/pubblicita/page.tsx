@@ -2,6 +2,10 @@
 
 import React, { useState } from 'react';
 
+// Forzatura dinamica per invalidare la cache del browser
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function LandingPubblicita() {
   const [formData, setFormData] = useState({
     azienda: '',
@@ -388,7 +392,7 @@ export default function LandingPubblicita() {
                 position: 'relative'
               }}>
                 <img
-                  src="/radio_toscana_double_exposure.jpg"
+                  src="/radio_toscana_double_exposure.jpg?v=2026"
                   alt="Radio Toscana - Ascolto autentico e territorio toscano"
                   style={{ width: '100%', height: 'auto', display: 'block' }}
                 />
@@ -819,7 +823,7 @@ export default function LandingPubblicita() {
               border: '4px solid #ffffff'
             }}>
               <img
-                src="/auto_radio_toscana.jpg"
+                src="/auto_radio_toscana.jpg?v=2026"
                 alt="Auto sintonizzata su Radio Toscana 104.7 FM DAB+ lungo le strade della Toscana"
                 style={{ width: '100%', height: 'auto', display: 'block' }}
               />
