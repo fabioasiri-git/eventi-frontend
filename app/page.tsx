@@ -1158,14 +1158,39 @@ export default function LeadEngineDashboard() {
         logging: false
       });
 
-      // Crea documento A4 (210 x 297 mm)
-      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-      const img1 = canvas1.toDataURL('image/jpeg', 0.98);
-      pdf.addImage(img1, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+      // Helper: posiziona il canvas su A4 preservando esattamente l'aspect ratio (zero distorsioni) e con margini proporzionati
+      function addProportionalPage(canvasEl: any, pdfDoc: any, isFirst: boolean) {
+        if (!isFirst) pdfDoc.addPage();
+        const imgData = canvasEl.toDataURL('image/jpeg', 0.98);
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const marginX = 7; // 7mm margine laterale elegante
+        const marginY = 7; // 7mm margine verticale
+        const maxW = pageWidth - (marginX * 2); // 196mm
+        const maxH = pageHeight - (marginY * 2); // 283mm
 
-      pdf.addPage();
-      const img2 = canvas2.toDataURL('image/jpeg', 0.98);
-      pdf.addImage(img2, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+        const cW = canvasEl.width;
+        const cH = canvasEl.height;
+        const ratio = cW / (cH || 1);
+
+        let renderW = maxW;
+        let renderH = renderW / ratio;
+
+        if (renderH > maxH) {
+          renderH = maxH;
+          renderW = renderH * ratio;
+        }
+
+        const posX = Math.round(((pageWidth - renderW) / 2) * 100) / 100;
+        const posY = Math.round(((pageHeight - renderH) / 2) * 100) / 100;
+
+        pdfDoc.addImage(imgData, 'JPEG', posX, posY, renderW, renderH, undefined, 'FAST');
+      }
+
+      // Crea documento A4 (210 x 297 mm) proporzionato
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      addProportionalPage(canvas1, pdf, true);
+      addProportionalPage(canvas2, pdf, false);
 
       const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
       const num = (contractData.numero || 'Ufficiale').replace(/[/\\?%*:|"<>]/g, '_');
@@ -1197,9 +1222,37 @@ export default function LeadEngineDashboard() {
         logging: false
       });
 
+      // Helper: posiziona il canvas su A4 preservando esattamente l'aspect ratio (zero distorsioni) e con margini proporzionati
+      function addProportionalProposalPage(canvasEl: any, pdfDoc: any, isFirst: boolean) {
+        if (!isFirst) pdfDoc.addPage();
+        const imgData = canvasEl.toDataURL('image/jpeg', 0.98);
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const marginX = 7; // 7mm margine laterale elegante
+        const marginY = 7; // 7mm margine verticale
+        const maxW = pageWidth - (marginX * 2); // 196mm
+        const maxH = pageHeight - (marginY * 2); // 283mm
+
+        const cW = canvasEl.width;
+        const cH = canvasEl.height;
+        const ratio = cW / (cH || 1);
+
+        let renderW = maxW;
+        let renderH = renderW / ratio;
+
+        if (renderH > maxH) {
+          renderH = maxH;
+          renderW = renderH * ratio;
+        }
+
+        const posX = Math.round(((pageWidth - renderW) / 2) * 100) / 100;
+        const posY = Math.round(((pageHeight - renderH) / 2) * 100) / 100;
+
+        pdfDoc.addImage(imgData, 'JPEG', posX, posY, renderW, renderH, undefined, 'FAST');
+      }
+
       const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-      const img = canvas.toDataURL('image/jpeg', 0.98);
-      pdf.addImage(img, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+      addProportionalProposalPage(canvas, pdf, true);
 
       if (includeLegendInPdf) {
         const page2 = document.getElementById('printable-proposal-legend-card') || document.getElementById('printable-proposal-page-2');
@@ -1211,9 +1264,7 @@ export default function LeadEngineDashboard() {
             backgroundColor: '#ffffff',
             logging: false
           });
-          pdf.addPage();
-          const img2 = canvas2.toDataURL('image/jpeg', 0.98);
-          pdf.addImage(img2, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+          addProportionalProposalPage(canvas2, pdf, false);
         }
       }
 
@@ -4661,10 +4712,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               style={{
                 background: '#ffffff',
                 color: '#111111',
-                padding: '16px 22px',
+                padding: '14px 18px',
                 margin: '10px auto',
-                width: '210mm',
-                maxWidth: '100%',
+                width: '100%',
+                maxWidth: '195mm',
                 boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
                 boxSizing: 'border-box',
                 fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
