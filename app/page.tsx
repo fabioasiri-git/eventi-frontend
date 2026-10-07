@@ -138,8 +138,8 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         tipo: 'Spot Radiofonici Tabellari',
         copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
         dettagli: '60 spot paganti + 20 spot OMAGGIO da 20" (Totale 80 passaggi)',
-        fascia: 'Fasce M, P, S (07.00 – 21.00 a rotazione)',
-        periodo: 'Periodo da definire (rotazione 10 giorni)',
+        fascia: 'Rotazione concordata',
+        periodo: 'Periodo da definire',
         periodoDaDefinire: true,
         prezzoListino: 720,
         valore: 300,
@@ -162,7 +162,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         tipoProduzione: 'SOLO_RT_RF'
       }
     ],
-    note: 'Proposta Preventivo per GALLI TORRINI: 60 spot 20" Area 1 + 20 spot OMAGGIO (netto spazi € 300,00) + Produzione spot audio € 100,00. Totale netto: € 400,00 + IVA. Periodo: Da concordare / definire (rotazione 10 gg). Referente: Lorenzo Galli Torrini (tel. 333 3222377 - lorenzo@gallitorrini.com).'
+    note: 'Proposta Preventivo per GALLI TORRINI: 60 spot 20" Area 1 + 20 spot OMAGGIO (netto spazi € 300,00) + Produzione spot audio € 100,00. Totale netto: € 400,00 + IVA. Periodo: Periodo da definire. Referente: Lorenzo Galli Torrini (tel. 333 3222377 - lorenzo@gallitorrini.com).'
   },
   {
     id: 'lead-fattoria-lavacchio-2026',
@@ -754,24 +754,26 @@ export default function LeadEngineDashboard() {
       const daily = updated.spotGiornalieri || Math.round(spotPaganti / (giorni || 1));
 
       if (updated.periodoDaDefinire) {
-        updated.periodo = `Periodo da definire (${giorni} gg)`;
+        updated.periodo = updates.periodo || (it.periodo && !it.periodo.startsWith('Dal ') ? it.periodo : 'Periodo da definire');
         updated.dataInizio = '';
         updated.dataFine = '';
       } else {
         const d1Str = updated.dataInizio ? new Date(updated.dataInizio).toLocaleDateString('it-IT') : '';
         const d2Str = updated.dataFine ? new Date(updated.dataFine).toLocaleDateString('it-IT') : '';
         if (d1Str && d2Str) {
-          updated.periodo = `Dal ${d1Str} al ${d2Str} (${giorni} gg)`;
+          updated.periodo = `Dal ${d1Str} al ${d2Str}`;
         } else {
-          updated.periodo = `Periodo da definire (${giorni} gg)`;
+          updated.periodo = updated.periodo || 'Periodo da definire';
         }
       }
 
-      let dett = `${daily} spot/gg per ${giorni} gg (${spotPaganti} spot paganti da ${formato}")`;
-      if (omaggi > 0) {
-        dett += ` + ${omaggi} spot OMAGGIO (Totale ${totPassaggi} passaggi in onda)`;
+      if (!updates.dettagli && ('spotGiornalieri' in updates || 'spotTotali' in updates || 'spotOmaggio' in updates || 'formatoSecondi' in updates || !updated.dettagli)) {
+        let dett = `${spotPaganti} spot da ${formato}"`;
+        if (omaggi > 0) {
+          dett = `${spotPaganti} spot paganti + ${omaggi} spot OMAGGIO (Totale ${totPassaggi} passaggi da ${formato}")`;
+        }
+        updated.dettagli = dett;
       }
-      updated.dettagli = dett;
 
       // Calcolo Listino Ufficiale da Tariffa Unitaria x Spot Totali
       const tariffa = getTariffaUfficialeSpot(updated.copertura, formato);
@@ -3549,48 +3551,81 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         </div>
                       )}
 
-                      {/* BLOCCO DEDICATO PIANIFICAZIONE SPOT: DATE, QUANTITÀ GIORNALIERA, TOTALI, OMAGGI */}
+                      {/* BLOCCO DEDICATO PIANIFICAZIONE SPOT: DATE O PERIODO DA DEFINIRE */}
                       {isSpotItem && (
-                        <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '6px', padding: '10px', marginBottom: '10px' }}>
-                          <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
-                            <span>Programmazione Spot (Da Data a Data o Periodo Flessibile):</span>
+                        <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '6px', padding: '10px', marginBottom: '10px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8' }}>
+                              Modalità Programmazione Spot:
+                            </span>
                             
-                            {/* TOGGLE PERIODO DA DEFINIRE */}
-                            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer', background: it.periodoDaDefinire ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.05)', border: `1px solid ${it.periodoDaDefinire ? '#38bdf8' : 'rgba(255, 255, 255, 0.15)'}`, padding: '2px 8px', borderRadius: '4px' }}>
-                              <input
-                                type="checkbox"
-                                checked={Boolean(it.periodoDaDefinire)}
-                                onChange={e => handleSpotFieldChange(it.id, {
-                                  periodoDaDefinire: e.target.checked,
-                                  dataInizio: e.target.checked ? '' : (it.dataInizio || '2026-10-15'),
-                                  dataFine: e.target.checked ? '' : (it.dataFine || '2026-10-25')
+                            {/* BOTTONI SELEZIONE MODALITÀ: DATE CALENDARIO VS PERIODO DA DEFINIRE */}
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                              <button
+                                type="button"
+                                className="btn btn-xs"
+                                style={{
+                                  background: it.periodoDaDefinire ? '#0284c7' : 'rgba(255, 255, 255, 0.06)',
+                                  color: '#ffffff',
+                                  fontWeight: 800,
+                                  border: it.periodoDaDefinire ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.15)',
+                                  padding: '4px 10px',
+                                  borderRadius: '5px',
+                                  cursor: 'pointer'
+                                }}
+                                onClick={() => handleSpotFieldChange(it.id, {
+                                  periodoDaDefinire: true,
+                                  periodo: 'Periodo da definire',
+                                  dataInizio: '',
+                                  dataFine: '',
+                                  fascia: it.fascia?.includes('07.00') ? 'Rotazione concordata' : it.fascia
                                 })}
-                                style={{ cursor: 'pointer', accentColor: '#38bdf8' }}
-                              />
-                              <span style={{ fontSize: '10px', fontWeight: 800, color: it.periodoDaDefinire ? '#38bdf8' : '#cbd5e1' }}>
-                                📅 Periodo da definire / concordare
-                              </span>
-                            </label>
+                              >
+                                🔒 PERIODO DA DEFINIRE
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-xs"
+                                style={{
+                                  background: !it.periodoDaDefinire ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255, 255, 255, 0.06)',
+                                  color: !it.periodoDaDefinire ? '#ffffff' : '#94a3b8',
+                                  fontWeight: !it.periodoDaDefinire ? 800 : 500,
+                                  border: !it.periodoDaDefinire ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.15)',
+                                  padding: '4px 10px',
+                                  borderRadius: '5px',
+                                  cursor: 'pointer'
+                                }}
+                                onClick={() => handleSpotFieldChange(it.id, {
+                                  periodoDaDefinire: false,
+                                  dataInizio: it.dataInizio || '2026-10-15',
+                                  dataFine: it.dataFine || '2026-10-25'
+                                })}
+                              >
+                                📅 Date Fisse Calendario
+                              </button>
+                            </div>
                           </div>
 
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
                             {it.periodoDaDefinire ? (
-                              <div style={{ gridColumn: 'span 2', background: 'rgba(56, 189, 248, 0.08)', padding: '6px 10px', borderRadius: '4px', border: '1px dashed rgba(56, 189, 248, 0.3)' }}>
-                                <label style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, display: 'block', marginBottom: '2px' }}>
-                                  Durata Campagna (Giorni di Rotazione):
-                                </label>
-                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                              <div style={{ gridColumn: 'span 2', background: 'rgba(56, 189, 248, 0.12)', padding: '8px 12px', borderRadius: '6px', border: '1px solid rgba(56, 189, 248, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                                <div>
+                                  <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>
+                                    🔒 PERIODO BLINDATO: Nessuna data o fascia oraria forzata.
+                                  </div>
+                                  <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '2px' }}>
+                                    La proposta a stampa mostrerà solo &quot;Periodo da definire&quot;.
+                                  </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                  <span style={{ fontSize: '10px', color: '#cbd5e1' }}>Testo a stampa:</span>
                                   <input
-                                    type="number"
+                                    type="text"
                                     className="form-input"
-                                    style={{ fontSize: '11px', width: '80px', padding: '4px 6px' }}
-                                    value={it.giorniTotali || 10}
-                                    min={1}
-                                    onChange={e => handleSpotFieldChange(it.id, { giorniTotali: Math.max(1, Number(e.target.value)) })}
+                                    style={{ fontSize: '11px', width: '160px', padding: '3px 6px', fontWeight: 700, color: '#38bdf8', borderColor: '#38bdf8' }}
+                                    value={it.periodo || 'Periodo da definire'}
+                                    onChange={e => handleSpotFieldChange(it.id, { periodo: e.target.value })}
                                   />
-                                  <span style={{ fontSize: '10px', color: '#94a3b8' }}>
-                                    giorni complessivi • Date concordate successivamente
-                                  </span>
                                 </div>
                               </div>
                             ) : (
@@ -4650,7 +4685,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   <thead>
                     <tr style={{ background: '#474350', color: '#ffffff', textTransform: 'uppercase', fontSize: '8.5px', letterSpacing: '0.05em' }}>
                       <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Modulo &amp; Ambito di Diffusione</th>
-                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700, width: '115px' }}>Fascia / Tipologia</th>
+                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700, width: '135px' }}>Periodo &amp; Programmazione</th>
                       <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Dettagli &amp; Specifiche</th>
                       <th style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, width: '80px' }}>Listino</th>
                       <th style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, width: '90px' }}>Prezzo Netto</th>
@@ -4659,6 +4694,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   <tbody>
                     {quoteItems.map((it, idx) => {
                       const isProd = !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione');
+                      const isDaDefinire = it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire');
                       return (
                         <tr key={it.id} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
                           <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
@@ -4684,8 +4720,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               </span>
                             ) : (
                               <>
-                                <div style={{ fontWeight: 700, color: '#334155' }}>{it.fascia}</div>
-                                {it.periodo && <div style={{ fontSize: '9px', color: '#64748b', marginTop: '1px' }}>{it.periodo}</div>}
+                                <div style={{ fontWeight: 800, color: isDaDefinire ? '#D43F4A' : '#1e293b', fontSize: '10px' }}>
+                                  {isDaDefinire ? 'Periodo da definire' : (it.periodo || 'Periodo da definire')}
+                                </div>
+                                {!isDaDefinire && it.fascia && (
+                                  <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '2px' }}>
+                                    {it.fascia}
+                                  </div>
+                                )}
                               </>
                             )}
                           </td>
