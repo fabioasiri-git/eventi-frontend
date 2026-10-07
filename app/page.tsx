@@ -1070,7 +1070,15 @@ export default function LeadEngineDashboard() {
 
   // Calcolo Totali Preventivo Modulare Dinamico
   const totaleInvestimento = quoteItems.reduce((acc, curr) => acc + Number(curr.valore || 0), 0);
-  const totaleListino = quoteItems.reduce((acc, curr) => acc + Number(curr.prezzoListino || curr.valore || 0), 0);
+  const totaleListino = quoteItems.reduce((acc, curr) => {
+    let listino = Number(curr.prezzoListino || 0);
+    if ((!listino || listino <= Number(curr.valore || 0)) && curr.isSpot) {
+      const tariffa = getTariffaUfficialeSpot(curr.copertura, curr.formatoSecondi || 20) || 60;
+      const sp = curr.spotTotali && curr.spotTotali > 0 ? curr.spotTotali : 60;
+      listino = Math.round(tariffa * sp);
+    }
+    return acc + (listino || Number(curr.valore || 0));
+  }, 0);
   const scontoApplicato = Math.max(0, totaleListino - totaleInvestimento);
 
   // Caricatore robusto motori di rendering PDF (html2canvas & jsPDF)
@@ -4712,10 +4720,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               style={{
                 background: '#ffffff',
                 color: '#111111',
-                padding: '14px 18px',
+                padding: '16px 20px',
                 margin: '10px auto',
-                width: '100%',
-                maxWidth: '195mm',
+                width: '794px',
+                minHeight: '1123px',
+                maxWidth: '100%',
                 boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
                 boxSizing: 'border-box',
                 fontFamily: "'Akzidenz-Grotesk', 'Panton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
@@ -4806,20 +4815,36 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   <tbody>
                     {quoteItems.map((it, idx) => {
                       const isProd = !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione');
+                      const isSpot = it.isSpot || it.tipo.toLowerCase().includes('spot');
                       const isDaDefinire = it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire');
+                      const spotPaganti = isSpot ? (it.spotTotali && it.spotTotali > 0 ? it.spotTotali : 60) : 0;
+                      const omaggi = it.spotOmaggio || 0;
+                      const formato = it.formatoSecondi || 20;
+                      const totPassaggi = spotPaganti + omaggi;
+
+                      let dett = it.dettagli || '';
+                      if (isSpot && (dett.includes('0 spot paganti') || !dett)) {
+                        dett = `${spotPaganti} spot paganti + ${omaggi} spot OMAGGIO (Totale ${totPassaggi} passaggi da ${formato}")`;
+                      }
+
+                      const tariffaUff = isSpot ? (getTariffaUfficialeSpot(it.copertura, formato) || 60) : 0;
+                      const listinoEffettivo = (it.prezzoListino && it.prezzoListino > it.valore)
+                        ? it.prezzoListino
+                        : (isSpot ? Math.round(tariffaUff * spotPaganti) : it.valore);
+
                       return (
                         <tr key={it.id} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
                           <td style={{ padding: '6px 8px', verticalAlign: 'top' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                               <span style={{ fontWeight: 800, color: '#1e293b' }}>{it.tipo}</span>
-                              {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                              {it.quantita && it.quantita > 1 && !isSpot ? (
                                 <span style={{ fontSize: '7.5px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd', padding: '1px 5px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                   Qtà: {it.quantita}
                                 </span>
                               ) : null}
-                              {it.spotOmaggio && it.spotOmaggio > 0 ? (
+                              {omaggi > 0 ? (
                                 <span style={{ fontSize: '7.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 4px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                  + {it.spotOmaggio} OMAGGIO
+                                  + {omaggi} OMAGGIO
                                 </span>
                               ) : null}
                             </div>
@@ -4844,8 +4869,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             )}
                           </td>
                           <td style={{ padding: '6px 8px', color: '#334155', verticalAlign: 'top' }}>
-                            <div style={{ lineHeight: 1.35 }}>{it.dettagli}</div>
-                            {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                            <div style={{ lineHeight: 1.35 }}>{dett}</div>
+                            {it.quantita && it.quantita > 1 && !isSpot ? (
                               <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>
                                 • {it.quantita} prestazioni a € {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })} cad.
                               </div>
@@ -4861,17 +4886,17 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               </div>
                             )}
                           </td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#94a3b8', verticalAlign: 'top', textDecoration: it.prezzoListino && it.prezzoListino > it.valore ? 'line-through' : 'none' }}>
-                          <div>€ {Number(it.prezzoListino || it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}</div>
-                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#94a3b8', verticalAlign: 'top', textDecoration: listinoEffettivo > it.valore ? 'line-through' : 'none' }}>
+                          <div>€ {Number(listinoEffettivo).toLocaleString('it-IT', { minimumFractionDigits: 2 })}</div>
+                          {it.quantita && it.quantita > 1 && !isSpot ? (
                             <div style={{ fontSize: '8px', color: '#94a3b8' }}>
-                              (€ {Number(it.prezzoUnitarioListino || (it.prezzoListino / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
+                              (€ {Number(it.prezzoUnitarioListino || (listinoEffettivo / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
                             </div>
                           ) : null}
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, color: '#1e293b', fontSize: '11px', verticalAlign: 'top' }}>
                           <div>€ {Number(it.valore).toLocaleString('it-IT', { minimumFractionDigits: 2 })}</div>
-                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                          {it.quantita && it.quantita > 1 && !isSpot ? (
                             <div style={{ fontSize: '8px', color: '#0284c7', fontWeight: 700 }}>
                               (€ {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
                             </div>
