@@ -4191,5 +4191,29 @@
     "totale_contratti": 2,
     "ultimo_prezzo": 549.18,
     "ultimo_anno": "2026"
+  },
+  {
+    "ditta": "GALLI TORRINI PUBBLICITÀ",
+    "referente": "Lorenzo Galli Torrini",
+    "indirizzo": "Firenze",
+    "cap": "50100",
+    "citta": "Firenze",
+    "provincia": "FI",
+    "telefono": "333 3222377",
+    "email": "lorenzo@gallitorrini.com",
+    "piva": "",
+    "contratti": [
+      {
+        "anno": "2026",
+        "data": "07/10/2026",
+        "prezzo": 400,
+        "spot": "60+20 omaggio",
+        "file": "Preventivo Galli Torrini 07.10.26.pdf",
+        "referente": "Lorenzo Galli Torrini"
+      }
+    ],
+    "totale_contratti": 1,
+    "ultimo_prezzo": 400,
+    "ultimo_anno": "2026"
   }
 ]
