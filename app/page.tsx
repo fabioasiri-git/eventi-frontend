@@ -45,6 +45,7 @@ interface QuoteLineItem {
   isSpot?: boolean;
   dataInizio?: string;
   dataFine?: string;
+  periodoDaDefinire?: boolean;
   spotGiornalieri?: number;
   giorniTotali?: number;
   spotTotali?: number;
@@ -128,9 +129,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     tipo_accordo: 'STANDARD',
     stato_produzione: 'IN_ATTESA_COPY',
     data_scadenza_produzione: '2026-10-15',
-    copy_testo: 'Campagna promozionale Galli Torrini: 60 spot paganti + 20 spot OMAGGIO da 20" su Radio Toscana Area 1 (FI-PO-PT) + realizzazione spot audio in studio.',
-    data_inizio_trasmissione: '2026-10-15',
-    data_fine_trasmissione: '2026-10-25',
+    copy_testo: 'Campagna promozionale Galli Torrini: 60 spot paganti + 20 spot OMAGGIO da 20" su Radio Toscana Area 1 (FI-PO-PT) - Periodo da definire + realizzazione spot audio in studio.',
     spot_giornalieri: 8,
     stato_programmazione: 'IN_ATTESA_CONFERMA',
     quote_items: [
@@ -140,12 +139,11 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
         dettagli: '60 spot paganti + 20 spot OMAGGIO da 20" (Totale 80 passaggi)',
         fascia: 'Fasce M, P, S (07.00 – 21.00 a rotazione)',
-        periodo: 'Rotazione 10 giorni (8 spot/giorno)',
+        periodo: 'Periodo da definire (rotazione 10 giorni)',
+        periodoDaDefinire: true,
         prezzoListino: 720,
         valore: 300,
         isSpot: true,
-        dataInizio: '2026-10-15',
-        dataFine: '2026-10-25',
         spotGiornalieri: 8,
         giorniTotali: 10,
         spotTotali: 60,
@@ -164,7 +162,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         tipoProduzione: 'SOLO_RT_RF'
       }
     ],
-    note: 'Proposta Preventivo per GALLI TORRINI: 60 spot 20" Area 1 + 20 spot OMAGGIO (netto spazi € 300,00) + Produzione spot audio € 100,00. Totale netto: € 400,00 + IVA. Referente: Lorenzo Galli Torrini (tel. 333 3222377 - lorenzo@gallitorrini.com).'
+    note: 'Proposta Preventivo per GALLI TORRINI: 60 spot 20" Area 1 + 20 spot OMAGGIO (netto spazi € 300,00) + Produzione spot audio € 100,00. Totale netto: € 400,00 + IVA. Periodo: Da concordare / definire (rotazione 10 gg). Referente: Lorenzo Galli Torrini (tel. 333 3222377 - lorenzo@gallitorrini.com).'
   },
   {
     id: 'lead-fattoria-lavacchio-2026',
@@ -733,8 +731,8 @@ export default function LeadEngineDashboard() {
       if (it.id !== id) return it;
       const updated = { ...it, ...updates };
 
-      let giorni = updated.giorniTotali || 14;
-      if (updated.dataInizio && updated.dataFine) {
+      let giorni = updated.giorniTotali || 10;
+      if (!updated.periodoDaDefinire && updated.dataInizio && updated.dataFine) {
         const d1 = new Date(updated.dataInizio);
         const d2 = new Date(updated.dataFine);
         if (!isNaN(d1.getTime()) && !isNaN(d2.getTime())) {
@@ -744,8 +742,8 @@ export default function LeadEngineDashboard() {
       }
       updated.giorniTotali = giorni;
 
-      if ('spotGiornalieri' in updates || 'dataInizio' in updates || 'dataFine' in updates) {
-        const daily = updated.spotGiornalieri || 10;
+      if ('spotGiornalieri' in updates || 'dataInizio' in updates || 'dataFine' in updates || 'giorniTotali' in updates) {
+        const daily = updated.spotGiornalieri || 8;
         updated.spotTotali = daily * giorni;
       }
 
@@ -755,10 +753,18 @@ export default function LeadEngineDashboard() {
       const totPassaggi = spotPaganti + omaggi;
       const daily = updated.spotGiornalieri || Math.round(spotPaganti / (giorni || 1));
 
-      const d1Str = updated.dataInizio ? new Date(updated.dataInizio).toLocaleDateString('it-IT') : '';
-      const d2Str = updated.dataFine ? new Date(updated.dataFine).toLocaleDateString('it-IT') : '';
-      if (d1Str && d2Str) {
-        updated.periodo = `Dal ${d1Str} al ${d2Str} (${giorni} gg)`;
+      if (updated.periodoDaDefinire) {
+        updated.periodo = `Periodo da definire (${giorni} gg)`;
+        updated.dataInizio = '';
+        updated.dataFine = '';
+      } else {
+        const d1Str = updated.dataInizio ? new Date(updated.dataInizio).toLocaleDateString('it-IT') : '';
+        const d2Str = updated.dataFine ? new Date(updated.dataFine).toLocaleDateString('it-IT') : '';
+        if (d1Str && d2Str) {
+          updated.periodo = `Dal ${d1Str} al ${d2Str} (${giorni} gg)`;
+        } else {
+          updated.periodo = `Periodo da definire (${giorni} gg)`;
+        }
       }
 
       let dett = `${daily} spot/gg per ${giorni} gg (${spotPaganti} spot paganti da ${formato}")`;
@@ -1346,8 +1352,8 @@ export default function LeadEngineDashboard() {
       barter_ascoltatori: barterAscoltatori,
       quote_items: [...quoteItems],
       data_preventivo: new Date().toISOString().split('T')[0],
-      data_inizio_trasmissione: mainSpot?.dataInizio,
-      data_fine_trasmissione: mainSpot?.dataFine,
+      data_inizio_trasmissione: mainSpot?.periodoDaDefinire ? undefined : mainSpot?.dataInizio,
+      data_fine_trasmissione: mainSpot?.periodoDaDefinire ? undefined : mainSpot?.dataFine,
       spot_giornalieri: mainSpot?.spotGiornalieri,
       tipo_produzione_spot: prodItem ? (prodItem.tipoProduzione || 'SOLO_RT_RF') : undefined,
       stato_produzione: hasProd ? 'IN_ATTESA_COPY' : 'NON_RICHIESTA',
@@ -1470,9 +1476,13 @@ export default function LeadEngineDashboard() {
     setCurrentQuoteNumber(lead.numero_preventivo || getNextQuoteNumber(leads));
 
     if (lead.quote_items && lead.quote_items.length > 0) {
-      setQuoteItems([...lead.quote_items]);
+      setQuoteItems(lead.quote_items.map(it => ({
+        ...it,
+        periodoDaDefinire: it.periodoDaDefinire ?? (Boolean(it.periodo?.toLowerCase().includes('definire')) || (!it.dataInizio && !it.dataFine))
+      })));
     } else {
       // Ricostruzione elementi se non presenti
+      const isDef = !lead.data_inizio_trasmissione || !lead.data_fine_trasmissione;
       setQuoteItems([
         {
           id: `edit-${Date.now()}-1`,
@@ -1480,9 +1490,10 @@ export default function LeadEngineDashboard() {
           copertura: lead.area_target || 'Radio Toscana Rete',
           dettagli: `${lead.plafond_totale_spot || 140} spot pianificati da 20"`,
           fascia: '07.00 – 21.00 a rotazione',
-          periodo: lead.data_inizio_trasmissione && lead.data_fine_trasmissione
-            ? `Dal ${lead.data_inizio_trasmissione} al ${lead.data_fine_trasmissione}`
-            : 'Pianificazione concordata',
+          periodo: isDef
+            ? 'Periodo da definire'
+            : `Dal ${lead.data_inizio_trasmissione} al ${lead.data_fine_trasmissione}`,
+          periodoDaDefinire: isDef,
           prezzoListino: Math.round((lead.valore_preventivo || 1000) * 1.3),
           valore: lead.valore_preventivo || 1000,
           isSpot: true,
@@ -1531,8 +1542,12 @@ export default function LeadEngineDashboard() {
 
     setContractData({
       numero: contractNum,
-      dataDecorrenza: mainSpot?.dataInizio || lead.data_inizio_trasmissione || (mainSpot?.periodo?.toLowerCase().includes('ottobre') ? '2026-10-01' : '2026-09-15'),
-      dataScadenza: mainSpot?.dataFine || lead.data_fine_trasmissione || (mainSpot?.periodo?.toLowerCase().includes('ottobre') ? '2026-10-31' : '2026-09-28'),
+      dataDecorrenza: (mainSpot?.periodoDaDefinire || !mainSpot?.dataInizio)
+        ? 'Periodo da definire'
+        : (mainSpot?.dataInizio || lead.data_inizio_trasmissione || '2026-10-15'),
+      dataScadenza: (mainSpot?.periodoDaDefinire || !mainSpot?.dataFine)
+        ? 'Periodo da definire'
+        : (mainSpot?.dataFine || lead.data_fine_trasmissione || '2026-10-25'),
       committente: lead.nome_azienda_evento,
       referente: lead.referente || 'Referente Aziendale',
       piva: lead.piva || '',
@@ -1980,9 +1995,9 @@ Grazie e buon lavoro!`;
       anno_riferimento: '2026',
       probabilita_chiusura: 100,
       quote_items: [...contractItems],
-      data_inizio_trasmissione: contractData.dataDecorrenza,
-      data_fine_trasmissione: contractData.dataScadenza,
-      stato_programmazione: 'IN_PALINSESTO',
+      data_inizio_trasmissione: contractData.dataDecorrenza === 'Periodo da definire' ? undefined : contractData.dataDecorrenza,
+      data_fine_trasmissione: contractData.dataScadenza === 'Periodo da definire' ? undefined : contractData.dataScadenza,
+      stato_programmazione: contractData.dataDecorrenza === 'Periodo da definire' ? 'IN_ATTESA_CONFERMA' : 'IN_PALINSESTO',
       note: `Contratto Radio Monte Serra S.r.l. regolarmente attivato e sottoscritto. ${contractData.noteContratto}`
     } as LeadRow;
 
@@ -2085,8 +2100,12 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
     setContractData({
       numero: nextNum,
-      dataDecorrenza: mainSpot?.dataInizio || (mainSpot?.periodo?.toLowerCase().includes('ottobre') ? '2026-10-01' : '2026-09-15'),
-      dataScadenza: mainSpot?.dataFine || (mainSpot?.periodo?.toLowerCase().includes('ottobre') ? '2026-10-31' : '2026-09-28'),
+      dataDecorrenza: (mainSpot?.periodoDaDefinire || !mainSpot?.dataInizio)
+        ? 'Periodo da definire'
+        : (mainSpot?.dataInizio || '2026-10-15'),
+      dataScadenza: (mainSpot?.periodoDaDefinire || !mainSpot?.dataFine)
+        ? 'Periodo da definire'
+        : (mainSpot?.dataFine || '2026-10-25'),
       committente: qNome || 'Azienda Committente',
       referente: qReferente || 'Referente Aziendale',
       piva: qPiva || '',
@@ -2333,12 +2352,12 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
                           {l.plafond_totale_spot && l.plafond_totale_spot > 0 ? (
                             <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '3px' }}>
-                              📻 <strong>{l.plafond_totale_spot} spot</strong> {l.data_inizio_trasmissione && l.data_fine_trasmissione ? `(dal ${l.data_inizio_trasmissione} al ${l.data_fine_trasmissione})` : ''}
+                              📻 <strong>{l.plafond_totale_spot} spot</strong> {l.data_inizio_trasmissione && l.data_fine_trasmissione ? `(dal ${l.data_inizio_trasmissione} al ${l.data_fine_trasmissione})` : <span style={{ color: '#38bdf8', fontWeight: 600 }}>• Periodo da definire</span>}
                             </div>
                           ) : (l.quote_items && l.quote_items.length > 0 ? (
                             <div style={{ fontSize: '11px', color: '#38bdf8', marginTop: '3px', fontWeight: 600 }}>
                               🎙️ <strong>{l.quote_items.map(it => `${it.quantita && it.quantita > 1 ? `${it.quantita}x ` : ''}${it.tipo}`).join(' • ')}</strong>
-                              {l.data_inizio_trasmissione && l.data_fine_trasmissione ? ` (dal ${l.data_inizio_trasmissione} al ${l.data_fine_trasmissione})` : ''}
+                              {l.data_inizio_trasmissione && l.data_fine_trasmissione ? ` (dal ${l.data_inizio_trasmissione} al ${l.data_fine_trasmissione})` : <span style={{ color: '#38bdf8', fontWeight: 600 }}> • Periodo da definire</span>}
                             </div>
                           ) : null)}
 
@@ -3533,31 +3552,71 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       {/* BLOCCO DEDICATO PIANIFICAZIONE SPOT: DATE, QUANTITÀ GIORNALIERA, TOTALI, OMAGGI */}
                       {isSpotItem && (
                         <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '6px', padding: '10px', marginBottom: '10px' }}>
-                          <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', marginBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <span>Programmazione Spot (Da Data a Data, Cadenza Giornaliera e Omaggi):</span>
-                            <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 400 }}>Calcolo automatico passaggi e periodo</span>
+                          <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+                            <span>Programmazione Spot (Da Data a Data o Periodo Flessibile):</span>
+                            
+                            {/* TOGGLE PERIODO DA DEFINIRE */}
+                            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer', background: it.periodoDaDefinire ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.05)', border: `1px solid ${it.periodoDaDefinire ? '#38bdf8' : 'rgba(255, 255, 255, 0.15)'}`, padding: '2px 8px', borderRadius: '4px' }}>
+                              <input
+                                type="checkbox"
+                                checked={Boolean(it.periodoDaDefinire)}
+                                onChange={e => handleSpotFieldChange(it.id, {
+                                  periodoDaDefinire: e.target.checked,
+                                  dataInizio: e.target.checked ? '' : (it.dataInizio || '2026-10-15'),
+                                  dataFine: e.target.checked ? '' : (it.dataFine || '2026-10-25')
+                                })}
+                                style={{ cursor: 'pointer', accentColor: '#38bdf8' }}
+                              />
+                              <span style={{ fontSize: '10px', fontWeight: 800, color: it.periodoDaDefinire ? '#38bdf8' : '#cbd5e1' }}>
+                                📅 Periodo da definire / concordare
+                              </span>
+                            </label>
                           </div>
+
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
-                            <div>
-                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Data Inizio:</label>
-                              <input
-                                type="date"
-                                className="form-input"
-                                style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
-                                value={it.dataInizio || '2026-09-15'}
-                                onChange={e => handleSpotFieldChange(it.id, { dataInizio: e.target.value })}
-                              />
-                            </div>
-                            <div>
-                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Data Fine:</label>
-                              <input
-                                type="date"
-                                className="form-input"
-                                style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
-                                value={it.dataFine || '2026-09-28'}
-                                onChange={e => handleSpotFieldChange(it.id, { dataFine: e.target.value })}
-                              />
-                            </div>
+                            {it.periodoDaDefinire ? (
+                              <div style={{ gridColumn: 'span 2', background: 'rgba(56, 189, 248, 0.08)', padding: '6px 10px', borderRadius: '4px', border: '1px dashed rgba(56, 189, 248, 0.3)' }}>
+                                <label style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, display: 'block', marginBottom: '2px' }}>
+                                  Durata Campagna (Giorni di Rotazione):
+                                </label>
+                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                  <input
+                                    type="number"
+                                    className="form-input"
+                                    style={{ fontSize: '11px', width: '80px', padding: '4px 6px' }}
+                                    value={it.giorniTotali || 10}
+                                    min={1}
+                                    onChange={e => handleSpotFieldChange(it.id, { giorniTotali: Math.max(1, Number(e.target.value)) })}
+                                  />
+                                  <span style={{ fontSize: '10px', color: '#94a3b8' }}>
+                                    giorni complessivi • Date concordate successivamente
+                                  </span>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <div>
+                                  <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Data Inizio:</label>
+                                  <input
+                                    type="date"
+                                    className="form-input"
+                                    style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
+                                    value={it.dataInizio || '2026-10-15'}
+                                    onChange={e => handleSpotFieldChange(it.id, { dataInizio: e.target.value })}
+                                  />
+                                </div>
+                                <div>
+                                  <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Data Fine:</label>
+                                  <input
+                                    type="date"
+                                    className="form-input"
+                                    style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
+                                    value={it.dataFine || '2026-10-25'}
+                                    onChange={e => handleSpotFieldChange(it.id, { dataFine: e.target.value })}
+                                  />
+                                </div>
+                              </>
+                            )}
                             <div>
                               <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Spot / Giorno:</label>
                               <input
@@ -5115,7 +5174,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               ? 'Radio Firenze 88.7'
                               : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo));
                             const formatoDesc = isSpot ? `${it.formatoSecondi || 20}"` : it.tipo;
-                            const periodoDesc = it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`);
+                            const periodoDesc = it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`));
                             const fasciaDesc = it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato');
 
                             return (
@@ -5183,7 +5242,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               </div>
                             </td>
                             <td style={{ padding: '8px 10px', fontSize: '8.5px' }}>
-                              Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong>
+                              {contractData.dataDecorrenza === 'Periodo da definire' || !contractData.dataDecorrenza ? (
+                                <strong style={{ color: '#D43F4A' }}>Periodo da definire</strong>
+                              ) : (
+                                <>Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong></>
+                              )}
                             </td>
                             <td style={{ padding: '8px 10px' }}>07:00 – 21:00 (Rotazione)</td>
                             <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
@@ -6037,7 +6100,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                   Committente: <strong style={{ color: '#fff' }}>{contractData.committente}</strong>
                   {contractData.referente ? ` • Referente: ${contractData.referente}` : ''}
                   <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
-                    Contratto n. <strong>{contractData.numero}</strong> • Periodo: {contractData.dataDecorrenza} / {contractData.dataScadenza}
+                    Contratto n. <strong>{contractData.numero}</strong> • Periodo: {contractData.dataDecorrenza === 'Periodo da definire' || !contractData.dataDecorrenza ? 'Da definire' : `${contractData.dataDecorrenza} / ${contractData.dataScadenza}`}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
@@ -6596,7 +6659,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                         ? 'Radio Firenze 88.7'
                         : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo));
                       const formatoDesc = isSpot ? `${it.formatoSecondi || 20}"` : it.tipo;
-                      const periodoDesc = it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`);
+                      const periodoDesc = it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`));
                       const fasciaDesc = it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato');
 
                       return (
@@ -6664,7 +6727,11 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                         </div>
                       </td>
                       <td style={{ padding: '6px 8px', fontSize: '7.8px' }}>
-                        Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong>
+                        {contractData.dataDecorrenza === 'Periodo da definire' || !contractData.dataDecorrenza ? (
+                          <strong style={{ color: '#D43F4A' }}>Periodo da definire</strong>
+                        ) : (
+                          <>Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong></>
+                        )}
                       </td>
                       <td style={{ padding: '6px 8px' }}>07:00 – 21:00 (Rotazione)</td>
                       <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, fontSize: '9px' }}>
