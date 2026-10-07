@@ -742,7 +742,7 @@ export default function LeadEngineDashboard() {
       }
       updated.giorniTotali = giorni;
 
-      if ('spotGiornalieri' in updates || 'dataInizio' in updates || 'dataFine' in updates || 'giorniTotali' in updates) {
+      if (!updated.periodoDaDefinire && ('spotGiornalieri' in updates || 'dataInizio' in updates || 'dataFine' in updates || 'giorniTotali' in updates)) {
         const daily = updated.spotGiornalieri || 8;
         updated.spotTotali = daily * giorni;
       }
@@ -751,12 +751,12 @@ export default function LeadEngineDashboard() {
       const omaggi = updated.spotOmaggio || 0;
       const formato = updated.formatoSecondi || 20;
       const totPassaggi = spotPaganti + omaggi;
-      const daily = updated.spotGiornalieri || Math.round(spotPaganti / (giorni || 1));
 
       if (updated.periodoDaDefinire) {
         updated.periodo = updates.periodo || (it.periodo && !it.periodo.startsWith('Dal ') ? it.periodo : 'Periodo da definire');
         updated.dataInizio = '';
         updated.dataFine = '';
+        updated.fascia = 'Rotazione concordata';
       } else {
         const d1Str = updated.dataInizio ? new Date(updated.dataInizio).toLocaleDateString('it-IT') : '';
         const d2Str = updated.dataFine ? new Date(updated.dataFine).toLocaleDateString('it-IT') : '';
@@ -775,10 +775,12 @@ export default function LeadEngineDashboard() {
         updated.dettagli = dett;
       }
 
-      // Calcolo Listino Ufficiale da Tariffa Unitaria x Spot Totali
+      // Calcolo Listino Ufficiale da Tariffa Unitaria x Spot Totali se non specificato
       const tariffa = getTariffaUfficialeSpot(updated.copertura, formato);
       updated.tariffaUnitaria = tariffa;
-      updated.prezzoListino = Math.round(tariffa * spotPaganti * 100) / 100;
+      if (!('prezzoListino' in updates)) {
+        updated.prezzoListino = Math.round(tariffa * spotPaganti * 100) / 100;
+      }
 
       return updated;
     }));
@@ -3553,13 +3555,24 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
                       {/* BLOCCO DEDICATO PIANIFICAZIONE SPOT: DATE O PERIODO DA DEFINIRE */}
                       {isSpotItem && (
-                        <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '6px', padding: '10px', marginBottom: '10px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
-                            <span style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8' }}>
-                              Modalità Programmazione Spot:
-                            </span>
-                            
-                            {/* BOTTONI SELEZIONE MODALITÀ: DATE CALENDARIO VS PERIODO DA DEFINIRE */}
+                        <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '8px', padding: '12px 14px', marginBottom: '12px' }}>
+                          {/* SELETTORE MODALITÀ IN ALTO */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                Modalità Programmazione Spot:
+                              </span>
+                              {it.periodoDaDefinire ? (
+                                <span style={{ fontSize: '10px', background: 'rgba(14, 165, 233, 0.2)', color: '#38bdf8', padding: '2px 8px', borderRadius: '4px', fontWeight: 800 }}>
+                                  🔒 CAMPO LIBERO (ESCLUDE DATE E FASCE)
+                                </span>
+                              ) : (
+                                <span style={{ fontSize: '10px', background: 'rgba(59, 130, 246, 0.2)', color: '#93c5fd', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                                  📅 DATE FISSE A CALENDARIO
+                                </span>
+                              )}
+                            </div>
+
                             <div style={{ display: 'flex', gap: '6px' }}>
                               <button
                                 type="button"
@@ -3569,7 +3582,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   color: '#ffffff',
                                   fontWeight: 800,
                                   border: it.periodoDaDefinire ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.15)',
-                                  padding: '4px 10px',
+                                  padding: '5px 12px',
                                   borderRadius: '5px',
                                   cursor: 'pointer'
                                 }}
@@ -3578,10 +3591,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   periodo: 'Periodo da definire',
                                   dataInizio: '',
                                   dataFine: '',
-                                  fascia: it.fascia?.includes('07.00') ? 'Rotazione concordata' : it.fascia
+                                  fascia: 'Rotazione concordata'
                                 })}
                               >
-                                🔒 PERIODO DA DEFINIRE
+                                🔒 PERIODO DA DEFINIRE (Campo Libero)
                               </button>
                               <button
                                 type="button"
@@ -3591,14 +3604,15 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   color: !it.periodoDaDefinire ? '#ffffff' : '#94a3b8',
                                   fontWeight: !it.periodoDaDefinire ? 800 : 500,
                                   border: !it.periodoDaDefinire ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.15)',
-                                  padding: '4px 10px',
+                                  padding: '5px 12px',
                                   borderRadius: '5px',
                                   cursor: 'pointer'
                                 }}
                                 onClick={() => handleSpotFieldChange(it.id, {
                                   periodoDaDefinire: false,
                                   dataInizio: it.dataInizio || '2026-10-15',
-                                  dataFine: it.dataFine || '2026-10-25'
+                                  dataFine: it.dataFine || '2026-10-25',
+                                  fascia: it.fascia || '07.00 - 21.00 a rotazione'
                                 })}
                               >
                                 📅 Date Fisse Calendario
@@ -3606,80 +3620,93 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             </div>
                           </div>
 
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
-                            {it.periodoDaDefinire ? (
-                              <div style={{ gridColumn: 'span 2', background: 'rgba(56, 189, 248, 0.12)', padding: '8px 12px', borderRadius: '6px', border: '1px solid rgba(56, 189, 248, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-                                <div>
-                                  <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>
-                                    🔒 PERIODO BLINDATO: Nessuna data o fascia oraria forzata.
-                                  </div>
-                                  <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '2px' }}>
-                                    La proposta a stampa mostrerà solo &quot;Periodo da definire&quot;.
-                                  </div>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <span style={{ fontSize: '10px', color: '#cbd5e1' }}>Testo a stampa:</span>
-                                  <input
-                                    type="text"
-                                    className="form-input"
-                                    style={{ fontSize: '11px', width: '160px', padding: '3px 6px', fontWeight: 700, color: '#38bdf8', borderColor: '#38bdf8' }}
-                                    value={it.periodo || 'Periodo da definire'}
-                                    onChange={e => handleSpotFieldChange(it.id, { periodo: e.target.value })}
-                                  />
-                                </div>
+                          {/* SE PERIODO DA DEFINIRE: CAMPO LIBERO ESCLUSIVO (NESSUNA DATA, NESSUNA FASCIA ORARIA, NESSUNO SPOT/GIORNO) */}
+                          {it.periodoDaDefinire ? (
+                            <div style={{ background: 'rgba(2, 132, 199, 0.12)', border: '1px solid rgba(56, 189, 248, 0.35)', borderRadius: '6px', padding: '10px 14px', marginBottom: '12px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px', flexWrap: 'wrap', gap: '6px' }}>
+                                <label style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8' }}>
+                                  PERIODO DI TRASMISSIONE (CAMPO LIBERO ESCLUSIVO):
+                                </label>
+                                <span style={{ fontSize: '10px', color: '#94a3b8' }}>
+                                  ✓ Date fisse e fasce orarie obbligate sono <strong>ESCLUSE</strong>
+                                </span>
                               </div>
-                            ) : (
-                              <>
-                                <div>
-                                  <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Data Inizio:</label>
-                                  <input
-                                    type="date"
-                                    className="form-input"
-                                    style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
-                                    value={it.dataInizio || '2026-10-15'}
-                                    onChange={e => handleSpotFieldChange(it.id, { dataInizio: e.target.value })}
-                                  />
-                                </div>
-                                <div>
-                                  <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Data Fine:</label>
-                                  <input
-                                    type="date"
-                                    className="form-input"
-                                    style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
-                                    value={it.dataFine || '2026-10-25'}
-                                    onChange={e => handleSpotFieldChange(it.id, { dataFine: e.target.value })}
-                                  />
-                                </div>
-                              </>
-                            )}
-                            <div>
-                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Spot / Giorno:</label>
                               <input
-                                type="number"
+                                type="text"
                                 className="form-input"
-                                style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
-                                value={it.spotGiornalieri || 10}
-                                min={1}
-                                onChange={e => handleSpotFieldChange(it.id, { spotGiornalieri: Number(e.target.value) })}
+                                style={{ fontSize: '13px', width: '100%', padding: '6px 10px', fontWeight: 700, color: '#38bdf8', borderColor: '#38bdf8', background: 'rgba(0,0,0,0.35)' }}
+                                value={it.periodo || 'Periodo da definire'}
+                                placeholder="es. Periodo da definire (oppure testo libero personalizzato)"
+                                onChange={e => handleSpotFieldChange(it.id, { periodo: e.target.value })}
                               />
                             </div>
+                          ) : (
+                            /* SE DATE FISSE: MOSTRA DATA INIZIO, DATA FINE, FASCIA ORARIA, SPOT/GIORNO */
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px', marginBottom: '12px', background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '6px' }}>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Data Inizio:</label>
+                                <input
+                                  type="date"
+                                  className="form-input"
+                                  style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
+                                  value={it.dataInizio || '2026-10-15'}
+                                  onChange={e => handleSpotFieldChange(it.id, { dataInizio: e.target.value })}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Data Fine:</label>
+                                <input
+                                  type="date"
+                                  className="form-input"
+                                  style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
+                                  value={it.dataFine || '2026-10-25'}
+                                  onChange={e => handleSpotFieldChange(it.id, { dataFine: e.target.value })}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Spot / Giorno:</label>
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
+                                  value={it.spotGiornalieri || 10}
+                                  min={1}
+                                  onChange={e => handleSpotFieldChange(it.id, { spotGiornalieri: Number(e.target.value) })}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Fascia Oraria:</label>
+                                <input
+                                  type="text"
+                                  className="form-input"
+                                  style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
+                                  value={it.fascia || '07.00 - 21.00 a rotazione'}
+                                  placeholder="es. 07.00 - 21.00 a rotazione"
+                                  onChange={e => updateQuoteItem(it.id, 'fascia', e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          {/* PARAMETRI SPOT: SPOT PAGANTI, SPOT OMAGGIO, FORMATO AUDIO, DETTAGLI NOTE */}
+                          <div style={{ display: 'grid', gridTemplateColumns: '120px 120px 140px 1fr', gap: '10px', alignItems: 'center', marginBottom: '12px' }}>
                             <div>
-                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '2px' }}>Spot Paganti (Tot):</label>
+                              <label style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, display: 'block', marginBottom: '3px' }}>Spot Paganti (Tot):</label>
                               <input
                                 type="number"
                                 className="form-input"
-                                style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
-                                value={it.spotTotali || 140}
+                                style={{ fontSize: '12px', width: '100%', padding: '5px 8px', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                                value={it.spotTotali || 60}
                                 min={1}
                                 onChange={e => handleSpotFieldChange(it.id, { spotTotali: Number(e.target.value) })}
                               />
                             </div>
                             <div>
-                              <label style={{ fontSize: '10px', color: '#f43f5e', fontWeight: 800, display: 'block', marginBottom: '2px' }}>Spot OMAGGIO:</label>
+                              <label style={{ fontSize: '10px', color: '#f43f5e', fontWeight: 800, display: 'block', marginBottom: '3px' }}>Spot OMAGGIO:</label>
                               <input
                                 type="number"
                                 className="form-input"
-                                style={{ fontSize: '11px', width: '100%', padding: '4px 6px', borderColor: 'rgba(244, 63, 94, 0.4)', color: '#fb7185', fontWeight: 800 }}
+                                style={{ fontSize: '12px', width: '100%', padding: '5px 8px', borderColor: 'rgba(244, 63, 94, 0.4)', color: '#fb7185', fontWeight: 800 }}
                                 value={it.spotOmaggio || 0}
                                 min={0}
                                 placeholder="0"
@@ -3702,7 +3729,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                       onClick={() => handleSpotFieldChange(it.id, { formatoSecondi: f.sec })}
                                       style={{
                                         flex: 1,
-                                        padding: '4px 2px',
+                                        padding: '5px 2px',
                                         fontSize: '11px',
                                         borderRadius: '4px',
                                         border: active ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
@@ -3718,28 +3745,62 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 })}
                               </div>
                             </div>
+                            <div>
+                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Dettagli / Descrizione Voce Spot:</label>
+                              <input
+                                type="text"
+                                className="form-input"
+                                style={{ fontSize: '11px', width: '100%', padding: '5px 8px' }}
+                                value={it.dettagli || ''}
+                                placeholder="es. 80 spot totali (60 paganti + 20 omaggio)"
+                                onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
+                              />
+                            </div>
                           </div>
-                          {/* RIEPILOGO RAPIDO DEL PIANO SPOT CON LISTINO UFFICIALE */}
-                          {(() => {
-                            const tariffa = getTariffaUfficialeSpot(it.copertura, it.formatoSecondi || 20);
-                            const spotPag = it.spotTotali || 0;
-                            const listinoTot = Math.round(tariffa * spotPag * 100) / 100;
-                            return (
-                              <div style={{ marginTop: '8px', fontSize: '11px', color: '#cbd5e1', background: 'rgba(0,0,0,0.25)', padding: '8px 10px', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                                <span>
-                                  Periodo: <strong>{it.giorniTotali || 14} giorni</strong> • <strong>{spotPag} spot paganti ({it.formatoSecondi || 20}")</strong>
-                                  {(it.spotOmaggio || 0) > 0 && (
-                                    <span style={{ color: '#fb7185', marginLeft: '6px', fontWeight: 800 }}>
-                                      + {it.spotOmaggio} OMAGGIO (Totale: {spotPag + (it.spotOmaggio || 0)} passaggi)
-                                    </span>
-                                  )}
-                                </span>
-                                <span style={{ color: '#38bdf8', fontWeight: 700 }}>
-                                  Listino Ufficiale: € {tariffa.toFixed(2)}/spot → <strong>Totale: € {listinoTot.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</strong>
-                                </span>
+
+                          {/* PREZZI SPOT: LISTINO E RISERVATO DEDICATI */}
+                          <div style={{
+                            background: 'rgba(0, 0, 0, 0.25)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                            borderRadius: '6px',
+                            padding: '8px 12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            flexWrap: 'wrap',
+                            gap: '12px'
+                          }}>
+                            <div style={{ fontSize: '11px', color: '#cbd5e1' }}>
+                              <span>
+                                Totale Passaggi On-Air: <strong style={{ color: '#ffffff' }}>{(it.spotTotali || 0) + (it.spotOmaggio || 0)}</strong>
+                                {' '}({it.spotTotali || 0} paganti
+                                {(it.spotOmaggio || 0) > 0 && <span style={{ color: '#fb7185', fontWeight: 800 }}> + {it.spotOmaggio} omaggio</span>})
+                              </span>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ fontSize: '11px', color: '#94a3b8' }}>Listino Ufficiale (€):</span>
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  style={{ fontSize: '12px', width: '110px', textAlign: 'right', padding: '4px 6px' }}
+                                  value={it.prezzoListino}
+                                  onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
+                                />
                               </div>
-                            );
-                          })()}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>Prezzo Riservato (€):</span>
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  style={{ fontSize: '13px', width: '110px', textAlign: 'right', padding: '4px 6px', fontWeight: 800, color: '#38bdf8', borderColor: '#38bdf8', background: 'rgba(56, 189, 248, 0.1)' }}
+                                  value={it.valore}
+                                  onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       )}
 
@@ -3851,7 +3912,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             />
                           </div>
                         </div>
-                      ) : (
+                      ) : !isSpotItem ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                           {/* RIGA 1: DETTAGLI, FASCIA, PERIODO */}
                           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px', alignItems: 'center' }}>
@@ -3963,7 +4024,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             </div>
                           </div>
                         </div>
-                      )}
+                      ) : null}
                     </div>
                   );
                 })}
@@ -5215,9 +5276,9 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             const mezzo = it.copertura?.includes('Firenze') && !it.copertura?.includes('Toscana')
                               ? 'Radio Firenze 88.7'
                               : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo));
-                            const formatoDesc = isSpot ? `${it.formatoSecondi || 20}"` : it.tipo;
-                            const periodoDesc = it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`));
-                            const fasciaDesc = it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato');
+                            const isDaDefinire = it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire';
+                            const periodoDesc = isDaDefinire ? (it.periodo || 'Periodo da definire') : (it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`)));
+                            const fasciaDesc = isDaDefinire ? 'Rotazione concordata' : (it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato'));
 
                             return (
                               <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
@@ -6700,9 +6761,10 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                       const mezzo = it.copertura?.includes('Firenze') && !it.copertura?.includes('Toscana')
                         ? 'Radio Firenze 88.7'
                         : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo));
+                      const isDaDefinire = it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire';
                       const formatoDesc = isSpot ? `${it.formatoSecondi || 20}"` : it.tipo;
-                      const periodoDesc = it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`));
-                      const fasciaDesc = it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato');
+                      const periodoDesc = isDaDefinire ? (it.periodo || 'Periodo da definire') : (it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`)));
+                      const fasciaDesc = isDaDefinire ? 'Rotazione concordata' : (it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato'));
 
                       return (
                         <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
