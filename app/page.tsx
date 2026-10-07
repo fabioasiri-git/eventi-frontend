@@ -1073,7 +1073,7 @@ export default function LeadEngineDashboard() {
   const totaleListino = quoteItems.reduce((acc, curr) => {
     let listino = Number(curr.prezzoListino || 0);
     if ((!listino || listino <= Number(curr.valore || 0)) && curr.isSpot) {
-      const tariffa = getTariffaUfficialeSpot(curr.copertura, curr.formatoSecondi || 20) || 60;
+      const tariffa = getTariffaUfficialeSpot(curr.copertura, curr.formatoSecondi || 20) || 9.00;
       const sp = curr.spotTotali && curr.spotTotali > 0 ? curr.spotTotali : 60;
       listino = Math.round(tariffa * sp);
     }
@@ -4827,7 +4827,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         dett = `${spotPaganti} spot paganti + ${omaggi} spot OMAGGIO (Totale ${totPassaggi} passaggi da ${formato}")`;
                       }
 
-                      const tariffaUff = isSpot ? (getTariffaUfficialeSpot(it.copertura, formato) || 60) : 0;
+                      const tariffaUff = isSpot ? (getTariffaUfficialeSpot(it.copertura, formato) || 9.00) : 0;
                       const listinoEffettivo = (it.prezzoListino && it.prezzoListino > it.valore)
                         ? it.prezzoListino
                         : (isSpot ? Math.round(tariffaUff * spotPaganti) : it.valore);
