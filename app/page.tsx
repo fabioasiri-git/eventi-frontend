@@ -1172,10 +1172,10 @@ export default function LeadEngineDashboard() {
         const imgData = canvasEl.toDataURL('image/jpeg', 0.98);
         const pageWidth = 210;
         const pageHeight = 297;
-        const marginX = 7; // 7mm margine laterale elegante
-        const marginY = 7; // 7mm margine verticale
-        const maxW = pageWidth - (marginX * 2); // 196mm
-        const maxH = pageHeight - (marginY * 2); // 283mm
+        const marginX = 10;
+        const marginY = 10;
+        const maxW = pageWidth - (marginX * 2);
+        const maxH = pageHeight - (marginY * 2);
 
         const cW = canvasEl.width;
         const cH = canvasEl.height;
@@ -1190,7 +1190,7 @@ export default function LeadEngineDashboard() {
         }
 
         const posX = Math.round(((pageWidth - renderW) / 2) * 100) / 100;
-        const posY = Math.round(((pageHeight - renderH) / 2) * 100) / 100;
+        const posY = marginY;
 
         pdfDoc.addImage(imgData, 'JPEG', posX, posY, renderW, renderH, undefined, 'FAST');
       }
@@ -1230,16 +1230,16 @@ export default function LeadEngineDashboard() {
         logging: false
       });
 
-      // Helper: posiziona il canvas su A4 preservando esattamente l'aspect ratio (zero distorsioni) e con margini proporzionati
+      // Helper: posiziona il canvas su A4 preservando esattamente l'aspect ratio e posizionando la testata in cima
       function addProportionalProposalPage(canvasEl: any, pdfDoc: any, isFirst: boolean) {
         if (!isFirst) pdfDoc.addPage();
         const imgData = canvasEl.toDataURL('image/jpeg', 0.98);
         const pageWidth = 210;
         const pageHeight = 297;
-        const marginX = 7; // 7mm margine laterale elegante
-        const marginY = 7; // 7mm margine verticale
-        const maxW = pageWidth - (marginX * 2); // 196mm
-        const maxH = pageHeight - (marginY * 2); // 283mm
+        const marginX = 10; // 10mm margine laterale pulito
+        const marginY = 10; // 10mm margine superiore: testata in cima!
+        const maxW = pageWidth - (marginX * 2); // 190mm
+        const maxH = pageHeight - (marginY * 2); // 277mm
 
         const cW = canvasEl.width;
         const cH = canvasEl.height;
@@ -1254,7 +1254,7 @@ export default function LeadEngineDashboard() {
         }
 
         const posX = Math.round(((pageWidth - renderW) / 2) * 100) / 100;
-        const posY = Math.round(((pageHeight - renderH) / 2) * 100) / 100;
+        const posY = marginY; // Carta intestata allineata in cima!
 
         pdfDoc.addImage(imgData, 'JPEG', posX, posY, renderW, renderH, undefined, 'FAST');
       }
