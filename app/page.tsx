@@ -5355,6 +5355,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             const isDaDefinire = it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire';
                             const periodoDesc = isDaDefinire ? (it.periodo || 'Periodo da definire') : (it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`)));
                             const fasciaDesc = isDaDefinire ? 'Rotazione concordata' : (it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato'));
+                            const formatoDesc = isSpot ? `${it.formatoSecondi || 20}"` : (it.tipo || 'Prestazione Pubblicitaria');
 
                             return (
                               <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
@@ -5400,7 +5401,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   {fasciaDesc}
                                 </td>
                                 <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
-                                  € {it.valore.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                                  € {(Number(it.valore) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                                 </td>
                               </tr>
                             );
@@ -5429,7 +5430,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             </td>
                             <td style={{ padding: '8px 10px' }}>07:00 – 21:00 (Rotazione)</td>
                             <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
-                              € {contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                              € {(Number(contractData.prezzoSpazi) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
                         )}
@@ -5439,7 +5440,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               <strong>Materiale Pubblicitario:</strong> Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane
                             </td>
                             <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
-                              € {contractData.prezzoProduzione.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                              € {(Number(contractData.prezzoProduzione) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
                         )}
@@ -5473,7 +5474,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         TOTALE COMPLESSIVO (IVA ESCLUSA)
                       </div>
                       <div style={{ fontSize: '18px', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
-                        € {contractData.totaleNetto.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                        € {(Number(contractData.totaleNetto) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                       </div>
                       <div style={{ fontSize: '8px', color: '#cbd5e1', marginTop: '2px' }}>
                         IVA 22% a norma di legge a carico del committente
