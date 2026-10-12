@@ -1066,7 +1066,54 @@ export default function LeadEngineDashboard() {
     });
   }
 
-  // Caricamento Dati Iniziali: Cloud Supabase con Fallback su LocalStorage
+  // Helper: estrae e parsa la data di conclusione di una campagna
+  function parseContractEndDate(lead: LeadRow): Date | null {
+    let dateStr = lead.data_fine_trasmissione;
+    if (!dateStr && lead.quote_items) {
+      const itEnd = lead.quote_items.find(it => it.dataFine);
+      if (itEnd) dateStr = itEnd.dataFine;
+    }
+    if (!dateStr) return null;
+    const trimmed = String(dateStr).trim();
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(trimmed)) {
+      const [d, m, y] = trimmed.split('/').map(Number);
+      return new Date(y, m - 1, d, 23, 59, 59);
+    }
+    if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
+      const [y, m, d] = trimmed.split('T')[0].split('-').map(Number);
+      return new Date(y, m - 1, d, 23, 59, 59);
+    }
+    const d = new Date(trimmed);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  // Auto-Archiviazione automatica per data conclusa: sposta i contratti attivi scaduti nei Contratti Conclusi
+  function autoArchiveExpiredLeads(list: LeadRow[]): { updated: LeadRow[]; count: number } {
+    const now = new Date();
+    let count = 0;
+    const updated = list.map(l => {
+      if (l.fase_commerciale === 'CONTRATTO ATTIVO') {
+        const endDate = parseContractEndDate(l);
+        if (endDate && endDate.getTime() < now.getTime()) {
+          count++;
+          const fmtDate = endDate.toLocaleDateString('it-IT');
+          return {
+            ...l,
+            fase_commerciale: 'CONTRATTO CHIUSO',
+            colonna: 'CONTRATTO CHIUSO',
+            stato_programmazione: 'ARCHIVIATO',
+            note: l.note
+              ? `${l.note} • [Campagna conclusa il ${fmtDate} - Archiviata automaticamente nello Storico Conclusi]`
+              : `[Campagna conclusa il ${fmtDate} - Archiviata automaticamente nello Storico Conclusi]`
+          };
+        }
+      }
+      return l;
+    });
+    return { updated, count };
+  }
+
+  // Caricamento Dati Iniziali: Cloud Supabase con Fallback su LocalStorage + Auto-Archiviazione per Data Conclusa
   useEffect(() => {
     async function loadData() {
       // 1. Carica subito da cache locale per visualizzazione istantanea
@@ -1083,7 +1130,11 @@ export default function LeadEngineDashboard() {
                   merged.push(initLead);
                 }
               }
-              setLeads(merged);
+              const { updated, count } = autoArchiveExpiredLeads(merged);
+              setLeads(updated);
+              if (count > 0) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+              }
             }
           }
         } catch (e) {}
@@ -1104,15 +1155,17 @@ export default function LeadEngineDashboard() {
                 needsSync = true;
               }
             }
-            setLeads(merged);
+            // Auto-archivia contratti la cui data di trasmissione è conclusa
+            const { updated, count } = autoArchiveExpiredLeads(merged);
+            setLeads(updated);
             if (typeof window !== 'undefined') {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
             }
-            if (needsSync) {
+            if (needsSync || count > 0) {
               fetch('/api/leads', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ leads: merged })
+                body: JSON.stringify({ leads: updated })
               }).catch(() => {});
             }
             return;
@@ -1122,11 +1175,12 @@ export default function LeadEngineDashboard() {
         console.log('Supabase cloud fetch fallback:', err);
       }
 
-      // 3. Fallback se DB vuoto: inizializza con pool ufficiale
-      setLeads(INITIAL_LEADS_POOL);
+      // 3. Fallback se DB vuoto: inizializza con pool ufficiale e archivia eventuali scaduti
+      const { updated } = autoArchiveExpiredLeads(INITIAL_LEADS_POOL);
+      setLeads(updated);
       if (typeof window !== 'undefined') {
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_LEADS_POOL));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
         } catch (e) {}
       }
     }
@@ -2190,6 +2244,17 @@ Grazie e buon lavoro!`;
     }));
   }
 
+  // Scansione manuale forzata e archiviazione contratti conclusi per data
+  function runManualAutoArchiveCheck() {
+    const { updated, count } = autoArchiveExpiredLeads(leads);
+    if (count > 0) {
+      updateLeadsAndPersist(() => updated);
+      alert(`⚡ Scansione completata!\n\nSono stati archiviati automaticamente ${count} contratti la cui data di trasmissione è terminata.\nSpostati nella colonna "3. CONTRATTI CONCLUSI (STORICO)".`);
+    } else {
+      alert(`✅ Tutti i contratti attivi in palinsesto sono in corso di validità e non hanno data conclusa.`);
+    }
+  }
+
   // Gestione Step Remind a 3 Fasi
   function openRemindModal(lead: LeadRow) {
     setSelectedQuoteForRemind(lead);
@@ -2453,9 +2518,29 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
             const colLeads = filteredLeads.filter(l => l.fase_commerciale === col.phase);
             return (
               <div key={idx} className="kanban-col">
-                <div className="col-header">
-                  <span className="col-title">{col.title}</span>
-                  <span className="col-badge">{colLeads.length}</span>
+                <div className="col-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span className="col-title">{col.title}</span>
+                    <span className="col-badge">{colLeads.length}</span>
+                  </div>
+                  {col.phase === 'CONTRATTO ATTIVO' && (
+                    <button
+                      onClick={runManualAutoArchiveCheck}
+                      style={{
+                        background: 'rgba(56, 189, 248, 0.15)',
+                        color: '#38bdf8',
+                        border: '1px solid rgba(56, 189, 248, 0.4)',
+                        borderRadius: '4px',
+                        padding: '2px 7px',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                      title="Controlla subito e archivia in automatico tutti i contratti la cui data di fine è già trascorsa"
+                    >
+                      ⚡ Auto-Archivia per Data
+                    </button>
+                  )}
                 </div>
                 <div className="col-cards">
                   {colLeads.length === 0 ? (
@@ -2642,61 +2727,101 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           )}
 
                           {col.phase === 'CONTRATTO ATTIVO' && (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
-                              <button
-                                className="btn btn-xs"
-                                style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)', fontWeight: 800 }}
-                                onClick={() => openEditContactModal(l)}
-                                title="Modifica recapiti diretti, referente, email e telefono"
-                              >
-                                👤 Recapiti
-                              </button>
-                              <button
-                                className="btn btn-xs"
-                                style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
-                                onClick={() => openContractForLead(l)}
-                              >
-                                📄 Stampa Contratto RMS
-                              </button>
-                              <button
-                                className="btn btn-xs"
-                                style={{ background: 'rgba(0, 121, 191, 0.2)', color: '#38bdf8', border: '1px solid rgba(0, 121, 191, 0.4)', fontWeight: 700 }}
-                                onClick={() => openTrelloDispatchModal(l)}
-                                title="Genera o visualizza scheda Trello per la produzione spot"
-                              >
-                                📋 Commessa Trello
-                              </button>
-                              {l.stato_produzione === 'IN_ATTESA_AUDIO_TRELLO' && (
+                            <>
+                              {/* BADGE STATO TEMPORALE TRASMISSIONE */}
+                              {(() => {
+                                const endDate = parseContractEndDate(l);
+                                if (!endDate) return null;
+                                const now = new Date();
+                                const diffDays = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                                const dateStr = endDate.toLocaleDateString('it-IT');
+                                if (diffDays < 0) {
+                                  return (
+                                    <div style={{ fontSize: '10px', background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '3px 8px', borderRadius: '4px', marginTop: '6px', fontWeight: 800 }}>
+                                      📁 Campagna conclusa il {dateStr} (In attesa di archiviazione)
+                                    </div>
+                                  );
+                                }
+                                if (diffDays === 0) {
+                                  return (
+                                    <div style={{ fontSize: '10px', background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)', padding: '3px 8px', borderRadius: '4px', marginTop: '6px', fontWeight: 800 }}>
+                                      ⚠️ Ultimo giorno on-air oggi ({dateStr})
+                                    </div>
+                                  );
+                                }
+                                return (
+                                  <div style={{ fontSize: '10px', background: 'rgba(56, 189, 248, 0.12)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '3px 8px', borderRadius: '4px', marginTop: '6px', fontWeight: 700 }}>
+                                    📅 Fine trasmissione: <strong>{dateStr}</strong> (mancano {diffDays} gg)
+                                  </div>
+                                );
+                              })()}
+
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
                                 <button
                                   className="btn btn-xs"
-                                  style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', border: '1px solid rgba(34, 197, 94, 0.4)', fontWeight: 800 }}
-                                  onClick={() => markAudioReceivedInRegia(l)}
+                                  style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)', fontWeight: 800 }}
+                                  onClick={() => openEditContactModal(l)}
+                                  title="Modifica recapiti diretti, referente, email e telefono"
                                 >
-                                  ✅ Audio Ricevuto
+                                  👤 Recapiti
                                 </button>
-                              )}
-                              <button
-                                className="btn btn-xs btn-primary"
-                                onClick={() => {
-                                  setSelectedLeadForEmail(l);
-                                  setShowEmailModal(true);
-                                }}
-                              >
-                                ✉️ Notifica On-Air
-                              </button>
-                              <button
-                                className="btn btn-xs"
-                                style={{ background: 'rgba(148, 163, 184, 0.25)', color: '#f1f5f9', border: '1px solid rgba(148, 163, 184, 0.5)', fontWeight: 800 }}
-                                onClick={() => markContractCompleted(l)}
-                                title="Segna la campagna come conclusa e sposta nei Contratti Conclusi (Storico)"
-                              >
-                                📁 Passa a Concluso
-                              </button>
-                            </div>
+                                <button
+                                  className="btn btn-xs"
+                                  style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
+                                  onClick={() => openContractForLead(l)}
+                                >
+                                  📄 Contratto RMS
+                                </button>
+                                <button
+                                  className="btn btn-xs"
+                                  style={{ background: 'rgba(0, 121, 191, 0.2)', color: '#38bdf8', border: '1px solid rgba(0, 121, 191, 0.4)', fontWeight: 700 }}
+                                  onClick={() => openTrelloDispatchModal(l)}
+                                  title="Genera o visualizza scheda Trello per la produzione spot"
+                                >
+                                  📋 Commessa Trello
+                                </button>
+                                {l.stato_produzione === 'IN_ATTESA_AUDIO_TRELLO' && (
+                                  <button
+                                    className="btn btn-xs"
+                                    style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', border: '1px solid rgba(34, 197, 94, 0.4)', fontWeight: 800 }}
+                                    onClick={() => markAudioReceivedInRegia(l)}
+                                  >
+                                    ✅ Audio Ricevuto
+                                  </button>
+                                )}
+                                <button
+                                  className="btn btn-xs btn-primary"
+                                  onClick={() => {
+                                    setSelectedLeadForEmail(l);
+                                    setShowEmailModal(true);
+                                  }}
+                                >
+                                  ✉️ Notifica On-Air
+                                </button>
+                                <button
+                                  className="btn btn-xs"
+                                  style={{
+                                    background: '#334155',
+                                    color: '#ffffff',
+                                    border: '1px solid #475569',
+                                    fontWeight: 800,
+                                    boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+                                  }}
+                                  onClick={() => markContractCompleted(l)}
+                                  title="Segna la campagna come conclusa e sposta nei Contratti Conclusi (Storico)"
+                                >
+                                  📁 Passa a Concluso
+                                </button>
+                              </div>
+                            </>
                           )}
 
                           {col.phase === 'CONTRATTO CHIUSO' && (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
+                            <>
+                              <div style={{ fontSize: '10px', background: 'rgba(148, 163, 184, 0.12)', color: '#94a3b8', border: '1px solid rgba(148, 163, 184, 0.25)', padding: '3px 8px', borderRadius: '4px', marginTop: '6px', fontWeight: 700 }}>
+                                📁 Contratto Concluso &bull; {l.data_fine_trasmissione ? `Termine: ${l.data_fine_trasmissione}` : 'Archiviato nello Storico'}
+                              </div>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
                               <button
                                 className="btn btn-xs"
                                 style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
@@ -2721,7 +2846,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 👤 Recapiti
                               </button>
                             </div>
-                          )}
+                          </>
+                        )}
 
                           {col.phase !== 'PREVENTIVO INVIATO' && col.phase !== 'CONTRATTO ATTIVO' && col.phase !== 'CONTRATTO CHIUSO' && (
                             <div style={{ marginTop: '8px', display: 'flex', gap: '5px' }}>
