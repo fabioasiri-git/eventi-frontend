@@ -165,6 +165,72 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     note: 'Proposta Preventivo per GALLI TORRINI: 60 spot 20" Area 1 + 20 spot OMAGGIO (netto spazi € 300,00) + Produzione spot audio € 100,00. Totale netto: € 400,00 + IVA. Periodo: Periodo da definire. Referente: Lorenzo Galli Torrini (tel. 333 3222377 - lorenzo@gallitorrini.com).'
   },
   {
+    id: 'lead-firenze-fiera-castanea-2026',
+    nome_azienda_evento: 'FIRENZE FIERA SPA (Castanea Expo 2026)',
+    referente: 'Fiamma Domestici',
+    email: 'domestici@firenzefiera.it',
+    telefono: '055 49721',
+    piva: '04933280481',
+    sdi: 'M5UXCR1',
+    settore: 'Fiere & Congressi / Eventi Agroalimentari',
+    comune: 'Firenze',
+    provincia: 'FI',
+    area_target: 'Radio Toscana Rete (Tutta la Toscana)',
+    fase_commerciale: 'CONTRATTO ATTIVO',
+    tipo_contratto: 'SPECIAL_FORMAT',
+    valore_preventivo: 1000,
+    valore_contratto: 1000,
+    numero_preventivo: 'PREV-2026/007',
+    numero_contratto: '2026/006-RMS',
+    plafond_totale_spot: 100,
+    spot_rimasti: 100,
+    is_cambio_merce: false,
+    probabilita_chiusura: 100,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-10-12',
+    data_ultimo_invio: '2026-10-12',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'PRODOTTO_APPROVATO',
+    copy_testo: 'Campagna promozionale Castanea Expo 2026 per Firenze Fiera: 10 giorni di campagna spot visitatori (10 spot/gg Rete 20", totale 100 passaggi) + n. 4 interviste ai protagonisti del settore.',
+    data_inizio_trasmissione: '2026-10-20',
+    data_fine_trasmissione: '2026-10-29',
+    spot_giornalieri: 10,
+    stato_programmazione: 'IN_PALINSESTO',
+    quote_items: [
+      {
+        id: 'it-ff-1',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Rete (Tutta la Toscana)',
+        dettagli: '10 giorni di campagna spot dedicata ai visitatori (10 spot al giorno da 20", Totale 100 passaggi)',
+        fascia: '07:00 – 21:00 a rotazione',
+        periodo: 'Dal 20/10/2026 al 29/10/2026 (10 gg)',
+        periodoDaDefinire: false,
+        prezzoListino: 1300,
+        valore: 600,
+        isSpot: true,
+        spotGiornalieri: 10,
+        giorniTotali: 10,
+        spotTotali: 100,
+        spotOmaggio: 0,
+        formatoSecondi: 20
+      },
+      {
+        id: 'it-ff-2',
+        tipo: 'Interviste / Rubriche Speciali On-Air',
+        copertura: 'Radio Toscana Rete (Tutta la Toscana)',
+        dettagli: 'n. 4 interviste ai protagonisti del settore, tra istituzioni e aziende espositrici di Castanea Expo 2026',
+        fascia: "All'interno dei programmi e notiziari",
+        periodo: 'Dal 20/10/2026 al 29/10/2026',
+        prezzoListino: 600,
+        valore: 400,
+        quantita: 4,
+        prezzoUnitarioNetto: 100,
+        prezzoUnitarioListino: 150
+      }
+    ],
+    note: 'Contratto per FIRENZE FIERA SPA (Castanea Expo 2026) - Ipotesi n. 3 confermata da Fiamma Domestici. Totale: € 1.000,00 + IVA comprensivo di: 1) n. 4 interviste ai protagonisti del settore (istituzioni e aziende); 2) 10 giorni di campagna spot visitatori da 10 spot/gg Rete 20" (Totale 100 passaggi).'
+  },
+  {
     id: 'lead-fattoria-lavacchio-2026',
     nome_azienda_evento: "SOCIETA' AGRICOLA LAVACCHIO SRL (Fattoria di Lavacchio)",
     referente: 'LOTTERO FAYE',
@@ -2081,6 +2147,49 @@ Grazie e buon lavoro!`;
     alert(`🎉 Contratto ${contractData.numero} per "${clientName}" attivato con successo!\n\n• Valore Contratto: € ${contractData.totaleNetto.toLocaleString('it-IT')}\n• Spostato in "CONTRATTI ATTIVI" sulla Dashboard\n• Preventivatore azzerato e pronto per la prossima pratica.`);
   }
 
+  // Cambia Fase Commerciale Rapido (Sposta Card in qualsiasi Colonna Kanban)
+  function changeLeadPhase(leadId: string, newPhase: string) {
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === leadId) {
+        return {
+          ...l,
+          fase_commerciale: newPhase,
+          stato_programmazione: newPhase === 'CONTRATTO CHIUSO' ? 'ARCHIVIATO' : (newPhase === 'CONTRATTO ATTIVO' ? 'IN_PALINSESTO' : l.stato_programmazione)
+        };
+      }
+      return l;
+    }));
+  }
+
+  // Sposta Contratto Attivo nei Contratti Conclusi (Storico)
+  function markContractCompleted(lead: LeadRow) {
+    if (!confirm(`Vuoi archiviare il contratto di "${lead.nome_azienda_evento}" spostandolo nei CONTRATTI CONCLUSI (Storico)?`)) return;
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === lead.id) {
+        return {
+          ...l,
+          fase_commerciale: 'CONTRATTO CHIUSO',
+          stato_programmazione: 'ARCHIVIATO'
+        };
+      }
+      return l;
+    }));
+  }
+
+  // Riattiva Contratto Concluso nei Contratti Attivi
+  function reopenContractAsActive(lead: LeadRow) {
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === lead.id) {
+        return {
+          ...l,
+          fase_commerciale: 'CONTRATTO ATTIVO',
+          stato_programmazione: 'IN_PALINSESTO'
+        };
+      }
+      return l;
+    }));
+  }
+
   // Gestione Step Remind a 3 Fasi
   function openRemindModal(lead: LeadRow) {
     setSelectedQuoteForRemind(lead);
@@ -2575,10 +2684,46 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               >
                                 ✉️ Notifica On-Air
                               </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(148, 163, 184, 0.25)', color: '#f1f5f9', border: '1px solid rgba(148, 163, 184, 0.5)', fontWeight: 800 }}
+                                onClick={() => markContractCompleted(l)}
+                                title="Segna la campagna come conclusa e sposta nei Contratti Conclusi (Storico)"
+                              >
+                                📁 Passa a Concluso
+                              </button>
                             </div>
                           )}
 
-                          {col.phase !== 'PREVENTIVO INVIATO' && col.phase !== 'CONTRATTO ATTIVO' && (
+                          {col.phase === 'CONTRATTO CHIUSO' && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
+                                onClick={() => openContractForLead(l)}
+                              >
+                                📄 Contratto RMS
+                              </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', border: '1px solid rgba(34, 197, 94, 0.4)', fontWeight: 700 }}
+                                onClick={() => reopenContractAsActive(l)}
+                                title="Riporta nei Contratti Attivi (In Esecuzione)"
+                              >
+                                🔄 Riporta in Attivi
+                              </button>
+                              <button
+                                className="btn btn-xs"
+                                style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)', fontWeight: 800 }}
+                                onClick={() => openEditContactModal(l)}
+                                title="Modifica recapiti diretti, referente, email e telefono"
+                              >
+                                👤 Recapiti
+                              </button>
+                            </div>
+                          )}
+
+                          {col.phase !== 'PREVENTIVO INVIATO' && col.phase !== 'CONTRATTO ATTIVO' && col.phase !== 'CONTRATTO CHIUSO' && (
                             <div style={{ marginTop: '8px', display: 'flex', gap: '5px' }}>
                               <button
                                 className="btn btn-xs btn-primary"
@@ -2597,6 +2742,32 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               </button>
                             </div>
                           )}
+
+                          {/* SELETTORE SPOSTAMENTO RAPIDO COLONNA/FASE */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px', marginTop: '8px', paddingTop: '6px', borderTop: '1px dashed rgba(255,255,255,0.1)' }}>
+                            <span style={{ fontSize: '9px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.04em' }}>Sposta in:</span>
+                            <select
+                              value={l.fase_commerciale}
+                              onChange={(e) => changeLeadPhase(l.id, e.target.value)}
+                              style={{
+                                background: '#090d16',
+                                color: '#38bdf8',
+                                border: '1px solid #334155',
+                                borderRadius: '4px',
+                                fontSize: '10px',
+                                padding: '2px 6px',
+                                fontWeight: 700,
+                                outline: 'none',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <option value="PREVENTIVO INVIATO">🟡 Preventivo Inviato</option>
+                              <option value="CONTRATTO ATTIVO">🟢 Contratto Attivo</option>
+                              <option value="CONTRATTO CHIUSO">📁 Contratto Concluso</option>
+                              <option value="SCOUTER DISCOVERY">🕵️ Scouter Discovery</option>
+                              <option value="SCARTATO">💤 Scartato / Rifiutato</option>
+                            </select>
+                          </div>
                         </div>
                       );
                     })
@@ -2873,15 +3044,30 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       </span>
                     </td>
                     <td>
-                      <button
-                        className="btn btn-xs btn-primary"
-                        onClick={() => {
-                          setSelectedLeadForEmail(l);
-                          setShowEmailModal(true);
-                        }}
-                      >
-                        ✉️ Invia Prospetto
-                      </button>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                          className="btn btn-xs btn-primary"
+                          onClick={() => {
+                            setSelectedLeadForEmail(l);
+                            setShowEmailModal(true);
+                          }}
+                        >
+                          ✉️ Invia Prospetto
+                        </button>
+                        <button
+                          className="btn btn-xs"
+                          onClick={() => markContractCompleted(l)}
+                          style={{
+                            background: 'rgba(148, 163, 184, 0.2)',
+                            color: '#e2e8f0',
+                            border: '1px solid rgba(148, 163, 184, 0.4)',
+                            fontWeight: 700
+                          }}
+                          title="Sposta nei Contratti Conclusi (Storico)"
+                        >
+                          📁 Concludi
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -5223,24 +5409,72 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 >
                   📋 Commessa Trello &amp; WA per Edi
                 </button>
-                {isContractAlreadyActive ? (
-                  <span 
-                    style={{ 
-                      display: 'inline-flex', 
-                      alignItems: 'center', 
-                      gap: '6px', 
-                      background: 'rgba(22, 163, 74, 0.2)', 
-                      color: '#4ade80', 
-                      border: '1px solid rgba(34, 197, 94, 0.4)', 
-                      borderRadius: '4px', 
-                      padding: '4px 10px', 
-                      fontSize: '11px', 
-                      fontWeight: 800, 
-                      letterSpacing: '0.03em' 
-                    }}
-                  >
-                    🟢 Contratto Attivo &amp; Convalidato (In Palinsesto)
-                  </span>
+                {currentLead?.fase_commerciale === 'CONTRATTO CHIUSO' ? (
+                  <>
+                    <span 
+                      style={{ 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: '6px', 
+                        background: 'rgba(148, 163, 184, 0.2)', 
+                        color: '#94a3b8', 
+                        border: '1px solid rgba(148, 163, 184, 0.4)', 
+                        borderRadius: '4px', 
+                        padding: '4px 10px', 
+                        fontSize: '11px', 
+                        fontWeight: 800, 
+                        letterSpacing: '0.03em' 
+                      }}
+                    >
+                      📁 Contratto Concluso (Storico)
+                    </span>
+                    <button
+                      className="btn btn-xs"
+                      onClick={() => {
+                        const targetLead = selectedLeadForContract || currentLead;
+                        if (targetLead) {
+                          reopenContractAsActive(targetLead);
+                        }
+                      }}
+                      style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', fontWeight: 700, borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                      title="Riporta il contratto tra i contratti attivi in palinsesto"
+                    >
+                      🔄 Riattiva nei Contratti Attivi
+                    </button>
+                  </>
+                ) : isContractAlreadyActive ? (
+                  <>
+                    <span 
+                      style={{ 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: '6px', 
+                        background: 'rgba(22, 163, 74, 0.2)', 
+                        color: '#4ade80', 
+                        border: '1px solid rgba(34, 197, 94, 0.4)', 
+                        borderRadius: '4px', 
+                        padding: '4px 10px', 
+                        fontSize: '11px', 
+                        fontWeight: 800, 
+                        letterSpacing: '0.03em' 
+                      }}
+                    >
+                      🟢 Contratto Attivo (In Palinsesto)
+                    </span>
+                    <button
+                      className="btn btn-xs"
+                      onClick={() => {
+                        const targetLead = selectedLeadForContract || currentLead;
+                        if (targetLead) {
+                          markContractCompleted(targetLead);
+                        }
+                      }}
+                      style={{ background: 'rgba(148, 163, 184, 0.2)', color: '#e2e8f0', fontWeight: 700, borderColor: 'rgba(148, 163, 184, 0.4)' }}
+                      title="Archivia questo contratto nello storico contratti conclusi"
+                    >
+                      📁 Archivia come Concluso
+                    </button>
+                  </>
                 ) : (
                   <button className="btn btn-xs" onClick={confirmAndActivateContract} style={{ background: '#16a34a', color: '#ffffff', fontWeight: 700, borderColor: '#22c55e' }}>
                     Conferma &amp; Attiva Contratto
