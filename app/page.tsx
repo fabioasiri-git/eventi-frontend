@@ -167,8 +167,8 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
   {
     id: 'lead-firenze-fiera-castanea-2026',
     nome_azienda_evento: 'FIRENZE FIERA SPA (Castanea Expo 2026)',
-    referente: 'Fiamma Domestici',
-    email: 'domestici@firenzefiera.it',
+    referente: 'Tamara Mancini',
+    email: 'mancini@firenzefiera.it',
     telefono: '055 49721',
     piva: '04933280481',
     sdi: 'M5UXCR1',
@@ -228,7 +228,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         prezzoUnitarioListino: 150
       }
     ],
-    note: 'Contratto per FIRENZE FIERA SPA (Castanea Expo 2026) - Ipotesi n. 3 confermata da Fiamma Domestici. Totale: € 1.000,00 + IVA comprensivo di: 1) n. 4 interviste ai protagonisti del settore (istituzioni e aziende); 2) 10 giorni di campagna spot visitatori da 10 spot/gg Rete 20" (Totale 100 passaggi).'
+    note: 'Contratto per FIRENZE FIERA SPA (Castanea Expo 2026) - Ipotesi n. 3 confermata. Referente: Tamara Mancini. Totale: € 1.000,00 + IVA comprensivo di: 1) n. 4 interviste ai protagonisti del settore (istituzioni e aziende); 2) 10 giorni di campagna spot visitatori da 10 spot/gg Rete 20" (Totale 100 passaggi).'
   },
   {
     id: 'lead-fattoria-lavacchio-2026',
