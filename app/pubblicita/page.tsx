@@ -1393,9 +1393,17 @@ export default function LandingPubblicita() {
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+              <form
+                onSubmit={handleSubmit}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+                  gap: '20px',
+                  alignItems: 'start'
+                }}
+              >
+                <div style={{ gridColumn: 'span 1' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
                     Nome Azienda / Attività *
                   </label>
                   <input
@@ -1406,18 +1414,19 @@ export default function LandingPubblicita() {
                     onChange={(e) => setFormData({ ...formData, azienda: e.target.value })}
                     style={{
                       width: '100%',
+                      height: '48px',
                       padding: '12px 14px',
                       borderRadius: '8px',
                       border: '1.5px solid #d1d5db',
-                      fontSize: '15px',
+                      fontSize: '16px',
                       outline: 'none',
                       boxSizing: 'border-box'
                     }}
                   />
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+                <div style={{ gridColumn: 'span 1' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
                     Nome e Cognome Referente
                   </label>
                   <input
@@ -1427,18 +1436,19 @@ export default function LandingPubblicita() {
                     onChange={(e) => setFormData({ ...formData, referente: e.target.value })}
                     style={{
                       width: '100%',
+                      height: '48px',
                       padding: '12px 14px',
                       borderRadius: '8px',
                       border: '1.5px solid #d1d5db',
-                      fontSize: '15px',
+                      fontSize: '16px',
                       outline: 'none',
                       boxSizing: 'border-box'
                     }}
                   />
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+                <div style={{ gridColumn: 'span 1' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
                     Telefono Diretto *
                   </label>
                   <input
@@ -1449,18 +1459,19 @@ export default function LandingPubblicita() {
                     onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
                     style={{
                       width: '100%',
+                      height: '48px',
                       padding: '12px 14px',
                       borderRadius: '8px',
                       border: '1.5px solid #d1d5db',
-                      fontSize: '15px',
+                      fontSize: '16px',
                       outline: 'none',
                       boxSizing: 'border-box'
                     }}
                   />
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+                <div style={{ gridColumn: 'span 1' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
                     Email Aziendale
                   </label>
                   <input
@@ -1470,10 +1481,11 @@ export default function LandingPubblicita() {
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     style={{
                       width: '100%',
+                      height: '48px',
                       padding: '12px 14px',
                       borderRadius: '8px',
                       border: '1.5px solid #d1d5db',
-                      fontSize: '15px',
+                      fontSize: '16px',
                       outline: 'none',
                       boxSizing: 'border-box'
                     }}
@@ -1481,11 +1493,11 @@ export default function LandingPubblicita() {
                 </div>
 
                 <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
                     Come possiamo aiutarti? (Note o Obiettivo)
                   </label>
                   <textarea
-                    rows={3}
+                    rows={4}
                     placeholder="es. Vorrei promuovere un nuovo punto vendita, una campagna stagionale, far conoscere la mia attività..."
                     value={formData.note}
                     onChange={(e) => setFormData({ ...formData, note: e.target.value })}
@@ -1494,9 +1506,10 @@ export default function LandingPubblicita() {
                       padding: '12px 14px',
                       borderRadius: '8px',
                       border: '1.5px solid #d1d5db',
-                      fontSize: '15px',
+                      fontSize: '16px',
                       outline: 'none',
-                      boxSizing: 'border-box'
+                      boxSizing: 'border-box',
+                      resize: 'vertical'
                     }}
                   ></textarea>
                 </div>
