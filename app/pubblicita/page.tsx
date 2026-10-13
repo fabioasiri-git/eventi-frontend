@@ -241,27 +241,8 @@ export default function LandingPubblicita() {
           </span>
         </div>
 
-        {/* Canali Ufficiali Sede & WhatsApp Diretto */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', fontSize: '12px' }}>
-          <a
-            href="https://wa.me/393476818595?text=Buongiorno%20Fabio,%20desidero%20informazioni%20sulla%20pianificazione%20pubblicitaria%20su%20Radio%20Toscana"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: '#ffffff',
-              background: '#25D366',
-              padding: '4px 12px',
-              borderRadius: '9999px',
-              textDecoration: 'none',
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <span>💬 WhatsApp Diretto (Fabio Asiri)</span>
-          </a>
-
+        {/* Canali Ufficiali Sede */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', fontSize: '12px' }}>
           <a
             href="mailto:commerciale@radiotoscana.it"
             style={{
@@ -495,31 +476,6 @@ export default function LandingPubblicita() {
                   }}
                 >
                   <span style={{ transform: 'skewX(6deg)' }}>PIANIFICA LA TUA CAMPAGNA 2026 →</span>
-                </a>
-
-                <a
-                  href="https://wa.me/393476818595?text=Buongiorno%20Fabio,%20desidero%20valutare%20una%20campagna%20su%20Radio%20Toscana"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-panton"
-                  style={{
-                    background: '#25D366',
-                    color: '#ffffff',
-                    textDecoration: 'none',
-                    padding: '16px 28px',
-                    borderRadius: '6px',
-                    fontSize: '15px',
-                    fontWeight: 800,
-                    fontStyle: 'italic',
-                    letterSpacing: '0.06em',
-                    transform: 'skewX(-6deg)',
-                    boxShadow: '0 8px 20px rgba(37, 211, 102, 0.35)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <span style={{ transform: 'skewX(6deg)' }}>💬 PARLA CON FABIO (WHATSAPP)</span>
                 </a>
 
                 <a
@@ -1027,12 +983,10 @@ export default function LandingPubblicita() {
               </div>
             </div>
             <a
-              href="https://wa.me/393476818595?text=Buongiorno%20Fabio,%20vorrei%20ascoltare%20una%20demo%20audio%20personalizzata%20per%20la%20mia%20azienda"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#preventivo"
               className="font-panton"
               style={{
-                background: '#25D366',
+                background: '#D43F4A',
                 color: '#ffffff',
                 textDecoration: 'none',
                 padding: '10px 20px',
@@ -1045,7 +999,7 @@ export default function LandingPubblicita() {
                 gap: '8px'
               }}
             >
-              <span>💬 RICHIEDI DEMO AUDIO VIA WHATSAPP</span>
+              <span>RICHIEDI PROPOSTA RISERVATA →</span>
             </a>
           </div>
         </div>
