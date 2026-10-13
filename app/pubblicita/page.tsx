@@ -962,7 +962,7 @@ export default function LandingPubblicita() {
             })}
           </div>
 
-          {/* Banner CTA Diretto Player */}
+          {/* Banner Garanzia di Produzione Inclusa */}
           <div style={{
             marginTop: '36px',
             background: 'rgba(255, 255, 255, 0.05)',
@@ -976,10 +976,10 @@ export default function LandingPubblicita() {
             gap: '16px'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '24px' }}>🎧</span>
+              <span style={{ fontSize: '24px' }}>🎙️</span>
               <div>
-                <b style={{ color: '#ffffff', fontSize: '14px' }}>Vuoi ascoltare una simulazione audio con il nome della tua azienda?</b>
-                <div style={{ color: '#94a3b8', fontSize: '12px' }}>I nostri copywriter e studi di produzione possono realizzare una demo test personalizzata.</div>
+                <b style={{ color: '#ffffff', fontSize: '14px' }}>Produzione Audio Professionale Inclusa nella Campagna</b>
+                <div style={{ color: '#94a3b8', fontSize: '12px' }}>Copywriting, speaker professionisti nazionali e incisione dello spot sono interamente curati da Radio Toscana per ogni pianificazione approvata.</div>
               </div>
             </div>
             <a
