@@ -961,47 +961,6 @@ export default function LandingPubblicita() {
               );
             })}
           </div>
-
-          {/* Banner Garanzia di Produzione Inclusa */}
-          <div style={{
-            marginTop: '36px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '12px',
-            padding: '20px 24px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '16px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '24px' }}>🎙️</span>
-              <div>
-                <b style={{ color: '#ffffff', fontSize: '14px' }}>Produzione Audio Professionale Inclusa nella Campagna</b>
-                <div style={{ color: '#94a3b8', fontSize: '12px' }}>Copywriting, speaker professionisti nazionali e incisione dello spot sono interamente curati da Radio Toscana per ogni pianificazione approvata.</div>
-              </div>
-            </div>
-            <a
-              href="#preventivo"
-              className="font-panton"
-              style={{
-                background: '#D43F4A',
-                color: '#ffffff',
-                textDecoration: 'none',
-                padding: '10px 20px',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: 900,
-                fontStyle: 'italic',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              <span>RICHIEDI PROPOSTA RISERVATA →</span>
-            </a>
-          </div>
         </div>
       </section>
 
