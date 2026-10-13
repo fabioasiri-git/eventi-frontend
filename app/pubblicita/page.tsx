@@ -20,6 +20,56 @@ export default function LandingPubblicita() {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
+  // Player Audio Interattivo Demo Spot & Format Radio Toscana
+  const [activeAudioIndex, setActiveAudioIndex] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  const audioDemos = [
+    {
+      title: 'Spot 01 // "Il Forno & La Schiacciata Calda"',
+      category: 'Botteghe, Artigianato & Alimentari',
+      desc: '"Un po\' di schiacciata? Arrivo, l\'abbiamo appena sfornata... Ovunque: al bar, dal parrucchiere, in auto. Ogni giorno entriamo nella vita di tanti toscani."',
+      url: '/audio/spot-radio-toscana-forno.mp3',
+      isLive: false,
+      tag: 'ON-AIR SPOT 30"'
+    },
+    {
+      title: 'Spot 02 // "Il Bar & Il Caffè Triplo"',
+      category: 'Professionisti, Servizi & Uffici',
+      desc: '"Caffè doppio, anzi triplo... Nottataccia? Riunione tra 5 minuti. Siamo accanto alle persone che cerchi. Trasforma Radio Toscana nella tua nuova opportunità di business."',
+      url: '/audio/spot-radio-toscana-bar.mp3',
+      isLive: false,
+      tag: 'ON-AIR SPOT 30"'
+    },
+    {
+      title: 'Spot 03 // "Il Fiorista & Le Rose"',
+      category: 'Retail, Shopping & Occasioni Speciali',
+      desc: '"Mi serve qualcosa che dica \'Ti penso\', ma che non sembri troppo... Rose, funzionano sempre! Chiamaci allo 055 285030 e fatti sentire adesso."',
+      url: '/audio/spot-radio-toscana-fiorista.mp3',
+      isLive: false,
+      tag: 'ON-AIR SPOT 30"'
+    }
+  ];
+
+  const toggleAudio = (index: number) => {
+    if (activeAudioIndex === index && isPlaying) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      setIsPlaying(false);
+    } else {
+      setActiveAudioIndex(index);
+      setIsPlaying(true);
+      if (audioRef.current) {
+        audioRef.current.src = audioDemos[index].url;
+        audioRef.current.play().catch(() => {
+          setIsPlaying(false);
+        });
+      }
+    }
+  };
+
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -819,6 +869,184 @@ export default function LandingPubblicita() {
                 I dati confermano che ogni euro investito in radio genera mediamente 10 euro di fatturato. Il minor costo per contatto della pianificazione toscana protegge il budget aziendale e massimizza la resa commerciale.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5-BIS. PLAYER AUDIO INTERATTIVO // ASCOLTA I FORMAT E GLI SPOT */}
+      <section id="demo-audio" style={{
+        padding: '76px 24px',
+        background: '#1e1b24',
+        color: '#ffffff',
+        borderTop: '3px solid #D43F4A',
+        borderBottom: '3px solid #D43F4A'
+      }}>
+        {/* Hidden Audio Element */}
+        <audio ref={audioRef} preload="none" onEnded={() => setIsPlaying(false)} />
+
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 48px' }}>
+            <div className="font-panton" style={{
+              background: '#D43F4A',
+              color: '#ffffff',
+              display: 'inline-block',
+              padding: '6px 14px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 900,
+              fontStyle: 'italic',
+              letterSpacing: '0.1em',
+              transform: 'skewX(-8deg)',
+              marginBottom: '14px'
+            }}>
+              <span style={{ transform: 'skewX(8deg)', display: 'inline-block' }}>
+                🎙️ ESPERIENZA D'ASCOLTO INTERATTIVA
+              </span>
+            </div>
+            <h2 className="font-panton" style={{
+              fontSize: 'clamp(28px, 3.6vw, 44px)',
+              fontWeight: 900,
+              fontStyle: 'italic',
+              color: '#ffffff',
+              lineHeight: 1.15
+            }}>
+              Ascolta la Qualità dei Nostri Format &amp; il Sound di Radio Toscana
+            </h2>
+            <p style={{ color: '#94a3b8', fontSize: '16px', marginTop: '12px' }}>
+              Dallo spot promozionale ad alto impatto per eventi e retail, fino allo storytelling redazionale e al jingle personalizzato: seleziona una traccia e prova l'esperienza on-air.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '24px'
+          }}>
+            {audioDemos.map((demo, idx) => {
+              const active = activeAudioIndex === idx && isPlaying;
+              return (
+                <div
+                  key={idx}
+                  onClick={() => toggleAudio(idx)}
+                  style={{
+                    background: active ? 'linear-gradient(135deg, rgba(212, 63, 74, 0.25) 0%, rgba(30, 27, 36, 0.95) 100%)' : '#282430',
+                    border: active ? '2px solid #D43F4A' : '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '16px',
+                    padding: '28px',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s ease',
+                    boxShadow: active ? '0 12px 30px rgba(212, 63, 74, 0.35)' : '0 6px 16px rgba(0,0,0,0.2)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                      <span className="font-panton" style={{
+                        fontSize: '11px',
+                        fontWeight: 900,
+                        color: active ? '#ffffff' : '#D43F4A',
+                        background: active ? '#D43F4A' : 'rgba(212, 63, 74, 0.15)',
+                        padding: '4px 10px',
+                        borderRadius: '4px',
+                        letterSpacing: '0.08em',
+                        fontStyle: 'italic'
+                      }}>
+                        {demo.tag}
+                      </span>
+
+                      <div style={{
+                        width: '42px',
+                        height: '42px',
+                        borderRadius: '50%',
+                        background: active ? '#D43F4A' : '#ffffff',
+                        color: active ? '#ffffff' : '#1e1b24',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '16px',
+                        fontWeight: 900,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+                      }}>
+                        {active ? '⏸' : '▶'}
+                      </div>
+                    </div>
+
+                    <h3 className="font-panton" style={{
+                      fontSize: '20px',
+                      fontWeight: 900,
+                      fontStyle: 'italic',
+                      color: '#ffffff',
+                      marginBottom: '6px'
+                    }}>
+                      {demo.title}
+                    </h3>
+
+                    <div style={{ fontSize: '13px', color: '#f87171', fontWeight: 600, marginBottom: '10px' }}>
+                      {demo.category}
+                    </div>
+
+                    <p style={{ color: '#cbd5e1', fontSize: '13px', lineHeight: 1.55 }}>
+                      {demo.desc}
+                    </p>
+                  </div>
+
+                  <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '12px', color: active ? '#4ade80' : '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: active ? '#22c55e' : '#94a3b8', display: 'inline-block' }}></span>
+                      {active ? 'In Riproduzione...' : 'Clicca per Ascoltare'}
+                    </span>
+                    <span className="font-panton" style={{ fontSize: '11px', color: '#94a3b8', fontStyle: 'italic' }}>
+                      HD 128 KBPS
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Banner CTA Diretto Player */}
+          <div style={{
+            marginTop: '36px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '12px',
+            padding: '20px 24px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '16px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '24px' }}>🎧</span>
+              <div>
+                <b style={{ color: '#ffffff', fontSize: '14px' }}>Vuoi ascoltare una simulazione audio con il nome della tua azienda?</b>
+                <div style={{ color: '#94a3b8', fontSize: '12px' }}>I nostri copywriter e studi di produzione possono realizzare una demo test personalizzata.</div>
+              </div>
+            </div>
+            <a
+              href="https://wa.me/393476818595?text=Buongiorno%20Fabio,%20vorrei%20ascoltare%20una%20demo%20audio%20personalizzata%20per%20la%20mia%20azienda"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-panton"
+              style={{
+                background: '#25D366',
+                color: '#ffffff',
+                textDecoration: 'none',
+                padding: '10px 20px',
+                borderRadius: '6px',
+                fontSize: '13px',
+                fontWeight: 900,
+                fontStyle: 'italic',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <span>💬 RICHIEDI DEMO AUDIO VIA WHATSAPP</span>
+            </a>
           </div>
         </div>
       </section>
