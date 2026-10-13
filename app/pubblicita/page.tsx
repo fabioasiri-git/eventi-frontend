@@ -173,6 +173,24 @@ export default function LandingPubblicita() {
         body, div, p, span, a, input, select, textarea, button {
           font-family: 'Berthold Akzidenz Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+
+        /* Fix per evitare salti o zoom dello schermo su mobile/desktop durante digitazione */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        input, textarea, select {
+          font-size: 16px !important; /* Previene l'auto-zoom di iOS Safari e Chrome */
+          touch-action: manipulation;
+          transform: translateZ(0); /* Hardware acceleration anti-flicker */
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+          border-color: #D43F4A !important;
+          box-shadow: 0 0 0 3px rgba(212, 63, 74, 0.2) !important;
+          outline: none !important;
+        }
       `}} />
 
       {/* BANNER PERSONALIZZATO DI BENVENUTO (DA OUTREACH EMAIL) */}
@@ -1349,9 +1367,30 @@ export default function LandingPubblicita() {
                 <h3 className="font-panton" style={{ fontSize: '26px', fontWeight: 900, fontStyle: 'italic', color: '#166534', marginBottom: '8px' }}>
                   Richiesta Ricevuta con Successo!
                 </h3>
-                <p style={{ color: '#15803d', fontSize: '15px', maxWidth: '520px', margin: '0 auto' }}>
+                <p style={{ color: '#15803d', fontSize: '15px', maxWidth: '520px', margin: '0 auto 20px' }}>
                   L'ufficio commerciale di Radio Toscana prenderà in carico la tua richiesta e ti ricontatterà al recapito indicato.
                 </p>
+                <div style={{ display: 'inline-flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                  <a
+                    href={`mailto:commerciale@radiotoscana.it?subject=${encodeURIComponent('Richiesta Pianificazione Pubblicitaria: ' + formData.azienda)}&body=${encodeURIComponent('Buongiorno,\n\nconfermo la richiesta di proposta per ' + formData.azienda + '.\nReferente: ' + (formData.referente || '-') + '\nTelefono: ' + formData.telefono + '\nNote: ' + (formData.note || '-') + '\n\nGrazie')}`}
+                    className="font-panton"
+                    style={{
+                      background: '#D43F4A',
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      padding: '10px 20px',
+                      borderRadius: '6px',
+                      fontSize: '13px',
+                      fontWeight: 900,
+                      fontStyle: 'italic',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span>✉️ APRI COPIA EMAIL DIRETTA PER commerciale@radiotoscana.it</span>
+                  </a>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
