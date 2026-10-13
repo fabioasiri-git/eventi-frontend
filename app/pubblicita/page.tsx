@@ -16,6 +16,9 @@ export default function LandingPubblicita() {
   });
 
   const [targetCompany, setTargetCompany] = useState<string>('');
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
