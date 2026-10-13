@@ -15,9 +15,42 @@ export default function LandingPubblicita() {
     note: ''
   });
 
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [targetCompany, setTargetCompany] = useState<string>('');
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const az = params.get('azienda') || params.get('cliente') || '';
+      const ref = params.get('referente') || '';
+      const tel = params.get('telefono') || '';
+      const em = params.get('email') || '';
+      const set = params.get('settore') || '';
+
+      if (az) {
+        setTargetCompany(az);
+        setFormData(prev => ({
+          ...prev,
+          azienda: az || prev.azienda,
+          referente: ref || prev.referente,
+          telefono: tel || prev.telefono,
+          email: em || prev.email,
+          settore: set || prev.settore
+        }));
+
+        // Telemetria real-time su Telegram per Fabio
+        fetch('/api/telemetry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client: az,
+            url: window.location.href,
+            event: 'LANDING_PUBBLICITA_VISIT',
+            timestamp: new Date().toISOString()
+          })
+        }).catch(() => {});
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +121,48 @@ export default function LandingPubblicita() {
           font-family: 'Berthold Akzidenz Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
       `}} />
+
+      {/* BANNER PERSONALIZZATO DI BENVENUTO (DA OUTREACH EMAIL) */}
+      {targetCompany && (
+        <div style={{
+          background: 'linear-gradient(90deg, #D43F4A 0%, #991b1b 100%)',
+          color: '#ffffff',
+          padding: '12px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px',
+          boxShadow: '0 4px 12px rgba(212, 63, 74, 0.3)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '18px' }}>🎙️</span>
+            <div>
+              <div style={{ fontWeight: 900, fontSize: '14px', letterSpacing: '0.02em' }}>
+                PROPOSTA DEDICATA A: {decodeURIComponent(targetCompany).toUpperCase()}
+              </div>
+              <div style={{ fontSize: '11px', opacity: 0.9 }}>
+                Questa pagina illustra i dati di ascolto, i bacini FM/DAB+ e le soluzioni on-air studiate per la vostra attività.
+              </div>
+            </div>
+          </div>
+          <a
+            href="#preventivo"
+            style={{
+              background: '#ffffff',
+              color: '#D43F4A',
+              padding: '6px 14px',
+              borderRadius: '4px',
+              fontWeight: 800,
+              fontSize: '11px',
+              textDecoration: 'none',
+              textTransform: 'uppercase'
+            }}
+          >
+            Vai al Modulo Proposta ↓
+          </a>
+        </div>
+      )}
 
       {/* 1. TOP BAR ISTITUZIONALE & CONTATTI COMMERCIALI */}
       <div style={{
