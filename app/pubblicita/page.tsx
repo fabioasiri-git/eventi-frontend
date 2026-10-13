@@ -2,12 +2,24 @@
 
 import React, { useState } from 'react';
 
-export default function LandingPubblicita() {
+interface PreventivoFormProps {
+  initialCompany?: string;
+  initialReferente?: string;
+  initialTelefono?: string;
+  initialEmail?: string;
+}
+
+function PreventivoForm({
+  initialCompany = '',
+  initialReferente = '',
+  initialTelefono = '',
+  initialEmail = ''
+}: PreventivoFormProps) {
   const [formData, setFormData] = useState({
-    azienda: '',
-    referente: '',
-    telefono: '',
-    email: '',
+    azienda: initialCompany,
+    referente: initialReferente,
+    telefono: initialTelefono,
+    email: initialEmail,
     settore: 'Commercio / Retail',
     areaInteresse: 'Area 1 (Firenze, Prato, Pistoia)',
     formatoInteresse: 'Spot Tabellari 20"-30"',
@@ -15,10 +27,209 @@ export default function LandingPubblicita() {
     note: ''
   });
 
-  const [targetCompany, setTargetCompany] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
+
+  React.useEffect(() => {
+    if (initialCompany && !formData.azienda) {
+      setFormData(prev => ({
+        ...prev,
+        azienda: initialCompany,
+        referente: initialReferente || prev.referente,
+        telefono: initialTelefono || prev.telefono,
+        email: initialEmail || prev.email
+      }));
+    }
+  }, [initialCompany, initialReferente, initialTelefono, initialEmail]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg('');
+
+    try {
+      const res = await fetch('/api/pubblicita', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          source: 'Landing Istituzionale Radio Toscana 2026',
+          utm_campaign: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('utm_campaign') || 'istituzionale-2026' : 'istituzionale-2026'
+        })
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        setSubmitted(true);
+      } else {
+        setErrorMsg(json.error || 'Errore durante la trasmissione. Riprova tra poco.');
+      }
+    } catch (err) {
+      setErrorMsg('Interruzione di connessione. Riprova tra poco o contattaci telefonicamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div style={{
+        background: '#f0fdf4',
+        border: '2px solid #bbf7d0',
+        borderRadius: '16px',
+        padding: '40px',
+        textAlign: 'center'
+      }}>
+        <div style={{ fontSize: '48px', marginBottom: '12px' }}>✨</div>
+        <h3 className="font-panton" style={{ fontSize: '26px', fontWeight: 900, fontStyle: 'italic', color: '#166534', marginBottom: '8px' }}>
+          Richiesta Ricevuta con Successo!
+        </h3>
+        <p style={{ color: '#15803d', fontSize: '15px', maxWidth: '520px', margin: '0 auto 20px' }}>
+          L'ufficio commerciale di Radio Toscana prenderà in carico la tua richiesta e ti ricontatterà al recapito indicato.
+        </p>
+        <div style={{ display: 'inline-flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <a
+            href={`mailto:commerciale@radiotoscana.it?subject=${encodeURIComponent('Richiesta Pianificazione Pubblicitaria: ' + formData.azienda)}&body=${encodeURIComponent('Buongiorno,\n\nconfermo la richiesta di proposta per ' + formData.azienda + '.\nReferente: ' + (formData.referente || '-') + '\nTelefono: ' + formData.telefono + '\nNote: ' + (formData.note || '-') + '\n\nGrazie')}`}
+            className="font-panton"
+            style={{
+              background: '#D43F4A',
+              color: '#ffffff',
+              textDecoration: 'none',
+              padding: '10px 20px',
+              borderRadius: '6px',
+              fontSize: '13px',
+              fontWeight: 900,
+              fontStyle: 'italic',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <span>✉️ APRI COPIA EMAIL DIRETTA PER commerciale@radiotoscana.it</span>
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="lead-form-grid">
+      <div className="lead-form-col-1">
+        <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+          Nome Azienda / Attività *
+        </label>
+        <input
+          type="text"
+          required
+          placeholder="es. Fattoria di Lavacchio, Tinghi Motors..."
+          value={formData.azienda}
+          onChange={(e) => setFormData({ ...formData, azienda: e.target.value })}
+          className="lead-field-input"
+        />
+      </div>
+
+      <div className="lead-form-col-1">
+        <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+          Nome e Cognome Referente
+        </label>
+        <input
+          type="text"
+          placeholder="es. Mario Rossi"
+          value={formData.referente}
+          onChange={(e) => setFormData({ ...formData, referente: e.target.value })}
+          className="lead-field-input"
+        />
+      </div>
+
+      <div className="lead-form-col-1">
+        <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+          Telefono Diretto *
+        </label>
+        <input
+          type="tel"
+          required
+          placeholder="es. 055 1234567"
+          value={formData.telefono}
+          onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+          className="lead-field-input"
+        />
+      </div>
+
+      <div className="lead-form-col-1">
+        <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+          Email Aziendale
+        </label>
+        <input
+          type="email"
+          placeholder="es. direzione@azienda.it"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className="lead-field-input"
+        />
+      </div>
+
+      <div className="lead-form-col-full">
+        <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
+          Come possiamo aiutarti? (Note o Obiettivo)
+        </label>
+        <textarea
+          rows={4}
+          placeholder="es. Vorrei promuovere un nuovo punto vendita, una campagna stagionale, far conoscere la mia attività..."
+          value={formData.note}
+          onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+          className="lead-field-textarea"
+        ></textarea>
+      </div>
+
+      {errorMsg && (
+        <div className="lead-form-col-full" style={{ color: '#b91c1c', background: '#fee2e2', padding: '12px', borderRadius: '8px', fontSize: '14px', fontWeight: 600 }}>
+          ⚠️ {errorMsg}
+        </div>
+      )}
+
+      <div className="lead-form-col-full" style={{ marginTop: '10px' }}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="font-panton"
+          style={{
+            width: '100%',
+            background: '#D43F4A',
+            color: '#ffffff',
+            border: 'none',
+            padding: '16px 24px',
+            borderRadius: '8px',
+            fontSize: '17px',
+            fontWeight: 900,
+            fontStyle: 'italic',
+            letterSpacing: '0.06em',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            transform: 'skewX(-4deg)',
+            boxShadow: '0 10px 25px rgba(212, 63, 74, 0.4)',
+            opacity: loading ? 0.7 : 1
+          }}
+        >
+          <span style={{ transform: 'skewX(4deg)', display: 'inline-block' }}>
+            {loading ? 'TRASMISSIONE IN CORSO...' : 'INVIA RICHIESTA E RICEVI PROPOSTA RISERVATA →'}
+          </span>
+        </button>
+        <div style={{ textAlign: 'center', fontSize: '12px', color: '#6b7280', marginTop: '12px' }}>
+          🔒 Trattamento dati protetto ai sensi del GDPR. Nessuna comunicazione commerciale indesiderata.
+        </div>
+      </div>
+    </form>
+  );
+}
+
+export default function LandingPubblicita() {
+  const [targetCompany, setTargetCompany] = useState<string>('');
+  const [initialLead, setInitialLead] = useState({
+    referente: '',
+    telefono: '',
+    email: '',
+    settore: ''
+  });
 
   // Player Audio Interattivo Demo Spot & Format Radio Toscana
   const [activeAudioIndex, setActiveAudioIndex] = useState<number>(0);
@@ -81,14 +292,12 @@ export default function LandingPubblicita() {
 
       if (az) {
         setTargetCompany(az);
-        setFormData(prev => ({
-          ...prev,
-          azienda: az || prev.azienda,
-          referente: ref || prev.referente,
-          telefono: tel || prev.telefono,
-          email: em || prev.email,
-          settore: set || prev.settore
-        }));
+        setInitialLead({
+          referente: ref,
+          telefono: tel,
+          email: em,
+          settore: set
+        });
 
         // Telemetria real-time su Telegram per Fabio
         fetch('/api/telemetry', {
@@ -104,35 +313,6 @@ export default function LandingPubblicita() {
       }
     }
   }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrorMsg('');
-
-    try {
-      const res = await fetch('/api/pubblicita', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          source: 'Landing Istituzionale Radio Toscana 2026',
-          utm_campaign: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('utm_campaign') || 'istituzionale-2026' : 'istituzionale-2026'
-        })
-      });
-
-      const json = await res.json();
-      if (json.success) {
-        setSubmitted(true);
-      } else {
-        setErrorMsg(json.error || 'Errore durante la trasmissione. Riprova tra poco.');
-      }
-    } catch (err) {
-      setErrorMsg('Interruzione di connessione. Riprova tra poco o contattaci telefonicamente.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div style={{
@@ -174,66 +354,124 @@ export default function LandingPubblicita() {
           font-family: 'Berthold Akzidenz Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* Fix per evitare salti o zoom dello schermo su mobile/desktop durante digitazione */
+        /* Disattivazione smooth scroll globale: previene il rimbalzo continuo durante la digitazione */
         html {
-          scroll-behavior: smooth;
+          scroll-behavior: auto !important;
+          overscroll-behavior-y: none;
         }
 
-        input, textarea, select {
-          font-size: 16px !important; /* Previene l'auto-zoom di iOS Safari e Chrome */
+        html:focus-within {
+          scroll-behavior: auto !important;
+        }
+
+        .lead-form-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 18px;
+          align-items: start;
+        }
+
+        @media (max-width: 680px) {
+          .lead-form-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+
+        .lead-form-col-1 {
+          grid-column: span 1;
+        }
+
+        @media (max-width: 680px) {
+          .lead-form-col-1 {
+            grid-column: 1 / -1 !important;
+          }
+        }
+
+        .lead-form-col-full {
+          grid-column: 1 / -1;
+        }
+
+        .lead-field-input {
+          width: 100%;
+          height: 48px;
+          padding: 12px 14px;
+          border-radius: 8px;
+          border: 1.5px solid #d1d5db;
+          font-size: 16px !important;
+          box-sizing: border-box !important;
+          outline: none;
+          background-color: #ffffff;
+          color: #1f2937;
           touch-action: manipulation;
-          transform: translateZ(0); /* Hardware acceleration anti-flicker */
-          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+          transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
-        input:focus, textarea:focus, select:focus {
+        .lead-field-input:focus {
           border-color: #D43F4A !important;
-          box-shadow: 0 0 0 3px rgba(212, 63, 74, 0.2) !important;
-          outline: none !important;
+          box-shadow: 0 0 0 3px rgba(212, 63, 74, 0.18) !important;
+        }
+
+        .lead-field-textarea {
+          width: 100%;
+          padding: 12px 14px;
+          border-radius: 8px;
+          border: 1.5px solid #d1d5db;
+          font-size: 16px !important;
+          box-sizing: border-box !important;
+          outline: none;
+          background-color: #ffffff;
+          color: #1f2937;
+          resize: vertical;
+          min-height: 110px;
+          touch-action: manipulation;
+          transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .lead-field-textarea:focus {
+          border-color: #D43F4A !important;
+          box-shadow: 0 0 0 3px rgba(212, 63, 74, 0.18) !important;
         }
       `}} />
 
-      {/* BANNER PERSONALIZZATO DI BENVENUTO (DA OUTREACH EMAIL) */}
-      {targetCompany && (
-        <div style={{
-          background: 'linear-gradient(90deg, #D43F4A 0%, #991b1b 100%)',
-          color: '#ffffff',
-          padding: '12px 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px',
-          boxShadow: '0 4px 12px rgba(212, 63, 74, 0.3)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '18px' }}>🎙️</span>
-            <div>
-              <div style={{ fontWeight: 900, fontSize: '14px', letterSpacing: '0.02em' }}>
-                PROPOSTA DEDICATA A: {decodeURIComponent(targetCompany).toUpperCase()}
-              </div>
-              <div style={{ fontSize: '11px', opacity: 0.9 }}>
-                Questa pagina illustra i dati di ascolto, i bacini FM/DAB+ e le soluzioni on-air studiate per la vostra attività.
-              </div>
+      {/* BANNER INTESTAZIONE ISTITUZIONALE PUBBLICITÀ */}
+      <div style={{
+        background: 'linear-gradient(90deg, #D43F4A 0%, #991b1b 100%)',
+        color: '#ffffff',
+        padding: '12px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px',
+        boxShadow: '0 4px 12px rgba(212, 63, 74, 0.3)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '18px' }}>🎙️</span>
+          <div>
+            <div style={{ fontWeight: 900, fontSize: '14px', letterSpacing: '0.02em' }}>
+              PIANIFICAZIONE PUBBLICITARIA RADIO TOSCANA 2026
+            </div>
+            <div style={{ fontSize: '11px', opacity: 0.9 }}>
+              Dati di ascolto certificati TER, copertura regionale FM/DAB+ e soluzioni on-air per le imprese toscane.
             </div>
           </div>
-          <a
-            href="#preventivo"
-            style={{
-              background: '#ffffff',
-              color: '#D43F4A',
-              padding: '6px 14px',
-              borderRadius: '4px',
-              fontWeight: 800,
-              fontSize: '11px',
-              textDecoration: 'none',
-              textTransform: 'uppercase'
-            }}
-          >
-            Vai al Modulo Proposta ↓
-          </a>
         </div>
-      )}
+        <a
+          href="#preventivo"
+          style={{
+            background: '#ffffff',
+            color: '#D43F4A',
+            padding: '6px 14px',
+            borderRadius: '4px',
+            fontWeight: 800,
+            fontSize: '11px',
+            textDecoration: 'none',
+            textTransform: 'uppercase'
+          }}
+        >
+          Vai al Modulo Proposta ↓
+        </a>
+      </div>
 
       {/* 1. TOP BAR ISTITUZIONALE & CONTATTI COMMERCIALI */}
       <div style={{
@@ -1355,203 +1593,12 @@ export default function LandingPubblicita() {
               </p>
             </div>
 
-            {submitted ? (
-              <div style={{
-                background: '#f0fdf4',
-                border: '2px solid #bbf7d0',
-                borderRadius: '16px',
-                padding: '40px',
-                textAlign: 'center'
-              }}>
-                <div style={{ fontSize: '48px', marginBottom: '12px' }}>✨</div>
-                <h3 className="font-panton" style={{ fontSize: '26px', fontWeight: 900, fontStyle: 'italic', color: '#166534', marginBottom: '8px' }}>
-                  Richiesta Ricevuta con Successo!
-                </h3>
-                <p style={{ color: '#15803d', fontSize: '15px', maxWidth: '520px', margin: '0 auto 20px' }}>
-                  L'ufficio commerciale di Radio Toscana prenderà in carico la tua richiesta e ti ricontatterà al recapito indicato.
-                </p>
-                <div style={{ display: 'inline-flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                  <a
-                    href={`mailto:commerciale@radiotoscana.it?subject=${encodeURIComponent('Richiesta Pianificazione Pubblicitaria: ' + formData.azienda)}&body=${encodeURIComponent('Buongiorno,\n\nconfermo la richiesta di proposta per ' + formData.azienda + '.\nReferente: ' + (formData.referente || '-') + '\nTelefono: ' + formData.telefono + '\nNote: ' + (formData.note || '-') + '\n\nGrazie')}`}
-                    className="font-panton"
-                    style={{
-                      background: '#D43F4A',
-                      color: '#ffffff',
-                      textDecoration: 'none',
-                      padding: '10px 20px',
-                      borderRadius: '6px',
-                      fontSize: '13px',
-                      fontWeight: 900,
-                      fontStyle: 'italic',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
-                  >
-                    <span>✉️ APRI COPIA EMAIL DIRETTA PER commerciale@radiotoscana.it</span>
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-                  gap: '20px',
-                  alignItems: 'start'
-                }}
-              >
-                <div style={{ gridColumn: 'span 1' }}>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
-                    Nome Azienda / Attività *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="es. Fattoria di Lavacchio, Tinghi Motors..."
-                    value={formData.azienda}
-                    onChange={(e) => setFormData({ ...formData, azienda: e.target.value })}
-                    style={{
-                      width: '100%',
-                      height: '48px',
-                      padding: '12px 14px',
-                      borderRadius: '8px',
-                      border: '1.5px solid #d1d5db',
-                      fontSize: '16px',
-                      outline: 'none',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-
-                <div style={{ gridColumn: 'span 1' }}>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
-                    Nome e Cognome Referente
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="es. Mario Rossi"
-                    value={formData.referente}
-                    onChange={(e) => setFormData({ ...formData, referente: e.target.value })}
-                    style={{
-                      width: '100%',
-                      height: '48px',
-                      padding: '12px 14px',
-                      borderRadius: '8px',
-                      border: '1.5px solid #d1d5db',
-                      fontSize: '16px',
-                      outline: 'none',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-
-                <div style={{ gridColumn: 'span 1' }}>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
-                    Telefono Diretto *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="es. 055 1234567"
-                    value={formData.telefono}
-                    onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                    style={{
-                      width: '100%',
-                      height: '48px',
-                      padding: '12px 14px',
-                      borderRadius: '8px',
-                      border: '1.5px solid #d1d5db',
-                      fontSize: '16px',
-                      outline: 'none',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-
-                <div style={{ gridColumn: 'span 1' }}>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
-                    Email Aziendale
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="es. direzione@azienda.it"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    style={{
-                      width: '100%',
-                      height: '48px',
-                      padding: '12px 14px',
-                      borderRadius: '8px',
-                      border: '1.5px solid #d1d5db',
-                      fontSize: '16px',
-                      outline: 'none',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#474350', marginBottom: '6px' }}>
-                    Come possiamo aiutarti? (Note o Obiettivo)
-                  </label>
-                  <textarea
-                    rows={4}
-                    placeholder="es. Vorrei promuovere un nuovo punto vendita, una campagna stagionale, far conoscere la mia attività..."
-                    value={formData.note}
-                    onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '12px 14px',
-                      borderRadius: '8px',
-                      border: '1.5px solid #d1d5db',
-                      fontSize: '16px',
-                      outline: 'none',
-                      boxSizing: 'border-box',
-                      resize: 'vertical'
-                    }}
-                  ></textarea>
-                </div>
-
-                {errorMsg && (
-                  <div style={{ gridColumn: '1 / -1', color: '#b91c1c', background: '#fee2e2', padding: '12px', borderRadius: '8px', fontSize: '14px', fontWeight: 600 }}>
-                    ⚠️ {errorMsg}
-                  </div>
-                )}
-
-                <div style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="font-panton"
-                    style={{
-                      width: '100%',
-                      background: '#D43F4A',
-                      color: '#ffffff',
-                      border: 'none',
-                      padding: '16px 24px',
-                      borderRadius: '8px',
-                      fontSize: '17px',
-                      fontWeight: 900,
-                      fontStyle: 'italic',
-                      letterSpacing: '0.06em',
-                      cursor: loading ? 'not-allowed' : 'pointer',
-                      transform: 'skewX(-4deg)',
-                      boxShadow: '0 10px 25px rgba(212, 63, 74, 0.4)',
-                      opacity: loading ? 0.7 : 1
-                    }}
-                  >
-                    <span style={{ transform: 'skewX(4deg)', display: 'inline-block' }}>
-                      {loading ? 'TRASMISSIONE IN CORSO...' : 'INVIA RICHIESTA E RICEVI PROPOSTA RISERVATA →'}
-                    </span>
-                  </button>
-                  <div style={{ textAlign: 'center', fontSize: '12px', color: '#6b7280', marginTop: '12px' }}>
-                    🔒 Trattamento dati protetto ai sensi del GDPR. Nessuna comunicazione commerciale indesiderata.
-                  </div>
-                </div>
-              </form>
-            )}
+            <PreventivoForm
+              initialCompany={targetCompany}
+              initialReferente={initialLead.referente}
+              initialTelefono={initialLead.telefono}
+              initialEmail={initialLead.email}
+            />
           </div>
         </div>
       </section>
