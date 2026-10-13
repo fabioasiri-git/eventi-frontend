@@ -188,8 +188,27 @@ export default function LandingPubblicita() {
           </span>
         </div>
 
-        {/* Canali Ufficiali Sede */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', fontSize: '12px' }}>
+        {/* Canali Ufficiali Sede & WhatsApp Diretto */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', fontSize: '12px' }}>
+          <a
+            href="https://wa.me/393476818595?text=Buongiorno%20Fabio,%20desidero%20informazioni%20sulla%20pianificazione%20pubblicitaria%20su%20Radio%20Toscana"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: '#ffffff',
+              background: '#25D366',
+              padding: '4px 12px',
+              borderRadius: '9999px',
+              textDecoration: 'none',
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <span>💬 WhatsApp Diretto (Fabio Asiri)</span>
+          </a>
+
           <a
             href="mailto:commerciale@radiotoscana.it"
             style={{
@@ -426,6 +445,31 @@ export default function LandingPubblicita() {
                 </a>
 
                 <a
+                  href="https://wa.me/393476818595?text=Buongiorno%20Fabio,%20desidero%20valutare%20una%20campagna%20su%20Radio%20Toscana"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-panton"
+                  style={{
+                    background: '#25D366',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    padding: '16px 28px',
+                    borderRadius: '6px',
+                    fontSize: '15px',
+                    fontWeight: 800,
+                    fontStyle: 'italic',
+                    letterSpacing: '0.06em',
+                    transform: 'skewX(-6deg)',
+                    boxShadow: '0 8px 20px rgba(37, 211, 102, 0.35)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <span style={{ transform: 'skewX(6deg)' }}>💬 PARLA CON FABIO (WHATSAPP)</span>
+                </a>
+
+                <a
                   href="#perche-la-radio"
                   className="font-panton"
                   style={{
@@ -529,18 +573,35 @@ export default function LandingPubblicita() {
             justifyContent: 'center',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '32px'
+            gap: '24px'
           }}>
             <div className="font-panton" style={{
-              padding: '8px 20px',
+              padding: '8px 18px',
               borderRadius: '6px',
               background: '#f8fafc',
               border: '2px solid #D43F4A',
               fontWeight: 900,
               fontStyle: 'italic',
-              fontSize: '16px',
-              letterSpacing: '0.08em',
+              fontSize: '15px',
+              letterSpacing: '0.06em',
               color: '#D43F4A',
+              transform: 'skewX(-6deg)'
+            }}>
+              <span style={{ transform: 'skewX(6deg)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <span>●</span> FIRENZE FIERA
+              </span>
+            </div>
+
+            <div className="font-panton" style={{
+              padding: '8px 18px',
+              borderRadius: '6px',
+              background: '#f8fafc',
+              border: '2px solid #474350',
+              fontWeight: 900,
+              fontStyle: 'italic',
+              fontSize: '15px',
+              letterSpacing: '0.06em',
+              color: '#474350',
               transform: 'skewX(-6deg)'
             }}>
               <span style={{ transform: 'skewX(6deg)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
@@ -548,25 +609,31 @@ export default function LandingPubblicita() {
               </span>
             </div>
 
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
+              UNICOOP FIRENZE
+            </div>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
+              CONFESERCENTI TOSCANA
+            </div>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
+              FONDAZIONE MEYER
+            </div>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
               FATTORIA DI LAVACCHIO
             </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
               TINGHI MOTORS
             </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
               TOSCANA AEROPORTI
             </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
               MERCATO CENTRALE FIRENZE
             </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
               FIVAG CISL
             </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
-              HICARE SURGERY
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '16px', color: '#474350', letterSpacing: '0.06em' }}>
+            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '15px', color: '#474350', letterSpacing: '0.06em' }}>
               CARITAS FIRENZE
             </div>
           </div>
@@ -956,6 +1023,132 @@ export default function LandingPubblicita() {
               <div className="font-panton" style={{ fontSize: '13px', fontWeight: 900, fontStyle: 'italic', color: '#474350' }}>AREA 4 • DIGITAL &amp; MULTIPLATFORM</div>
               <div className="font-panton" style={{ fontSize: '20px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '4px 0' }}>Streaming, App, Web &amp; Podcast</div>
               <div style={{ fontSize: '13px', color: '#6b7280' }}>Piattaforma streaming HD, App Radio Toscana, Smart Speaker e canali web per un'audience sempre connessa.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7-BIS. CONFRONTO: CARTELLONISTICA STRADALE vs RADIO TOSCANA */}
+      <section style={{
+        padding: '84px 24px',
+        background: '#f1f5f9',
+        borderTop: '1px solid #e2e8f0',
+        borderBottom: '1px solid #e2e8f0'
+      }}>
+        <div style={{ maxWidth: '1120px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 48px' }}>
+            <div className="font-panton" style={{
+              color: '#D43F4A',
+              fontWeight: 900,
+              fontStyle: 'italic',
+              fontSize: '13px',
+              letterSpacing: '0.12em'
+            }}>
+              EFFICIENZA DI BUDGET // DOVE VANNO DAVVERO I TUOI SOLDI?
+            </div>
+            <h2 className="font-panton" style={{
+              fontSize: 'clamp(28px, 3.4vw, 42px)',
+              fontWeight: 900,
+              fontStyle: 'italic',
+              color: '#474350',
+              marginTop: '10px',
+              lineHeight: 1.2
+            }}>
+              Cartelli Stradali 70x100 vs Radio Toscana FM &amp; DAB+
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '16px', marginTop: '12px' }}>
+              Molte manifestazioni e PMI investono migliaia di euro in cartelli cartacei o manifesti fosforescenti. Ecco perché la voce on-air batte la carta 10 a 1 per tasso di conversione.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '28px'
+          }}>
+            {/* Box Cartelloni */}
+            <div style={{
+              background: '#ffffff',
+              borderRadius: '16px',
+              padding: '36px 30px',
+              border: '2px solid #e2e8f0',
+              boxShadow: '0 10px 25px rgba(0,0,0,0.03)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                <span style={{ fontSize: '24px' }}>🛑</span>
+                <h3 className="font-panton" style={{ fontSize: '20px', fontWeight: 900, fontStyle: 'italic', color: '#64748b' }}>
+                  Cartelloni 70x100 &amp; Manifesti
+                </h3>
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '14px', color: '#64748b' }}>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#ef4444', fontWeight: 900 }}>✕</span>
+                  <span><b>Visibilità 1,2 secondi:</b> chi guida a 60-90 km/h non riesce a leggere data, luogo o programma.</span>
+                </li>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#ef4444', fontWeight: 900 }}>✕</span>
+                  <span><b>Zero copertura regionale:</b> visibili solo a chi passa fisicamente da quella specifica rotatoria.</span>
+                </li>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#ef4444', fontWeight: 900 }}>✕</span>
+                  <span><b>Costi nascosti alti:</b> stampa, affissione, tasse comunali di pubblicità e deterioramento da pioggia.</span>
+                </li>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#ef4444', fontWeight: 900 }}>✕</span>
+                  <span><b>Nessuna emozione:</b> un foglio di carta statico non trasmette calore né autorevolezza.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Box Radio Toscana */}
+            <div style={{
+              background: '#ffffff',
+              borderRadius: '16px',
+              padding: '36px 30px',
+              border: '3px solid #D43F4A',
+              boxShadow: '0 16px 35px rgba(212, 63, 74, 0.12)',
+              position: 'relative'
+            }}>
+              <div className="font-panton" style={{
+                position: 'absolute',
+                top: '-14px',
+                right: '24px',
+                background: '#D43F4A',
+                color: '#ffffff',
+                padding: '4px 14px',
+                borderRadius: '9999px',
+                fontSize: '11px',
+                fontWeight: 900,
+                letterSpacing: '0.08em',
+                fontStyle: 'italic'
+              }}>
+                SCELTA STRATEGICA ROI x10
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                <span style={{ fontSize: '24px' }}>🎙️</span>
+                <h3 className="font-panton" style={{ fontSize: '20px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A' }}>
+                  Campagna Radio Toscana
+                </h3>
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '14px', color: '#334155' }}>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span>
+                  <span><b>20-30 Secondi di Attenzione Pura:</b> lo spot entra nell'abitacolo durante il drive-time senza distrazioni.</span>
+                </li>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span>
+                  <span><b>298.000 Ascoltatori TER:</b> raggiunge chi viaggia da Firenze, Prato, Pistoia, Pisa, Lucca, Livorno, Arezzo e Siena.</span>
+                </li>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span>
+                  <span><b>Drive-to-Web Immediato (58%):</b> l'automobilista cerca l'evento o l'azienda direttamente dallo smartphone all'arrivo.</span>
+                </li>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span>
+                  <span><b>Formula Chiavi in Mano:</b> copywriting, produzione audio professionale e messa in onda inclusi.</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
