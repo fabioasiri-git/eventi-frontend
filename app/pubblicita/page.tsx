@@ -263,6 +263,23 @@ export default function LandingPubblicita() {
     }
   ];
 
+  const sendTelemetry = (event: string, details?: string) => {
+    try {
+      const az = targetCompany || (typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('azienda') || new URLSearchParams(window.location.search).get('cliente') || '' : '');
+      fetch('/api/telemetry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client: az || 'Visitatore Diretto',
+          url: typeof window !== 'undefined' ? window.location.href : 'Landing Pubblicità',
+          event,
+          details,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(() => {});
+    } catch (_) {}
+  };
+
   const toggleAudio = (index: number) => {
     if (activeAudioIndex === index && isPlaying) {
       if (audioRef.current) {
@@ -278,6 +295,9 @@ export default function LandingPubblicita() {
           setIsPlaying(false);
         });
       }
+      // Tracciamento ascolto traccia audio
+      const demo = audioDemos[index];
+      sendTelemetry('AUDIO_PLAY', `${demo.title} (${demo.tag})`);
     }
   };
 
@@ -299,18 +319,16 @@ export default function LandingPubblicita() {
           settore: set
         });
 
-        // Telemetria real-time su Telegram per Fabio
-        fetch('/api/telemetry', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            client: az,
-            url: window.location.href,
-            event: 'LANDING_PUBBLICITA_VISIT',
-            timestamp: new Date().toISOString()
-          })
-        }).catch(() => {});
+        // Telemetria apertura landing visitatore noto
+        sendTelemetry('LANDING_PUBBLICITA_VISIT');
       }
+
+      // Tracciamento permanenza oltre 35 secondi (Hot Lead)
+      const timer = setTimeout(() => {
+        sendTelemetry('PAGE_ENGAGED', 'Permanenza > 35 secondi');
+      }, 35000);
+
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -501,6 +519,7 @@ export default function LandingPubblicita() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', fontSize: '12px' }}>
           <a
             href="mailto:commerciale@radiotoscana.it"
+            onClick={() => sendTelemetry('CLICK_EMAIL', 'commerciale@radiotoscana.it')}
             style={{
               color: '#ffffff',
               background: 'rgba(255,255,255,0.12)',
@@ -518,6 +537,7 @@ export default function LandingPubblicita() {
 
           <a
             href="tel:055285030"
+            onClick={() => sendTelemetry('CLICK_PHONE', '055 285030')}
             style={{
               color: '#ffffff',
               background: 'rgba(255,255,255,0.12)',
@@ -1415,7 +1435,7 @@ export default function LandingPubblicita() {
 
             <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '12px', border: '1px solid #e5e7eb', borderLeft: '4px solid #D43F4A' }}>
               <div className="font-panton" style={{ fontSize: '13px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A' }}>AREA 3 • ENTROTERRA & VALLI</div>
-              <div className="font-panton" style={{ fontSize: '20px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '4px 0' }}>Arezzo, Siena, Empolese</div>
+              <div className="font-panton" style={{ fontSize: '20px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '4px 0' }}>Arezzo, Siena, Grosseto</div>
               <div style={{ fontSize: '13px', color: '#6b7280' }}>Copertura strategica per artigianato d'eccellenza, manifattura e turismo.</div>
             </div>
 
