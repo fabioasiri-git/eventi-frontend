@@ -1567,8 +1567,7 @@ export default function LandingPubblicita() {
                 alt="Radio Toscana"
                 style={{
                   height: '46px',
-                  width: 'auto',
-                  filter: 'brightness(0) invert(1)'
+                  width: 'auto'
                 }}
               />
               <div style={{ borderLeft: '2px solid #D43F4A', paddingLeft: '14px' }}>
