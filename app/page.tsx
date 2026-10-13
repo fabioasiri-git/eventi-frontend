@@ -1044,6 +1044,28 @@ export default function LeadEngineDashboard() {
   });
 
   const STORAGE_KEY = 'rt_lead_engine_leads_v6';
+  const [urlClientParam, setUrlClientParam] = useState<string | null>(null);
+
+  // Rilevazione Link Personalizzato Cliente & Telemetria Real-Time su Telegram
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const targetParam = searchParams.get('cliente') || searchParams.get('lead') || searchParams.get('azienda');
+      if (targetParam) {
+        setUrlClientParam(targetParam);
+        fetch('/api/telemetry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client: targetParam,
+            url: window.location.href,
+            event: 'LANDING_VISIT',
+            timestamp: new Date().toISOString()
+          })
+        }).catch(() => {});
+      }
+    }
+  }, []);
 
   // Helper Persistenza Reale (Cloud Supabase + LocalStorage + Memoria)
   function updateLeadsAndPersist(updater: (prev: LeadRow[]) => LeadRow[]) {
@@ -2456,6 +2478,73 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
           </button>
         </div>
       </header>
+
+      {/* BANNER BENVENUTO PERSONALIZZATO CLIENTE (DA LINK EMAIL / OUTREACH TELEMETRIA) */}
+      {urlClientParam && (
+        <div style={{
+          background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+          border: '1px solid rgba(244, 63, 94, 0.4)',
+          borderLeft: '5px solid #bd323d',
+          borderRadius: '8px',
+          padding: '16px 20px',
+          marginBottom: '20px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.3)'
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <span style={{ fontSize: '11px', background: '#bd323d', color: '#ffffff', fontWeight: 800, padding: '2px 8px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                Proposta Riservata
+              </span>
+              <span style={{ fontSize: '16px', fontWeight: 900, color: '#f8fafc' }}>
+                Benvenuto, {decodeURIComponent(urlClientParam)}!
+              </span>
+            </div>
+            <p style={{ margin: 0, fontSize: '12px', color: '#cbd5e1' }}>
+              Questa è la simulazione interattiva ufficiale della tua campagna on-air su <strong>Radio Toscana</strong> (Rete Regionale). Consulta le opzioni in palinsesto o parla direttamente con la direzione commerciale.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <a
+              href="tel:3476818595"
+              style={{
+                background: '#bd323d',
+                color: '#ffffff',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                fontWeight: 800,
+                fontSize: '12px',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              📞 Contatta Fabio Asiri (347 6818595)
+            </a>
+            <a
+              href="mailto:commerciale@radiotoscana.it"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                color: '#f8fafc',
+                border: '1px solid rgba(255,255,255,0.2)',
+                padding: '8px 14px',
+                borderRadius: '6px',
+                fontWeight: 700,
+                fontSize: '12px',
+                textDecoration: 'none'
+              }}
+            >
+              ✉️ Invia Messaggio
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* KPI METRICS */}
       <div className="kpi-row">
