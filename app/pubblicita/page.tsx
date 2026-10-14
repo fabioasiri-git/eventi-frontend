@@ -29,6 +29,7 @@ function PreventivoForm({
 
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
   React.useEffect(() => {
@@ -45,8 +46,14 @@ function PreventivoForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setErrorMsg('');
+
+    if (!privacyAccepted) {
+      setErrorMsg('È necessario confermare la presa visione dell\'informativa privacy per procedere.');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const res = await fetch('/api/pubblicita', {
@@ -188,7 +195,21 @@ function PreventivoForm({
         </div>
       )}
 
-      <div className="lead-form-col-full" style={{ marginTop: '10px' }}>
+      <div className="lead-form-col-full" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '13px', color: '#474350', margin: '4px 0 10px' }}>
+        <input
+          type="checkbox"
+          id="privacyConsent"
+          required
+          checked={privacyAccepted}
+          onChange={(e) => setPrivacyAccepted(e.target.checked)}
+          style={{ marginTop: '3px', width: '18px', height: '18px', cursor: 'pointer', accentColor: '#D43F4A', flexShrink: 0 }}
+        />
+        <label htmlFor="privacyConsent" style={{ cursor: 'pointer', lineHeight: 1.45, fontSize: '12px', color: '#4b5563' }}>
+          Ho preso visione dell'<a href="https://www.radiotoscana.it/privacy-policy/" target="_blank" rel="noopener noreferrer" style={{ color: '#D43F4A', fontWeight: 700, textDecoration: 'underline' }}>Informativa Privacy</a> e acconsento al trattamento dei dati personali per la formulazione del preventivo e della proposta commerciale (Regolamento UE 2016/679 - GDPR). *
+        </label>
+      </div>
+
+      <div className="lead-form-col-full" style={{ marginTop: '6px' }}>
         <button
           type="submit"
           disabled={loading}
@@ -835,14 +856,17 @@ export default function LandingPubblicita() {
 
           {/* Navigazione Desktop */}
           <nav className="pubb-header-nav-links">
-            <a href="#perche-la-radio" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '14px' }}>
-              Perché la Radio Rende
+            <a href="#perche-la-radio" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '13px' }}>
+              Dati TER &amp; Efficacia
             </a>
-            <a href="#drivetosite" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '14px' }}>
-              Drive-to-Store & Territorio
+            <a href="#demo-audio" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '13px' }}>
+              Spot Audio Demo
             </a>
-            <a href="#copertura" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '14px' }}>
-              Bacini e Frequenze
+            <a href="#tracking-pack" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '13px' }}>
+              Tracking Pack Misurabile
+            </a>
+            <a href="#copertura" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '13px' }}>
+              4 Aree della Toscana
             </a>
           </nav>
 
@@ -868,8 +892,7 @@ export default function LandingPubblicita() {
               whiteSpace: 'nowrap'
             }}
           >
-            <span className="pubb-btn-text-desk" style={{ transform: 'skewX(6deg)' }}>RICHIEDI PROPOSTA 2026 →</span>
-            <span className="pubb-btn-text-mob" style={{ transform: 'skewX(6deg)' }}>PREVENTIVO →</span>
+            <span style={{ transform: 'skewX(6deg)' }}>PREVENTIVO 2026 →</span>
           </a>
         </div>
       </header>
@@ -1073,9 +1096,9 @@ export default function LandingPubblicita() {
         </div>
       </section>
 
-      {/* 4. BRAND PARTNER DI FIDUCIA // CLK ITALIA & GRANDI MARCHI */}
+      {/* 4. SETTORI & AMBITI DI CAMPAGNA ATTIVI IN TOSCANA */}
       <section style={{
-        padding: '28px 16px',
+        padding: '24px 16px',
         background: '#ffffff',
         borderTop: '1px solid #e5e7eb',
         borderBottom: '1px solid #e5e7eb',
@@ -1086,11 +1109,11 @@ export default function LandingPubblicita() {
             fontSize: '12px',
             fontWeight: 800,
             fontStyle: 'italic',
-            letterSpacing: '0.1em',
+            letterSpacing: '0.08em',
             color: '#6b7280',
-            marginBottom: '16px'
+            marginBottom: '14px'
           }}>
-            AZIENDE E GRANDI REALTÀ CHE SCELGONO RADIO TOSCANA PER CRESCERE
+            FORMAT PUBBLICITARI E PIANIFICAZIONI ATTIVE PER I SETTORI PRODUTTIVI DELLA TOSCANA
           </div>
 
           <div style={{
@@ -1098,69 +1121,35 @@ export default function LandingPubblicita() {
             justifyContent: 'center',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '14px'
+            gap: '10px'
           }}>
-            <div className="font-panton" style={{
-              padding: '6px 14px',
-              borderRadius: '6px',
-              background: '#f8fafc',
-              border: '2px solid #D43F4A',
-              fontWeight: 900,
-              fontStyle: 'italic',
-              fontSize: '13px',
-              letterSpacing: '0.04em',
-              color: '#D43F4A',
-              transform: 'skewX(-6deg)'
-            }}>
-              <span style={{ transform: 'skewX(6deg)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                <span>●</span> FIRENZE FIERA
-              </span>
-            </div>
-
-            <div className="font-panton" style={{
-              padding: '6px 14px',
-              borderRadius: '6px',
-              background: '#f8fafc',
-              border: '2px solid #474350',
-              fontWeight: 900,
-              fontStyle: 'italic',
-              fontSize: '13px',
-              letterSpacing: '0.04em',
-              color: '#474350',
-              transform: 'skewX(-6deg)'
-            }}>
-              <span style={{ transform: 'skewX(6deg)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                <span>●</span> COLDIRETTI TOSCANA
-              </span>
-            </div>
-
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              UNICOOP FIRENZE
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              CONFESERCENTI TOSCANA
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              FONDAZIONE MEYER
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              FATTORIA DI LAVACCHIO
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              TINGHI MOTORS
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              TOSCANA AEROPORTI
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              MERCATO CENTRALE FIRENZE
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              FIVAG CISL
-            </div>
-            <div className="font-panton" style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '13px', color: '#474350', letterSpacing: '0.04em' }}>
-              CARITAS FIRENZE
-            </div>
+            {[
+              { label: 'COMMERCIO & RETAIL', desc: 'Promozioni & Punti Vendita' },
+              { label: 'ENOGASTRONOMIA & FOOD', desc: 'Ristoranti, Cantine & Produttori' },
+              { label: 'AUTOMOTIVE & MOBILITÀ', desc: 'Concessionarie & Officine' },
+              { label: 'ARREDO & DESIGN CASA', desc: 'Showroom & Artigianato' },
+              { label: 'SERVIZI PROFESSIONALI', desc: 'Consulenza, Impianti & B2B' },
+              { label: 'MANIFESTAZIONI & TURISMO', desc: 'Eventi, Fiere & Territorio' }
+            ].map((sec, idx) => (
+              <div
+                key={idx}
+                className="font-panton"
+                style={{
+                  padding: '7px 14px',
+                  borderRadius: '6px',
+                  background: idx % 2 === 0 ? '#f8fafc' : '#ffffff',
+                  border: idx === 0 ? '1.5px solid #D43F4A' : '1px solid #e2e8f0',
+                  fontWeight: 900,
+                  fontStyle: 'italic',
+                  fontSize: '12px',
+                  letterSpacing: '0.03em',
+                  color: idx === 0 ? '#D43F4A' : '#474350',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
+                }}
+              >
+                <span>●</span> {sec.label}
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1205,13 +1194,13 @@ export default function LandingPubblicita() {
               borderBottom: '1px solid #e5e7eb'
             }}>
               <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#6b7280' }}>
-                MOLTIPLICATORE FATTURATO
+                AUDIENCE UFFICIALE CERTIFICATA TER
               </div>
-              <div className="font-panton" style={{ fontSize: '24px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '6px 0' }}>
-                10€ di Ritorno per 1€ Investito
+              <div className="font-panton" style={{ fontSize: '23px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '6px 0' }}>
+                298.000 / Settimana • 61.000 / Giorno
               </div>
               <div style={{ fontSize: '13px', color: '#6b7280' }}>
-                Studio scientifico FCP / Politecnico di Milano sul ROI medio della pianificazione radiofonica continuativa.
+                Fonte: Dati ufficiali indagine TER (Tavolo Editori Radio) Anno 2025/2026. Copertura capillare FM e DAB+ in tutta la Toscana.
               </div>
             </div>
 
@@ -1225,13 +1214,13 @@ export default function LandingPubblicita() {
               borderBottom: '1px solid #e5e7eb'
             }}>
               <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#6b7280' }}>
-                RICERCA DIGITALE IMMEDIATA
+                REATTIVITÀ DIGITALE IMMEDIATA
               </div>
-              <div className="font-panton" style={{ fontSize: '24px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '6px 0' }}>
-                58% Drive-to-Web in 90 Minuti
+              <div className="font-panton" style={{ fontSize: '23px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '6px 0' }}>
+                58% Ricerca Web entro 90 Minuti
               </div>
               <div style={{ fontSize: '13px', color: '#6b7280' }}>
-                La maggioranza degli ascoltatori effettua una ricerca su Google del brand entro un'ora e mezza dal passaggio on-air.
+                Fonte: Ricerca Assoradio / GfK. Oltre la metà degli ascoltatori cerca su Google il brand o ne visita il sito poco dopo il passaggio on-air.
               </div>
             </div>
 
@@ -1245,13 +1234,13 @@ export default function LandingPubblicita() {
               borderBottom: '1px solid #e5e7eb'
             }}>
               <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#6b7280' }}>
-                ASCOLTO FUORI CASA
+                FASCIA AD ALTO ASCOLTO 7:00 – 19:00
               </div>
-              <div className="font-panton" style={{ fontSize: '24px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '6px 0' }}>
-                75% in Mobilità e in Auto
+              <div className="font-panton" style={{ fontSize: '23px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '6px 0' }}>
+                75% Ascolto Fuori Casa & Auto
               </div>
               <div style={{ fontSize: '13px', color: '#6b7280' }}>
-                Il contatto avviene mentre i consumatori si spostano per lavoro, acquisti e tempo libero nel territorio regionale.
+                Il contatto avviene mentre i toscani si spostano per lavoro, acquisti e tempo libero: il momento più vicino alla decisione d'acquisto.
               </div>
             </div>
           </div>
@@ -1272,7 +1261,7 @@ export default function LandingPubblicita() {
                 L'Effetto Immaginazione
               </h3>
               <p style={{ color: '#474350', fontSize: '13px', lineHeight: 1.6 }}>
-                Non imponendo un'immagine rigida sullo schermo, la voce induce l'ascoltatore a visualizzare il prodotto, aumentando l'intenzione d'acquisto fino a 3 volte.
+                Non imponendo un'immagine rigida sullo schermo, la voce induce l'ascoltatore a visualizzare il prodotto o l'attività, creando un legame di familiarità duraturo.
               </p>
             </div>
 
@@ -1290,7 +1279,7 @@ export default function LandingPubblicita() {
                 Drive-to-Store & Territorio
               </h3>
               <p style={{ color: '#474350', fontSize: '13px', lineHeight: 1.6 }}>
-                L'ascolto avviene prima dell'acquisto, spesso in auto. Il 58% cerca il nome dell'azienda su Google o naviga il sito entro un'ora e mezza dal messaggio on-air.
+                L'ascolto avviene prima dell'acquisto, spesso in auto. Il 67% degli ascoltatori è responsabile d'acquisto per sé o per la famiglia.
               </p>
             </div>
 
@@ -1302,13 +1291,13 @@ export default function LandingPubblicita() {
               borderTop: '4px solid #D43F4A'
             }}>
               <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A', marginBottom: '8px' }}>
-                PILASTRO 03 // RESISTENZA AL BLOCCO
+                PILASTRO 03 // ATTENZIONE REALE
               </div>
               <h3 className="font-panton" style={{ fontSize: '19px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '8px' }}>
-                100% Ascolto Reale No-Skip
+                Ascolto Senza Skip
               </h3>
               <p style={{ color: '#474350', fontSize: '13px', lineHeight: 1.6 }}>
-                Mani sul volante, occhi sulla strada: la radio non soffre di banner blindness né di skip. Lo spot viene ascoltato dall'inizio alla fine.
+                A differenza dei social dove le inserzioni vengono chiuse o saltate dopo 5 secondi, chi ascolta la radio in mobilità segue il messaggio on-air durante il viaggio.
               </p>
             </div>
 
@@ -1323,10 +1312,10 @@ export default function LandingPubblicita() {
                 PILASTRO 04 // REDDITIVITÀ
               </div>
               <h3 className="font-panton" style={{ fontSize: '19px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '8px' }}>
-                ROI Moltiplicatore x10
+                Ritorno Misurabile
               </h3>
               <p style={{ color: '#474350', fontSize: '13px', lineHeight: 1.6 }}>
-                Ogni euro investito in radio genera mediamente 10 euro di fatturato. Il minor costo per contatto della pianificazione toscana protegge il budget aziendale.
+                Fonte Politecnico di Milano / FCP-Assoradio: la radiofonica locale continuativa genera un moltiplicatore virtuoso su vendite e contatti diretti.
               </p>
             </div>
           </div>
@@ -1661,79 +1650,201 @@ export default function LandingPubblicita() {
         </div>
       </section>
 
-      {/* 7-BIS. CONFRONTO: CARTELLONISTICA STRADALE vs RADIO TOSCANA */}
-      <section className="pubb-section" style={{
-        background: '#f1f5f9',
+      {/* 7-BIS. IL TRACKING PACK RADIO TOSCANA: MISURAZIONE CERTIFICATA DEI CONTATTI */}
+      <section id="tracking-pack" className="pubb-section" style={{
+        background: '#ffffff',
         borderTop: '1px solid #e2e8f0',
         borderBottom: '1px solid #e2e8f0'
       }}>
         <div className="pubb-container" style={{ maxWidth: '1120px' }}>
-          <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 40px' }}>
+          <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 40px' }}>
+            <div className="font-panton" style={{
+              background: '#D43F4A',
+              color: '#ffffff',
+              display: 'inline-block',
+              padding: '5px 12px',
+              borderRadius: '4px',
+              fontSize: '11px',
+              fontWeight: 900,
+              fontStyle: 'italic',
+              letterSpacing: '0.08em',
+              transform: 'skewX(-8deg)',
+              marginBottom: '12px'
+            }}>
+              <span style={{ transform: 'skewX(8deg)', display: 'inline-block' }}>
+                TELEMETRIA & TRACCIAMENTO DEI CONTATTI
+              </span>
+            </div>
+            <h2 className="font-panton" style={{
+              fontSize: 'clamp(24px, 3.4vw, 40px)',
+              fontWeight: 900,
+              fontStyle: 'italic',
+              color: '#474350',
+              lineHeight: 1.18
+            }}>
+              Come Misuri i Risultati della Tua Campagna: il Tracking Pack
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '15px', marginTop: '10px' }}>
+              La prima domanda di ogni imprenditore è: <i>"Come faccio a sapere quanti clienti mi ha portato la radio?"</i>. Abbiamo integrato tre strumenti concreti per verificare ogni contatto.
+            </p>
+          </div>
+
+          <div className="pubb-grid-3">
+            <div className="pubb-card-pad" style={{
+              background: '#f8fafc',
+              borderRadius: '16px',
+              border: '1px solid #e2e8f0',
+              borderTop: '4px solid #D43F4A',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.04)'
+            }}>
+              <div style={{ fontSize: '28px', marginBottom: '12px' }}>🎙️</div>
+              <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A', marginBottom: '6px' }}>
+                STRUMENTO 01
+              </div>
+              <h3 className="font-panton" style={{ fontSize: '18px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
+                Codice Promo On-Air
+              </h3>
+              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+                Lo spot termina con una Call-to-Action memorabile (es. <i>"Dì 'Radio Toscana' in cassa o inserisci TOSCANA20 sul sito"</i>). Saprai con precisione chi si è attivato grazie all'ascolto.
+              </p>
+            </div>
+
+            <div className="pubb-card-pad" style={{
+              background: '#f8fafc',
+              borderRadius: '16px',
+              border: '1px solid #e2e8f0',
+              borderTop: '4px solid #474350',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.04)'
+            }}>
+              <div style={{ fontSize: '28px', marginBottom: '12px' }}>📲</div>
+              <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '6px' }}>
+                STRUMENTO 02
+              </div>
+              <h3 className="font-panton" style={{ fontSize: '18px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
+                QR Code & Link Dedicato
+              </h3>
+              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+                Creiamo una pagina ponte tracciata (es. <i>radiotoscana.it/tua-azienda</i>) o un QR Code per i display delle autoradio DAB+, web e social: telemetria trasparente e nessun contatto perso.
+              </p>
+            </div>
+
+            <div className="pubb-card-pad" style={{
+              background: '#f8fafc',
+              borderRadius: '16px',
+              border: '1px solid #e2e8f0',
+              borderTop: '4px solid #D43F4A',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.04)'
+            }}>
+              <div style={{ fontSize: '28px', marginBottom: '12px' }}>📊</div>
+              <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A', marginBottom: '6px' }}>
+                STRUMENTO 03
+              </div>
+              <h3 className="font-panton" style={{ fontSize: '18px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
+                Certificato dei Passaggi
+              </h3>
+              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+                Al termine ricevi il report ufficiale delle trasmissioni: data e ora esatta al secondo di ogni passaggio, fasce orarie e stima di ascoltatori certificata dai dati TER.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7-TER. PACCHETTI COMMERCIALI TRASPARENTI PER PMI */}
+      <section className="pubb-section" style={{
+        background: '#f7f7f9',
+        borderBottom: '1px solid #e5e7eb'
+      }}>
+        <div className="pubb-container" style={{ maxWidth: '1120px' }}>
+          <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 40px' }}>
             <div className="font-panton" style={{
               color: '#D43F4A',
               fontWeight: 900,
               fontStyle: 'italic',
               fontSize: '13px',
-              letterSpacing: '0.1em'
+              letterSpacing: '0.08em'
             }}>
-              EFFICIENZA DI BUDGET // DOVE VANNO DAVVERO I TUOI SOLDI?
+              TRASPARENZA COMMERCIALE DIRETTA
             </div>
             <h2 className="font-panton" style={{
-              fontSize: 'clamp(24px, 3.2vw, 38px)',
+              fontSize: 'clamp(24px, 3.4vw, 40px)',
               fontWeight: 900,
               fontStyle: 'italic',
               color: '#474350',
-              marginTop: '10px',
-              lineHeight: 1.2
+              marginTop: '8px'
             }}>
-              Cartelli Stradali 70x100 vs Radio Toscana FM &amp; DAB+
+              Pianificazioni Accessibili per Tutte le Dimensioni Aziendali
             </h2>
-            <p style={{ color: '#64748b', fontSize: '15px', marginTop: '10px' }}>
-              Molte manifestazioni e PMI investono migliaia di euro in cartelli cartacei o manifesti fosforescenti. Ecco perché la voce on-air batte la carta 10 a 1 per tasso di conversione.
+            <p style={{ color: '#6b7280', fontSize: '15px', marginTop: '10px' }}>
+              Nessun ricarico di agenzia intermediaria: contratti diretti con l'emittente regionale, produzione audio dello spot sempre inclusa.
             </p>
           </div>
 
-          <div className="pubb-grid-2">
-            {/* Box Cartelloni */}
+          <div className="pubb-grid-3">
+            {/* Pacchetto START */}
             <div className="pubb-card-pad" style={{
               background: '#ffffff',
               borderRadius: '16px',
-              border: '2px solid #e2e8f0',
-              boxShadow: '0 10px 25px rgba(0,0,0,0.03)'
+              border: '2px solid #e5e7eb',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.03)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-                <span style={{ fontSize: '22px' }}>🛑</span>
-                <h3 className="font-panton" style={{ fontSize: '19px', fontWeight: 900, fontStyle: 'italic', color: '#64748b' }}>
-                  Cartelloni 70x100 &amp; Manifesti
+              <div>
+                <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#6b7280' }}>
+                  PACCHETTO BASE
+                </div>
+                <h3 className="font-panton" style={{ fontSize: '22px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '4px 0 10px' }}>
+                  Start Territorio
                 </h3>
+                <div style={{ marginBottom: '16px' }}>
+                  <span style={{ fontSize: '14px', color: '#6b7280' }}>da </span>
+                  <span className="font-panton" style={{ fontSize: '32px', fontWeight: 900, color: '#D43F4A' }}>€ 490</span>
+                  <span style={{ fontSize: '13px', color: '#6b7280' }}> + IVA</span>
+                </div>
+                <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '18px' }}>
+                  Ideale per aperture, promozioni stagionali, saldi o singole iniziative commerciali.
+                </p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#474350' }}>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> 15 Giorni di programmazione on-air</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Fasce 7:00 – 19:00 (Drive-time e lavoro)</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Produzione audio spot 30" inclusa</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Tracking Pack base con codice promo</li>
+                </ul>
               </div>
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 20px', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px', color: '#64748b' }}>
-                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#ef4444', fontWeight: 900 }}>✕</span>
-                  <span><b>Visibilità 1,2 secondi:</b> chi guida a 60-90 km/h non riesce a leggere data, luogo o programma.</span>
-                </li>
-                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#ef4444', fontWeight: 900 }}>✕</span>
-                  <span><b>Zero copertura regionale:</b> visibili solo a chi passa fisicamente da quella specifica rotatoria.</span>
-                </li>
-                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#ef4444', fontWeight: 900 }}>✕</span>
-                  <span><b>Costi nascosti alti:</b> stampa, affissione, tasse comunali di pubblicità e deterioramento da pioggia.</span>
-                </li>
-                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#ef4444', fontWeight: 900 }}>✕</span>
-                  <span><b>Nessuna emozione:</b> un foglio di carta statico non trasmette calore né autorevolezza.</span>
-                </li>
-              </ul>
+              <div style={{ marginTop: '24px' }}>
+                <a
+                  href="#preventivo"
+                  className="font-panton"
+                  style={{
+                    display: 'block',
+                    textAlign: 'center',
+                    background: '#474350',
+                    color: '#ffffff',
+                    padding: '12px',
+                    borderRadius: '6px',
+                    textDecoration: 'none',
+                    fontWeight: 900,
+                    fontStyle: 'italic',
+                    fontSize: '13px'
+                  }}
+                >
+                  RICHIEDI DETTAGLI START →
+                </a>
+              </div>
             </div>
 
-            {/* Box Radio Toscana */}
+            {/* Pacchetto CRESCITA PRO */}
             <div className="pubb-card-pad" style={{
               background: '#ffffff',
               borderRadius: '16px',
               border: '3px solid #D43F4A',
-              boxShadow: '0 16px 35px rgba(212, 63, 74, 0.12)',
-              position: 'relative'
+              boxShadow: '0 14px 35px rgba(212, 63, 74, 0.12)',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
             }}>
               <div className="font-panton" style={{
                 position: 'absolute',
@@ -1748,33 +1859,102 @@ export default function LandingPubblicita() {
                 letterSpacing: '0.06em',
                 fontStyle: 'italic'
               }}>
-                SCELTA STRATEGICA ROI x10
+                IL PIÙ SCELTO DALLE PMI
               </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-                <span style={{ fontSize: '22px' }}>🎙️</span>
-                <h3 className="font-panton" style={{ fontSize: '19px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A' }}>
-                  Campagna Radio Toscana
+              <div>
+                <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A' }}>
+                  PACCHETTO CONTINUATIVO
+                </div>
+                <h3 className="font-panton" style={{ fontSize: '22px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '4px 0 10px' }}>
+                  Crescita & Notorietà
                 </h3>
+                <div style={{ marginBottom: '16px' }}>
+                  <span style={{ fontSize: '14px', color: '#6b7280' }}>da </span>
+                  <span className="font-panton" style={{ fontSize: '32px', fontWeight: 900, color: '#D43F4A' }}>€ 980</span>
+                  <span style={{ fontSize: '13px', color: '#6b7280' }}> / mese</span>
+                </div>
+                <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '18px' }}>
+                  Pianificazione continuativa per diventare il punto di riferimento del settore nel tuo bacino provinciale.
+                </p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#474350' }}>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Alta frequenza negli orari di punta (7:30-9:30 e 17:30-19:30)</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Copertura FM su più bacini + DAB+ regionale completo</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> 2 Spot audio differenti prodotti nel mese</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Tracking Pack Pro (QR, link dedicato e report certificato)</li>
+                </ul>
               </div>
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 20px', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px', color: '#334155' }}>
-                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span>
-                  <span><b>20-30 Secondi di Attenzione Pura:</b> lo spot entra nell'abitacolo durante il drive-time senza distrazioni.</span>
-                </li>
-                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span>
-                  <span><b>298.000 Ascoltatori TER:</b> raggiunge chi viaggia da Firenze, Prato, Pistoia, Pisa, Lucca, Livorno, Arezzo e Siena.</span>
-                </li>
-                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span>
-                  <span><b>Drive-to-Web Immediato (58%):</b> l'automobilista cerca l'evento o l'azienda direttamente dallo smartphone all'arrivo.</span>
-                </li>
-                <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span>
-                  <span><b>Formula Chiavi in Mano:</b> copywriting, produzione audio professionale e messa in onda inclusi.</span>
-                </li>
-              </ul>
+              <div style={{ marginTop: '24px' }}>
+                <a
+                  href="#preventivo"
+                  className="font-panton"
+                  style={{
+                    display: 'block',
+                    textAlign: 'center',
+                    background: '#D43F4A',
+                    color: '#ffffff',
+                    padding: '12px',
+                    borderRadius: '6px',
+                    textDecoration: 'none',
+                    fontWeight: 900,
+                    fontStyle: 'italic',
+                    fontSize: '13px'
+                  }}
+                >
+                  RICHIEDI PIANO CRESCITA →
+                </a>
+              </div>
+            </div>
+
+            {/* Pacchetto SU MISURA */}
+            <div className="pubb-card-pad" style={{
+              background: '#ffffff',
+              borderRadius: '16px',
+              border: '2px solid #e5e7eb',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.03)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}>
+              <div>
+                <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#6b7280' }}>
+                  PROGETTI SPECIALI
+                </div>
+                <h3 className="font-panton" style={{ fontSize: '22px', fontWeight: 900, fontStyle: 'italic', color: '#474350', margin: '4px 0 10px' }}>
+                  Personalizzato
+                </h3>
+                <div style={{ marginBottom: '16px' }}>
+                  <span className="font-panton" style={{ fontSize: '28px', fontWeight: 900, color: '#474350' }}>Su Misura</span>
+                </div>
+                <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '18px' }}>
+                  Sponsorizzazione programmi, rubriche editoriali, presidi eventi o barter pubblicitari.
+                </p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#474350' }}>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Citazioni in diretta dei conduttori</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Format redazionali e interviste in studio</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Integrazione podcast e canali digitali</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Consulenza strategica di pianificazione</li>
+                </ul>
+              </div>
+              <div style={{ marginTop: '24px' }}>
+                <a
+                  href="#preventivo"
+                  className="font-panton"
+                  style={{
+                    display: 'block',
+                    textAlign: 'center',
+                    background: '#474350',
+                    color: '#ffffff',
+                    padding: '12px',
+                    borderRadius: '6px',
+                    textDecoration: 'none',
+                    fontWeight: 900,
+                    fontStyle: 'italic',
+                    fontSize: '13px'
+                  }}
+                >
+                  PARLA CON UN CONSULENTE →
+                </a>
+              </div>
             </div>
           </div>
         </div>
