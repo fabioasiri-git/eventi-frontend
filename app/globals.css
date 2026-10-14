@@ -58,11 +58,23 @@ body {
   color: var(--text-main);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body:not(.pubblicita-body) {
   padding: 24px;
   background-image: 
     radial-gradient(circle at 10% 20%, rgba(225, 29, 72, 0.08) 0%, transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 40%);
   background-attachment: fixed;
+}
+
+@media (max-width: 768px) {
+  body:not(.pubblicita-body) {
+    padding: 12px;
+  }
 }
 
 header {

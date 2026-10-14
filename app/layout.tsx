@@ -1,9 +1,15 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Radio Toscana Monster Engine & Cloud CRM v7.7.0',
   description: 'Centro di Controllo Commerciale Unificato Radio Toscana Monster Engine v7.7.0 (Cloud Vault, Remind 3-Step, Bozza RMS & Modern UX A4)',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
