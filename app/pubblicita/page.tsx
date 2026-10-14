@@ -531,6 +531,10 @@ export default function LandingPubblicita() {
           box-shadow: 0 0 0 3px rgba(212, 63, 74, 0.18) !important;
         }
 
+        .pubb-btn-text-mob {
+          display: none !important;
+        }
+
         /* 📱 TABLET RESPONSIVE (< 960px) */
         @media (max-width: 960px) {
           .pubb-header-nav-links {
@@ -539,7 +543,7 @@ export default function LandingPubblicita() {
 
           .pubb-grid-hero {
             grid-template-columns: 1fr !important;
-            gap: 40px !important;
+            gap: 36px !important;
           }
 
           .pubb-grid-3 {
@@ -555,12 +559,23 @@ export default function LandingPubblicita() {
 
         /* 📱 SMARTPHONE RESPONSIVE (< 680px) */
         @media (max-width: 680px) {
+          .pubb-top-promo-banner {
+            display: none !important;
+          }
+
           .pubb-section {
-            padding: 48px 16px !important;
+            padding: 36px 14px !important;
+          }
+
+          .pubb-container {
+            padding: 0 14px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
           }
 
           .pubb-topbar {
-            padding: 8px 14px !important;
+            padding: 8px 12px !important;
             flex-direction: column !important;
             align-items: flex-start !important;
             gap: 8px !important;
@@ -573,19 +588,50 @@ export default function LandingPubblicita() {
             gap: 8px !important;
           }
 
+          .pubb-header-inner {
+            padding: 8px 12px !important;
+          }
+
+          .pubb-header-logo {
+            height: 32px !important;
+          }
+
           .pubb-header-claim {
             display: none !important;
           }
 
           .pubb-header-btn-desk {
-            padding: 8px 14px !important;
-            font-size: 12px !important;
+            padding: 6px 12px !important;
+            font-size: 11px !important;
             letter-spacing: 0.02em !important;
+            transform: none !important;
+          }
+
+          .pubb-header-btn-desk span {
+            transform: none !important;
+          }
+
+          .pubb-btn-text-desk {
+            display: none !important;
+          }
+
+          .pubb-btn-text-mob {
+            display: inline-block !important;
+          }
+
+          .pubb-badge-skew {
+            transform: none !important;
+            font-size: 10px !important;
+            padding: 4px 8px !important;
+          }
+
+          .pubb-badge-skew span {
+            transform: none !important;
           }
 
           .pubb-hero-btn-row {
             flex-direction: column !important;
-            gap: 12px !important;
+            gap: 10px !important;
             width: 100% !important;
           }
 
@@ -593,17 +639,29 @@ export default function LandingPubblicita() {
             width: 100% !important;
             text-align: center !important;
             justify-content: center !important;
-            padding: 14px 18px !important;
-            font-size: 14px !important;
+            padding: 13px 14px !important;
+            font-size: 13px !important;
+            white-space: normal !important;
+            transform: none !important;
+            box-sizing: border-box !important;
+          }
+
+          .pubb-btn-hero-main span, .pubb-btn-hero-sec span {
+            transform: none !important;
+          }
+
+          .pubb-soundwave-label {
+            display: none !important;
           }
 
           .pubb-grid-2, .pubb-grid-3, .pubb-grid-4 {
             grid-template-columns: 1fr !important;
-            gap: 16px !important;
+            gap: 14px !important;
           }
 
           .lead-form-grid {
             grid-template-columns: 1fr !important;
+            gap: 14px !important;
           }
 
           .lead-form-col-1 {
@@ -611,30 +669,29 @@ export default function LandingPubblicita() {
           }
 
           .pubb-card-pad {
-            padding: 24px 18px !important;
+            padding: 20px 14px !important;
           }
 
           .pubb-form-card {
-            padding: 28px 16px !important;
-            border-radius: 14px !important;
+            padding: 24px 14px !important;
+            border-radius: 12px !important;
           }
 
           .pubb-soundwave-row {
             max-width: 100% !important;
             overflow-x: hidden !important;
-            flex-wrap: nowrap !important;
           }
 
           .pubb-footer-wrap {
             flex-direction: column !important;
             align-items: flex-start !important;
-            gap: 18px !important;
+            gap: 16px !important;
           }
         }
       `}} />
 
       {/* BANNER INTESTAZIONE ISTITUZIONALE PUBBLICITÀ */}
-      <div style={{
+      <div className="pubb-top-promo-banner" style={{
         background: 'linear-gradient(90deg, #D43F4A 0%, #991b1b 100%)',
         color: '#ffffff',
         padding: '10px 16px',
@@ -738,7 +795,7 @@ export default function LandingPubblicita() {
         borderBottom: '1px solid #e5e7eb',
         boxShadow: '0 4px 18px rgba(71, 67, 80, 0.04)'
       }}>
-        <div style={{
+        <div className="pubb-header-inner" style={{
           maxWidth: '1280px',
           margin: '0 auto',
           padding: '12px 20px',
@@ -752,6 +809,7 @@ export default function LandingPubblicita() {
             <img
               src="/logo_radio_toscana.png"
               alt="Radio Toscana"
+              className="pubb-header-logo"
               style={{
                 height: '46px',
                 width: 'auto',
@@ -796,12 +854,12 @@ export default function LandingPubblicita() {
               background: '#D43F4A',
               color: '#ffffff',
               textDecoration: 'none',
-              padding: '10px 20px',
+              padding: '10px 18px',
               borderRadius: '6px',
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: 900,
               fontStyle: 'italic',
-              letterSpacing: '0.05em',
+              letterSpacing: '0.04em',
               boxShadow: '0 6px 18px rgba(212, 63, 74, 0.35)',
               transform: 'skewX(-6deg)',
               display: 'inline-flex',
@@ -810,7 +868,8 @@ export default function LandingPubblicita() {
               whiteSpace: 'nowrap'
             }}
           >
-            <span style={{ transform: 'skewX(6deg)' }}>RICHIEDI PROPOSTA 2026 →</span>
+            <span className="pubb-btn-text-desk" style={{ transform: 'skewX(6deg)' }}>RICHIEDI PROPOSTA 2026 →</span>
+            <span className="pubb-btn-text-mob" style={{ transform: 'skewX(6deg)' }}>PREVENTIVO →</span>
           </a>
         </div>
       </header>
@@ -827,7 +886,7 @@ export default function LandingPubblicita() {
             <div>
               {/* Badge Ufficiale Logo Inclinato */}
               <div style={{ display: 'inline-block', marginBottom: '18px', maxWidth: '100%' }}>
-                <div className="font-panton" style={{
+                <div className="font-panton pubb-badge-skew" style={{
                   background: '#474350',
                   color: '#ffffff',
                   padding: '6px 14px',
@@ -847,7 +906,7 @@ export default function LandingPubblicita() {
               </div>
 
               <h1 className="font-panton" style={{
-                fontSize: 'clamp(28px, 4.5vw, 54px)',
+                fontSize: 'clamp(26px, 4.5vw, 54px)',
                 fontWeight: 900,
                 fontStyle: 'italic',
                 lineHeight: 1.12,
@@ -884,14 +943,13 @@ export default function LandingPubblicita() {
                     }}
                   ></div>
                 ))}
-                <span className="font-panton" style={{
+                <span className="font-panton pubb-soundwave-label" style={{
                   fontSize: '11px',
                   fontWeight: 800,
                   color: '#6b7280',
                   letterSpacing: '0.1em',
                   marginLeft: '8px',
-                  textTransform: 'uppercase',
-                  whiteSpace: 'nowrap'
+                  textTransform: 'uppercase'
                 }}>
                   DIFFUSIONE CAPILLARE FM & DAB+
                 </span>
@@ -926,8 +984,7 @@ export default function LandingPubblicita() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px',
-                    whiteSpace: 'nowrap'
+                    gap: '8px'
                   }}
                 >
                   <span style={{ transform: 'skewX(6deg)' }}>PIANIFICA LA TUA CAMPAGNA 2026 →</span>
@@ -951,8 +1008,7 @@ export default function LandingPubblicita() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px',
-                    whiteSpace: 'nowrap'
+                    gap: '8px'
                   }}
                 >
                   <span style={{ transform: 'skewX(6deg)' }}>I DATI DI EFFICACIA AUDIO ↓</span>
@@ -1528,8 +1584,7 @@ export default function LandingPubblicita() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '8px',
-                  whiteSpace: 'nowrap'
+                  gap: '8px'
                 }}
               >
                 <span style={{ transform: 'skewX(6deg)' }}>CONFIGURA LA TUA CAMPAGNA LOCALE →</span>

@@ -2425,10 +2425,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
   ];
 
   return (
-    <div>
+    <div className="crm-root-layout">
       <div className="no-print">
         {/* HEADER PRINCIPALE */}
-        <header>
+        <header className="crm-header">
         <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div className="brand-logo" style={{ background: 'transparent', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none' }}>
             <img src="/logo_radio_toscana.png" alt="Radio Toscana" style={{ height: '48px', width: 'auto', objectFit: 'contain' }} />
