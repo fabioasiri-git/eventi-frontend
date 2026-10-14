@@ -862,8 +862,8 @@ export default function LandingPubblicita() {
             <a href="#demo-audio" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '13px' }}>
               Spot Audio Demo
             </a>
-            <a href="#tracking-pack" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '13px' }}>
-              Tracking Pack Misurabile
+            <a href="#la-radio-rende" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '13px' }}>
+              Perché la Radio Rende
             </a>
             <a href="#copertura" style={{ textDecoration: 'none', color: '#474350', fontWeight: 600, fontSize: '13px' }}>
               4 Aree della Toscana
@@ -1650,8 +1650,8 @@ export default function LandingPubblicita() {
         </div>
       </section>
 
-      {/* 7-BIS. IL TRACKING PACK RADIO TOSCANA: MISURAZIONE CERTIFICATA DEI CONTATTI */}
-      <section id="tracking-pack" className="pubb-section" style={{
+      {/* 7-BIS. I PILASTRI DI EFFICACIA: DALL'OSSERVATORIO FCP-ASSORADIO / LARADIORENDE.IT */}
+      <section id="la-radio-rende" className="pubb-section" style={{
         background: '#ffffff',
         borderTop: '1px solid #e2e8f0',
         borderBottom: '1px solid #e2e8f0'
@@ -1672,7 +1672,7 @@ export default function LandingPubblicita() {
               marginBottom: '12px'
             }}>
               <span style={{ transform: 'skewX(8deg)', display: 'inline-block' }}>
-                TELEMETRIA & TRACCIAMENTO DEI CONTATTI
+                EVIDENZE FCP-ASSORADIO • LARADIORENDE.IT
               </span>
             </div>
             <h2 className="font-panton" style={{
@@ -1682,14 +1682,14 @@ export default function LandingPubblicita() {
               color: '#474350',
               lineHeight: 1.18
             }}>
-              Come Misuri i Risultati della Tua Campagna: il Tracking Pack
+              Perché la Radio Rende: i Risultati Certificati per la Tua Impresa
             </h2>
             <p style={{ color: '#64748b', fontSize: '15px', marginTop: '10px' }}>
-              La prima domanda di ogni imprenditore è: <i>"Come faccio a sapere quanti clienti mi ha portato la radio?"</i>. Abbiamo integrato tre strumenti concreti per verificare ogni contatto.
+              Dal portale istituzionale della radiofonia italiana (<i>laradiorende.it</i>) e dagli studi scientifici condotti con il Politecnico di Milano: ecco cosa accade quando la tua attività sceglie l'audio.
             </p>
           </div>
 
-          <div className="pubb-grid-3">
+          <div className="pubb-grid-4">
             <div className="pubb-card-pad" style={{
               background: '#f8fafc',
               borderRadius: '16px',
@@ -1697,15 +1697,15 @@ export default function LandingPubblicita() {
               borderTop: '4px solid #D43F4A',
               boxShadow: '0 8px 24px rgba(0,0,0,0.04)'
             }}>
-              <div style={{ fontSize: '28px', marginBottom: '12px' }}>🎙️</div>
+              <div style={{ fontSize: '28px', marginBottom: '12px' }}>📈</div>
               <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A', marginBottom: '6px' }}>
-                STRUMENTO 01
+                01 +EFFICACI
               </div>
-              <h3 className="font-panton" style={{ fontSize: '18px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
-                Codice Promo On-Air
+              <h3 className="font-panton" style={{ fontSize: '17px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
+                ROI fino a 10 Volte
               </h3>
               <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
-                Lo spot termina con una Call-to-Action memorabile (es. <i>"Dì 'Radio Toscana' in cassa o inserisci TOSCANA20 sul sito"</i>). Saprai con precisione chi si è attivato grazie all'ascolto.
+                Decine di studi dimostrano che il ritorno dell'investimento della radio non è secondo a nessuno: stimola aree cerebrali che potenziano anche le tue presenze web e social.
               </p>
             </div>
 
@@ -1716,15 +1716,15 @@ export default function LandingPubblicita() {
               borderTop: '4px solid #474350',
               boxShadow: '0 8px 24px rgba(0,0,0,0.04)'
             }}>
-              <div style={{ fontSize: '28px', marginBottom: '12px' }}>📲</div>
+              <div style={{ fontSize: '28px', marginBottom: '12px' }}>🚗</div>
               <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '6px' }}>
-                STRUMENTO 02
+                02 +INTERESSANTI
               </div>
-              <h3 className="font-panton" style={{ fontSize: '18px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
-                QR Code & Link Dedicato
+              <h3 className="font-panton" style={{ fontSize: '17px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
+                Al Momento Giusto
               </h3>
               <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
-                Creiamo una pagina ponte tracciata (es. <i>radiotoscana.it/tua-azienda</i>) o un QR Code per i display delle autoradio DAB+, web e social: telemetria trasparente e nessun contatto perso.
+                Raggiunge gli ascoltatori nei touchpoint più cruciali: in auto verso il lavoro o prima dello shopping, quando sono più vicini ed economicamente reattivi all'acquisto.
               </p>
             </div>
 
@@ -1735,15 +1735,34 @@ export default function LandingPubblicita() {
               borderTop: '4px solid #D43F4A',
               boxShadow: '0 8px 24px rgba(0,0,0,0.04)'
             }}>
-              <div style={{ fontSize: '28px', marginBottom: '12px' }}>📊</div>
+              <div style={{ fontSize: '28px', marginBottom: '12px' }}>📻</div>
               <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#D43F4A', marginBottom: '6px' }}>
-                STRUMENTO 03
+                04 +SEGUITI
               </div>
-              <h3 className="font-panton" style={{ fontSize: '18px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
-                Certificato dei Passaggi
+              <h3 className="font-panton" style={{ fontSize: '17px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
+                Ascolto Senza Zapping
               </h3>
               <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
-                Al termine ricevi il report ufficiale delle trasmissioni: data e ora esatta al secondo di ogni passaggio, fasce orarie e stima di ascoltatori certificata dai dati TER.
+                In radio lo zapping pubblicitario è quasi inesistente. La forza persuasiva della voce, le musiche e le battute funzionano anche mentre l'ascoltatore è impegnato in auto o al lavoro.
+              </p>
+            </div>
+
+            <div className="pubb-card-pad" style={{
+              background: '#f8fafc',
+              borderRadius: '16px',
+              border: '1px solid #e2e8f0',
+              borderTop: '4px solid #474350',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.04)'
+            }}>
+              <div style={{ fontSize: '28px', marginBottom: '12px' }}>⚡</div>
+              <div className="font-panton" style={{ fontSize: '12px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '6px' }}>
+                10 +EFFICIENTI E VELOCI
+              </div>
+              <h3 className="font-panton" style={{ fontSize: '17px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
+                In Pochi Giorni On-Air
+              </h3>
+              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+                Nessun costo o ritardo di stampa o produzioni video complesse. La campagna si attiva a pochi giorni dalla conferma e ricevi il certificato dei passaggi al secondo.
               </p>
             </div>
           </div>
@@ -1810,7 +1829,7 @@ export default function LandingPubblicita() {
                   <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> 15 Giorni di programmazione on-air</li>
                   <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Fasce 7:00 – 19:00 (Drive-time e lavoro)</li>
                   <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Produzione audio spot 30" inclusa</li>
-                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Tracking Pack base con codice promo</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Certificato ufficiale di messa in onda (data/ora)</li>
                 </ul>
               </div>
               <div style={{ marginTop: '24px' }}>
@@ -1880,7 +1899,7 @@ export default function LandingPubblicita() {
                   <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Alta frequenza negli orari di punta (7:30-9:30 e 17:30-19:30)</li>
                   <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Copertura FM su più bacini + DAB+ regionale completo</li>
                   <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> 2 Spot audio differenti prodotti nel mese</li>
-                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Tracking Pack Pro (QR, link dedicato e report certificato)</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><span style={{ color: '#22c55e', fontWeight: 900 }}>✓</span> Report telemetrico certificato al secondo + Call-to-Action mirata</li>
                 </ul>
               </div>
               <div style={{ marginTop: '24px' }}>
