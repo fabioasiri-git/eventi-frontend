@@ -6,7 +6,7 @@ import psycopg2
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-BOT_TOKEN = "8803277543:AAHxvV6tC5kGdVasDlje0FaL875fcnzBo9M"
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
 def parse_env_file(env_path):
     env_vars = {}

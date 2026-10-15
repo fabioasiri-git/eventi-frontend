@@ -1,9 +1,9 @@
-import sys, requests, json
+import sys, requests, json, os
 sys.stdout.reconfigure(encoding='utf-8')
 
-N8N_BASE_URL = "https://n8n.generazionedance.it"
-N8N_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MTBhOTJmNi1hM2UwLTRiOGMtYTdmYS0zOGRiMTBlZmM1YzMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiMzBjNDEwZGEtNDc3NS00ZTUwLTg2MmUtMWViNzc5NTRlY2M2IiwiaWF0IjoxNzg0NTQzNTE3fQ.rifC1F_rWiPvhtMfg8c-mDFEQsQAD6NIR2GqP-gLAMo"
-headers = {"X-N8N-API-KEY": N8N_API_KEY}
+N8N_BASE_URL = os.getenv("N8N_BASE_URL", "https://n8n.generazionedance.it")
+N8N_API_KEY = os.getenv("N8N_API_KEY", "")
+headers = {"X-N8N-API-KEY": N8N_API_KEY} if N8N_API_KEY else {}
 
 # 1. n8n raggiungibile?
 try:
@@ -35,15 +35,18 @@ except Exception as e:
     print(f"❌ Errore esecuzioni: {e}")
 
 # 3. Telegram webhook attivo?
-print("\n--- Stato webhook Telegram ---")
 try:
-    r3 = requests.get("https://api.telegram.org/bot8803277543:AAHxvV6tC5kGdVasDlje0FaL875fcnzBo9M/getWebhookInfo", timeout=10)
-    info = r3.json().get("result", {})
-    print(f"   URL: {info.get('url', 'non impostato')}")
-    print(f"   Pending updates: {info.get('pending_update_count', 0)}")
-    if info.get('last_error_message'):
-        print(f"   ⚠️ Ultimo errore: {info.get('last_error_message')}")
+    tg_token = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    if not tg_token:
+        print("   ⚠️ TELEGRAM_BOT_TOKEN non configurato")
     else:
-        print("   ✅ Nessun errore webhook")
+        r3 = requests.get(f"https://api.telegram.org/bot{tg_token}/getWebhookInfo", timeout=10)
+        info = r3.json().get("result", {})
+        print(f"   URL: {info.get('url', 'non impostato')}")
+        print(f"   Pending updates: {info.get('pending_update_count', 0)}")
+        if info.get('last_error_message'):
+            print(f"   ⚠️ Ultimo errore: {info.get('last_error_message')}")
+        else:
+            print("   ✅ Nessun errore webhook")
 except Exception as e:
     print(f"❌ Errore webhook: {e}")

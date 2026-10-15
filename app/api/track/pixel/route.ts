@@ -6,7 +6,7 @@ const TRANSPARENT_GIF_BUFFER = Buffer.from(
   'base64'
 );
 
-const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8838460062:AAHR0rJBa644NUFaUg2W6S4quHtSOLGTVtM';
+const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TG_CHAT = process.env.TELEGRAM_CHAT_ID || '648657216';
 
 export async function GET(request: Request) {

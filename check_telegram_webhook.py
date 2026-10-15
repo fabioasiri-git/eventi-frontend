@@ -1,9 +1,10 @@
 import sys
+import os
 import requests
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-BOT_TOKEN = "8803277543:AAHxvV6tC5kGdVasDlje0FaL875fcnzBo9M"
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
 def main():
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
