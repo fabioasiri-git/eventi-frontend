@@ -711,6 +711,34 @@ export default function LandingPubblicita() {
         }
       `}} />
 
+      {/* BARRA SWITCH TEST A/B */}
+      <div style={{
+        background: '#0F172A',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        padding: '8px 16px',
+        fontSize: '12px',
+        textAlign: 'center',
+        color: '#E2E8F0'
+      }}>
+        <div style={{ maxWidth: '1140px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <span style={{
+            background: '#334155',
+            color: '#94A3B8',
+            padding: '2px 8px',
+            borderRadius: '999px',
+            fontWeight: 700,
+            fontSize: '10.5px'
+          }}>
+            TEST A/B ATTIVO
+          </span>
+          <span>Stai visualizzando la <b>Variante A (Istituzionale)</b></span>
+          <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+          <a href="/pubblicita-b" style={{ color: '#38BDF8', fontWeight: 700, textDecoration: 'underline' }}>
+            Prova la nuova Variante B (Performance &amp; Direct Response) →
+          </a>
+        </div>
+      </div>
+
       {/* BANNER INTESTAZIONE ISTITUZIONALE PUBBLICITÀ */}
       <div className="pubb-top-promo-banner" style={{
         background: 'linear-gradient(90deg, #D43F4A 0%, #991b1b 100%)',
