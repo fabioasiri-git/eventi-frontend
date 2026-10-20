@@ -1165,7 +1165,7 @@ export default function LandingPubblicita() {
               fontSize: '13px',
               letterSpacing: '0.08em'
             }}>
-              EVIDENZE SCIENTIFICHE DALL'OSSERVATORIO FCP-ASSORADIO & POLIMI
+              EVIDENZE SCIENTIFICHE: OSSERVATORIO FCP-ASSORADIO &amp; BENCHMARK NIELSEN 2026
             </div>
             <h2 className="font-panton" style={{
               fontSize: 'clamp(26px, 3.6vw, 44px)',
@@ -1178,12 +1178,12 @@ export default function LandingPubblicita() {
               Perché la Radio Genera il Massimo Ritorno per la Tua Impresa
             </h2>
             <p style={{ color: '#6b7280', fontSize: '15px', marginTop: '12px' }}>
-              La combinazione unica di ascolto in mobilità, costo contatto competitivo e assenza di filtri digitali rende l'audio lo strumento commerciale più redditizio.
+              Dall'indagine ufficiale TER per la Toscana alle evidenze globali dell'ultimo report Nielsen Audio Today: i dati reali e certificati che superano l'illusione del click digitale.
             </p>
           </div>
 
           {/* 3 Metric Box Istituzionali */}
-          <div className="pubb-grid-3" style={{ marginBottom: '32px' }}>
+          <div className="pubb-grid-3" style={{ marginBottom: '28px' }}>
             <div style={{
               background: '#f9fafb',
               padding: '24px',
@@ -1241,6 +1241,118 @@ export default function LandingPubblicita() {
               </div>
               <div style={{ fontSize: '13px', color: '#6b7280' }}>
                 Il contatto avviene mentre i toscani si spostano per lavoro, acquisti e tempo libero: il momento più vicino alla decisione d'acquisto.
+              </div>
+            </div>
+          </div>
+
+          {/* FOCUS BENCHMARK: IL PARADOSSO DEL CLICK (NIELSEN 2026 & EDISON RESEARCH) */}
+          <div style={{
+            background: '#1e1b24',
+            borderRadius: '16px',
+            padding: '30px 24px',
+            color: '#ffffff',
+            marginBottom: '36px',
+            boxShadow: '0 14px 35px rgba(0,0,0,0.14)',
+            border: '1px solid rgba(255,255,255,0.08)'
+          }}>
+            <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 24px' }}>
+              <div className="font-panton" style={{
+                background: '#D43F4A',
+                color: '#ffffff',
+                display: 'inline-block',
+                padding: '4px 12px',
+                borderRadius: '4px',
+                fontSize: '11px',
+                fontWeight: 900,
+                fontStyle: 'italic',
+                letterSpacing: '0.08em',
+                marginBottom: '10px'
+              }}>
+                BENCHMARK INTERNAZIONALE NIELSEN 2026 &amp; EDISON RESEARCH
+              </div>
+              <h3 className="font-panton" style={{
+                fontSize: 'clamp(20px, 2.7vw, 30px)',
+                fontWeight: 900,
+                fontStyle: 'italic',
+                color: '#ffffff',
+                margin: '4px 0 10px',
+                lineHeight: 1.2
+              }}>
+                Il Paradosso del Click: Perché la Radio Batte il Digitale nei Risultati Reali
+              </h3>
+              <p style={{ color: '#cbd5e1', fontSize: '14px', lineHeight: 1.6, margin: 0 }}>
+                Spesso le aziende scelgono i media in base a quanto è facile tracciare un click sullo schermo. Lo studio <i>Nielsen Audio Today</i> svela che la facilità di tracciamento non coincide con il reale ritorno sul fatturato.
+              </p>
+            </div>
+
+            <div className="pubb-grid-3">
+              {/* Box 1: ROI Reale */}
+              <div style={{
+                background: 'rgba(255,255,255,0.04)',
+                borderRadius: '12px',
+                padding: '22px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderTop: '3px solid #D43F4A'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
+                  <span className="font-panton" style={{ fontSize: '32px', fontWeight: 900, color: '#D43F4A' }}>$2.00</span>
+                  <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>di ritorno per ogni $1</span>
+                </div>
+                <div className="font-panton" style={{ fontSize: '16px', fontWeight: 900, color: '#ffffff', marginBottom: '8px' }}>
+                  2° Canale più Redditizio al Mondo
+                </div>
+                <p style={{ fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.55, marginBottom: '12px' }}>
+                  Nel benchmark globale Nielsen, la Radio genera 2$ di ritorno per ogni dollaro speso, superando <b>Google Search ($1,52)</b>, <b>Affissioni ($1,56)</b>, <b>TV ($1,49)</b> e <b>Stampa ($1,15)</b>.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '8px' }}>
+                  📚 <i>Fonte: Nielsen Global Compass Benchmark &amp; Annual Marketing Report 2026</i>
+                </div>
+              </div>
+
+              {/* Box 2: Il falso mito dello streaming */}
+              <div style={{
+                background: 'rgba(255,255,255,0.04)',
+                borderRadius: '12px',
+                padding: '22px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderTop: '3px solid #ffffff'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
+                  <span className="font-panton" style={{ fontSize: '32px', fontWeight: 900, color: '#ffffff' }}>82%</span>
+                  <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>vs 15% streaming spot</span>
+                </div>
+                <div className="font-panton" style={{ fontSize: '16px', fontWeight: 900, color: '#ffffff', marginBottom: '8px' }}>
+                  Il Falso Mito di Spotify
+                </div>
+                <p style={{ fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.55, marginBottom: '12px' }}>
+                  Oltre l'80% di tutto il tempo audio con pubblicità appartiene a Radio (61%) e Podcast (21%). Lo streaming gratuito con annunci pesa appena il 15%: la stragrande maggioranza paga per eliminare gli spot.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '8px' }}>
+                  📚 <i>Fonte: Edison Research "Share of Ear" Q4 2025 / Nielsen Audio Today 2026</i>
+                </div>
+              </div>
+
+              {/* Box 3: Monopolio In-Car */}
+              <div style={{
+                background: 'rgba(255,255,255,0.04)',
+                borderRadius: '12px',
+                padding: '22px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderTop: '3px solid #D43F4A'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
+                  <span className="font-panton" style={{ fontSize: '32px', fontWeight: 900, color: '#D43F4A' }}>&gt;80%</span>
+                  <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>del tempo audio in auto</span>
+                </div>
+                <div className="font-panton" style={{ fontSize: '16px', fontWeight: 900, color: '#ffffff', marginBottom: '8px' }}>
+                  Prossimità Immediata alla Cassa
+                </div>
+                <p style={{ fontSize: '12.5px', color: '#cbd5e1', lineHeight: 1.55, marginBottom: '12px' }}>
+                  In automobile la radio vanta il monopolio assoluto dell'attenzione. Il 74% dell'ascolto fuori casa feriale avviene in auto, raggiungendo il cliente proprio prima che entri nei negozi.
+                </p>
+                <div style={{ fontSize: '11px', color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '8px' }}>
+                  📚 <i>Fonte: Nielsen National Regional Database / Talkers Magazine 2026</i>
+                </div>
               </div>
             </div>
           </div>
@@ -1511,7 +1623,7 @@ export default function LandingPubblicita() {
                   }}>✓</div>
                   <div>
                     <b style={{ color: '#474350' }}>67% Responsabili d'Acquisto:</b>{' '}
-                    <span style={{ color: '#6b7280' }}>Il pubblico decide le spese della famiglia o dell'azienda durante l'ascolto quotidiano.</span>
+                    <span style={{ color: '#6b7280' }}>Il pubblico decide le spese della famiglia o dell'azienda durante l'ascolto quotidiano (Fonte: Dati ufficiali TER Tavolo Editori Radio).</span>
                   </div>
                 </div>
 
@@ -1530,8 +1642,8 @@ export default function LandingPubblicita() {
                     flexShrink: 0
                   }}>✓</div>
                   <div>
-                    <b style={{ color: '#474350' }}>Top of Mind sul Territorio:</b>{' '}
-                    <span style={{ color: '#6b7280' }}>La ripetizione costante del tuo messaggio crea familiarità e riconoscibilità immediata.</span>
+                    <b style={{ color: '#474350' }}>Fiducia Locale &amp; Raccomandazione (+126%):</b>{' '}
+                    <span style={{ color: '#6b7280' }}>Chi ascolta una voce radicata sul territorio sviluppa massima fiducia: la propensione a consigliare un brand sentito in radio supera del +126% i media digitali impersonali (Fonte: Nielsen Audio Today 2026 Community Study).</span>
                   </div>
                 </div>
 
@@ -1550,8 +1662,8 @@ export default function LandingPubblicita() {
                     flexShrink: 0
                   }}>✓</div>
                   <div>
-                    <b style={{ color: '#474350' }}>Amplificatore Digitale (+42%):</b>{' '}
-                    <span style={{ color: '#6b7280' }}>Integrata con campagne social o Google Ads, la radio fa decollare il tasso di conversione delle inserzioni online.</span>
+                    <b style={{ color: '#474350' }}>Amplificatore Digitale (+42% conversioni):</b>{' '}
+                    <span style={{ color: '#6b7280' }}>Integrata con Google Ads o sponsorizzate Meta, la radio fa decollare il rendimento delle campagne web moltiplicando le ricerche spontanee del brand (Fonte: Politecnico di Milano / FCP-Assoradio RadioPlus+).</span>
                   </div>
                 </div>
               </div>
@@ -1704,9 +1816,12 @@ export default function LandingPubblicita() {
               <h3 className="font-panton" style={{ fontSize: '17px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
                 ROI fino a 10 Volte
               </h3>
-              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6, marginBottom: '8px' }}>
                 Decine di studi dimostrano che il ritorno dell'investimento della radio non è secondo a nessuno: stimola aree cerebrali che potenziano anche le tue presenze web e social.
               </p>
+              <div style={{ fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', paddingTop: '6px' }}>
+                📚 <i>Fonte: FCP-Assoradio / PoliMI RadioPlus+ &amp; Nielsen Global Compass</i>
+              </div>
             </div>
 
             <div className="pubb-card-pad" style={{
@@ -1723,9 +1838,12 @@ export default function LandingPubblicita() {
               <h3 className="font-panton" style={{ fontSize: '17px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
                 Al Momento Giusto
               </h3>
-              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6, marginBottom: '8px' }}>
                 Raggiunge gli ascoltatori nei touchpoint più cruciali: in auto verso il lavoro o prima dello shopping, quando sono più vicini ed economicamente reattivi all'acquisto.
               </p>
+              <div style={{ fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', paddingTop: '6px' }}>
+                📚 <i>Fonte: Dati ufficiali TER Toscana &amp; Nielsen In-Car Drive Time</i>
+              </div>
             </div>
 
             <div className="pubb-card-pad" style={{
@@ -1742,9 +1860,12 @@ export default function LandingPubblicita() {
               <h3 className="font-panton" style={{ fontSize: '17px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
                 Ascolto Senza Zapping
               </h3>
-              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6, marginBottom: '8px' }}>
                 In radio lo zapping pubblicitario è quasi inesistente. La forza persuasiva della voce, le musiche e le battute funzionano anche mentre l'ascoltatore è impegnato in auto o al lavoro.
               </p>
+              <div style={{ fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', paddingTop: '6px' }}>
+                📚 <i>Fonte: Edison Research Share of Ear &amp; Osservatorio FCP-Assoradio</i>
+              </div>
             </div>
 
             <div className="pubb-card-pad" style={{
@@ -1761,9 +1882,12 @@ export default function LandingPubblicita() {
               <h3 className="font-panton" style={{ fontSize: '17px', fontWeight: 900, fontStyle: 'italic', color: '#474350', marginBottom: '10px' }}>
                 In Pochi Giorni On-Air
               </h3>
-              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+              <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6, marginBottom: '8px' }}>
                 Nessun costo o ritardo di stampa o produzioni video complesse. La campagna si attiva a pochi giorni dalla conferma e ricevi il certificato dei passaggi al secondo.
               </p>
+              <div style={{ fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', paddingTop: '6px' }}>
+                📚 <i>Fonte: Concessione Diretta Radio Toscana &amp; Certificato As-Run</i>
+              </div>
             </div>
           </div>
         </div>
