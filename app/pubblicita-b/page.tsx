@@ -199,7 +199,7 @@ export default function LandingPubblicitaVarianteB() {
   };
 
   return (
-    <div style={{
+    <div className="b-page-wrapper" style={{
       backgroundColor: '#F3F4F6',
       color: '#474350',
       minHeight: '100vh',
@@ -245,7 +245,7 @@ export default function LandingPubblicitaVarianteB() {
         borderBottom: '1px solid #E5E7EB',
         boxShadow: '0 2px 10px rgba(71, 67, 80, 0.06)'
       }}>
-        <div style={{
+        <div className="b-header-pad" style={{
           maxWidth: '1140px',
           margin: '0 auto',
           padding: '12px 20px',
@@ -299,6 +299,7 @@ export default function LandingPubblicitaVarianteB() {
               📞 055 285030
             </a>
             <button
+              className="b-header-btn"
               onClick={() => scrollToFormWithPreset()}
               style={{
                 backgroundColor: '#D43F4A',
@@ -356,14 +357,10 @@ export default function LandingPubblicitaVarianteB() {
           )`
         }} />
 
-        <div style={{
+        <div className="b-hero-container" style={{
           position: 'relative',
           maxWidth: '1140px',
           margin: '0 auto',
-          padding: '70px 20px 60px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '40px',
           alignItems: 'center'
         }}>
           {/* Colonna Testo Hero */}
@@ -417,8 +414,9 @@ export default function LandingPubblicitaVarianteB() {
               In automobile la radio vanta il monopolio dell’attenzione (<b>&gt;80%</b>) e un ritorno medio di <b>2,00€ per ogni 1€ investito</b> (Nielsen 2026). Porta nuovi clienti nella tua attività con spot scritti da noi e passaggi nei drive-time più seguiti.
             </p>
 
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div className="b-hero-btn-row" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               <button
+                className="b-hero-btn"
                 onClick={() => scrollToFormWithPreset()}
                 style={{
                   backgroundColor: '#D43F4A',
@@ -439,6 +437,7 @@ export default function LandingPubblicitaVarianteB() {
               </button>
 
               <a
+                className="b-hero-btn"
                 href="#ascolta-spot"
                 style={{
                   backgroundColor: '#FFFFFF',
@@ -462,12 +461,10 @@ export default function LandingPubblicitaVarianteB() {
           </div>
 
           {/* Colonna Destra: 4 Numeri Chiave in Riquadri Brand Identity */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
+          <div className="b-metrics-grid" style={{
             gap: '14px'
           }}>
-            <div style={{
+            <div className="b-metric-box" style={{
               backgroundColor: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.15)',
               borderTop: '3px solid #D43F4A',
@@ -476,9 +473,7 @@ export default function LandingPubblicitaVarianteB() {
             }}>
               <div style={{
                 fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-                fontSize: '34px',
-                fontWeight: 800,
-                fontStyle: 'italic',
+                fontSize: 'clamp(22px, 3.2vw, 34px)', fontWeight: 800, fontStyle: 'italic',
                 color: '#FFFFFF',
                 lineHeight: 1
               }}>
@@ -492,7 +487,7 @@ export default function LandingPubblicitaVarianteB() {
               </div>
             </div>
 
-            <div style={{
+            <div className="b-metric-box" style={{
               backgroundColor: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.15)',
               borderTop: '3px solid #D43F4A',
@@ -501,9 +496,7 @@ export default function LandingPubblicitaVarianteB() {
             }}>
               <div style={{
                 fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-                fontSize: '34px',
-                fontWeight: 800,
-                fontStyle: 'italic',
+                fontSize: 'clamp(22px, 3.2vw, 34px)', fontWeight: 800, fontStyle: 'italic',
                 color: '#FCD34D',
                 lineHeight: 1
               }}>
@@ -517,7 +510,7 @@ export default function LandingPubblicitaVarianteB() {
               </div>
             </div>
 
-            <div style={{
+            <div className="b-metric-box" style={{
               backgroundColor: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.15)',
               borderTop: '3px solid #D43F4A',
@@ -526,9 +519,7 @@ export default function LandingPubblicitaVarianteB() {
             }}>
               <div style={{
                 fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-                fontSize: '34px',
-                fontWeight: 800,
-                fontStyle: 'italic',
+                fontSize: 'clamp(22px, 3.2vw, 34px)', fontWeight: 800, fontStyle: 'italic',
                 color: '#FFFFFF',
                 lineHeight: 1
               }}>
@@ -542,7 +533,7 @@ export default function LandingPubblicitaVarianteB() {
               </div>
             </div>
 
-            <div style={{
+            <div className="b-metric-box" style={{
               backgroundColor: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.15)',
               borderTop: '3px solid #D43F4A',
@@ -551,9 +542,7 @@ export default function LandingPubblicitaVarianteB() {
             }}>
               <div style={{
                 fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-                fontSize: '34px',
-                fontWeight: 800,
-                fontStyle: 'italic',
+                fontSize: 'clamp(22px, 3.2vw, 34px)', fontWeight: 800, fontStyle: 'italic',
                 color: '#D43F4A',
                 lineHeight: 1
               }}>
@@ -571,19 +560,8 @@ export default function LandingPubblicitaVarianteB() {
       </section>
 
       {/* 4. SEZIONE SOUNDWAVE DOT-MATRIX PLAYER (DIRETTAMENTE DA BRAND MANUAL PAG. 7) */}
-      <section id="ascolta-spot" style={{
-        padding: '60px 20px',
-        maxWidth: '1140px',
-        margin: '0 auto'
-      }}>
-        <div style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '16px',
-          border: '1px solid #E5E7EB',
-          boxShadow: '0 8px 30px rgba(71, 67, 80, 0.08)',
-          padding: '40px 30px',
-          position: 'relative'
-        }}>
+      <section id="ascolta-spot" className="b-section">
+        <div className="b-card" style={{ position: 'relative' }}>
           {/* Header Sezione */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
             <div>
@@ -657,10 +635,9 @@ export default function LandingPubblicitaVarianteB() {
           </div>
 
           {/* Area Player con Dot-Matrix Soundwave Animata */}
-          <div style={{
+          <div className="b-player-box" style={{
             backgroundColor: '#474350',
             borderRadius: '12px',
-            padding: '24px 28px',
             color: '#FFFFFF'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
@@ -822,11 +799,7 @@ export default function LandingPubblicitaVarianteB() {
       </section>
 
       {/* 5. IL SIMULATORE DI COPERTURA TERRITORIALE (LEAD MAGNET) */}
-      <section style={{
-        padding: '50px 20px',
-        maxWidth: '1140px',
-        margin: '0 auto'
-      }}>
+      <section className="b-section">
         <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto 36px' }}>
           <span style={{
             fontFamily: "'Panton Narrow', 'Panton', sans-serif",
@@ -853,12 +826,7 @@ export default function LandingPubblicitaVarianteB() {
           </p>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '24px',
-          alignItems: 'stretch'
-        }}>
+        <div className="b-sim-grid" style={{ alignItems: 'stretch' }}>
           {/* Elenco Territori */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {TERRITORI.map((t, idx) => (
@@ -1025,17 +993,8 @@ export default function LandingPubblicitaVarianteB() {
       </section>
 
       {/* 6. I BENCHMARK SCIENTIFICI NIELSEN 2026 ED EDISON RESEARCH */}
-      <section style={{
-        padding: '50px 20px',
-        maxWidth: '1140px',
-        margin: '0 auto'
-      }}>
-        <div style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '16px',
-          border: '1px solid #E5E7EB',
-          padding: '40px 30px'
-        }}>
+      <section className="b-section">
+        <div className="b-card">
           <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 36px' }}>
             <span style={{
               fontFamily: "'Panton Narrow', 'Panton', sans-serif",
@@ -1062,11 +1021,7 @@ export default function LandingPubblicitaVarianteB() {
             </p>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '20px'
-          }}>
+          <div className="b-bench-grid">
             {/* Box 1 */}
             <div style={{
               backgroundColor: '#F9FAFB',
@@ -1179,24 +1134,9 @@ export default function LandingPubblicitaVarianteB() {
       </section>
 
       {/* 7. FORM PREVENTIVO BRAND IDENTITY (ANTRACITE & ROSSO) */}
-      <section ref={formSectionRef} style={{
-        padding: '50px 20px 80px',
-        maxWidth: '1140px',
-        margin: '0 auto'
-      }}>
-        <div style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '16px',
-          border: '1px solid #E5E7EB',
-          padding: '40px 28px',
-          boxShadow: '0 10px 40px rgba(71, 67, 80, 0.08)'
-        }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '36px',
-            alignItems: 'start'
-          }}>
+      <section ref={formSectionRef} className="b-section" style={{ paddingBottom: '90px' }}>
+        <div className="b-form-card">
+          <div className="b-form-grid" style={{ alignItems: 'start' }}>
             {/* Sinistra: Garanzie Ufficiali */}
             <div>
               <div style={{
@@ -1614,7 +1554,74 @@ export default function LandingPubblicitaVarianteB() {
         </button>
       </div>
 
-      <style jsx>{`
+      
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* Mobile Reset & Anti-Overflow */
+        html, body {
+          width: 100% !important;
+          max-width: 100vw !important;
+          overflow-x: hidden !important;
+          box-sizing: border-box !important;
+          -webkit-text-size-adjust: 100%;
+        }
+        *, *:before, *:after {
+          box-sizing: border-box !important;
+        }
+        input, select, textarea {
+          font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
+        }
+
+        /* Desktop standard layouts */
+        .b-hero-container {
+          padding: 70px 20px 60px;
+          display: grid;
+          grid-template-columns: 1.1fr 0.9fr;
+          gap: 40px;
+        }
+        .b-metrics-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 14px;
+        }
+        .b-section {
+          padding: 50px 20px;
+          max-width: 1140px;
+          margin: 0 auto;
+          width: 100%;
+        }
+        .b-card {
+          background-color: #FFFFFF;
+          border-radius: 16px;
+          border: 1px solid #E5E7EB;
+          box-shadow: 0 8px 30px rgba(71, 67, 80, 0.08);
+          padding: 40px 30px;
+        }
+        .b-player-box {
+          padding: 24px 28px;
+        }
+        .b-sim-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+        }
+        .b-bench-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+        }
+        .b-form-card {
+          background-color: #FFFFFF;
+          border-radius: 16px;
+          border: 1px solid #E5E7EB;
+          padding: 40px 28px;
+          box-shadow: 0 10px 40px rgba(71, 67, 80, 0.08);
+        }
+        .b-form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1.15fr;
+          gap: 36px;
+        }
+
         @media (min-width: 768px) {
           .header-phone-desktop {
             display: inline-block !important;
@@ -1623,7 +1630,67 @@ export default function LandingPubblicitaVarianteB() {
             display: none !important;
           }
         }
-      `}</style>
+
+        /* Smartphone Optimization (< 768px) */
+        @media (max-width: 768px) {
+          .b-page-wrapper {
+            padding-bottom: 75px !important;
+          }
+          .b-header-pad {
+            padding: 10px 14px !important;
+          }
+          .b-header-btn {
+            padding: 8px 12px !important;
+            font-size: 11.5px !important;
+          }
+          .b-hero-container {
+            padding: 36px 14px 40px !important;
+            grid-template-columns: 1fr !important;
+            gap: 28px !important;
+          }
+          .b-hero-btn-row {
+            flex-direction: column !important;
+            width: 100% !important;
+            gap: 10px !important;
+          }
+          .b-hero-btn {
+            width: 100% !important;
+            justify-content: center !important;
+            text-align: center !important;
+            padding: 14px 18px !important;
+          }
+          .b-metrics-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+          }
+          .b-metric-box {
+            padding: 14px 10px !important;
+          }
+          .b-section {
+            padding: 32px 14px !important;
+          }
+          .b-card, .b-form-card {
+            padding: 22px 14px !important;
+            border-radius: 12px !important;
+          }
+          .b-player-box {
+            padding: 16px 12px !important;
+          }
+          .b-sim-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          .b-bench-grid {
+            grid-template-columns: 1fr !important;
+            gap: 14px !important;
+          }
+          .b-form-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+          }
+        }
+      `}} />
+
     </div>
   );
 }
