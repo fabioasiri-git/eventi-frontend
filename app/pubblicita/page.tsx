@@ -2023,7 +2023,7 @@ export default function LandingPubblicita() {
             color: '#9ca3af'
           }}>
             <div>
-              © 2026 Radio Toscana (Radio Monte Serra S.r.l.) - Tutti i diritti riservati. P.IVA 01228220508.
+              © 2026 Radio Toscana (Radio Monte Serra S.r.l.) - Tutti i diritti riservati. Via de' Pucci 2, 50122 Firenze (FI) • P.IVA 04472740481.
             </div>
             <div className="font-panton" style={{ fontStyle: 'italic', letterSpacing: '0.04em' }}>
               DATI UFFICIALI TER (TAVOLO EDITORI RADIO) • METRICHE DI EFFICACIA FCP-ASSORADIO

@@ -1210,7 +1210,7 @@ export default function LandingPubblicitaVarianteB() {
                   Ufficio Pubblicità Radio Toscana: <a href="tel:055285030" style={{ color: '#D43F4A', fontWeight: 700, textDecoration: 'none' }}>055 285030</a>
                 </div>
                 <div style={{ fontSize: '11.5px', color: '#9CA3AF', marginTop: '4px' }}>
-                  Sede: Largo Alcide De Gasperi 1, 50136 Firenze (FI)
+                  Sede: Via de' Pucci 2, 50122 Firenze (FI)
                 </div>
               </div>
             </div>
@@ -1490,7 +1490,7 @@ export default function LandingPubblicitaVarianteB() {
             style={{ height: '32px', width: 'auto', marginBottom: '8px', filter: 'brightness(1.1)' }}
           />
           <div style={{ color: '#E5E7EB', fontWeight: 600 }}>
-            <b>Radio Toscana S.r.l.</b> • Largo Alcide De Gasperi 1, 50136 Firenze (FI) • P.IVA 04584210486
+            <b>Radio Monte Serra S.r.l.</b> • Via de' Pucci 2, 50122 Firenze (FI) • P.IVA 04472740481
           </div>
           <div>
             Concessione Comunitaria / Commerciale • Emittente Radiofonica Regionale FM e DAB+
