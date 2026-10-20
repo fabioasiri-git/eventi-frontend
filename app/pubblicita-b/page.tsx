@@ -178,7 +178,7 @@ export default function LandingPubblicitaVarianteB() {
           telefono: formData.telefono,
           email: formData.email,
           settore: formData.settore,
-          obiettivo: `${formData.obiettivo} (Bacino: ${formData.bacino}, Durata: ${durataCampagna} settimane)`,
+          obiettivo: `${formData.obiettivo} (Bacino: ${formData.bacino})`,
           note: formData.note,
           source: 'Landing Pubblicità Variante B (Brand Identity 2026)',
           utm_campaign: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('utm_campaign') || 'brand-variant-b' : 'brand-variant-b'
@@ -963,40 +963,6 @@ export default function LandingPubblicitaVarianteB() {
                   }}>
                     {TERRITORI[selectedTerritorio].ascoltatoriGiorno}
                   </div>
-                </div>
-              </div>
-
-              {/* Intensità Campagna */}
-              <div style={{ marginBottom: '20px' }}>
-                <div style={{ fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '8px' }}>
-                  Durata consigliata del volo promozionale:
-                </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  {[
-                    { val: '1', label: '1 Settimana (Flash)' },
-                    { val: '2', label: '2 Settimane (Standard)' },
-                    { val: '4', label: '1 Mese (Dominio)' }
-                  ].map(item => (
-                    <button
-                      key={item.val}
-                      onClick={() => setDurataCampagna(item.val as any)}
-                      style={{
-                        flex: 1,
-                        padding: '8px',
-                        borderRadius: '6px',
-                        border: durataCampagna === item.val ? '1px solid #D43F4A' : '1px solid rgba(255,255,255,0.15)',
-                        backgroundColor: durataCampagna === item.val ? '#D43F4A' : 'rgba(255,255,255,0.04)',
-                        color: '#FFFFFF',
-                        fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-                        fontSize: '12px',
-                        fontWeight: 800,
-                        fontStyle: 'italic',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
                 </div>
               </div>
 
