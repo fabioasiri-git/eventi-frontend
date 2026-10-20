@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 
-// Dati per il simulatore di copertura territoriale
+// Palette Ufficiale Brand Identity Radio Toscana (CMYK/RGB da Brand Manual):
+// ANTRACITE SCURO: RGB(71, 67, 80) -> #474350
+// ROSSO TOSCANA:   RGB(212, 63, 74) -> #D43F4A
+// BIANCO PURO:     RGB(255, 255, 255) -> #FFFFFF
+// SFONDO NEUTRO:   #F3F4F6 / #E5E7EB
+
 const TERRITORI = [
   {
     id: 'regionale',
@@ -29,7 +34,7 @@ const TERRITORI = [
     badge: 'Bacino Tirreno',
     ascoltatoriSettimanali: '92.000',
     ascoltatoriGiorno: '19.000',
-    descrizione: 'Copertura ideale per il commercio costiero, artigianato, nautica e turismo da Viareggio a Cecina.',
+    descrizione: 'Copertura ideale per il commercio costiero, nautica, turismo e retail da Viareggio a Cecina.',
     frequenzaConsigliata: '25-35 spot/settimana'
   },
   {
@@ -49,7 +54,7 @@ const SPOT_EXAMPLES = [
     titolo: 'Forno & Pasticceria Artigianale',
     durata: '30"',
     audioSrc: '/audio/spot-radio-toscana-forno.mp3',
-    descrizione: 'Focus su freschezza, profumo e richiamo sensoriale mattutino durante il drive-time.',
+    descrizione: 'Freschezza, profumo mattutino e richiamo sensoriale durante il drive-time di inizio giornata.',
     claim: '«Il buon pane caldo ti aspetta prima del lavoro»'
   },
   {
@@ -57,7 +62,7 @@ const SPOT_EXAMPLES = [
     titolo: 'Bar, Bistrot & Ristorazione',
     durata: '30"',
     audioSrc: '/audio/spot-radio-toscana-bar.mp3',
-    descrizione: 'Puntato sulle pause pranzo e l\'aperitivo serale con invito all\'azione immediato.',
+    descrizione: 'Focus su colazioni, pausa pranzo e aperitivo serale con invito all\'azione immediato sul territorio.',
     claim: '«A pranzo scegli la qualità, la pausa che meriti»'
   },
   {
@@ -65,13 +70,16 @@ const SPOT_EXAMPLES = [
     titolo: 'Fiorista & Idee Regalo',
     durata: '30"',
     audioSrc: '/audio/spot-radio-toscana-fiorista.mp3',
-    descrizione: 'Emozione, ricorrenze e drive-to-store per occasioni speciali e weekend.',
+    descrizione: 'Emozione, ricorrenze speciali e stimolo all\'acquisto per weekend e momenti unici.',
     claim: '«Un gesto spontaneo dice più di mille parole»'
   }
 ];
 
+// Matrice Soundwave (Dot-Matrix da Brand Manual Pag. 7)
+// Rappresenta le colonne di pallini (da 1 a 6 punti per colonna)
+const DOT_COLUMNS = [2, 3, 5, 6, 4, 3, 5, 2, 4, 6, 5, 3, 6, 4, 2, 5, 6, 4, 3, 5, 6, 4, 2, 4, 6, 3, 2];
+
 export default function LandingPubblicitaVarianteB() {
-  // Stato Form
   const [formData, setFormData] = useState({
     azienda: '',
     referente: '',
@@ -88,19 +96,18 @@ export default function LandingPubblicitaVarianteB() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Stato Audio Player
+  // Player Audio
   const [activeAudioIndex, setActiveAudioIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioProgress, setAudioProgress] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Stato Simulatore Territoriale
+  // Simulatore
   const [selectedTerritorio, setSelectedTerritorio] = useState(0);
   const [durataCampagna, setDurataCampagna] = useState<'1' | '2' | '4'>('2');
 
   const formSectionRef = useRef<HTMLDivElement | null>(null);
 
-  // Gestione Riproduzione Audio
   const togglePlayAudio = (index: number) => {
     if (activeAudioIndex === index && isPlaying) {
       if (audioRef.current) audioRef.current.pause();
@@ -111,7 +118,7 @@ export default function LandingPubblicitaVarianteB() {
       setTimeout(() => {
         if (audioRef.current) {
           audioRef.current.currentTime = 0;
-          audioRef.current.play().catch(e => console.log('Audio autoplay blocked:', e));
+          audioRef.current.play().catch(e => console.log('Audio play error:', e));
         }
       }, 50);
     }
@@ -128,7 +135,6 @@ export default function LandingPubblicitaVarianteB() {
     setAudioProgress(0);
   };
 
-  // Scroll rapido al form con preselezione
   const scrollToFormWithPreset = (territorioNome?: string) => {
     if (territorioNome) {
       setFormData(prev => ({ ...prev, bacino: territorioNome }));
@@ -138,7 +144,6 @@ export default function LandingPubblicitaVarianteB() {
     }
   };
 
-  // Invio Form Inbound
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
@@ -167,8 +172,8 @@ export default function LandingPubblicitaVarianteB() {
           settore: formData.settore,
           obiettivo: `${formData.obiettivo} (Bacino: ${formData.bacino}, Durata: ${durataCampagna} settimane)`,
           note: formData.note,
-          source: 'Landing Pubblicità Variante B (Performance 2026)',
-          utm_campaign: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('utm_campaign') || 'ab-variant-b' : 'ab-variant-b'
+          source: 'Landing Pubblicità Variante B (Brand Identity 2026)',
+          utm_campaign: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('utm_campaign') || 'brand-variant-b' : 'brand-variant-b'
         })
       });
 
@@ -179,7 +184,7 @@ export default function LandingPubblicitaVarianteB() {
         setErrorMsg(json.error || 'Errore durante la trasmissione. Riprova tra poco.');
       }
     } catch (err) {
-      setErrorMsg('Errore di connessione. Riprova tra qualche istante o chiamaci direttamente.');
+      setErrorMsg('Errore di connessione. Riprova tra poco o contattaci telefonicamente.');
     } finally {
       setLoading(false);
     }
@@ -187,85 +192,98 @@ export default function LandingPubblicitaVarianteB() {
 
   return (
     <div style={{
-      backgroundColor: '#070A0F',
-      color: '#F8FAFC',
+      backgroundColor: '#F3F4F6',
+      color: '#474350',
       minHeight: '100vh',
-      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      fontFamily: "'Akzidenz-Grotesk', system-ui, -apple-system, sans-serif"
     }}>
       {/* 1. TOP A/B TEST SWITCHER BAR */}
       <div style={{
-        background: 'linear-gradient(90deg, #1E1B4B 0%, #311042 50%, #1E1B4B 100%)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        background: '#474350',
+        borderBottom: '2px solid #D43F4A',
         padding: '8px 16px',
         fontSize: '12px',
         textAlign: 'center',
-        color: '#E0E7FF'
+        color: '#FFFFFF'
       }}>
         <div style={{ maxWidth: '1140px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <span style={{
-            background: '#4338CA',
+            background: '#D43F4A',
             color: '#FFFFFF',
             padding: '2px 8px',
-            borderRadius: '999px',
-            fontWeight: 700,
-            fontSize: '10.5px'
+            borderRadius: '4px',
+            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+            fontWeight: 800,
+            fontStyle: 'italic',
+            fontSize: '11px',
+            letterSpacing: '0.04em'
           }}>
-            TEST A/B ATTIVO
+            TEST A/B
           </span>
-          <span>Stai visualizzando la <b>Variante B (Performance &amp; Direct Response)</b></span>
+          <span>Stai visualizzando la <b>Variante B (Nuova Linea Grafica Ufficiale &amp; Performance)</b></span>
           <span style={{ color: 'rgba(255,255,255,0.4)' }}>•</span>
-          <Link href="/pubblicita" style={{ color: '#FCD34D', fontWeight: 600, textDecoration: 'underline' }}>
-            Visualizza la Variante A (Istituzionale) →
+          <Link href="/pubblicita" style={{ color: '#FCD34D', fontWeight: 700, textDecoration: 'underline' }}>
+            Passa alla Variante A (Istituzionale Classica) →
           </Link>
         </div>
       </div>
 
-      {/* 2. STICKY HEADER MINIMAL (ZERO LEAKS) */}
+      {/* 2. HEADER UFFICIALE CON LOGO INCLINATO & CLAIM ROSSO */}
       <header style={{
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        backdropFilter: 'blur(16px)',
-        backgroundColor: 'rgba(7, 10, 15, 0.85)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)'
+        backgroundColor: '#FFFFFF',
+        borderBottom: '1px solid #E5E7EB',
+        boxShadow: '0 2px 10px rgba(71, 67, 80, 0.06)'
       }}>
         <div style={{
           maxWidth: '1140px',
           margin: '0 auto',
-          padding: '14px 20px',
+          padding: '12px 20px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Logo Brand Ufficiale */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <img
               src="/logo_radio_toscana.png"
-              alt="Radio Toscana"
-              style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+              alt="Radio Toscana - Solo Toscana | Solo Hit"
+              style={{ height: '42px', width: 'auto', objectFit: 'contain' }}
             />
             <div style={{
-              borderLeft: '1px solid rgba(255,255,255,0.2)',
+              borderLeft: '2px solid #D43F4A',
               paddingLeft: '12px',
               display: 'flex',
               flexDirection: 'column'
             }}>
-              <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#94A3B8', fontWeight: 700 }}>
-                Ufficio Pubblicità
+              <span style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '13px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#474350',
+                letterSpacing: '0.05em',
+                lineHeight: 1.1
+              }}>
+                UFFICIO PUBBLICITÀ
               </span>
-              <span style={{ fontSize: '12.5px', color: '#F8FAFC', fontWeight: 600 }}>
-                Copertura Regionale 2026
+              <span style={{ fontSize: '11px', color: '#6B7280', fontWeight: 600 }}>
+                298.000 Ascoltatori Settimanali • Dati Ufficiali TER
               </span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* CTA & Telefono */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <a
               href="tel:055285030"
               style={{
                 display: 'none',
-                color: '#CBD5E1',
+                color: '#474350',
                 fontSize: '13px',
-                fontWeight: 600,
+                fontWeight: 700,
                 textDecoration: 'none'
               }}
               className="header-phone-desktop"
@@ -275,252 +293,391 @@ export default function LandingPubblicitaVarianteB() {
             <button
               onClick={() => scrollToFormWithPreset()}
               style={{
-                background: 'linear-gradient(135deg, #D43F4A 0%, #B91C1C 100%)',
+                backgroundColor: '#D43F4A',
                 color: '#FFFFFF',
                 border: 'none',
-                borderRadius: '8px',
-                padding: '9px 18px',
-                fontSize: '13px',
-                fontWeight: 700,
+                borderRadius: '6px',
+                padding: '10px 18px',
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '13.5px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                letterSpacing: '0.04em',
                 cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(212, 63, 74, 0.35)',
-                transition: 'all 0.2s ease'
+                boxShadow: '0 4px 12px rgba(212, 63, 74, 0.3)',
+                transition: 'all 0.15s ease'
               }}
             >
-              Richiedi Proposta ⚡
+              RICHIEDI PROPOSTA ➔
             </button>
           </div>
         </div>
       </header>
 
-      {/* 3. HERO SECTION (HIGH CONVERSION / FRAMER STYLE) */}
+      {/* 3. HERO SECTION BRAND UFFICIALE (DOPPIA ESPOSIZIONE COPERTINA BRAND MANUAL) */}
       <section style={{
         position: 'relative',
-        padding: '64px 20px 50px',
-        maxWidth: '1140px',
-        margin: '0 auto',
-        textAlign: 'center'
+        backgroundColor: '#474350',
+        color: '#FFFFFF',
+        overflow: 'hidden',
+        borderBottom: '4px solid #D43F4A'
       }}>
-        {/* Glow circolare di sfondo */}
+        {/* Background Image: Doppia Esposizione Ragazza & Colline Toscane */}
         <div style={{
           position: 'absolute',
-          top: '-60px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '500px',
-          height: '250px',
-          background: 'radial-gradient(ellipse at center, rgba(212,63,74,0.22) 0%, rgba(7,10,15,0) 70%)',
-          pointerEvents: 'none',
-          zIndex: 0
+          inset: 0,
+          backgroundImage: 'url(/radio_toscana_double_exposure.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.22,
+          mixBlendMode: 'luminosity'
         }} />
 
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* Trust Badge */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: '999px',
-            padding: '6px 16px',
-            fontSize: '12px',
-            color: '#CBD5E1',
-            marginBottom: '24px'
-          }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 8px #10B981' }} />
-            <span><b>298.000</b> ascoltatori ogni settimana in Toscana • <i>Dati Ufficiali TER 2026</i></span>
-          </div>
+        {/* Claim Background Watermark a 45° (da Brand Manual Pag. 7) */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          opacity: 0.05,
+          pointerEvents: 'none',
+          backgroundImage: `repeating-linear-gradient(
+            -45deg,
+            #FFFFFF,
+            #FFFFFF 1px,
+            transparent 1px,
+            transparent 60px
+          )`
+        }} />
 
-          <h1 style={{
-            fontSize: 'clamp(32px, 5vw, 54px)',
-            fontWeight: 900,
-            lineHeight: 1.15,
-            letterSpacing: '-0.02em',
-            marginBottom: '20px',
-            color: '#FFFFFF'
-          }}>
-            Fai sentire la tua voce <br />
-            <span style={{
-              background: 'linear-gradient(90deg, #F87171 0%, #FBBF24 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+        <div style={{
+          position: 'relative',
+          maxWidth: '1140px',
+          margin: '0 auto',
+          padding: '70px 20px 60px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gap: '40px',
+          alignItems: 'center'
+        }}>
+          {/* Colonna Testo Hero */}
+          <div>
+            {/* Pillola Claim Ufficiale */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: '999px',
+              padding: '6px 14px',
+              marginBottom: '20px'
             }}>
-              prima che i clienti entrino nei negozi.
-            </span>
-          </h1>
-
-          <p style={{
-            fontSize: 'clamp(15px, 2vw, 18px)',
-            color: '#94A3B8',
-            maxWidth: '720px',
-            margin: '0 auto 36px',
-            lineHeight: 1.6
-          }}>
-            In auto la radio vanta il monopolio dell’attenzione (<b>&gt;80%</b>) e un ritorno di <b>2,00€ per ogni 1€ investito</b> (Nielsen 2026). Portiamo clienti al tuo punto vendita con spot scritti da professionisti e tracciamento verificato.
-          </p>
-
-          {/* Azioni Principali */}
-          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '48px' }}>
-            <button
-              onClick={() => scrollToFormWithPreset()}
-              style={{
-                background: 'linear-gradient(135deg, #D43F4A 0%, #991B1B 100%)',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: '10px',
-                padding: '16px 30px',
-                fontSize: '15px',
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#D43F4A', display: 'inline-block' }} />
+              <span style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '12px',
                 fontWeight: 800,
-                cursor: 'pointer',
-                boxShadow: '0 8px 24px rgba(212, 63, 74, 0.4)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              Richiedi Preventivo Gratuito ➔
-            </button>
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: '#FFFFFF'
+              }}>
+                SOLO TOSCANA | SOLO HIT
+              </span>
+            </div>
 
-            <a
-              href="#ascolta-spot"
-              style={{
-                background: 'rgba(255,255,255,0.06)',
-                color: '#F8FAFC',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '10px',
-                padding: '16px 24px',
-                fontSize: '15px',
-                fontWeight: 700,
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              🎧 Ascolta Esempi di Spot
-            </a>
+            <h1 style={{
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: 'clamp(32px, 5.2vw, 56px)',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              lineHeight: 1.08,
+              letterSpacing: '-0.01em',
+              marginBottom: '18px',
+              color: '#FFFFFF'
+            }}>
+              LA RADIO NON MOSTRA.<br />
+              <span style={{ color: '#D43F4A' }}>FA IMMAGINARE.</span><br />
+              E CIÒ CHE IMMAGINI È GIÀ TUO.
+            </h1>
+
+            <p style={{
+              fontSize: '16px',
+              color: '#D1D5DB',
+              lineHeight: 1.6,
+              marginBottom: '32px',
+              maxWidth: '540px'
+            }}>
+              In automobile la radio vanta il monopolio dell’attenzione (<b>&gt;80%</b>) e un ritorno medio di <b>2,00€ per ogni 1€ investito</b> (Nielsen 2026). Porta nuovi clienti nella tua attività con spot scritti da noi e passaggi nei drive-time più seguiti.
+            </p>
+
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => scrollToFormWithPreset()}
+                style={{
+                  backgroundColor: '#D43F4A',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '16px 28px',
+                  fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                  fontSize: '16px',
+                  fontWeight: 800,
+                  fontStyle: 'italic',
+                  letterSpacing: '0.04em',
+                  cursor: 'pointer',
+                  boxShadow: '0 6px 20px rgba(212, 63, 74, 0.45)'
+                }}
+              >
+                RICHIEDI PREVENTIVO 2026 ➔
+              </button>
+
+              <a
+                href="#ascolta-spot"
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  color: '#474350',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '16px 22px',
+                  fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                  fontSize: '15px',
+                  fontWeight: 800,
+                  fontStyle: 'italic',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                🎧 ASCOLTA GLI SPOT
+              </a>
+            </div>
           </div>
 
-          {/* 4 Statistiche Snapshot */}
+          {/* Colonna Destra: 4 Numeri Chiave in Riquadri Brand Identity */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
-            gap: '14px',
-            textAlign: 'left'
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '14px'
           }}>
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px' }}>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#F87171' }}>298.000</div>
-              <div style={{ fontSize: '12px', color: '#CBD5E1', fontWeight: 600 }}>Ascoltatori Settimanali</div>
-              <div style={{ fontSize: '10.5px', color: '#64748B' }}>Dati Ufficiali TER Toscana</div>
+            <div style={{
+              backgroundColor: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderTop: '3px solid #D43F4A',
+              borderRadius: '8px',
+              padding: '18px'
+            }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '34px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#FFFFFF',
+                lineHeight: 1
+              }}>
+                298.000
+              </div>
+              <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#F3F4F6', marginTop: '6px' }}>
+                Ascoltatori Settimanali
+              </div>
+              <div style={{ fontSize: '11px', color: '#9CA3AF' }}>
+                Dati Ufficiali TER Toscana
+              </div>
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px' }}>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#38BDF8' }}>2.00€ per 1€</div>
-              <div style={{ fontSize: '12px', color: '#CBD5E1', fontWeight: 600 }}>ROI Medio Certificato</div>
-              <div style={{ fontSize: '10.5px', color: '#64748B' }}>Nielsen Global Compass 2026</div>
+            <div style={{
+              backgroundColor: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderTop: '3px solid #D43F4A',
+              borderRadius: '8px',
+              padding: '18px'
+            }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '34px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#FCD34D',
+                lineHeight: 1
+              }}>
+                2.00€
+              </div>
+              <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#F3F4F6', marginTop: '6px' }}>
+                ROI per ogni 1€ Speso
+              </div>
+              <div style={{ fontSize: '11px', color: '#9CA3AF' }}>
+                Nielsen Global Compass 2026
+              </div>
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px' }}>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#34D399' }}>67%</div>
-              <div style={{ fontSize: '12px', color: '#CBD5E1', fontWeight: 600 }}>Responsabili Acquisti</div>
-              <div style={{ fontSize: '10.5px', color: '#64748B' }}>Decisori Spesa Famiglia/Azienda</div>
+            <div style={{
+              backgroundColor: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderTop: '3px solid #D43F4A',
+              borderRadius: '8px',
+              padding: '18px'
+            }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '34px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#FFFFFF',
+                lineHeight: 1
+              }}>
+                67%
+              </div>
+              <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#F3F4F6', marginTop: '6px' }}>
+                Decisori d'Acquisto
+              </div>
+              <div style={{ fontSize: '11px', color: '#9CA3AF' }}>
+                Spesa Famiglia / Azienda
+              </div>
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px' }}>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#FBBF24' }}>&gt;80%</div>
-              <div style={{ fontSize: '12px', color: '#CBD5E1', fontWeight: 600 }}>Ascolto in Automobile</div>
-              <div style={{ fontSize: '10.5px', color: '#64748B' }}>Monopolio Drive-Time</div>
+            <div style={{
+              backgroundColor: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderTop: '3px solid #D43F4A',
+              borderRadius: '8px',
+              padding: '18px'
+            }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '34px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#D43F4A',
+                lineHeight: 1
+              }}>
+                &gt;80%
+              </div>
+              <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#F3F4F6', marginTop: '6px' }}>
+                Tempo Audio in Auto
+              </div>
+              <div style={{ fontSize: '11px', color: '#9CA3AF' }}>
+                Monopolio Drive-Time
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. SEZIONE AUDIO PLAYER INTERATTIVO (MICRO-DEMO IN TEMPO REALE) */}
+      {/* 4. SEZIONE SOUNDWAVE DOT-MATRIX PLAYER (DIRETTAMENTE DA BRAND MANUAL PAG. 7) */}
       <section id="ascolta-spot" style={{
-        padding: '50px 20px',
+        padding: '60px 20px',
         maxWidth: '1140px',
         margin: '0 auto'
       }}>
         <div style={{
-          background: 'linear-gradient(180deg, rgba(30, 27, 75, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%)',
-          border: '1px solid rgba(99, 102, 241, 0.25)',
-          borderRadius: '20px',
-          padding: '36px 24px',
-          position: 'relative',
-          overflow: 'hidden'
+          backgroundColor: '#FFFFFF',
+          borderRadius: '16px',
+          border: '1px solid #E5E7EB',
+          boxShadow: '0 8px 30px rgba(71, 67, 80, 0.08)',
+          padding: '40px 30px',
+          position: 'relative'
         }}>
           {/* Header Sezione */}
-          <div style={{ maxWidth: '640px', marginBottom: '28px' }}>
-            <span style={{
-              color: '#818CF8',
-              fontSize: '11.5px',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em'
-            }}>
-              Ascolto Diretto Senza Impegno
-            </span>
-            <h2 style={{ fontSize: 'clamp(22px, 3.5vw, 32px)', fontWeight: 800, color: '#FFFFFF', marginTop: '6px', marginBottom: '10px' }}>
-              Ascolta come suona uno spot prodotto per la tua attività
-            </h2>
-            <p style={{ fontSize: '14px', color: '#94A3B8', lineHeight: 1.5 }}>
-              Tutti gli spot di Radio Toscana sono scritti e incisi con doppiatori e speaker professionisti. Clicca sui settori qui sotto e ascolta l’effetto immediato:
-            </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
+            <div>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '12px',
+                fontWeight: 800,
+                color: '#D43F4A',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase'
+              }}>
+                ALTRI ELEMENTI • SOUNDWAVE DEMO
+              </div>
+              <h2 style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: 'clamp(24px, 3.8vw, 36px)',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#474350',
+                marginTop: '4px'
+              }}>
+                Ascolta come suona uno spot professionale per la tua attività
+              </h2>
+              <p style={{ fontSize: '14.5px', color: '#6B7280', maxWidth: '640px' }}>
+                Scritto, registrato e prodotto direttamente dai nostri studi con speaker e doppiatori nazionali:
+              </p>
+            </div>
+
+            {/* Logo Watermark Piccolo */}
+            <div style={{ display: 'none' }} className="header-phone-desktop">
+              <span style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '12px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#9CA3AF'
+              }}>
+                RADIO TOSCANA • STUDIO PRODUZIONI
+              </span>
+            </div>
           </div>
 
-          {/* Tag / Selettore Settori */}
-          <div style={{
-            display: 'flex',
-            gap: '10px',
-            flexWrap: 'wrap',
-            marginBottom: '24px'
-          }}>
+          {/* Tab di Selezione Settori con Stile Brand Guide */}
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '24px' }}>
             {SPOT_EXAMPLES.map((spot, idx) => (
               <button
                 key={spot.id}
                 onClick={() => togglePlayAudio(idx)}
                 style={{
-                  padding: '10px 18px',
-                  borderRadius: '10px',
-                  border: activeAudioIndex === idx ? '1px solid #818CF8' : '1px solid rgba(255,255,255,0.1)',
-                  background: activeAudioIndex === idx ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255,255,255,0.03)',
-                  color: activeAudioIndex === idx ? '#FFFFFF' : '#CBD5E1',
-                  fontSize: '13px',
-                  fontWeight: 700,
+                  padding: '11px 18px',
+                  borderRadius: '6px',
+                  border: activeAudioIndex === idx ? '2px solid #D43F4A' : '1px solid #D1D5DB',
+                  backgroundColor: activeAudioIndex === idx ? '#474350' : '#F9FAFB',
+                  color: activeAudioIndex === idx ? '#FFFFFF' : '#474350',
+                  fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                  fontSize: '14px',
+                  fontWeight: 800,
+                  fontStyle: 'italic',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.15s ease'
                 }}
               >
-                <span>{activeAudioIndex === idx && isPlaying ? '⏸️' : '▶️'}</span>
+                <span>{activeAudioIndex === idx && isPlaying ? '⏸' : '▶'}</span>
                 <span>{spot.titolo}</span>
-                <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 500 }}>({spot.durata})</span>
+                <span style={{ fontSize: '11px', opacity: 0.8 }}>({spot.durata})</span>
               </button>
             ))}
           </div>
 
-          {/* Card Player con Visualizzatore Onde Sonore */}
+          {/* Area Player con Dot-Matrix Soundwave Animata */}
           <div style={{
-            background: 'rgba(15, 23, 42, 0.8)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '14px',
-            padding: '24px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px'
+            backgroundColor: '#474350',
+            borderRadius: '12px',
+            padding: '24px 28px',
+            color: '#FFFFFF'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
               <div>
-                <div style={{ fontSize: '11px', color: '#818CF8', fontWeight: 700, textTransform: 'uppercase' }}>
-                  In Riproduzione
-                </div>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: '#FFFFFF' }}>
+                <span style={{
+                  fontSize: '11px',
+                  fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '0.08em',
+                  color: '#D43F4A',
+                  textTransform: 'uppercase'
+                }}>
+                  SPOT IN RIPRODUZIONE
+                </span>
+                <h3 style={{
+                  fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                  fontSize: '22px',
+                  fontWeight: 800,
+                  fontStyle: 'italic',
+                  color: '#FFFFFF',
+                  margin: '2px 0 4px'
+                }}>
                   {SPOT_EXAMPLES[activeAudioIndex].titolo}
-                </div>
-                <div style={{ fontSize: '13px', color: '#FCD34D', fontStyle: 'italic', marginTop: '4px' }}>
+                </h3>
+                <div style={{ fontSize: '13.5px', color: '#FCD34D', fontStyle: 'italic' }}>
                   {SPOT_EXAMPLES[activeAudioIndex].claim}
                 </div>
               </div>
@@ -528,60 +685,84 @@ export default function LandingPubblicitaVarianteB() {
               <button
                 onClick={() => togglePlayAudio(activeAudioIndex)}
                 style={{
-                  background: isPlaying ? '#EF4444' : '#10B981',
+                  backgroundColor: isPlaying ? '#D43F4A' : '#10B981',
                   color: '#FFFFFF',
                   border: 'none',
                   borderRadius: '999px',
-                  padding: '12px 24px',
+                  padding: '12px 26px',
+                  fontFamily: "'Panton Narrow', 'Panton', sans-serif",
                   fontSize: '14px',
                   fontWeight: 800,
+                  fontStyle: 'italic',
+                  letterSpacing: '0.04em',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  boxShadow: isPlaying ? '0 0 16px rgba(239, 68, 68, 0.4)' : '0 0 16px rgba(16, 185, 129, 0.4)'
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.3)'
                 }}
               >
-                <span>{isPlaying ? 'Ferma Ascolto ⏸' : 'Avvia Ascolto ▶'}</span>
+                <span>{isPlaying ? 'FERMA ASCOLTO ⏸' : 'AVVIA ASCOLTO SPOT ▶'}</span>
               </button>
             </div>
 
-            {/* Finta Forma d'Onda / Soundwave Equalizer Animata */}
+            {/* SOUNDWAVE DOT-MATRIX (FEDELE ALLA PAGINA 7 DEL BRAND MANUAL) */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
-              height: '40px',
-              padding: '6px 0',
+              justifyContent: 'center',
+              gap: '6px',
+              height: '56px',
+              padding: '10px 0',
               overflow: 'hidden'
             }}>
-              {[40, 70, 20, 90, 60, 30, 85, 45, 100, 35, 75, 50, 95, 30, 65, 80, 25, 90, 50, 70, 30, 85, 60, 40, 95, 20, 80, 50].map((h, i) => (
+              {DOT_COLUMNS.map((numDots, colIdx) => (
                 <div
-                  key={i}
+                  key={colIdx}
                   style={{
-                    flex: 1,
-                    backgroundColor: isPlaying ? '#818CF8' : '#334155',
-                    borderRadius: '2px',
-                    height: isPlaying ? `${Math.max(15, (h * (0.4 + (i % 3) * 0.3)))}%` : '20%',
-                    transition: 'height 0.25s ease'
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    justifyContent: 'center',
+                    alignItems: 'center'
                   }}
-                />
+                >
+                  {[...Array(6)].map((_, dotIdx) => {
+                    const isLit = dotIdx < numDots;
+                    const activeColor = isPlaying
+                      ? (colIdx % 4 === 0 ? '#D43F4A' : '#FFFFFF')
+                      : '#6B7280';
+                    return (
+                      <div
+                        key={dotIdx}
+                        style={{
+                          width: '6px',
+                          height: '6px',
+                          borderRadius: '50%',
+                          backgroundColor: isLit ? activeColor : 'rgba(255,255,255,0.06)',
+                          transition: 'background-color 0.2s ease, transform 0.2s ease',
+                          transform: isPlaying && isLit ? 'scale(1.15)' : 'scale(1)'
+                        }}
+                      />
+                    );
+                  })}
+                </div>
               ))}
             </div>
 
-            {/* Barra di avanzamento audio */}
+            {/* Progress Bar */}
             <div style={{
               width: '100%',
-              height: '6px',
-              background: 'rgba(255,255,255,0.1)',
+              height: '5px',
+              backgroundColor: 'rgba(255,255,255,0.15)',
               borderRadius: '999px',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              marginTop: '12px'
             }}>
               <div style={{
                 width: `${audioProgress}%`,
                 height: '100%',
-                background: 'linear-gradient(90deg, #818CF8, #D43F4A)',
-                borderRadius: '999px',
+                backgroundColor: '#D43F4A',
                 transition: 'width 0.1s linear'
               }} />
             </div>
@@ -599,11 +780,14 @@ export default function LandingPubblicitaVarianteB() {
               alignItems: 'center',
               flexWrap: 'wrap',
               gap: '10px',
-              paddingTop: '8px',
-              borderTop: '1px solid rgba(255,255,255,0.06)'
+              marginTop: '16px',
+              paddingTop: '12px',
+              borderTop: '1px solid rgba(255,255,255,0.1)',
+              fontSize: '12px',
+              color: '#9CA3AF'
             }}>
-              <span style={{ fontSize: '12px', color: '#94A3B8' }}>
-                ✍️ <b>Incluso nel servizio:</b> Scrittura copy persuasivo + Doppiaggio nazionale + Concessione SIAE
+              <span>
+                ✍️ <b>Produzione Completa:</b> Copywriting persuasivo + Speaker nazionale + Diritti SIAE/SCF inclusi.
               </span>
               <button
                 onClick={() => {
@@ -612,10 +796,12 @@ export default function LandingPubblicitaVarianteB() {
                 }}
                 style={{
                   background: 'transparent',
-                  color: '#FCD34D',
                   border: 'none',
-                  fontSize: '12.5px',
-                  fontWeight: 700,
+                  color: '#FCD34D',
+                  fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                  fontSize: '13px',
+                  fontWeight: 800,
+                  fontStyle: 'italic',
                   cursor: 'pointer',
                   textDecoration: 'underline'
                 }}
@@ -627,7 +813,7 @@ export default function LandingPubblicitaVarianteB() {
         </div>
       </section>
 
-      {/* 5. IL SIMULATORE DI COPERTURA TOSCANA (INTERATTIVO LEAD MAGNET) */}
+      {/* 5. IL SIMULATORE DI COPERTURA TERRITORIALE (LEAD MAGNET) */}
       <section style={{
         padding: '50px 20px',
         maxWidth: '1140px',
@@ -635,122 +821,168 @@ export default function LandingPubblicitaVarianteB() {
       }}>
         <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto 36px' }}>
           <span style={{
-            color: '#F59E0B',
-            fontSize: '11.5px',
+            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+            fontSize: '12px',
             fontWeight: 800,
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em'
+            color: '#D43F4A',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase'
           }}>
-            Pianificazione Trasparente
+            PIANIFICAZIONE TRASPARENTE
           </span>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 900, color: '#FFFFFF', marginTop: '6px' }}>
+          <h2 style={{
+            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+            fontSize: 'clamp(26px, 4vw, 36px)',
+            fontWeight: 800,
+            fontStyle: 'italic',
+            color: '#474350',
+            marginTop: '4px'
+          }}>
             Simula il Bacino di Copertura per la tua Zona
           </h2>
-          <p style={{ fontSize: '14.5px', color: '#94A3B8' }}>
-            Seleziona l'area geografica in cui si trovano i tuoi clienti e scopri il volume di contatti che puoi raggiungere su Radio Toscana:
+          <p style={{ fontSize: '15px', color: '#6B7280' }}>
+            Seleziona l'area geografica della tua clientela e verifica la penetrazione stimata:
           </p>
         </div>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
           gap: '24px',
           alignItems: 'stretch'
         }}>
-          {/* Colonna Sinistra: Selezione Territorio */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {/* Elenco Territori */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {TERRITORI.map((t, idx) => (
               <div
                 key={t.id}
                 onClick={() => setSelectedTerritorio(idx)}
                 style={{
-                  background: selectedTerritorio === idx ? 'rgba(212, 63, 74, 0.15)' : 'rgba(255,255,255,0.03)',
-                  border: selectedTerritorio === idx ? '2px solid #D43F4A' : '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '12px',
-                  padding: '16px 20px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '10px',
+                  border: selectedTerritorio === idx ? '2px solid #D43F4A' : '1px solid #E5E7EB',
+                  padding: '18px 20px',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  boxShadow: selectedTerritorio === idx ? '0 4px 16px rgba(212, 63, 74, 0.15)' : 'none',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <b style={{ color: selectedTerritorio === idx ? '#FFFFFF' : '#E2E8F0', fontSize: '15px' }}>
+                  <b style={{
+                    fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                    fontSize: '17px',
+                    fontWeight: 800,
+                    fontStyle: 'italic',
+                    color: selectedTerritorio === idx ? '#D43F4A' : '#474350'
+                  }}>
                     {t.nome}
                   </b>
                   <span style={{
-                    fontSize: '10.5px',
-                    fontWeight: 700,
+                    fontSize: '11px',
+                    fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                    fontWeight: 800,
+                    fontStyle: 'italic',
                     padding: '2px 8px',
-                    borderRadius: '999px',
-                    background: selectedTerritorio === idx ? '#D43F4A' : 'rgba(255,255,255,0.08)',
-                    color: '#FFFFFF'
+                    borderRadius: '4px',
+                    backgroundColor: selectedTerritorio === idx ? '#D43F4A' : '#F3F4F6',
+                    color: selectedTerritorio === idx ? '#FFFFFF' : '#474350'
                   }}>
                     {t.badge}
                   </span>
                 </div>
-                <div style={{ fontSize: '12.5px', color: '#94A3B8', lineHeight: 1.4 }}>
+                <div style={{ fontSize: '13px', color: '#6B7280', lineHeight: 1.45 }}>
                   {t.descrizione}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Colonna Destra: Risultato Dinamico Calcolato */}
+          {/* Riquadro Dettaglio Bacino Calcolato */}
           <div style={{
-            background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: '16px',
+            backgroundColor: '#474350',
+            color: '#FFFFFF',
+            borderRadius: '14px',
             padding: '28px',
+            borderTop: '4px solid #D43F4A',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between'
           }}>
             <div>
-              <div style={{ fontSize: '11px', color: '#38BDF8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
-                Stima Copertura Ufficiale TER
-              </div>
-              <h3 style={{ fontSize: '22px', fontWeight: 900, color: '#FFFFFF', marginBottom: '16px' }}>
+              <span style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '11.5px',
+                fontWeight: 800,
+                color: '#D43F4A',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase'
+              }}>
+                STIMA UFFICIALE TER TOSCANA
+              </span>
+              <h3 style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '24px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#FFFFFF',
+                margin: '4px 0 16px'
+              }}>
                 {TERRITORI[selectedTerritorio].nome}
               </h3>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '20px' }}>
-                <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px' }}>
-                  <div style={{ fontSize: '11px', color: '#94A3B8' }}>Ascoltatori / Settimana</div>
-                  <div style={{ fontSize: '24px', fontWeight: 900, color: '#F87171' }}>
+                <div style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: '8px', padding: '14px' }}>
+                  <div style={{ fontSize: '11.5px', color: '#9CA3AF' }}>Ascoltatori / Settimana</div>
+                  <div style={{
+                    fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                    fontSize: '28px',
+                    fontWeight: 800,
+                    fontStyle: 'italic',
+                    color: '#D43F4A'
+                  }}>
                     {TERRITORI[selectedTerritorio].ascoltatoriSettimanali}
                   </div>
                 </div>
 
-                <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px' }}>
-                  <div style={{ fontSize: '11px', color: '#94A3B8' }}>Giorno Medio Tipico</div>
-                  <div style={{ fontSize: '24px', fontWeight: 900, color: '#38BDF8' }}>
+                <div style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: '8px', padding: '14px' }}>
+                  <div style={{ fontSize: '11.5px', color: '#9CA3AF' }}>Giorno Medio Tipico</div>
+                  <div style={{
+                    fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                    fontSize: '28px',
+                    fontWeight: 800,
+                    fontStyle: 'italic',
+                    color: '#FFFFFF'
+                  }}>
                     {TERRITORI[selectedTerritorio].ascoltatoriGiorno}
                   </div>
                 </div>
               </div>
 
-              {/* Selettore Durata */}
+              {/* Intensità Campagna */}
               <div style={{ marginBottom: '20px' }}>
-                <div style={{ fontSize: '12px', color: '#CBD5E1', fontWeight: 700, marginBottom: '8px' }}>
-                  Intensità consigliata della campagna:
+                <div style={{ fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '8px' }}>
+                  Durata consigliata del volo promozionale:
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   {[
-                    { val: '1', label: '1 Settimana (Evento / Promo)' },
-                    { val: '2', label: '2 Settimane (Standard Notorietà)' },
-                    { val: '4', label: '1 Mese (Dominio Territoriale)' }
+                    { val: '1', label: '1 Settimana (Flash)' },
+                    { val: '2', label: '2 Settimane (Standard)' },
+                    { val: '4', label: '1 Mese (Dominio)' }
                   ].map(item => (
                     <button
                       key={item.val}
                       onClick={() => setDurataCampagna(item.val as any)}
                       style={{
                         flex: 1,
-                        padding: '8px 10px',
-                        borderRadius: '8px',
-                        border: durataCampagna === item.val ? '1px solid #F59E0B' : '1px solid rgba(255,255,255,0.1)',
-                        background: durataCampagna === item.val ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255,255,255,0.02)',
-                        color: durataCampagna === item.val ? '#FCD34D' : '#94A3B8',
-                        fontSize: '11px',
-                        fontWeight: 700,
+                        padding: '8px',
+                        borderRadius: '6px',
+                        border: durataCampagna === item.val ? '1px solid #D43F4A' : '1px solid rgba(255,255,255,0.15)',
+                        backgroundColor: durataCampagna === item.val ? '#D43F4A' : 'rgba(255,255,255,0.04)',
+                        color: '#FFFFFF',
+                        fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                        fontSize: '12px',
+                        fontWeight: 800,
+                        fontStyle: 'italic',
                         cursor: 'pointer'
                       }}
                     >
@@ -761,15 +993,15 @@ export default function LandingPubblicitaVarianteB() {
               </div>
 
               <div style={{
-                fontSize: '12.5px',
-                color: '#CBD5E1',
-                background: 'rgba(16, 185, 129, 0.1)',
-                border: '1px solid rgba(16, 185, 129, 0.25)',
-                borderRadius: '8px',
+                backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                borderRadius: '6px',
                 padding: '10px 14px',
+                fontSize: '12px',
+                color: '#D1FAE5',
                 marginBottom: '20px'
               }}>
-                ✓ <b>Orari a Massimo Rendimento:</b> Fasce drive-time 7:00-9:30 e 17:00-19:30 riservate alle attività locali.
+                ✓ <b>Fasce Drive-Time Riservate:</b> Rotazione garantita negli orari 7:00-9:30 e 17:00-19:30.
               </div>
             </div>
 
@@ -777,50 +1009,62 @@ export default function LandingPubblicitaVarianteB() {
               onClick={() => scrollToFormWithPreset(TERRITORI[selectedTerritorio].nome)}
               style={{
                 width: '100%',
-                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                color: '#000000',
+                backgroundColor: '#D43F4A',
+                color: '#FFFFFF',
                 border: 'none',
-                borderRadius: '10px',
+                borderRadius: '6px',
                 padding: '14px',
-                fontSize: '14px',
-                fontWeight: 900,
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '15px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                letterSpacing: '0.04em',
                 cursor: 'pointer',
-                textAlign: 'center'
+                textAlign: 'center',
+                boxShadow: '0 4px 14px rgba(212, 63, 74, 0.4)'
               }}
             >
-              Richiedi Preventivo per {TERRITORI[selectedTerritorio].nome} ➔
+              RICHIEDI PREVENTIVO PER {TERRITORI[selectedTerritorio].nome.toUpperCase()} ➔
             </button>
           </div>
         </div>
       </section>
 
-      {/* 6. I BENCHMARK SCIENTIFICI: IL PARADOSSO DEL CLICK (NIELSEN 2026) */}
+      {/* 6. I BENCHMARK SCIENTIFICI NIELSEN 2026 ED EDISON RESEARCH */}
       <section style={{
         padding: '50px 20px',
         maxWidth: '1140px',
         margin: '0 auto'
       }}>
         <div style={{
-          background: 'rgba(255,255,255,0.02)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: '20px',
-          padding: '36px 28px'
+          backgroundColor: '#FFFFFF',
+          borderRadius: '16px',
+          border: '1px solid #E5E7EB',
+          padding: '40px 30px'
         }}>
           <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 36px' }}>
             <span style={{
-              color: '#F87171',
-              fontSize: '11.5px',
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: '12px',
               fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em'
+              color: '#D43F4A',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase'
             }}>
-              Dati Ufficiali di Mercato
+              DATI UFFICIALI DI MERCATO 2026
             </span>
-            <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 900, color: '#FFFFFF', marginTop: '6px' }}>
+            <h2 style={{
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: 'clamp(24px, 4vw, 34px)',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              color: '#474350',
+              marginTop: '4px'
+            }}>
               Il Paradosso del Click: Perché la Radio Batte il Digitale nei Risultati Reali
             </h2>
-            <p style={{ fontSize: '14px', color: '#94A3B8' }}>
-              Molti imprenditori pensano che il web sia sempre più economico. I dati degli osservatori internazionali 2026 dimostrano il contrario:
+            <p style={{ fontSize: '14.5px', color: '#6B7280' }}>
+              Molte aziende credono che sponsorizzare post sui social sia sempre la scelta più redditizia. I report internazionali 2026 dimostrano il contrario:
             </p>
           </div>
 
@@ -831,66 +1075,108 @@ export default function LandingPubblicitaVarianteB() {
           }}>
             {/* Box 1 */}
             <div style={{
-              background: 'rgba(15, 23, 42, 0.6)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderTop: '3px solid #38BDF8',
-              borderRadius: '12px',
+              backgroundColor: '#F9FAFB',
+              border: '1px solid #E5E7EB',
+              borderTop: '3px solid #D43F4A',
+              borderRadius: '8px',
               padding: '22px'
             }}>
-              <div style={{ fontSize: '32px', fontWeight: 900, color: '#38BDF8', marginBottom: '4px' }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '32px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#D43F4A',
+                marginBottom: '4px'
+              }}>
                 2.00€ vs 1.52€
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '17px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#474350',
+                marginBottom: '8px'
+              }}>
                 La Radio Batte Google Search per ROI
               </div>
-              <p style={{ fontSize: '13px', color: '#CBD5E1', lineHeight: 1.5, marginBottom: '14px' }}>
+              <p style={{ fontSize: '13px', color: '#6B7280', lineHeight: 1.55, marginBottom: '14px' }}>
                 Per ogni 1€ investito, la radio genera 2,00€ di ritorno medio sulle vendite (il 2° mezzo più redditizio al mondo), superando Google Ads (1,52€), i cartelloni (1,56€), la TV (1,49€) e la stampa (1,15€).
               </p>
-              <div style={{ fontSize: '11px', color: '#64748B', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
+              <div style={{ fontSize: '11px', color: '#9CA3AF', borderTop: '1px solid #E5E7EB', paddingTop: '8px' }}>
                 📚 <i>Fonte: Nielsen Global Compass Benchmark 2026</i>
               </div>
             </div>
 
             {/* Box 2 */}
             <div style={{
-              background: 'rgba(15, 23, 42, 0.6)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderTop: '3px solid #F59E0B',
-              borderRadius: '12px',
+              backgroundColor: '#F9FAFB',
+              border: '1px solid #E5E7EB',
+              borderTop: '3px solid #474350',
+              borderRadius: '8px',
               padding: '22px'
             }}>
-              <div style={{ fontSize: '32px', fontWeight: 900, color: '#F59E0B', marginBottom: '4px' }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '32px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#474350',
+                marginBottom: '4px'
+              }}>
                 82% vs 15%
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '17px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#474350',
+                marginBottom: '8px'
+              }}>
                 Il Falso Mito di Spotify e dello Streaming
               </div>
-              <p style={{ fontSize: '13px', color: '#CBD5E1', lineHeight: 1.5, marginBottom: '14px' }}>
+              <p style={{ fontSize: '13px', color: '#6B7280', lineHeight: 1.55, marginBottom: '14px' }}>
                 Chi usa piattaforme streaming paga l'abbonamento premium proprio per NON ascoltare spot. L'82% del tempo totale dedicato all'audio commerciale è Radio (61%) e Podcast (21%). Lo streaming con annunci conta solo per il 15%.
               </p>
-              <div style={{ fontSize: '11px', color: '#64748B', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
+              <div style={{ fontSize: '11px', color: '#9CA3AF', borderTop: '1px solid #E5E7EB', paddingTop: '8px' }}>
                 📚 <i>Fonte: Edison Research "Share of Ear" Q4 2025 / Nielsen 2026</i>
               </div>
             </div>
 
             {/* Box 3 */}
             <div style={{
-              background: 'rgba(15, 23, 42, 0.6)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderTop: '3px solid #10B981',
-              borderRadius: '12px',
+              backgroundColor: '#F9FAFB',
+              border: '1px solid #E5E7EB',
+              borderTop: '3px solid #D43F4A',
+              borderRadius: '8px',
               padding: '22px'
             }}>
-              <div style={{ fontSize: '32px', fontWeight: 900, color: '#10B981', marginBottom: '4px' }}>
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '32px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#D43F4A',
+                marginBottom: '4px'
+              }}>
                 +126% e +42%
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
-                Fiducia Locale &amp; Moltiplicatore Web
+              <div style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '17px',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#474350',
+                marginBottom: '8px'
+              }}>
+                Fiducia Territoriale &amp; Moltiplicatore Web
               </div>
-              <p style={{ fontSize: '13px', color: '#CBD5E1', lineHeight: 1.5, marginBottom: '14px' }}>
-                La propensione a consigliare un brand sentito in radio supera del +126% gli annunci impersonali sui social. Inoltre, abbinare la radio al web aumenta del +42% le conversioni digitali grazie alle ricerche dirette su Google.
+              <p style={{ fontSize: '13px', color: '#6B7280', lineHeight: 1.55, marginBottom: '14px' }}>
+                La propensione a consigliare un brand sentito in radio supera del +126% gli annunci impersonali sui social. Inoltre, abbinare la radio al web fa decollare del +42% le conversioni digitali grazie alle ricerche spontanee su Google.
               </p>
-              <div style={{ fontSize: '11px', color: '#64748B', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
+              <div style={{ fontSize: '11px', color: '#9CA3AF', borderTop: '1px solid #E5E7EB', paddingTop: '8px' }}>
                 📚 <i>Fonti: Nielsen Community Study &amp; PoliMI / FCP-Assoradio</i>
               </div>
             </div>
@@ -898,7 +1184,7 @@ export default function LandingPubblicitaVarianteB() {
         </div>
       </section>
 
-      {/* 7. COME LO MISURI? IL TRACKING PACK */}
+      {/* 7. IL TRACKING PACK: 3 FASI MISURABILI */}
       <section style={{
         padding: '50px 20px',
         maxWidth: '1140px',
@@ -906,19 +1192,27 @@ export default function LandingPubblicitaVarianteB() {
       }}>
         <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 36px' }}>
           <span style={{
-            color: '#10B981',
-            fontSize: '11.5px',
+            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+            fontSize: '12px',
             fontWeight: 800,
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em'
+            color: '#D43F4A',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase'
           }}>
-            Controllo Totale
+            MISURABILITÀ CERTIFICATA
           </span>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 900, color: '#FFFFFF', marginTop: '6px' }}>
-            «Ma come faccio a sapere se la radio funziona?»
+          <h2 style={{
+            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+            fontSize: 'clamp(24px, 4vw, 34px)',
+            fontWeight: 800,
+            fontStyle: 'italic',
+            color: '#474350',
+            marginTop: '4px'
+          }}>
+            Come Misuri i Risultati della tua Campagna?
           </h2>
-          <p style={{ fontSize: '14px', color: '#94A3B8' }}>
-            La risposta è il nostro <b>Tracking Pack</b>: un metodo in 3 fasi che rende misurabile ogni euro investito.
+          <p style={{ fontSize: '14.5px', color: '#6B7280' }}>
+            La risposta è il nostro <b>Tracking Pack</b>: 3 strumenti precisi per verificare l'impatto sul tuo punto vendita.
           </p>
         </div>
 
@@ -927,56 +1221,119 @@ export default function LandingPubblicitaVarianteB() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '20px'
         }}>
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '24px' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#D43F4A', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, marginBottom: '14px' }}>
+          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '24px' }}>
+            <div style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: '#D43F4A',
+              color: '#FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: '18px',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              marginBottom: '14px'
+            }}>
               1
             </div>
-            <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
+            <h3 style={{
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: '18px',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              color: '#474350',
+              marginBottom: '8px'
+            }}>
               Codice Promo o Claim Dedicato
             </h3>
-            <p style={{ fontSize: '13px', color: '#94A3B8', lineHeight: 1.55 }}>
+            <p style={{ fontSize: '13.5px', color: '#6B7280', lineHeight: 1.55 }}>
               Nello spot inseriamo una parola chiave esclusiva (es. «Dì in cassa: Ascolto Radio Toscana»). Saprai esattamente quante persone arrivano in negozio grazie alla radio.
             </p>
           </div>
 
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '24px' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#38BDF8', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, marginBottom: '14px' }}>
+          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '24px' }}>
+            <div style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: '#474350',
+              color: '#FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: '18px',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              marginBottom: '14px'
+            }}>
               2
             </div>
-            <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
+            <h3 style={{
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: '18px',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              color: '#474350',
+              marginBottom: '8px'
+            }}>
               Landing Tracciata &amp; QR Code
             </h3>
-            <p style={{ fontSize: '13px', color: '#94A3B8', lineHeight: 1.55 }}>
+            <p style={{ fontSize: '13.5px', color: '#6B7280', lineHeight: 1.55 }}>
               Forniamo un link breve memorabile e un QR Code per tracciare in tempo reale le visite al tuo sito o al catalogo web generate dai passaggi in onda.
             </p>
           </div>
 
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '24px' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#10B981', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, marginBottom: '14px' }}>
+          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '24px' }}>
+            <div style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: '#D43F4A',
+              color: '#FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: '18px',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              marginBottom: '14px'
+            }}>
               3
             </div>
-            <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
+            <h3 style={{
+              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+              fontSize: '18px',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              color: '#474350',
+              marginBottom: '8px'
+            }}>
               Certificato di Trasmissione As-Run
             </h3>
-            <p style={{ fontSize: '13px', color: '#94A3B8', lineHeight: 1.55 }}>
+            <p style={{ fontSize: '13.5px', color: '#6B7280', lineHeight: 1.55 }}>
               Al termine della campagna ricevi il report ufficiale del software di regia con l'orario al secondo di ogni singolo passaggio trasmesso. Massima trasparenza.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 8. PACCHETTO START TRASPARENTE & FORM CONVERSIONE */}
+      {/* 8. FORM PREVENTIVO BRAND IDENTITY (ANTRACITE & ROSSO) */}
       <section ref={formSectionRef} style={{
         padding: '50px 20px 80px',
         maxWidth: '1140px',
         margin: '0 auto'
       }}>
         <div style={{
-          background: 'linear-gradient(135deg, rgba(20, 24, 33, 0.95) 0%, rgba(11, 15, 23, 0.98) 100%)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          borderRadius: '24px',
-          padding: '40px 24px',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+          backgroundColor: '#FFFFFF',
+          borderRadius: '16px',
+          border: '1px solid #E5E7EB',
+          padding: '40px 28px',
+          boxShadow: '0 10px 40px rgba(71, 67, 80, 0.08)'
         }}>
           <div style={{
             display: 'grid',
@@ -984,118 +1341,144 @@ export default function LandingPubblicitaVarianteB() {
             gap: '36px',
             alignItems: 'start'
           }}>
-            {/* Box Sinistro: Value Proposition & Rassicurazioni */}
+            {/* Sinistra: Garanzie Ufficiali */}
             <div>
               <div style={{
                 display: 'inline-block',
-                background: 'rgba(212, 63, 74, 0.2)',
-                border: '1px solid rgba(212, 63, 74, 0.4)',
-                borderRadius: '6px',
+                backgroundColor: 'rgba(212, 63, 74, 0.1)',
+                border: '1px solid #D43F4A',
+                borderRadius: '4px',
                 padding: '4px 10px',
-                fontSize: '11.5px',
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: '12px',
                 fontWeight: 800,
-                color: '#F87171',
+                fontStyle: 'italic',
+                color: '#D43F4A',
                 marginBottom: '12px',
-                textTransform: 'uppercase'
+                letterSpacing: '0.04em'
               }}>
-                Pacchetto Pilota PMI 2026
+                PACCHETTO START 2026 PER LE IMPRESE TOSCANE
               </div>
 
-              <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 36px)', fontWeight: 900, color: '#FFFFFF', marginBottom: '14px', lineHeight: 1.2 }}>
-                Richiedi il tuo piano di copertura personalizzato
+              <h2 style={{
+                fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                fontSize: 'clamp(26px, 3.8vw, 36px)',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                color: '#474350',
+                marginBottom: '14px',
+                lineHeight: 1.15
+              }}>
+                Richiedi la tua Proposta di Pianificazione Radiofonica
               </h2>
 
-              <p style={{ fontSize: '14.5px', color: '#94A3B8', lineHeight: 1.6, marginBottom: '24px' }}>
-                Nessun costo o vincolo a lungo termine. Prepariamo una stima su misura per la tua zona con gli orari ideali di ascolto e una proposta di spot scritta per la tua attività.
+              <p style={{ fontSize: '15px', color: '#6B7280', lineHeight: 1.6, marginBottom: '24px' }}>
+                Nessun impegno né vincoli a lungo termine. Elaboriamo un piano personalizzato per la tua zona con gli orari ottimali e la bozza di testo per lo spot.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ color: '#10B981', fontWeight: 900 }}>✓</span>
-                  <span style={{ fontSize: '13.5px', color: '#E2E8F0' }}><b>Produzione Audio Completa:</b> scrittura copy e speaker inclusi.</span>
+                  <span style={{ color: '#D43F4A', fontWeight: 900 }}>✓</span>
+                  <span style={{ fontSize: '14px', color: '#474350' }}><b>Produzione Spot Inclusa:</b> copywriter e doppiatori professionisti.</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ color: '#10B981', fontWeight: 900 }}>✓</span>
-                  <span style={{ fontSize: '13.5px', color: '#E2E8F0' }}><b>Fasce Drive-Time Garantite:</b> spot concentrati negli orari in cui i clienti guidano.</span>
+                  <span style={{ color: '#D43F4A', fontWeight: 900 }}>✓</span>
+                  <span style={{ fontSize: '14px', color: '#474350' }}><b>Presidio Drive-Time:</b> spot trasmessi negli orari di massimo ascolto in auto.</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ color: '#10B981', fontWeight: 900 }}>✓</span>
-                  <span style={{ fontSize: '13.5px', color: '#E2E8F0' }}><b>Risposta Rapida:</b> proposta via email o telefonata entro 24 ore lavorative.</span>
+                  <span style={{ color: '#D43F4A', fontWeight: 900 }}>✓</span>
+                  <span style={{ fontSize: '14px', color: '#474350' }}><b>Risposta Entro 24 Ore:</b> via email o telefono da un nostro consulente dedicato.</span>
                 </div>
               </div>
 
-              {/* Contatto Diretto Rapido */}
+              {/* Contatto Diretto */}
               <div style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '12px',
+                backgroundColor: '#F9FAFB',
+                border: '1px solid #E5E7EB',
+                borderRadius: '8px',
                 padding: '16px',
                 fontSize: '13px',
-                color: '#94A3B8'
+                color: '#6B7280'
               }}>
-                <div style={{ fontWeight: 700, color: '#FFFFFF', marginBottom: '4px' }}>
-                  Preferisci parlare subito con noi?
+                <div style={{
+                  fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                  fontWeight: 800,
+                  fontStyle: 'italic',
+                  color: '#474350',
+                  fontSize: '14px',
+                  marginBottom: '4px'
+                }}>
+                  Hai bisogno di chiarimenti immediati?
                 </div>
                 <div>
-                  Ufficio Pubblicità Radio Toscana: <a href="tel:055285030" style={{ color: '#38BDF8', fontWeight: 700, textDecoration: 'none' }}>055 285030</a>
+                  Ufficio Pubblicità Radio Toscana: <a href="tel:055285030" style={{ color: '#D43F4A', fontWeight: 700, textDecoration: 'none' }}>055 285030</a>
                 </div>
-                <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '4px' }}>
-                  Largo De Gasperi 1, 50136 Firenze (FI)
+                <div style={{ fontSize: '11.5px', color: '#9CA3AF', marginTop: '4px' }}>
+                  Sede: Largo Alcide De Gasperi 1, 50136 Firenze (FI)
                 </div>
               </div>
             </div>
 
-            {/* Box Destro: Form di Conversione */}
+            {/* Destra: Form */}
             <div style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '16px',
-              padding: '28px'
+              backgroundColor: '#474350',
+              borderRadius: '12px',
+              padding: '28px',
+              color: '#FFFFFF'
             }}>
               {submitted ? (
                 <div style={{ textAlign: 'center', padding: '30px 10px' }}>
-                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎉</div>
-                  <h3 style={{ fontSize: '24px', fontWeight: 900, color: '#34D399', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>✨</div>
+                  <h3 style={{
+                    fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                    fontSize: '24px',
+                    fontWeight: 800,
+                    fontStyle: 'italic',
+                    color: '#FCD34D',
+                    marginBottom: '8px'
+                  }}>
                     Richiesta Inviata con Successo!
                   </h3>
-                  <p style={{ color: '#CBD5E1', fontSize: '14px', lineHeight: 1.6, marginBottom: '20px' }}>
-                    Grazie per il tuo interesse. Il responsabile commerciale di Radio Toscana prenderà in carico la scheda di <b>{formData.azienda}</b> e ti ricontatterà entro 24 ore.
+                  <p style={{ color: '#E5E7EB', fontSize: '14px', lineHeight: 1.6, marginBottom: '20px' }}>
+                    Grazie per l'interesse. L'ufficio commerciale di Radio Toscana prenderà in carico i dettagli di <b>{formData.azienda}</b> e ti ricontatterà entro 24 ore.
                   </p>
                   <a
                     href="tel:055285030"
                     style={{
                       display: 'inline-block',
-                      background: 'rgba(255,255,255,0.08)',
+                      backgroundColor: '#D43F4A',
                       color: '#FFFFFF',
                       padding: '10px 18px',
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       textDecoration: 'none',
-                      fontSize: '13px',
-                      fontWeight: 700
+                      fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                      fontSize: '13.5px',
+                      fontWeight: 800,
+                      fontStyle: 'italic'
                     }}
                   >
-                    Hai urgenza? Chiama ora lo 055 285030
+                    Hai urgenza? Chiama lo 055 285030
                   </a>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#CBD5E1', marginBottom: '4px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '4px' }}>
                       Nome dell'Azienda / Attività *
                     </label>
                     <input
                       type="text"
                       required
-                      placeholder="Es. Pasticceria Rossi / Autofficina Mugello"
+                      placeholder="Es. Forno Artigiano Rossi / Concessionaria Auto"
                       value={formData.azienda}
                       onChange={e => setFormData({ ...formData, azienda: e.target.value })}
                       style={{
                         width: '100%',
                         padding: '11px 14px',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(255,255,255,0.15)',
-                        background: 'rgba(15, 23, 42, 0.7)',
-                        color: '#FFFFFF',
+                        borderRadius: '6px',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        backgroundColor: '#FFFFFF',
+                        color: '#1F2937',
                         fontSize: '14px',
                         boxSizing: 'border-box'
                       }}
@@ -1104,7 +1487,7 @@ export default function LandingPubblicitaVarianteB() {
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#CBD5E1', marginBottom: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '4px' }}>
                         Telefono Diretto *
                       </label>
                       <input
@@ -1116,10 +1499,10 @@ export default function LandingPubblicitaVarianteB() {
                         style={{
                           width: '100%',
                           padding: '11px 14px',
-                          borderRadius: '8px',
-                          border: '1px solid rgba(255,255,255,0.15)',
-                          background: 'rgba(15, 23, 42, 0.7)',
-                          color: '#FFFFFF',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                          backgroundColor: '#FFFFFF',
+                          color: '#1F2937',
                           fontSize: '14px',
                           boxSizing: 'border-box'
                         }}
@@ -1127,7 +1510,7 @@ export default function LandingPubblicitaVarianteB() {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#CBD5E1', marginBottom: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '4px' }}>
                         Referente
                       </label>
                       <input
@@ -1138,10 +1521,10 @@ export default function LandingPubblicitaVarianteB() {
                         style={{
                           width: '100%',
                           padding: '11px 14px',
-                          borderRadius: '8px',
-                          border: '1px solid rgba(255,255,255,0.15)',
-                          background: 'rgba(15, 23, 42, 0.7)',
-                          color: '#FFFFFF',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                          backgroundColor: '#FFFFFF',
+                          color: '#1F2937',
                           fontSize: '14px',
                           boxSizing: 'border-box'
                         }}
@@ -1150,8 +1533,8 @@ export default function LandingPubblicitaVarianteB() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#CBD5E1', marginBottom: '4px' }}>
-                      Email (opzionale per invio scheda)
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '4px' }}>
+                      Email (opzionale per invio proposta)
                     </label>
                     <input
                       type="email"
@@ -1161,10 +1544,10 @@ export default function LandingPubblicitaVarianteB() {
                       style={{
                         width: '100%',
                         padding: '11px 14px',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(255,255,255,0.15)',
-                        background: 'rgba(15, 23, 42, 0.7)',
-                        color: '#FFFFFF',
+                        borderRadius: '6px',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        backgroundColor: '#FFFFFF',
+                        color: '#1F2937',
                         fontSize: '14px',
                         boxSizing: 'border-box'
                       }}
@@ -1173,7 +1556,7 @@ export default function LandingPubblicitaVarianteB() {
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#CBD5E1', marginBottom: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '4px' }}>
                         Settore Merceologico
                       </label>
                       <select
@@ -1182,10 +1565,10 @@ export default function LandingPubblicitaVarianteB() {
                         style={{
                           width: '100%',
                           padding: '11px 14px',
-                          borderRadius: '8px',
-                          border: '1px solid rgba(255,255,255,0.15)',
-                          background: '#0F172A',
-                          color: '#FFFFFF',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                          backgroundColor: '#FFFFFF',
+                          color: '#1F2937',
                           fontSize: '13px',
                           boxSizing: 'border-box'
                         }}
@@ -1200,7 +1583,7 @@ export default function LandingPubblicitaVarianteB() {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#CBD5E1', marginBottom: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '4px' }}>
                         Bacino Territoriale
                       </label>
                       <select
@@ -1209,10 +1592,10 @@ export default function LandingPubblicitaVarianteB() {
                         style={{
                           width: '100%',
                           padding: '11px 14px',
-                          borderRadius: '8px',
-                          border: '1px solid rgba(255,255,255,0.15)',
-                          background: '#0F172A',
-                          color: '#FFFFFF',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                          backgroundColor: '#FFFFFF',
+                          color: '#1F2937',
                           fontSize: '13px',
                           boxSizing: 'border-box'
                         }}
@@ -1226,21 +1609,21 @@ export default function LandingPubblicitaVarianteB() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#CBD5E1', marginBottom: '4px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#D1D5DB', marginBottom: '4px' }}>
                       Cosa vorresti promuovere? (Facoltativo)
                     </label>
                     <textarea
                       rows={2}
-                      placeholder="Es. Vogliamo lanciare una nuova apertura a maggio / promuovere saldi stagionali..."
+                      placeholder="Es. Apertura nuovo punto vendita, promozione stagionale, evento..."
                       value={formData.note}
                       onChange={e => setFormData({ ...formData, note: e.target.value })}
                       style={{
                         width: '100%',
                         padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(255,255,255,0.15)',
-                        background: 'rgba(15, 23, 42, 0.7)',
-                        color: '#FFFFFF',
+                        borderRadius: '6px',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        backgroundColor: '#FFFFFF',
+                        color: '#1F2937',
                         fontSize: '13px',
                         boxSizing: 'border-box'
                       }}
@@ -1248,7 +1631,7 @@ export default function LandingPubblicitaVarianteB() {
                   </div>
 
                   {/* Consenso Privacy */}
-                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer', fontSize: '11.5px', color: '#94A3B8' }}>
+                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer', fontSize: '11.5px', color: '#D1D5DB' }}>
                     <input
                       type="checkbox"
                       checked={privacyAccepted}
@@ -1256,12 +1639,12 @@ export default function LandingPubblicitaVarianteB() {
                       style={{ marginTop: '2px' }}
                     />
                     <span>
-                      Dichiaro di aver preso visione dell'informativa privacy e acconsento al trattamento dei dati per la ricezione della proposta richiesta (D.Lgs 196/2003 e Regolamento UE 2016/679 - GDPR).
+                      Dichiaro di aver preso visione dell'informativa privacy e acconsento al trattamento dei dati per la formulazione della proposta (GDPR Reg. UE 2016/679).
                     </span>
                   </label>
 
                   {errorMsg && (
-                    <div style={{ background: 'rgba(239,68,68,0.2)', border: '1px solid #EF4444', color: '#FCA5A5', padding: '10px', borderRadius: '8px', fontSize: '12.5px' }}>
+                    <div style={{ backgroundColor: '#EF4444', color: '#FFFFFF', padding: '10px', borderRadius: '6px', fontSize: '12.5px' }}>
                       ⚠️ {errorMsg}
                     </div>
                   )}
@@ -1270,20 +1653,23 @@ export default function LandingPubblicitaVarianteB() {
                     type="submit"
                     disabled={loading}
                     style={{
-                      background: 'linear-gradient(135deg, #D43F4A 0%, #B91C1C 100%)',
+                      backgroundColor: '#D43F4A',
                       color: '#FFFFFF',
                       border: 'none',
-                      borderRadius: '10px',
-                      padding: '16px',
-                      fontSize: '15px',
+                      borderRadius: '6px',
+                      padding: '15px',
+                      fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+                      fontSize: '16px',
                       fontWeight: 800,
+                      fontStyle: 'italic',
+                      letterSpacing: '0.04em',
                       cursor: loading ? 'not-allowed' : 'pointer',
-                      boxShadow: '0 8px 24px rgba(212, 63, 74, 0.45)',
-                      transition: 'all 0.2s ease',
-                      marginTop: '6px'
+                      boxShadow: '0 4px 14px rgba(212, 63, 74, 0.4)',
+                      transition: 'all 0.15s ease',
+                      marginTop: '4px'
                     }}
                   >
-                    {loading ? 'Invio in corso...' : 'Invia Richiesta di Proposta Gratuita ⚡'}
+                    {loading ? 'INVIO IN CORSO...' : 'INVIA RICHIESTA DI PROPOSTA ➔'}
                   </button>
                 </form>
               )}
@@ -1292,37 +1678,42 @@ export default function LandingPubblicitaVarianteB() {
         </div>
       </section>
 
-      {/* 9. FOOTER PULITO CON DATI SOCIETARI */}
+      {/* 9. FOOTER PULITO SOCIETARIO */}
       <footer style={{
-        borderTop: '1px solid rgba(255,255,255,0.08)',
+        backgroundColor: '#474350',
+        color: '#9CA3AF',
         padding: '30px 20px 80px',
         textAlign: 'center',
         fontSize: '12px',
-        color: '#64748B'
+        borderTop: '3px solid #D43F4A'
       }}>
         <div style={{ maxWidth: '1140px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
-          <div>
+          <img
+            src="/logo_radio_toscana.png"
+            alt="Radio Toscana"
+            style={{ height: '32px', width: 'auto', marginBottom: '8px', filter: 'brightness(1.1)' }}
+          />
+          <div style={{ color: '#E5E7EB', fontWeight: 600 }}>
             <b>Radio Toscana S.r.l.</b> • Largo Alcide De Gasperi 1, 50136 Firenze (FI) • P.IVA 04584210486
           </div>
           <div>
-            Concessione radiofonica comunitaria / commerciale • Trasmissioni in FM e DAB+ su tutto il territorio regionale
+            Concessione Comunitaria / Commerciale • Emittente Radiofonica Regionale FM e DAB+
           </div>
-          <div style={{ color: '#475569', fontSize: '11px', marginTop: '6px' }}>
-            Variante B (Performance Lead Engine) • Test A/B attivo per ottimizzazione tasso di conversione PMI
+          <div style={{ color: '#6B7280', fontSize: '11px', marginTop: '6px' }}>
+            Variante B (Brand Identity &amp; Performance) • Test A/B attivo
           </div>
         </div>
       </footer>
 
-      {/* 10. STICKY BOTTOM BAR MOBILE (POLLICE FRIENDLY) */}
+      {/* 10. STICKY MOBILE BAR (THUMB-FRIENDLY) */}
       <div style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
         zIndex: 99,
-        background: 'rgba(7, 10, 15, 0.95)',
-        backdropFilter: 'blur(12px)',
-        borderTop: '1px solid rgba(255,255,255,0.12)',
+        backgroundColor: '#474350',
+        borderTop: '2px solid #D43F4A',
         padding: '10px 16px',
         display: 'flex',
         alignItems: 'center',
@@ -1332,35 +1723,38 @@ export default function LandingPubblicitaVarianteB() {
           href="tel:055285030"
           style={{
             flex: 1,
-            background: 'rgba(255,255,255,0.08)',
+            backgroundColor: 'rgba(255,255,255,0.1)',
             color: '#FFFFFF',
-            border: '1px solid rgba(255,255,255,0.15)',
-            borderRadius: '8px',
+            borderRadius: '6px',
             padding: '12px',
             textAlign: 'center',
-            fontSize: '13px',
-            fontWeight: 700,
+            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+            fontSize: '14px',
+            fontWeight: 800,
+            fontStyle: 'italic',
             textDecoration: 'none'
           }}
         >
-          📞 Chiama Subito
+          📞 CHIAMA
         </a>
         <button
           onClick={() => scrollToFormWithPreset()}
           style={{
             flex: 1.5,
-            background: 'linear-gradient(135deg, #D43F4A 0%, #B91C1C 100%)',
+            backgroundColor: '#D43F4A',
             color: '#FFFFFF',
             border: 'none',
-            borderRadius: '8px',
+            borderRadius: '6px',
             padding: '12px',
-            fontSize: '13px',
+            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
+            fontSize: '14px',
             fontWeight: 800,
+            fontStyle: 'italic',
             cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(212, 63, 74, 0.4)'
+            boxShadow: '0 4px 12px rgba(212, 63, 74, 0.4)'
           }}
         >
-          ⚡ Preventivo Rapido
+          PREVENTIVO ➔
         </button>
       </div>
 
