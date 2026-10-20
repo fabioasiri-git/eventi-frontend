@@ -13,37 +13,45 @@ const TERRITORI = [
   {
     id: 'regionale',
     nome: 'Tutta la Toscana (Rete Regionale)',
-    badge: 'Massima Copertura',
-    ascoltatoriSettimanali: '298.000',
-    ascoltatoriGiorno: '61.000',
+    badge: '11 Impianti • 3.200.398 Abitanti',
+    ascoltatoriSettimanali: '300.000',
+    ascoltatoriGiorno: '63.000',
+    frequenze: 'FM 88.0 • 104.7 • 98.2 • 87.8 • 107.6 + DAB+ & Streaming',
+    comuni: 'Tutte le 10 province toscane coperte capillarmente da 11 postazioni SRT (tra cui Monte Serra 5 kW e Poggio Firenze 3 kW).',
     descrizione: 'Tutte le 10 province toscane coperte in FM e DAB+. Il massimo impatto per brand regionali, catene e manifestazioni.',
     frequenzaConsigliata: '40-60 spot/settimana'
   },
   {
     id: 'firenze-prato-pistoia',
-    nome: 'Firenze, Prato & Pistoia',
-    badge: 'Cuore Produttivo',
+    nome: 'Zona 1: Firenze, Prato & Pistoia',
+    badge: 'Zona 1 • Cuore Produttivo',
     ascoltatoriSettimanali: '185.000',
     ascoltatoriGiorno: '38.000',
-    descrizione: 'Il bacino metropolitano con la più alta densità economica e di pendolarismo in auto della Toscana.',
+    frequenze: '104.7 MHz • 98.2 MHz • Mugello 107.6 • Pontassieve 95.8',
+    comuni: 'Firenze, Prato, Pistoia, Scandicci, Sesto Fiorentino, Empoli, Campi Bisenzio, Quarrata, Montemurlo, Bagno a Ripoli, Lastra a Signa.',
+    descrizione: 'Il bacino metropolitano con la più alta densità economica e di pendolarismo in auto della Toscana (oltre 1,6 milioni di residenti).',
     frequenzaConsigliata: '30-45 spot/settimana'
   },
   {
     id: 'costa',
-    nome: 'Costa Tirrenica (Pisa, Livorno, Lucca, Versilia)',
-    badge: 'Bacino Tirreno',
-    ascoltatoriSettimanali: '92.000',
-    ascoltatoriGiorno: '19.000',
-    descrizione: 'Copertura ideale per il commercio costiero, nautica, turismo e retail da Viareggio a Cecina.',
+    nome: 'Zona 2: Costa Tirrenica (Pisa, Livorno, Lucca, Versilia)',
+    badge: 'Zona 2 • Monte Serra 5.000 W (88.0 MHz)',
+    ascoltatoriSettimanali: '95.000',
+    ascoltatoriGiorno: '21.000',
+    frequenze: '88.000 MHz unificata (Monte Serra 5 kW)',
+    comuni: 'Pisa, Lucca, Livorno, Viareggio, Massa, Carrara, Pietrasanta, Camaiore, Cecina, Pontedera, Cascina, Piombino, Rosignano.',
+    descrizione: 'Copertura continua da Carrara all\'Isola d\'Elba su frequenza unificata 88.0 MHz. Ideale per turismo, retail, nautica e commercio tirrenico.',
     frequenzaConsigliata: '25-35 spot/settimana'
   },
   {
     id: 'sud',
-    nome: 'Toscana Sud (Arezzo, Siena & Valdichiana)',
-    badge: 'Centro-Sud',
-    ascoltatoriSettimanali: '48.000',
-    ascoltatoriGiorno: '10.500',
-    descrizione: 'Raggiunge le famiglie e le imprese dell\'entroterra toscano e delle vallate produttive.',
+    nome: 'Zona 3: Toscana Interna (Arezzo, Siena, Grosseto)',
+    badge: 'Zona 3 • Centro-Sud',
+    ascoltatoriSettimanali: '52.000',
+    ascoltatoriGiorno: '12.000',
+    frequenze: '104.7 MHz (Arezzo/Siena) • 87.8 MHz (Grosseto) • 87.9 MHz (Follonica)',
+    comuni: 'Arezzo, Siena, Grosseto, Valdarno, Colle Val d\'Elsa, Cortona, Montevarchi, San Giovanni Valdarno, Follonica.',
+    descrizione: 'Raggiunge le famiglie, gli artigiani e le imprese dell\'entroterra toscano e delle vallate produttive e vitivinicole.',
     frequenzaConsigliata: '20-30 spot/settimana'
   }
 ];
@@ -270,7 +278,7 @@ export default function LandingPubblicitaVarianteB() {
                 UFFICIO PUBBLICITÀ
               </span>
               <span style={{ fontSize: '11px', color: '#6B7280', fontWeight: 600 }}>
-                298.000 Ascoltatori Settimanali • Dati Ufficiali TER
+                300.000 Ascoltatori Settimanali (TER) • 3.200.398 Abitanti Coperti (SRT)
               </span>
             </div>
           </div>
@@ -474,7 +482,7 @@ export default function LandingPubblicitaVarianteB() {
                 color: '#FFFFFF',
                 lineHeight: 1
               }}>
-                298.000
+                300.000
               </div>
               <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#F3F4F6', marginTop: '6px' }}>
                 Ascoltatori Settimanali
@@ -524,13 +532,13 @@ export default function LandingPubblicitaVarianteB() {
                 color: '#FFFFFF',
                 lineHeight: 1
               }}>
-                67%
+                69%
               </div>
               <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#F3F4F6', marginTop: '6px' }}>
                 Decisori d'Acquisto
               </div>
               <div style={{ fontSize: '11px', color: '#9CA3AF' }}>
-                Spesa Famiglia / Azienda
+                Responsabili Acquisti TER
               </div>
             </div>
 
@@ -549,13 +557,13 @@ export default function LandingPubblicitaVarianteB() {
                 color: '#D43F4A',
                 lineHeight: 1
               }}>
-                &gt;80%
+                3,2M
               </div>
               <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#F3F4F6', marginTop: '6px' }}>
-                Tempo Audio in Auto
+                Popolazione Coperta
               </div>
               <div style={{ fontSize: '11px', color: '#9CA3AF' }}>
-                Monopolio Drive-Time
+                Rilievo Tecnico S.R.T. srl
               </div>
             </div>
           </div>
@@ -992,6 +1000,26 @@ export default function LandingPubblicitaVarianteB() {
                 </div>
               </div>
 
+              {/* Dettaglio Frequenze e Comuni da Rilievo Tecnico SRT & Mediakit */}
+              <div style={{
+                backgroundColor: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '8px',
+                padding: '12px 14px',
+                marginBottom: '16px',
+                fontSize: '12px'
+              }}>
+                <div style={{ color: '#FCD34D', fontWeight: 700, marginBottom: '4px' }}>
+                  📻 Frequenze di Trasmissione:
+                </div>
+                <div style={{ color: '#FFFFFF', fontWeight: 600, marginBottom: '8px' }}>
+                  {(TERRITORI[selectedTerritorio] as any).frequenze}
+                </div>
+                <div style={{ color: '#9CA3AF', fontSize: '11.5px', lineHeight: 1.45 }}>
+                  <b style={{ color: '#E5E7EB' }}>Comuni Chiave:</b> {(TERRITORI[selectedTerritorio] as any).comuni}
+                </div>
+              </div>
+
               <div style={{
                 backgroundColor: 'rgba(16, 185, 129, 0.12)',
                 border: '1px solid rgba(16, 185, 129, 0.3)',
@@ -1001,7 +1029,7 @@ export default function LandingPubblicitaVarianteB() {
                 color: '#D1FAE5',
                 marginBottom: '20px'
               }}>
-                ✓ <b>Fasce Drive-Time Riservate:</b> Rotazione garantita negli orari 7:00-9:30 e 17:00-19:30.
+                ✓ <b>Fasce Drive-Time Riservate:</b> Rotazione garantita 7:00-9:30 e 17:00-19:30 • <b>62 min</b> durata media d'ascolto.
               </div>
             </div>
 
@@ -1184,145 +1212,7 @@ export default function LandingPubblicitaVarianteB() {
         </div>
       </section>
 
-      {/* 7. IL TRACKING PACK: 3 FASI MISURABILI */}
-      <section style={{
-        padding: '50px 20px',
-        maxWidth: '1140px',
-        margin: '0 auto'
-      }}>
-        <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 36px' }}>
-          <span style={{
-            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-            fontSize: '12px',
-            fontWeight: 800,
-            color: '#D43F4A',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase'
-          }}>
-            MISURABILITÀ CERTIFICATA
-          </span>
-          <h2 style={{
-            fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-            fontSize: 'clamp(24px, 4vw, 34px)',
-            fontWeight: 800,
-            fontStyle: 'italic',
-            color: '#474350',
-            marginTop: '4px'
-          }}>
-            Come Misuri i Risultati della tua Campagna?
-          </h2>
-          <p style={{ fontSize: '14.5px', color: '#6B7280' }}>
-            La risposta è il nostro <b>Tracking Pack</b>: 3 strumenti precisi per verificare l'impatto sul tuo punto vendita.
-          </p>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '20px'
-        }}>
-          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '24px' }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: '#D43F4A',
-              color: '#FFFFFF',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-              fontSize: '18px',
-              fontWeight: 800,
-              fontStyle: 'italic',
-              marginBottom: '14px'
-            }}>
-              1
-            </div>
-            <h3 style={{
-              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-              fontSize: '18px',
-              fontWeight: 800,
-              fontStyle: 'italic',
-              color: '#474350',
-              marginBottom: '8px'
-            }}>
-              Codice Promo o Claim Dedicato
-            </h3>
-            <p style={{ fontSize: '13.5px', color: '#6B7280', lineHeight: 1.55 }}>
-              Nello spot inseriamo una parola chiave esclusiva (es. «Dì in cassa: Ascolto Radio Toscana»). Saprai esattamente quante persone arrivano in negozio grazie alla radio.
-            </p>
-          </div>
-
-          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '24px' }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: '#474350',
-              color: '#FFFFFF',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-              fontSize: '18px',
-              fontWeight: 800,
-              fontStyle: 'italic',
-              marginBottom: '14px'
-            }}>
-              2
-            </div>
-            <h3 style={{
-              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-              fontSize: '18px',
-              fontWeight: 800,
-              fontStyle: 'italic',
-              color: '#474350',
-              marginBottom: '8px'
-            }}>
-              Landing Tracciata &amp; QR Code
-            </h3>
-            <p style={{ fontSize: '13.5px', color: '#6B7280', lineHeight: 1.55 }}>
-              Forniamo un link breve memorabile e un QR Code per tracciare in tempo reale le visite al tuo sito o al catalogo web generate dai passaggi in onda.
-            </p>
-          </div>
-
-          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '24px' }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: '#D43F4A',
-              color: '#FFFFFF',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-              fontSize: '18px',
-              fontWeight: 800,
-              fontStyle: 'italic',
-              marginBottom: '14px'
-            }}>
-              3
-            </div>
-            <h3 style={{
-              fontFamily: "'Panton Narrow', 'Panton', sans-serif",
-              fontSize: '18px',
-              fontWeight: 800,
-              fontStyle: 'italic',
-              color: '#474350',
-              marginBottom: '8px'
-            }}>
-              Certificato di Trasmissione As-Run
-            </h3>
-            <p style={{ fontSize: '13.5px', color: '#6B7280', lineHeight: 1.55 }}>
-              Al termine della campagna ricevi il report ufficiale del software di regia con l'orario al secondo di ogni singolo passaggio trasmesso. Massima trasparenza.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. FORM PREVENTIVO BRAND IDENTITY (ANTRACITE & ROSSO) */}
+      {/* 7. FORM PREVENTIVO BRAND IDENTITY (ANTRACITE & ROSSO) */}
       <section ref={formSectionRef} style={{
         padding: '50px 20px 80px',
         maxWidth: '1140px',
