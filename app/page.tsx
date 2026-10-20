@@ -5624,7 +5624,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 >
                   📋 Commessa Trello &amp; WA per Edi
                 </button>
-                {currentLead?.fase_commerciale === 'CONTRATTO CHIUSO' ? (
+                {selectedLeadForContract?.fase_commerciale === 'CONTRATTO CHIUSO' ? (
                   <>
                     <span 
                       style={{ 
@@ -5646,7 +5646,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <button
                       className="btn btn-xs"
                       onClick={() => {
-                        const targetLead = selectedLeadForContract || currentLead;
+                        const targetLead = selectedLeadForContract || leads.find(l => l.nome_azienda_evento === contractData.committente);
                         if (targetLead) {
                           reopenContractAsActive(targetLead);
                         }
@@ -5679,7 +5679,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <button
                       className="btn btn-xs"
                       onClick={() => {
-                        const targetLead = selectedLeadForContract || currentLead;
+                        const targetLead = selectedLeadForContract || leads.find(l => l.nome_azienda_evento === contractData.committente);
                         if (targetLead) {
                           markContractCompleted(targetLead);
                         }
