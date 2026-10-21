@@ -622,6 +622,46 @@ export default function LeadEngineDashboard() {
   const [legendSuccessMsg, setLegendSuccessMsg] = useState<string | null>(null);
   const [includeLegendInPdf, setIncludeLegendInPdf] = useState(false);
 
+  // Lookup Automatico Partita IVA (VIES / Agenzia delle Entrate)
+  const [pivaLoading, setPivaLoading] = useState(false);
+
+  const handleLookupPiva = async (pivaToLookup: string, targetModal: 'quote' | 'contact') => {
+    const cleanPiva = (pivaToLookup || '').replace(/^IT/i, '').replace(/[\s\.\-_]/g, '').trim();
+    if (!cleanPiva) {
+      alert('⚠️ Inserisci prima il numero di Partita IVA da verificare.');
+      return;
+    }
+    if (cleanPiva.length !== 11) {
+      alert('⚠️ La Partita IVA deve essere composta esattamente da 11 cifre numeriche.');
+      return;
+    }
+
+    setPivaLoading(true);
+    try {
+      const res = await fetch(`/api/lookup-piva?piva=${encodeURIComponent(cleanPiva)}`);
+      const data = await res.json();
+      if (data.success && data.isValid) {
+        if (targetModal === 'quote') {
+          if (data.ragioneSociale) setQNome(data.ragioneSociale);
+          if (data.comune) setQComune(data.comune);
+          if (data.provincia) setQProvincia(data.provincia);
+        } else if (targetModal === 'contact') {
+          if (data.ragioneSociale) setCNomeAzienda(data.ragioneSociale);
+          if (data.comune) setCComune(data.comune);
+          if (data.provincia) setCProvincia(data.provincia);
+        }
+        alert(`✅ PARTITA IVA CERTIFICATA E ATTIVA!\n\n🏛️ Ragione Sociale: ${data.ragioneSociale}\n📍 Sede Legale: ${data.indirizzo || 'N/D'} - ${data.cap || ''} ${data.comune || ''} (${data.provincia || ''})\n📚 Fonte: ${data.fonte || 'Anagrafe Tributaria / VIES'}\n\nI dati ufficiali sono stati inseriti nel modulo.`);
+      } else {
+        alert(`⚠️ Esito Verifica: ${data.error || 'Partita IVA non trovata o non attiva.'}`);
+      }
+    } catch (err) {
+      alert('Errore di connessione durante la verifica della Partita IVA.');
+    } finally {
+      setPivaLoading(false);
+    }
+  };
+
+
   // Moduli Preventivo Modulare Dinamico
   const [quoteItems, setQuoteItems] = useState<QuoteLineItem[]>([
     {
@@ -3554,7 +3594,30 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 </div>
               </div>
               <div>
-                <label className="form-label">Partita IVA / Codice Fiscale</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <label className="form-label" style={{ margin: 0 }}>Partita IVA / Codice Fiscale</label>
+                  <button
+                    type="button"
+                    onClick={() => handleLookupPiva(qPiva, 'quote')}
+                    disabled={pivaLoading}
+                    style={{
+                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      cursor: pivaLoading ? 'not-allowed' : 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    title="Interroga l'Anagrafe Tributaria per ricavare Ragione Sociale e Sede Legale"
+                  >
+                    <span>{pivaLoading ? '⏳ Verifica...' : '⚡ Scarica Dati da P.IVA'}</span>
+                  </button>
+                </div>
                 <input 
                   type="text" 
                   className="form-input" 
@@ -7161,7 +7224,30 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
 
             <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '12px' }} className="form-group">
               <div>
-                <label className="form-label">Partita IVA / Codice Fiscale</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <label className="form-label" style={{ margin: 0 }}>Partita IVA / Codice Fiscale</label>
+                  <button
+                    type="button"
+                    onClick={() => handleLookupPiva(cPiva, 'contact')}
+                    disabled={pivaLoading}
+                    style={{
+                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      cursor: pivaLoading ? 'not-allowed' : 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    title="Interroga l'Anagrafe Tributaria per ricavare Ragione Sociale e Sede Legale"
+                  >
+                    <span>{pivaLoading ? '⏳' : '⚡ Scarica Dati'}</span>
+                  </button>
+                </div>
                 <input 
                   type="text" 
                   className="form-input" 
