@@ -104,7 +104,7 @@ interface LeadRow {
 const INITIAL_LEADS_POOL: LeadRow[] = [
   {
     id: 'lead-galli-torrini-2026',
-    nome_azienda_evento: 'GALLI TORRINI PUBBLICITÀ',
+    nome_azienda_evento: 'GALLI TORRINI SRL',
     referente: 'Lorenzo Galli Torrini',
     email: 'lorenzo@gallitorrini.com',
     telefono: '333 3222377',
@@ -162,7 +162,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         tipoProduzione: 'SOLO_RT_RF'
       }
     ],
-    note: 'Proposta Preventivo per GALLI TORRINI: 60 spot 20" Area 1 + 20 spot OMAGGIO (netto spazi € 300,00) + Produzione spot audio € 100,00. Totale netto: € 400,00 + IVA. Periodo: Periodo da definire. Referente: Lorenzo Galli Torrini (tel. 333 3222377 - lorenzo@gallitorrini.com).'
+    note: 'Proposta Preventivo per GALLI TORRINI SRL: 60 spot 20" Area 1 + 20 spot OMAGGIO (netto spazi € 300,00) + Produzione spot audio € 100,00. Totale netto: € 400,00 + IVA. Periodo: Periodo da definire. Referente: Lorenzo Galli Torrini (tel. 333 3222377 - lorenzo@gallitorrini.com).'
   },
   {
     id: 'lead-firenze-fiera-castanea-2026',
