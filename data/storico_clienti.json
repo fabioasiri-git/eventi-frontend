@@ -4193,15 +4193,15 @@
     "ultimo_anno": "2026"
   },
   {
-    "ditta": "GALLI TORRINI SRL",
+    "ditta": "GALLI TORRINI S.R.L.",
     "referente": "Lorenzo Galli Torrini",
-    "indirizzo": "Firenze",
-    "cap": "50100",
+    "indirizzo": "Via Pisana, 102/R",
+    "cap": "50143",
     "citta": "Firenze",
     "provincia": "FI",
     "telefono": "333 3222377",
     "email": "lorenzo@gallitorrini.com",
-    "piva": "",
+    "piva": "06611290484",
     "contratti": [
       {
         "anno": "2026",
@@ -4214,6 +4214,9 @@
     ],
     "totale_contratti": 1,
     "ultimo_prezzo": 400,
-    "ultimo_anno": "2026"
+    "ultimo_anno": "2026",
+    "sdi": "KRRH6B9",
+    "pec": "gallitorrini@pec.it",
+    "cf": "06611290484"
   }
 ]

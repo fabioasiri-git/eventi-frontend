@@ -64,6 +64,10 @@ interface LeadRow {
   telefono?: string;
   piva?: string;
   sdi?: string;
+  pec?: string;
+  cf?: string;
+  indirizzo?: string;
+  cap?: string;
   settore: string;
   comune: string;
   provincia: string;
@@ -104,12 +108,18 @@ interface LeadRow {
 const INITIAL_LEADS_POOL: LeadRow[] = [
   {
     id: 'lead-galli-torrini-2026',
-    nome_azienda_evento: 'GALLI TORRINI SRL',
+    nome_azienda_evento: 'GALLI TORRINI S.R.L.',
     referente: 'Lorenzo Galli Torrini',
     email: 'lorenzo@gallitorrini.com',
     telefono: '333 3222377',
-    piva: '',
-    sdi: '',
+    piva: '06611290484',
+    cf: '06611290484',
+    pec: 'gallitorrini@pec.it',
+    sdi: '0000000',
+    indirizzo: 'Via Pisana, 102/R',
+    cap: '50143',
+    comune: 'Firenze',
+    provincia: 'FI',
     settore: 'Comunicazione / Allestimenti & Pubblicità',
     comune: 'Firenze',
     provincia: 'FI',
@@ -1756,8 +1766,8 @@ export default function LeadEngineDashboard() {
       committente: lead.nome_azienda_evento,
       referente: lead.referente || 'Referente Aziendale',
       piva: lead.piva || '',
-      sdi: lead.sdi || '',
-      indirizzo: [lead.comune, lead.provincia ? `(${lead.provincia})` : ''].filter(Boolean).join(' ') || 'Toscana',
+      sdi: (lead.sdi && lead.pec) ? `${lead.sdi} • ${lead.pec}` : (lead.sdi || lead.pec || ''),
+      indirizzo: [lead.indirizzo, [lead.cap, lead.comune].filter(Boolean).join(' '), lead.provincia ? `(${lead.provincia})` : ''].filter(Boolean).join(' - ') || [lead.comune, lead.provincia ? `(${lead.provincia})` : ''].filter(Boolean).join(' ') || 'Toscana',
       telefono: lead.telefono || '',
       email: lead.email || '',
       mezzo: mezzoVal,
