@@ -1009,9 +1009,9 @@ export default function LeadEngineDashboard() {
         return {
           ...it,
           tipoProduzione: 'SOLO_RT_RF',
-          tipo: 'Realizzazione Spot Audio',
-          copertura: 'Diffusione Radio Toscana + Radio Firenze',
-          dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
+          tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
+          copertura: 'Nostro Gruppo (Radio Toscana + Radio Firenze)',
+          dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione nostro gruppo (Radio Toscana e Radio Firenze)',
           fascia: 'Costo Una Tantum',
           periodo: '',
           prezzoListino: 100,
@@ -1021,9 +1021,9 @@ export default function LeadEngineDashboard() {
         return {
           ...it,
           tipoProduzione: 'DIRITTI_LIBERI_TOSCANA',
-          tipo: 'Realizzazione Spot Audio (Diritti Liberi)',
-          copertura: 'Diffusione Emittenti Toscana',
-          dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane',
+          tipo: 'Realizzazione Spot Audio (Tutte le Radio della Toscana)',
+          copertura: 'Tutte le Radio della Toscana (Diritti Liberi)',
+          dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione per tutte le radio della Toscana',
           fascia: 'Costo Una Tantum',
           periodo: '',
           prezzoListino: 169,
@@ -4018,7 +4018,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       { tipoProduzione: 'SOLO_RT_RF' }
                     )}
                   >
-                    + Spot Solo RT+RF (€100)
+                    + Spot Nostro Gruppo (€100)
                   </button>
                   <button
                     type="button"
@@ -4035,7 +4035,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       { tipoProduzione: 'DIRITTI_LIBERI_TOSCANA' }
                     )}
                   >
-                    + Spot Diritti Liberi Toscana (€169)
+                    + Spot Tutte le Radio della Toscana (€169)
                   </button>
                 </div>
 
@@ -4563,7 +4563,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 checked={it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100}
                                 onChange={() => handleProduzioneChange(it.id, 'SOLO_RT_RF')}
                               />
-                              Solo Radio Toscana + Radio Firenze (€ 100,00 + IVA)
+                              Spot Nostro Gruppo: Radio Toscana + Radio Firenze (€ 100,00 + IVA)
                             </label>
                             <label style={{
                               fontSize: '12px',
@@ -4584,7 +4584,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 checked={it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169}
                                 onChange={() => handleProduzioneChange(it.id, 'DIRITTI_LIBERI_TOSCANA')}
                               />
-                              Diritti Liberi per altre emittenti Toscana (€ 169,00 + IVA)
+                              Spot per Tutte le Radio della Toscana (€ 169,00 + IVA)
                             </label>
                           </div>
                           <div style={{ fontSize: '10.5px', color: '#cbd5e1', marginTop: '8px', background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '4px', lineHeight: 1.45 }}>
@@ -5551,12 +5551,12 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             ) : null}
                             {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' && (
                               <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>
-                                Ambito: Diritti di diffusione per emittenti toscane
+                                Ambito: Spot per Tutte le Radio della Toscana (Diritti Liberi)
                               </div>
                             )}
                             {it.tipoProduzione === 'SOLO_RT_RF' && (
                               <div style={{ fontSize: '8.5px', color: '#D43F4A', fontWeight: 700, marginTop: '2px' }}>
-                                Ambito: Diffusione riservata su Radio Toscana e Radio Firenze
+                                Ambito: Spot Nostro Gruppo (Radio Toscana e Radio Firenze)
                               </div>
                             )}
                           </td>
