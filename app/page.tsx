@@ -809,10 +809,17 @@ export default function LeadEngineDashboard() {
   }
 
   // TARIFFE UFFICIALI RADIO TOSCANA & RADIO FIRENZE DA LISTINO DEPOSITATO TOSCANA COMUNICA SRL
+  // TARIFFE UFFICIALI RADIO TOSCANA & RADIO FIRENZE DA LISTINO DEPOSITATO
   function getTariffaUfficialeSpot(copertura: string, formatoSec: number = 20): number {
     const f = formatoSec === 10 ? 10 : (formatoSec === 30 ? 30 : 20);
     const cop = (copertura || '').toLowerCase();
     
+    // Area 1 + Area 2 Combinata
+    if ((cop.includes('area 1') && cop.includes('area 2')) || cop.includes('area 1+2') || cop.includes('area 1 + 2')) {
+      if (f === 10) return 10.00; // 6.50 + 3.50
+      if (f === 30) return 16.50; // 11.00 + 5.50
+      return 13.50; // 9.00 + 4.50 (20")
+    }
     if (cop.includes('area 1')) {
       if (f === 10) return 6.50;
       if (f === 30) return 11.00;
@@ -842,6 +849,15 @@ export default function LeadEngineDashboard() {
     if (f === 10) return 9.00;
     if (f === 30) return 16.00;
     return 13.00; // 20"
+  }
+
+  // SCALA SCONTI UFFICIALE DEPOSITATA RADIO TOSCANA & RADIO FIRENZE
+  function getScontoVolumetricoListino(totaleSpot: number): number {
+    if (totaleSpot > 800) return 40;
+    if (totaleSpot >= 401) return 30;
+    if (totaleSpot >= 201) return 20;
+    if (totaleSpot >= 101) return 10;
+    return 0;
   }
 
   function updateQuoteItem(id: string, field: keyof QuoteLineItem, val: any) {
@@ -4218,6 +4234,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             { val: 'Radio Toscana Area 1 (FI - PO - PT)', short: 'Area 1 (FI-PO-PT)' },
                             { val: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)', short: 'Area 2 (Costa)' },
                             { val: 'Radio Toscana Area 3 (AR - SI - GR)', short: 'Area 3 (Sud)' },
+                            { val: 'Radio Toscana Area 1+2 (FI-PO-PT + LI-PI-LU)', short: 'Area 1+2' },
                             { val: 'Radio Firenze 95.4 FM', short: 'Radio Firenze 95.4' },
                             { val: 'RT + RF Combinata (Rete + Firenze)', short: 'RT + RF Combinata' }
                           ].map(opt => {
@@ -4482,11 +4499,16 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             gap: '12px'
                           }}>
                             <div style={{ fontSize: '11px', color: '#cbd5e1' }}>
-                              <span>
+                              <div>
                                 Totale Passaggi On-Air: <strong style={{ color: '#ffffff' }}>{(it.spotTotali || 0) + (it.spotOmaggio || 0)}</strong>
                                 {' '}({it.spotTotali || 0} paganti
                                 {(it.spotOmaggio || 0) > 0 && <span style={{ color: '#fb7185', fontWeight: 800 }}> + {it.spotOmaggio} omaggio</span>})
-                              </span>
+                              </div>
+                              {getScontoVolumetricoListino((it.spotTotali || 0) + (it.spotOmaggio || 0)) > 0 && (
+                                <div style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, marginTop: '2px' }}>
+                                  Scala Sconti Ufficiale: -{getScontoVolumetricoListino((it.spotTotali || 0) + (it.spotOmaggio || 0))}% (Fascia {(it.spotTotali || 0) + (it.spotOmaggio || 0) > 800 ? 'Oltre 801' : (it.spotTotali || 0) + (it.spotOmaggio || 0) >= 401 ? '401-800' : (it.spotTotali || 0) + (it.spotOmaggio || 0) >= 201 ? '201-400' : '101-200'} comunicati)
+                                </div>
+                              )}
                             </div>
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
