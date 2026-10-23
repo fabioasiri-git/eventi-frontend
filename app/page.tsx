@@ -864,6 +864,15 @@ export default function LeadEngineDashboard() {
     return 0;
   }
 
+  // DATA ODIERNA FORMATTATA PER FILE E SALVATAGGI (es. 23.10.2026)
+  function getTodayFilenameDate(): string {
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${dd}.${mm}.${yyyy}`;
+  }
+
   function updateQuoteItem(id: string, field: keyof QuoteLineItem, val: any) {
     setQuoteItems(prev => prev.map(it => {
       if (it.id !== id) return it;
@@ -1573,9 +1582,10 @@ export default function LeadEngineDashboard() {
       addProportionalPage(canvas1, pdf, true);
       addProportionalPage(canvas2, pdf, false);
 
-      const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
+      const todayStr = getTodayFilenameDate();
+      const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_').replace(/\s+/g, '_');
       const num = (contractData.numero || 'Ufficiale').replace(/[/\\?%*:|"<>]/g, '_');
-      const filename = `Contratto_RMS_${num}_${sanitizedClient}.pdf`;
+      const filename = `Contratto_RMS_${num}_${sanitizedClient}_${todayStr}.pdf`;
 
       const dataUri = pdf.output('datauristring');
       const base64 = dataUri.split(',')[1] || '';
@@ -1649,8 +1659,9 @@ export default function LeadEngineDashboard() {
         }
       }
 
-      const sanitizedClient = (qNome || selectedLeadForProposalEmail?.nome_azienda_evento || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
-      const filename = `Proposta_Commerciale_RT_${sanitizedClient}.pdf`;
+      const todayStr = getTodayFilenameDate();
+      const sanitizedClient = (qNome || selectedLeadForProposalEmail?.nome_azienda_evento || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_').replace(/\s+/g, '_');
+      const filename = `Preventivo_${sanitizedClient}_${todayStr}.pdf`;
 
       const dataUri = pdf.output('datauristring');
       const base64 = dataUri.split(',')[1] || '';
@@ -2119,7 +2130,9 @@ Tel. 347 6818595 - commerciale@radiotoscana.it`;
   }
 
   function downloadOutlookDraftEml(to: string, cc: string, subject: string, body: string, filename: string) {
-    const cleanFilename = (filename || 'bozza_email').replace(/[^a-zA-Z0-9_\-]/g, '_');
+    const todayStr = getTodayFilenameDate();
+    const rawName = (filename || 'bozza_email').replace(/[^a-zA-Z0-9_\-]/g, '_');
+    const cleanFilename = rawName.includes(todayStr) ? rawName : `${rawName}_${todayStr}`;
     const emlContent = [
       `To: ${to}`,
       `Cc: ${cc}`,
@@ -6931,14 +6944,15 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                     setIsGeneratingEml(true);
                     const cleanClient = (selectedLeadForProposalEmail.nome_azienda_evento || 'Cliente').replace(/[^a-zA-Z0-9_-]/g, '_');
                     const targetId = document.getElementById('printable-proposal') ? 'printable-proposal' : 'printable-proposal-card';
+                    const todayStr = getTodayFilenameDate();
                     await downloadOutlookDraftWithPdfAttachment(
                       proposalEmailRecipient,
                       proposalEmailCc,
                       proposalEmailSubject,
                       proposalEmailBody,
                       targetId,
-                      `Proposta_Commerciale_RT_${cleanClient}.pdf`,
-                      `Bozza_Outlook_Proposta_${cleanClient}`
+                      `Preventivo_${cleanClient}_${todayStr}.pdf`,
+                      `Bozza_Outlook_Preventivo_${cleanClient}_${todayStr}`
                     );
                     updateLeadsAndPersist(prev => prev.map(l => l.id === selectedLeadForProposalEmail.id ? { ...l, email: proposalEmailRecipient.trim(), data_ultimo_invio: new Date().toISOString().split('T')[0] } : l));
                     setProposalEmailSentNotification(true);
@@ -7428,14 +7442,15 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                     setIsGeneratingEml(true);
                     const cleanClient = (contractData.committente || 'Cliente').replace(/[^a-zA-Z0-9_-]/g, '_');
                     const cleanNum = (contractData.numero || 'Ufficiale').replace(/[^a-zA-Z0-9_-]/g, '_');
+                    const todayStr = getTodayFilenameDate();
                     await downloadOutlookDraftWithPdfAttachment(
                       contractEmailRecipient,
                       contractEmailCc,
                       contractEmailSubject,
                       contractEmailBody,
                       'printable-contract',
-                      `Contratto_RMS_${cleanNum}_${cleanClient}.pdf`,
-                      `Bozza_Outlook_Contratto_${cleanNum}_${cleanClient}`
+                      `Contratto_RMS_${cleanNum}_${cleanClient}_${todayStr}.pdf`,
+                      `Bozza_Outlook_Contratto_${cleanNum}_${cleanClient}_${todayStr}`
                     );
                     setIsGeneratingEml(false);
                   }}
