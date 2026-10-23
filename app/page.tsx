@@ -51,6 +51,8 @@ interface QuoteLineItem {
   spotTotali?: number;
   spotOmaggio?: number;
   formatoSecondi?: number;
+  modalitaVantaggio?: 'SCALA_SCONTI' | 'SPOT_OMAGGIO';
+  scontoPercentuale?: number;
   // Specifiche Produzione Audio Spot (Solo RT+RF 100€ vs Diritti Liberi 169€)
   tipoProduzione?: 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA';
   tariffaUnitaria?: number;
@@ -147,20 +149,22 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
       {
         id: 'it-acque-1',
         tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)',
-        dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30") — Spot Fornito dal Committente',
+        copertura: 'Radio Toscana Area 1+2 (Combinata FI-PO-PT + LI-PI-LU-MS)',
+        dettagli: '400 spot paganti + 104 spot OMAGGIO (Totale 504 passaggi da 30") — Spot Fornito dal Committente',
         fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
-        periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
-        prezzoListino: 2475,
+        periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 al 07/02/2027)',
+        prezzoListino: 6600,
         valore: 3000,
         isSpot: true,
         dataInizio: '2026-11-10',
         dataFine: '2027-02-07',
         spotGiornalieri: 5,
         giorniTotali: 90,
-        spotTotali: 450,
-        spotOmaggio: 50,
-        formatoSecondi: 30
+        spotTotali: 400,
+        spotOmaggio: 104,
+        formatoSecondi: 30,
+        modalitaVantaggio: 'SPOT_OMAGGIO',
+        tariffaUnitaria: 16.50
       }
     ]
   },
@@ -869,6 +873,17 @@ export default function LeadEngineDashboard() {
         const spotPaganti = updated.spotTotali || 0;
         updated.tariffaUnitaria = tariffa;
         updated.prezzoListino = Math.round(tariffa * spotPaganti * 100) / 100;
+        if (updated.modalitaVantaggio === 'SCALA_SCONTI' && updated.scontoPercentuale) {
+          updated.valore = Math.round(updated.prezzoListino * (1 - updated.scontoPercentuale / 100));
+        }
+      } else if (field === 'valore' && updated.isSpot && updated.modalitaVantaggio === 'SCALA_SCONTI') {
+        if (updated.prezzoListino > 0) {
+          updated.scontoPercentuale = Math.round((1 - Number(val) / updated.prezzoListino) * 100);
+        }
+      } else if (field === 'prezzoListino' && updated.isSpot && updated.modalitaVantaggio === 'SCALA_SCONTI') {
+        if (Number(val) > 0 && updated.scontoPercentuale) {
+          updated.valore = Math.round(Number(val) * (1 - updated.scontoPercentuale / 100));
+        }
       }
       return updated;
     }));
@@ -923,6 +938,20 @@ export default function LeadEngineDashboard() {
       if (it.id !== id) return it;
       const updated = { ...it, ...updates };
 
+      if (updates.modalitaVantaggio === 'SCALA_SCONTI') {
+        updated.modalitaVantaggio = 'SCALA_SCONTI';
+        updated.spotOmaggio = 0;
+        if (!updated.scontoPercentuale || updated.scontoPercentuale === 0) {
+          updated.scontoPercentuale = getScontoVolumetricoListino(updated.spotTotali || 60) || 20;
+        }
+      } else if (updates.modalitaVantaggio === 'SPOT_OMAGGIO') {
+        updated.modalitaVantaggio = 'SPOT_OMAGGIO';
+        updated.scontoPercentuale = 0;
+        if (!updated.spotOmaggio || updated.spotOmaggio === 0) {
+          updated.spotOmaggio = Math.max(10, Math.round((updated.spotTotali || 60) * 0.2));
+        }
+      }
+
       let giorni = updated.giorniTotali || 90;
       if ('giorniTotali' in updates && updated.dataInizio) {
         giorni = Math.max(1, Number(updates.giorniTotali) || 90);
@@ -946,8 +975,10 @@ export default function LeadEngineDashboard() {
         updated.spotTotali = daily * giorni;
       }
 
+      const isScalaSconti = updated.modalitaVantaggio === 'SCALA_SCONTI' || (!updated.modalitaVantaggio && (updated.spotOmaggio || 0) === 0 && (updated.scontoPercentuale || 0) > 0);
       const spotPaganti = updated.spotTotali || 0;
-      const omaggi = updated.spotOmaggio || 0;
+      const omaggi = isScalaSconti ? 0 : (updated.spotOmaggio || 0);
+      updated.spotOmaggio = omaggi;
       const formato = updated.formatoSecondi || 30;
       const totPassaggi = spotPaganti + omaggi;
 
@@ -966,19 +997,40 @@ export default function LeadEngineDashboard() {
         }
       }
 
-      if (!updates.dettagli && ('spotGiornalieri' in updates || 'spotTotali' in updates || 'spotOmaggio' in updates || 'formatoSecondi' in updates || !updated.dettagli)) {
-        let dett = `${spotPaganti} spot da ${formato}"`;
-        if (omaggi > 0) {
-          dett = `${spotPaganti} spot paganti + ${omaggi} spot OMAGGIO (Totale ${totPassaggi} passaggi da ${formato}")`;
-        }
-        updated.dettagli = dett;
-      }
-
       // Calcolo Listino Ufficiale matematico esatto da Tariffa Ufficiale Depositata x Spot Paganti
       const tariffa = getTariffaUfficialeSpot(updated.copertura, formato);
       updated.tariffaUnitaria = tariffa;
       if (!('prezzoListino' in updates)) {
         updated.prezzoListino = Math.round(tariffa * spotPaganti * 100) / 100;
+      }
+
+      if (isScalaSconti) {
+        if ('scontoPercentuale' in updates) {
+          const sc = Number(updates.scontoPercentuale) || 0;
+          updated.scontoPercentuale = sc;
+          updated.valore = Math.round(updated.prezzoListino * (1 - sc / 100));
+        } else if ('valore' in updates) {
+          const val = Number(updates.valore) || 0;
+          updated.valore = val;
+          if (updated.prezzoListino > 0) {
+            updated.scontoPercentuale = Math.round((1 - val / updated.prezzoListino) * 100);
+          }
+        } else if (('spotTotali' in updates || 'copertura' in updates || 'formatoSecondi' in updates) && updated.scontoPercentuale) {
+          updated.valore = Math.round(updated.prezzoListino * (1 - updated.scontoPercentuale / 100));
+        }
+      }
+
+      if (!updates.dettagli && ('spotGiornalieri' in updates || 'spotTotali' in updates || 'spotOmaggio' in updates || 'formatoSecondi' in updates || 'modalitaVantaggio' in updates || 'scontoPercentuale' in updates || !updated.dettagli)) {
+        if (isScalaSconti) {
+          const sc = updated.scontoPercentuale !== undefined ? updated.scontoPercentuale : getScontoVolumetricoListino(spotPaganti);
+          updated.dettagli = `${spotPaganti} spot da ${formato}"${sc > 0 ? ` (Scala Sconti: -${sc}% da Listino Ufficiale)` : ''}`;
+        } else {
+          let dett = `${spotPaganti} spot da ${formato}"`;
+          if (omaggi > 0) {
+            dett = `${spotPaganti} spot paganti + ${omaggi} spot OMAGGIO (Totale ${totPassaggi} passaggi da ${formato}")`;
+          }
+          updated.dettagli = dett;
+        }
       }
 
       return updated;
@@ -1081,21 +1133,23 @@ export default function LeadEngineDashboard() {
       setQuoteItems([
         {
           id: 'acque-campagna-3k',
-          tipo: 'Spot Radiofonici Tabellari',
-          copertura: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)',
-          dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30\") — Spot Fornito dal Committente',
-          fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
-          periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
-          prezzoListino: 2475,
-          valore: 3000,
-          isSpot: true,
-          dataInizio: '2026-11-10',
-          dataFine: '2027-02-07',
-          spotGiornalieri: 6,
-          giorniTotali: 90,
-          spotTotali: 450,
-          spotOmaggio: 50,
-          formatoSecondi: 30
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 1+2 (Combinata FI-PO-PT + LI-PI-LU-MS)',
+        dettagli: '400 spot paganti + 104 spot OMAGGIO (Totale 504 passaggi da 30") — Spot Fornito dal Committente',
+        fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
+        periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 al 07/02/2027)',
+        prezzoListino: 6600,
+        valore: 3000,
+        isSpot: true,
+        dataInizio: '2026-11-10',
+        dataFine: '2027-02-07',
+        spotGiornalieri: 5,
+        giorniTotali: 90,
+        spotTotali: 400,
+        spotOmaggio: 104,
+        formatoSecondi: 30,
+        modalitaVantaggio: 'SPOT_OMAGGIO',
+        tariffaUnitaria: 16.50
         }
       ]);
       return;
@@ -1658,20 +1712,22 @@ export default function LeadEngineDashboard() {
       {
         id: 'acque-campagna-3k',
         tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)',
-        dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30\") — Spot Fornito dal Committente',
+        copertura: 'Radio Toscana Area 1+2 (Combinata FI-PO-PT + LI-PI-LU-MS)',
+        dettagli: '400 spot paganti + 104 spot OMAGGIO (Totale 504 passaggi da 30") — Spot Fornito dal Committente',
         fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
-        periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
-        prezzoListino: 2475,
+        periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 al 07/02/2027)',
+        prezzoListino: 6600,
         valore: 3000,
         isSpot: true,
         dataInizio: '2026-11-10',
         dataFine: '2027-02-07',
         spotGiornalieri: 5,
         giorniTotali: 90,
-        spotTotali: 450,
-        spotOmaggio: 50,
-        formatoSecondi: 30
+        spotTotali: 400,
+        spotOmaggio: 104,
+        formatoSecondi: 30,
+        modalitaVantaggio: 'SPOT_OMAGGIO',
+        tariffaUnitaria: 16.50
       }
     ]);
     setShowQuoteModal(true);
@@ -4399,124 +4455,316 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             </div>
                           )}
 
-                          {/* PARAMETRI SPOT: SPOT PAGANTI, SPOT OMAGGIO, FORMATO AUDIO, DETTAGLI NOTE */}
-                          <div style={{ display: 'grid', gridTemplateColumns: '120px 120px 140px 1fr', gap: '10px', alignItems: 'center', marginBottom: '12px' }}>
-                            <div>
-                              <label style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, display: 'block', marginBottom: '3px' }}>Spot Paganti (Tot):</label>
-                              <input
-                                type="number"
-                                className="form-input"
-                                style={{ fontSize: '12px', width: '100%', padding: '5px 8px', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)' }}
-                                value={it.spotTotali || 60}
-                                min={1}
-                                onChange={e => handleSpotFieldChange(it.id, { spotTotali: Number(e.target.value) })}
-                              />
-                            </div>
-                            <div>
-                              <label style={{ fontSize: '10px', color: '#f43f5e', fontWeight: 800, display: 'block', marginBottom: '3px' }}>Spot OMAGGIO:</label>
-                              <input
-                                type="number"
-                                className="form-input"
-                                style={{ fontSize: '12px', width: '100%', padding: '5px 8px', borderColor: 'rgba(244, 63, 94, 0.4)', color: '#fb7185', fontWeight: 800 }}
-                                value={it.spotOmaggio || 0}
-                                min={0}
-                                placeholder="0"
-                                onChange={e => handleSpotFieldChange(it.id, { spotOmaggio: Number(e.target.value) })}
-                              />
-                            </div>
-                            <div>
-                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>Formato Audio:</label>
-                              <div style={{ display: 'flex', gap: '4px' }}>
-                                {[
-                                  { sec: 10, label: '10"' },
-                                  { sec: 20, label: '20"' },
-                                  { sec: 30, label: '30"' }
-                                ].map(f => {
-                                  const active = (it.formatoSecondi || 20) === f.sec;
-                                  return (
+                          {/* SELETTORE ESCLUSIVO: OPZIONE 1 (SCALA SCONTI) vs OPZIONE 2 (SPOT OMAGGIO) */}
+                          {(() => {
+                            const isScalaSconti = it.modalitaVantaggio === 'SCALA_SCONTI' || (!it.modalitaVantaggio && (it.spotOmaggio || 0) === 0 && (it.scontoPercentuale || 0) > 0);
+                            const currentSconto = it.scontoPercentuale !== undefined ? it.scontoPercentuale : getScontoVolumetricoListino(it.spotTotali || 60);
+
+                            return (
+                              <div style={{ marginBottom: '12px' }}>
+                                {/* TOGGLE A DUE OPZIONI */}
+                                <div style={{
+                                  background: 'rgba(15, 23, 42, 0.7)',
+                                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                                  borderRadius: '8px',
+                                  padding: '10px 12px',
+                                  marginBottom: '10px'
+                                }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                    <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                      Formula di Agevolazione Commerciale:
+                                    </span>
+                                    <span style={{
+                                      fontSize: '10px',
+                                      fontWeight: 800,
+                                      padding: '2px 8px',
+                                      borderRadius: '4px',
+                                      background: isScalaSconti ? 'rgba(56, 189, 248, 0.2)' : 'rgba(244, 63, 94, 0.2)',
+                                      color: isScalaSconti ? '#38bdf8' : '#fb7185',
+                                      border: isScalaSconti ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(244, 63, 94, 0.4)'
+                                    }}>
+                                      {isScalaSconti ? '📉 MODALITÀ 1: SCALA SCONTI (% su Listino)' : '🎁 MODALITÀ 2: SPOT OMAGGIO (Passaggi Gratuiti)'}
+                                    </span>
+                                  </div>
+
+                                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                     <button
-                                      key={f.sec}
                                       type="button"
-                                      onClick={() => handleSpotFieldChange(it.id, { formatoSecondi: f.sec })}
+                                      onClick={() => handleSpotFieldChange(it.id, { modalitaVantaggio: 'SCALA_SCONTI', spotOmaggio: 0 })}
                                       style={{
-                                        flex: 1,
-                                        padding: '5px 2px',
+                                        padding: '9px 12px',
+                                        borderRadius: '6px',
                                         fontSize: '11px',
-                                        borderRadius: '4px',
-                                        border: active ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
-                                        background: active ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255,255,255,0.04)',
-                                        color: active ? '#ffffff' : '#94a3b8',
-                                        fontWeight: active ? 800 : 600,
-                                        cursor: 'pointer'
+                                        fontWeight: 800,
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: '2px',
+                                        border: isScalaSconti ? '2px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.12)',
+                                        background: isScalaSconti ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.03)',
+                                        color: isScalaSconti ? '#ffffff' : '#94a3b8'
                                       }}
                                     >
-                                      {f.label}
+                                      <span style={{ color: isScalaSconti ? '#38bdf8' : '#cbd5e1' }}>📉 1. SCALA SCONTI</span>
+                                      <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.85 }}>Sconto % su Listino Ufficiale (Zero Omaggi)</span>
                                     </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                            <div>
-                              <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Dettagli / Descrizione Voce Spot:</label>
-                              <input
-                                type="text"
-                                className="form-input"
-                                style={{ fontSize: '11px', width: '100%', padding: '5px 8px' }}
-                                value={it.dettagli || ''}
-                                placeholder="es. 80 spot totali (60 paganti + 20 omaggio)"
-                                onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
-                              />
-                            </div>
-                          </div>
 
-                          {/* PREZZI SPOT: LISTINO E RISERVATO DEDICATI */}
-                          <div style={{
-                            background: 'rgba(0, 0, 0, 0.25)',
-                            border: '1px solid rgba(255, 255, 255, 0.08)',
-                            borderRadius: '6px',
-                            padding: '8px 12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            flexWrap: 'wrap',
-                            gap: '12px'
-                          }}>
-                            <div style={{ fontSize: '11px', color: '#cbd5e1' }}>
-                              <div>
-                                Totale Passaggi On-Air: <strong style={{ color: '#ffffff' }}>{(it.spotTotali || 0) + (it.spotOmaggio || 0)}</strong>
-                                {' '}({it.spotTotali || 0} paganti
-                                {(it.spotOmaggio || 0) > 0 && <span style={{ color: '#fb7185', fontWeight: 800 }}> + {it.spotOmaggio} omaggio</span>})
-                              </div>
-                              {getScontoVolumetricoListino((it.spotTotali || 0) + (it.spotOmaggio || 0)) > 0 && (
-                                <div style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, marginTop: '2px' }}>
-                                  Scala Sconti Ufficiale: -{getScontoVolumetricoListino((it.spotTotali || 0) + (it.spotOmaggio || 0))}% (Fascia {(it.spotTotali || 0) + (it.spotOmaggio || 0) > 800 ? 'Oltre 801' : (it.spotTotali || 0) + (it.spotOmaggio || 0) >= 401 ? '401-800' : (it.spotTotali || 0) + (it.spotOmaggio || 0) >= 201 ? '201-400' : '101-200'} comunicati)
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSpotFieldChange(it.id, { modalitaVantaggio: 'SPOT_OMAGGIO', scontoPercentuale: 0 })}
+                                      style={{
+                                        padding: '9px 12px',
+                                        borderRadius: '6px',
+                                        fontSize: '11px',
+                                        fontWeight: 800,
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: '2px',
+                                        border: !isScalaSconti ? '2px solid #fb7185' : '1px solid rgba(255, 255, 255, 0.12)',
+                                        background: !isScalaSconti ? 'rgba(244, 63, 94, 0.25)' : 'rgba(255, 255, 255, 0.03)',
+                                        color: !isScalaSconti ? '#ffffff' : '#94a3b8'
+                                      }}
+                                    >
+                                      <span style={{ color: !isScalaSconti ? '#fb7185' : '#cbd5e1' }}>🎁 2. SPOT OMAGGIO</span>
+                                      <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.85 }}>Passaggi Extra Gratuiti (Nessuno Sconto %)</span>
+                                    </button>
+                                  </div>
                                 </div>
-                              )}
-                            </div>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <span style={{ fontSize: '11px', color: '#94a3b8' }}>Listino Ufficiale (€):</span>
-                                <input
-                                  type="number"
-                                  className="form-input"
-                                  style={{ fontSize: '12px', width: '110px', textAlign: 'right', padding: '4px 6px' }}
-                                  value={it.prezzoListino}
-                                  onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
-                                />
+                                {/* CAMPI PARAMETRICI IN BASE ALLA MODALITÀ */}
+                                {isScalaSconti ? (
+                                  /* MODALITÀ 1: SCALA SCONTI */
+                                  <div style={{ display: 'grid', gridTemplateColumns: '130px 140px 160px 1fr', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
+                                    <div>
+                                      <label style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, display: 'block', marginBottom: '3px' }}>Spot Totali Pianificati:</label>
+                                      <input
+                                        type="number"
+                                        className="form-input"
+                                        style={{ fontSize: '12px', width: '100%', padding: '5px 8px', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                                        value={it.spotTotali || 60}
+                                        min={1}
+                                        onChange={e => handleSpotFieldChange(it.id, { spotTotali: Number(e.target.value) })}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>Formato Audio:</label>
+                                      <div style={{ display: 'flex', gap: '4px' }}>
+                                        {[
+                                          { sec: 10, label: '10"' },
+                                          { sec: 20, label: '20"' },
+                                          { sec: 30, label: '30"' }
+                                        ].map(f => {
+                                          const active = (it.formatoSecondi || 20) === f.sec;
+                                          return (
+                                            <button
+                                              key={f.sec}
+                                              type="button"
+                                              onClick={() => handleSpotFieldChange(it.id, { formatoSecondi: f.sec })}
+                                              style={{
+                                                flex: 1,
+                                                padding: '5px 2px',
+                                                fontSize: '11px',
+                                                borderRadius: '4px',
+                                                border: active ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                                                background: active ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255,255,255,0.04)',
+                                                color: active ? '#ffffff' : '#94a3b8',
+                                                fontWeight: active ? 800 : 600,
+                                                cursor: 'pointer'
+                                              }}
+                                            >
+                                              {f.label}
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <label style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, display: 'block', marginBottom: '3px' }}>% Sconto da Listino:</label>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <input
+                                          type="number"
+                                          className="form-input"
+                                          style={{ fontSize: '12px', width: '60px', padding: '5px 6px', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)', textAlign: 'right' }}
+                                          value={currentSconto}
+                                          min={0}
+                                          max={95}
+                                          onChange={e => handleSpotFieldChange(it.id, { scontoPercentuale: Number(e.target.value) })}
+                                        />
+                                        <div style={{ display: 'flex', gap: '2px', flex: 1 }}>
+                                          {[10, 20, 30, 40].map(pct => (
+                                            <button
+                                              key={pct}
+                                              type="button"
+                                              onClick={() => handleSpotFieldChange(it.id, { scontoPercentuale: pct })}
+                                              style={{
+                                                flex: 1,
+                                                padding: '4px 1px',
+                                                fontSize: '9.5px',
+                                                borderRadius: '3px',
+                                                border: currentSconto === pct ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                                                background: currentSconto === pct ? 'rgba(56, 189, 248, 0.35)' : 'rgba(255,255,255,0.05)',
+                                                color: currentSconto === pct ? '#ffffff' : '#94a3b8',
+                                                fontWeight: 700,
+                                                cursor: 'pointer'
+                                              }}
+                                            >
+                                              {pct}%
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Dettagli / Descrizione Voce Spot:</label>
+                                      <input
+                                        type="text"
+                                        className="form-input"
+                                        style={{ fontSize: '11px', width: '100%', padding: '5px 8px' }}
+                                        value={it.dettagli || ''}
+                                        placeholder="es. 400 spot da 30" (Sconto -30% da Listino)"
+                                        onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
+                                      />
+                                    </div>
+                                  </div>
+                                ) : (
+                                  /* MODALITÀ 2: SPOT OMAGGIO */
+                                  <div style={{ display: 'grid', gridTemplateColumns: '120px 120px 140px 1fr', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
+                                    <div>
+                                      <label style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, display: 'block', marginBottom: '3px' }}>Spot Paganti (a tariffa):</label>
+                                      <input
+                                        type="number"
+                                        className="form-input"
+                                        style={{ fontSize: '12px', width: '100%', padding: '5px 8px', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                                        value={it.spotTotali || 60}
+                                        min={1}
+                                        onChange={e => handleSpotFieldChange(it.id, { spotTotali: Number(e.target.value) })}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label style={{ fontSize: '10px', color: '#fb7185', fontWeight: 800, display: 'block', marginBottom: '3px' }}>🎁 Spot OMAGGIO:</label>
+                                      <input
+                                        type="number"
+                                        className="form-input"
+                                        style={{ fontSize: '12px', width: '100%', padding: '5px 8px', borderColor: 'rgba(244, 63, 94, 0.5)', color: '#fb7185', fontWeight: 800, background: 'rgba(244, 63, 94, 0.08)' }}
+                                        value={it.spotOmaggio || 0}
+                                        min={0}
+                                        placeholder="0"
+                                        onChange={e => handleSpotFieldChange(it.id, { spotOmaggio: Number(e.target.value) })}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>Formato Audio:</label>
+                                      <div style={{ display: 'flex', gap: '4px' }}>
+                                        {[
+                                          { sec: 10, label: '10"' },
+                                          { sec: 20, label: '20"' },
+                                          { sec: 30, label: '30"' }
+                                        ].map(f => {
+                                          const active = (it.formatoSecondi || 20) === f.sec;
+                                          return (
+                                            <button
+                                              key={f.sec}
+                                              type="button"
+                                              onClick={() => handleSpotFieldChange(it.id, { formatoSecondi: f.sec })}
+                                              style={{
+                                                flex: 1,
+                                                padding: '5px 2px',
+                                                fontSize: '11px',
+                                                borderRadius: '4px',
+                                                border: active ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                                                background: active ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255,255,255,0.04)',
+                                                color: active ? '#ffffff' : '#94a3b8',
+                                                fontWeight: active ? 800 : 600,
+                                                cursor: 'pointer'
+                                              }}
+                                            >
+                                              {f.label}
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <label style={{ fontSize: '10px', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Dettagli / Descrizione Voce Spot:</label>
+                                      <input
+                                        type="text"
+                                        className="form-input"
+                                        style={{ fontSize: '11px', width: '100%', padding: '5px 8px' }}
+                                        value={it.dettagli || ''}
+                                        placeholder="es. 400 spot paganti + 104 omaggio (Totale 504 passaggi da 30")"
+                                        onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
+                                      />
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* RIEPILOGO PREZZI & TOTALIZZATORE SPOT */}
+                                <div style={{
+                                  background: 'rgba(0, 0, 0, 0.25)',
+                                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                                  borderRadius: '6px',
+                                  padding: '8px 12px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  flexWrap: 'wrap',
+                                  gap: '12px'
+                                }}>
+                                  <div style={{ fontSize: '11px', color: '#cbd5e1' }}>
+                                    {isScalaSconti ? (
+                                      <div>
+                                        Totale Passaggi On-Air: <strong style={{ color: '#ffffff' }}>{it.spotTotali || 0} comunicati</strong> (0 omaggi)
+                                        <div style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, marginTop: '2px' }}>
+                                          Scala Sconti Applicata: -{currentSconto}% (Risparmio cliente: € {Math.max(0, it.prezzoListino - it.valore).toLocaleString('it-IT')})
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div>
+                                        Totale Passaggi On-Air: <strong style={{ color: '#ffffff' }}>{(it.spotTotali || 0) + (it.spotOmaggio || 0)} passaggi</strong>
+                                        {' '}({it.spotTotali || 0} paganti
+                                        {(it.spotOmaggio || 0) > 0 && <span style={{ color: '#fb7185', fontWeight: 800 }}> + {it.spotOmaggio} in OMAGGIO</span>})
+                                        <div style={{ fontSize: '10px', color: '#fb7185', fontWeight: 700, marginTop: '2px' }}>
+                                          🎁 Vantaggio Promozionale: {it.spotOmaggio || 0} spot gratuiti inclusi nel pacchetto
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <span style={{ fontSize: '11px', color: '#94a3b8' }}>Listino Ufficiale (€):</span>
+                                      <input
+                                        type="number"
+                                        className="form-input"
+                                        style={{ fontSize: '12px', width: '110px', textAlign: 'right', padding: '4px 6px' }}
+                                        value={it.prezzoListino}
+                                        onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
+                                      />
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>Prezzo Riservato (€):</span>
+                                      <input
+                                        type="number"
+                                        className="form-input"
+                                        style={{ fontSize: '13px', width: '110px', textAlign: 'right', padding: '4px 6px', fontWeight: 800, color: '#38bdf8', borderColor: '#38bdf8', background: 'rgba(56, 189, 248, 0.1)' }}
+                                        value={it.valore}
+                                        onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>Prezzo Riservato (€):</span>
-                                <input
-                                  type="number"
-                                  className="form-input"
-                                  style={{ fontSize: '13px', width: '110px', textAlign: 'right', padding: '4px 6px', fontWeight: 800, color: '#38bdf8', borderColor: '#38bdf8', background: 'rgba(56, 189, 248, 0.1)' }}
-                                  value={it.valore}
-                                  onChange={e => updateQuoteItem(it.id, 'valore', Number(e.target.value))}
-                                />
-                              </div>
-                            </div>
-                          </div>
+                            );
+                          })()}
                         </div>
                       )}
 
@@ -5499,7 +5747,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   Qtà: {it.quantita}
                                 </span>
                               ) : null}
-                              {omaggi > 0 ? (
+                              {isSpot && (it.modalitaVantaggio === 'SCALA_SCONTI' || (!it.modalitaVantaggio && omaggi === 0)) && (listinoEffettivo > it.valore) ? (
+                                <span style={{ fontSize: '7.5px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd', padding: '1px 4px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                  SCALA SCONTI -{Math.round((1 - it.valore / listinoEffettivo) * 100)}%
+                                </span>
+                              ) : omaggi > 0 ? (
                                 <span style={{ fontSize: '7.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 4px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                   + {omaggi} OMAGGIO
                                 </span>
