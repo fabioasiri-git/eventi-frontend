@@ -138,7 +138,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     tipo_accordo: 'STANDARD',
     stato_produzione: 'SPOT_FORNITO',
     data_inizio_trasmissione: '2026-11-10',
-    data_fine_trasmissione: '2027-02-08',
+    data_fine_trasmissione: '2027-02-07',
     copy_testo: 'Campagna Acque SpA 2026-2027: 400 spot + 100 spot omaggio da 30" (Totale 500 passaggi) su Radio Toscana Area 2. Utilizzabile entro max 90 giorni con avvio dal 10/11/2026. Spot fornito dal committente.',
     spot_giornalieri: 6,
     stato_programmazione: 'IN_ATTESA_CONFERMA',
@@ -147,7 +147,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
       {
         id: 'it-acque-1',
         tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Toscana Area 2 (Pisa, Livorno, Costa, Lucca, Valdarno)',
+        copertura: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)',
         dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30") — Spot Fornito dal Committente',
         fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
         periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
@@ -155,11 +155,11 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         valore: 3000,
         isSpot: true,
         dataInizio: '2026-11-10',
-        dataFine: '2027-02-08',
-        spotGiornalieri: 6,
+        dataFine: '2027-02-07',
+        spotGiornalieri: 5,
         giorniTotali: 90,
-        spotTotali: 400,
-        spotOmaggio: 100,
+        spotTotali: 450,
+        spotOmaggio: 50,
         formatoSecondi: 30
       }
     ]
@@ -907,8 +907,15 @@ export default function LeadEngineDashboard() {
       if (it.id !== id) return it;
       const updated = { ...it, ...updates };
 
-      let giorni = updated.giorniTotali || 10;
-      if (!updated.periodoDaDefinire && updated.dataInizio && updated.dataFine) {
+      let giorni = updated.giorniTotali || 90;
+      if ('giorniTotali' in updates && updated.dataInizio) {
+        giorni = Math.max(1, Number(updates.giorniTotali) || 90);
+        const d1 = new Date(updated.dataInizio);
+        if (!isNaN(d1.getTime())) {
+          const d2 = new Date(d1.getTime() + (giorni - 1) * 86400000);
+          updated.dataFine = d2.toISOString().split('T')[0];
+        }
+      } else if (!updated.periodoDaDefinire && updated.dataInizio && updated.dataFine) {
         const d1 = new Date(updated.dataInizio);
         const d2 = new Date(updated.dataFine);
         if (!isNaN(d1.getTime()) && !isNaN(d2.getTime())) {
@@ -919,13 +926,13 @@ export default function LeadEngineDashboard() {
       updated.giorniTotali = giorni;
 
       if (!updated.periodoDaDefinire && ('spotGiornalieri' in updates || 'dataInizio' in updates || 'dataFine' in updates || 'giorniTotali' in updates)) {
-        const daily = updated.spotGiornalieri || 8;
+        const daily = updated.spotGiornalieri !== undefined ? updated.spotGiornalieri : 5;
         updated.spotTotali = daily * giorni;
       }
 
       const spotPaganti = updated.spotTotali || 0;
       const omaggi = updated.spotOmaggio || 0;
-      const formato = updated.formatoSecondi || 20;
+      const formato = updated.formatoSecondi || 30;
       const totPassaggi = spotPaganti + omaggi;
 
       if (updated.periodoDaDefinire) {
@@ -937,7 +944,7 @@ export default function LeadEngineDashboard() {
         const d1Str = updated.dataInizio ? new Date(updated.dataInizio).toLocaleDateString('it-IT') : '';
         const d2Str = updated.dataFine ? new Date(updated.dataFine).toLocaleDateString('it-IT') : '';
         if (d1Str && d2Str) {
-          updated.periodo = `Dal ${d1Str} al ${d2Str}`;
+          updated.periodo = `Dal ${d1Str} al ${d2Str} (${giorni} gg)`;
         } else {
           updated.periodo = updated.periodo || 'Periodo da definire';
         }
@@ -951,11 +958,28 @@ export default function LeadEngineDashboard() {
         updated.dettagli = dett;
       }
 
-      // Calcolo Listino Ufficiale da Tariffa Unitaria x Spot Totali se non specificato
+      // Calcolo Listino Ufficiale: MAI INFERIORE ALL'OFFERTA RISERVATA!
       const tariffa = getTariffaUfficialeSpot(updated.copertura, formato);
       updated.tariffaUnitaria = tariffa;
+      const baseListino = Math.round(tariffa * spotPaganti * 100) / 100;
+      const targetValore = Number(updated.valore || 0);
+
       if (!('prezzoListino' in updates)) {
-        updated.prezzoListino = Math.round(tariffa * spotPaganti * 100) / 100;
+        // Regola ferrea: Se la tariffa nuda moltiplicata risulta inferiore al prezzo di vendita o pacchetto (es. 2502€ vs 3000€),
+        // applica un listino lordo broadcast coerente (es. 6.000€ per 500 spot 30" con -50% vantaggio cliente)
+        if (targetValore > 0 && baseListino <= targetValore) {
+          if (it.prezzoListino && it.prezzoListino > targetValore) {
+            updated.prezzoListino = it.prezzoListino;
+          } else {
+            updated.prezzoListino = Math.max(6000, Math.round(targetValore * 1.5), Math.round(totPassaggi * 12));
+          }
+        } else {
+          if (it.prezzoListino && it.prezzoListino > baseListino && it.prezzoListino >= targetValore) {
+            updated.prezzoListino = it.prezzoListino;
+          } else {
+            updated.prezzoListino = baseListino;
+          }
+        }
       }
 
       return updated;
@@ -1059,7 +1083,7 @@ export default function LeadEngineDashboard() {
         {
           id: 'acque-campagna-3k',
           tipo: 'Spot Radiofonici Tabellari',
-          copertura: 'Radio Toscana Area 2 (Pisa, Livorno, Costa, Lucca, Valdarno)',
+          copertura: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)',
           dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30\") — Spot Fornito dal Committente',
           fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
           periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
@@ -1067,11 +1091,11 @@ export default function LeadEngineDashboard() {
           valore: 3000,
           isSpot: true,
           dataInizio: '2026-11-10',
-          dataFine: '2027-02-08',
+          dataFine: '2027-02-07',
           spotGiornalieri: 6,
           giorniTotali: 90,
-          spotTotali: 400,
-          spotOmaggio: 100,
+          spotTotali: 450,
+          spotOmaggio: 50,
           formatoSecondi: 30
         }
       ]);
@@ -1635,7 +1659,7 @@ export default function LeadEngineDashboard() {
       {
         id: 'acque-campagna-3k',
         tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Toscana Area 2 (Pisa, Livorno, Costa, Lucca, Valdarno)',
+        copertura: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)',
         dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30\") — Spot Fornito dal Committente',
         fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
         periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
@@ -1643,11 +1667,11 @@ export default function LeadEngineDashboard() {
         valore: 3000,
         isSpot: true,
         dataInizio: '2026-11-10',
-        dataFine: '2027-02-08',
-        spotGiornalieri: 6,
+        dataFine: '2027-02-07',
+        spotGiornalieri: 5,
         giorniTotali: 90,
-        spotTotali: 400,
-        spotOmaggio: 100,
+        spotTotali: 450,
+        spotOmaggio: 50,
         formatoSecondi: 30
       }
     ]);
@@ -4197,7 +4221,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             { val: 'Radio Firenze 95.4 FM', short: 'Radio Firenze 95.4' },
                             { val: 'RT + RF Combinata (Rete + Firenze)', short: 'RT + RF Combinata' }
                           ].map(opt => {
-                            const active = it.copertura === opt.val;
+                            const curCop = (it.copertura || '').toLowerCase();
+                            const active = it.copertura === opt.val ||
+                              (opt.short === 'Area 2 (Costa)' && (curCop.includes('area 2') || curCop.includes('costa') || curCop.includes('pisa'))) ||
+                              (opt.short === 'Area 1 (FI-PO-PT)' && (curCop.includes('area 1') || curCop.includes('fi - po'))) ||
+                              (opt.short === 'Area 3 (Sud)' && (curCop.includes('area 3') || curCop.includes('sud'))) ||
+                              (opt.short === 'RT Rete (Toscana)' && (curCop.includes('rete') && !curCop.includes('combinata'))) ||
+                              (opt.short === 'Radio Firenze 95.4' && (curCop.includes('firenze') && !curCop.includes('combinata'))) ||
+                              (opt.short === 'RT + RF Combinata' && curCop.includes('combinata'));
                             return (
                               <button
                                 key={opt.val}
@@ -4328,8 +4359,19 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   type="date"
                                   className="form-input"
                                   style={{ fontSize: '11px', width: '100%', padding: '4px 6px' }}
-                                  value={it.dataFine || '2026-10-25'}
+                                  value={it.dataFine || '2027-02-07'}
                                   onChange={e => handleSpotFieldChange(it.id, { dataFine: e.target.value })}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, display: 'block', marginBottom: '3px' }}>Giorni Campagna:</label>
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  style={{ fontSize: '11px', width: '100%', padding: '4px 6px', fontWeight: 800, color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                                  value={it.giorniTotali || 90}
+                                  min={1}
+                                  onChange={e => handleSpotFieldChange(it.id, { giorniTotali: Number(e.target.value) })}
                                 />
                               </div>
                               <div>
