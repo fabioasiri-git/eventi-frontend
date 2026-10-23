@@ -151,7 +151,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30") — Spot Fornito dal Committente',
         fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
         periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
-        prezzoListino: 6000,
+        prezzoListino: 2475,
         valore: 3000,
         isSpot: true,
         dataInizio: '2026-11-10',
@@ -974,28 +974,11 @@ export default function LeadEngineDashboard() {
         updated.dettagli = dett;
       }
 
-      // Calcolo Listino Ufficiale: MAI INFERIORE ALL'OFFERTA RISERVATA!
+      // Calcolo Listino Ufficiale matematico esatto da Tariffa Ufficiale Depositata x Spot Paganti
       const tariffa = getTariffaUfficialeSpot(updated.copertura, formato);
       updated.tariffaUnitaria = tariffa;
-      const baseListino = Math.round(tariffa * spotPaganti * 100) / 100;
-      const targetValore = Number(updated.valore || 0);
-
       if (!('prezzoListino' in updates)) {
-        // Regola ferrea: Se la tariffa nuda moltiplicata risulta inferiore al prezzo di vendita o pacchetto (es. 2502€ vs 3000€),
-        // applica un listino lordo broadcast coerente (es. 6.000€ per 500 spot 30" con -50% vantaggio cliente)
-        if (targetValore > 0 && baseListino <= targetValore) {
-          if (it.prezzoListino && it.prezzoListino > targetValore) {
-            updated.prezzoListino = it.prezzoListino;
-          } else {
-            updated.prezzoListino = Math.max(6000, Math.round(targetValore * 1.5), Math.round(totPassaggi * 12));
-          }
-        } else {
-          if (it.prezzoListino && it.prezzoListino > baseListino && it.prezzoListino >= targetValore) {
-            updated.prezzoListino = it.prezzoListino;
-          } else {
-            updated.prezzoListino = baseListino;
-          }
-        }
+        updated.prezzoListino = Math.round(tariffa * spotPaganti * 100) / 100;
       }
 
       return updated;
@@ -1103,7 +1086,7 @@ export default function LeadEngineDashboard() {
           dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30\") — Spot Fornito dal Committente',
           fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
           periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
-          prezzoListino: 6000,
+          prezzoListino: 2475,
           valore: 3000,
           isSpot: true,
           dataInizio: '2026-11-10',
@@ -1679,7 +1662,7 @@ export default function LeadEngineDashboard() {
         dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30\") — Spot Fornito dal Committente',
         fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
         periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
-        prezzoListino: 6000,
+        prezzoListino: 2475,
         valore: 3000,
         isSpot: true,
         dataInizio: '2026-11-10',
