@@ -4627,7 +4627,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                         className="form-input"
                                         style={{ fontSize: '11px', width: '100%', padding: '5px 8px' }}
                                         value={it.dettagli || ''}
-                                        placeholder="es. 400 spot da 30" (Sconto -30% da Listino)"
+                                        placeholder={'es. 400 spot da 30" (Sconto -30% da Listino)'}
                                         onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
                                       />
                                     </div>
@@ -4700,7 +4700,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                         className="form-input"
                                         style={{ fontSize: '11px', width: '100%', padding: '5px 8px' }}
                                         value={it.dettagli || ''}
-                                        placeholder="es. 400 spot paganti + 104 omaggio (Totale 504 passaggi da 30")"
+                                        placeholder={'es. 400 spot paganti + 104 omaggio (Totale 504 passaggi da 30")'}
                                         onChange={e => updateQuoteItem(it.id, 'dettagli', e.target.value)}
                                       />
                                     </div>
