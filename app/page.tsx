@@ -611,6 +611,8 @@ export default function LeadEngineDashboard() {
   const [qProvincia, setQProvincia] = useState('');
   const [qPiva, setQPiva] = useState('');
   const [qSdi, setQSdi] = useState('');
+  const [qIndirizzo, setQIndirizzo] = useState('');
+  const [terminiPagamento, setTerminiPagamento] = useState('Bonifico Bancario 30 gg fine mese d.f.');
 
   // Modale Legenda Prodotti & Guida Formati Radiofonici
   const [showProductLegendModal, setShowProductLegendModal] = useState(false);
@@ -989,7 +991,34 @@ export default function LeadEngineDashboard() {
     setQPiva(client.piva || '');
     setQEmail(client.email || '');
     setQTelefono(client.telefono || '');
+    setQIndirizzo(client.indirizzo || '');
     setShowHistorySuggestions(false);
+
+    if (client.ditta.toUpperCase().includes('ACQUE')) {
+      setTipoAccordo('STANDARD');
+      setTerminiPagamento('Bonifico Bancario 30 gg fine mese d.f.');
+      setQuoteItems([
+        {
+          id: 'acque-campagna-3k',
+          tipo: 'Spot Radiofonici Tabellari',
+          copertura: 'Radio Toscana Area 2 (Pisa, Livorno, Costa, Lucca, Valdarno)',
+          dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30\") — Spot Fornito dal Committente',
+          fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
+          periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
+          prezzoListino: 6000,
+          valore: 3000,
+          isSpot: true,
+          dataInizio: '2026-11-10',
+          dataFine: '2027-02-08',
+          spotGiornalieri: 6,
+          giorniTotali: 90,
+          spotTotali: 400,
+          spotOmaggio: 100,
+          formatoSecondi: 30
+        }
+      ]);
+      return;
+    }
 
     if (client.ultimo_prezzo && !isNaN(Number(client.ultimo_prezzo))) {
       const p = Number(client.ultimo_prezzo);
@@ -1528,6 +1557,45 @@ export default function LeadEngineDashboard() {
   }
 
   // Ripulisci e azzera il preventivatore per nuova trattativa
+    function caricaOffertaAcqueSpa() {
+    resetQuoteBuilder();
+    setQNome('ACQUE SPA');
+    setQReferente('Luca Bindi');
+    setQIndirizzo('Via Bellatalla 1');
+    setQComune('Ospedaletto');
+    setQProvincia('PI');
+    setQPiva('05175700482');
+    setQEmail('l.bindi@acque.net');
+    setQTelefono('+39 335 5647954 / 050 843332');
+    setTipoAccordo('STANDARD');
+    setTerminiPagamento('Bonifico Bancario 30 gg fine mese d.f.');
+    const acqueClient = (storicoClientiData as HistoricalClient[]).find(c => c.ditta.toUpperCase().includes('ACQUE'));
+    if (acqueClient) {
+      setSelectedHistory(acqueClient);
+    }
+    setQuoteItems([
+      {
+        id: 'acque-campagna-3k',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 2 (Pisa, Livorno, Costa, Lucca, Valdarno)',
+        dettagli: '400 spot + 100 spot omaggio (Totale 500 passaggi da 30\") — Spot Fornito dal Committente',
+        fascia: '07.00 – 20.00 a rotazione (Fasce Mattina, Pomeriggio, Sera)',
+        periodo: 'Campagna utilizzabile entro max 90 giorni (avvio previsto dal 10/11/2026 fino al 08/02/2027)',
+        prezzoListino: 6000,
+        valore: 3000,
+        isSpot: true,
+        dataInizio: '2026-11-10',
+        dataFine: '2027-02-08',
+        spotGiornalieri: 6,
+        giorniTotali: 90,
+        spotTotali: 400,
+        spotOmaggio: 100,
+        formatoSecondi: 30
+      }
+    ]);
+    setShowQuoteModal(true);
+  }
+
   function resetQuoteBuilder() {
     setEditingLeadId(null);
     setQNome('');
@@ -1538,6 +1606,8 @@ export default function LeadEngineDashboard() {
     setQProvincia('');
     setQPiva('');
     setQSdi('');
+    setQIndirizzo('');
+    setTerminiPagamento('Bonifico Bancario 30 gg fine mese d.f.');
     setSelectedHistory(null);
     setTipoAccordo('STANDARD');
     setBarterRadio('');
@@ -2522,6 +2592,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
           </a>
           <button className="btn" onClick={() => alert('Cassaforte Cloud Supabase: system_vault connesso e sincronizzato!')}>
             🔒 Cloud Vault OK
+          </button>
+          <button
+            className="btn"
+            style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700 }}
+            onClick={caricaOffertaAcqueSpa}
+            title="Precarica l'offerta 3.000€ (90 gg) per Acque SpA"
+          >
+            Offerta Acque SpA (3.000€)
           </button>
           <button className="btn btn-primary" onClick={() => { resetQuoteBuilder(); setShowQuoteModal(true); }}>
             ➕ Nuovo Preventivo Modulare
@@ -5249,9 +5327,9 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   <div style={{ fontSize: '10px', color: '#475569', marginTop: '3px' }}>
                     Referente: <strong>{qReferente || 'Direzione'}</strong> • P.IVA / C.F.: <strong>{qPiva || 'In fase di definizione'}</strong>
                   </div>
-                  {qComune && (
+                  {(qComune || qIndirizzo) && (
                     <div style={{ fontSize: '9.5px', color: '#64748b', marginTop: '1px' }}>
-                      Sede: {qComune} {qProvincia ? `(${qProvincia})` : ''}
+                      Sede: {qIndirizzo ? `${qIndirizzo} — ` : ''}{qComune} {qProvincia ? `(${qProvincia})` : ''}
                     </div>
                   )}
                 </div>
@@ -5397,9 +5475,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       • Quota Ascoltatori (Promozioni On-Air): <strong>{barterAscoltatori || 'Come da accordi'}</strong>
                     </div>
                   )}
-                  <div style={{ color: '#64748b', lineHeight: 1.4 }}>
-                    • Pagamento: <strong>Bonifico Bancario 30 gg fine mese d.f.</strong> (salvo diversi accordi scritti)<br />
-                    • Messa in onda: <strong>Condizionata alla restituzione della presente siglata</strong> e fornitura materiale audio.
+                  <div style={{ color: '#475569', lineHeight: 1.45, fontSize: '8.5px' }}>
+                    <div>• Pagamento: <strong>{terminiPagamento || 'Bonifico Bancario 30 gg fine mese d.f.'}</strong></div>
+                    <div>• Coordinate Accredito: <strong>BANCO BPM</strong> — IBAN: <strong>IT38O0503402801000000000955</strong></div>
+                    <div>• Emittente: <strong>Radio Monte Serra S.r.l.</strong> — C.F.: <strong>00940130503</strong> • P.IVA: <strong>04472740481</strong></div>
+                    <div>• Messa in onda: <strong>Condizionata alla restituzione della presente siglata</strong> e fornitura materiale audio.</div>
                   </div>
                 </div>
 
@@ -5438,12 +5518,18 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 <div style={{ fontSize: '7.5px', color: '#64748b', lineHeight: 1.35, marginBottom: '6px', borderLeft: '2.5px solid #D43F4A', paddingLeft: '6px' }}>
                   <strong>Tutela Diritto d&apos;Autore:</strong> Il materiale audio è concesso in licenza d&apos;uso esclusivamente per l&apos;ambito concordato (RT+RF o Diritti Liberi Toscana), con espressa esclusione di network nazionali, circuiti esterni e digital advertising non autorizzati per iscritto.
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '12px', marginTop: '6px', fontSize: '9px', color: '#64748b' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.3fr 1.3fr', gap: '10px', marginTop: '6px', fontSize: '8.5px', color: '#64748b', alignItems: 'end' }}>
                   <div>Data: ____ / ____ / 2026</div>
                   <div>Luogo: ____________________</div>
                   <div>
-                    <div>Timbro e Firma per Accettazione:</div>
-                    <div style={{ height: '22px', borderBottom: '1px dashed #94a3b8', marginTop: '4px' }}></div>
+                    <div style={{ fontSize: '8px', color: '#64748b' }}>Per l&apos;Emittente:</div>
+                    <div style={{ fontWeight: 800, color: '#1e293b', fontSize: '9px', marginTop: '2px' }}>Radio Monte Serra S.r.l.</div>
+                    <div style={{ fontSize: '7.5px', color: '#64748b' }}>Direzione Commerciale: Fabio Asiri</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '8px', color: '#64748b' }}>Per il Committente:</div>
+                    <div style={{ height: '18px', borderBottom: '1px dashed #94a3b8', marginTop: '2px' }}></div>
+                    <div style={{ fontSize: '7.5px', color: '#64748b', textAlign: 'center' }}>Timbro e Firma per Accettazione</div>
                   </div>
                 </div>
               </div>

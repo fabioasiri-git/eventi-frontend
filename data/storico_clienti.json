@@ -2538,34 +2538,50 @@
   {
     "ditta": "ACQUE SPA",
     "referente": "Luca Bindi",
-    "indirizzo": "Via Bellatalla",
+    "indirizzo": "Via Bellatalla 1",
     "cap": "56121",
     "citta": "Ospedaletto",
     "provincia": "PI",
-    "telefono": "3355647954",
+    "telefono": "+39 335 5647954 / 050 843332",
     "email": "l.bindi@acque.net",
     "piva": "05175700482",
     "contratti": [
       {
-        "anno": "2024",
-        "data": "15/3/2024",
-        "prezzo": 0,
-        "spot": "10",
-        "file": "Contratto Acque Spa 15.03.2024.xls",
+        "anno": "2026",
+        "data": "02/04/2026",
+        "prezzo": 4000,
+        "spot": "550+150 omaggio (700 spot 30s Area 2)",
+        "file": "Contratto Acque Spa 02.04.2026.pdf",
         "referente": "Luca Bindi"
       },
       {
         "anno": "2025",
-        "data": "17/4/2025",
+        "data": "17/04/2025",
         "prezzo": 4000,
-        "spot": "550+150 omaggio",
+        "spot": "550+150 omaggio (700 spot 30s Area 2)",
         "file": "Contratto Acque Spa 17.04.2025.xls",
+        "referente": "Luca Bindi"
+      },
+      {
+        "anno": "2024",
+        "data": "15/03/2024",
+        "prezzo": 3000,
+        "spot": "400+100 omaggio (500 spot 30s Area 2) + 10 Pillole (2.000€)",
+        "file": "Contratto Acque Spa 15.03.2024.xls",
+        "referente": "Luca Bindi"
+      },
+      {
+        "anno": "2023",
+        "data": "12/04/2023",
+        "prezzo": 3000,
+        "spot": "400+104 omaggio (504 spot 30s Area 1+2)",
+        "file": "Preventivo Acque Spa 12.04.23.docx",
         "referente": "Luca Bindi"
       }
     ],
-    "totale_contratti": 2,
-    "ultimo_prezzo": 4000,
-    "ultimo_anno": "2025"
+    "totale_contratti": 4,
+    "ultimo_prezzo": 3000,
+    "ultimo_anno": "2026"
   },
   {
     "ditta": "ASD SILLICAGNANA",
