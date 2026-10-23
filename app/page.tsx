@@ -997,11 +997,16 @@ export default function LeadEngineDashboard() {
         }
       }
 
-      // Calcolo Listino Ufficiale matematico esatto da Tariffa Ufficiale Depositata x Spot Paganti
+      // Calcolo Listino Ufficiale matematico esatto da Tariffa Ufficiale Depositata
       const tariffa = getTariffaUfficialeSpot(updated.copertura, formato);
       updated.tariffaUnitaria = tariffa;
       if (!('prezzoListino' in updates)) {
-        updated.prezzoListino = Math.round(tariffa * spotPaganti * 100) / 100;
+        if (isScalaSconti) {
+          updated.prezzoListino = Math.round(tariffa * spotPaganti * 100) / 100;
+        } else {
+          // In modalità OMAGGI, il Listino Ufficiale Complessivo erogato include il controvalore totale di tutti i passaggi (paganti + omaggio)
+          updated.prezzoListino = Math.round(tariffa * (spotPaganti + omaggi) * 100) / 100;
+        }
       }
 
       if (isScalaSconti) {
@@ -1426,12 +1431,24 @@ export default function LeadEngineDashboard() {
 
   // Calcolo Totali Preventivo Modulare Dinamico
   const totaleInvestimento = quoteItems.reduce((acc, curr) => acc + Number(curr.valore || 0), 0);
+  const totaleValoreOmaggi = quoteItems.reduce((acc, curr) => {
+    if (!curr.isSpot) return acc;
+    const isScalaSconti = curr.modalitaVantaggio === 'SCALA_SCONTI' || (!curr.modalitaVantaggio && (curr.spotOmaggio || 0) === 0);
+    if (isScalaSconti) return acc;
+    const tariffa = curr.tariffaUnitaria || getTariffaUfficialeSpot(curr.copertura, curr.formatoSecondi || 20) || 9.00;
+    return acc + Math.round(tariffa * (curr.spotOmaggio || 0));
+  }, 0);
   const totaleListino = quoteItems.reduce((acc, curr) => {
     let listino = Number(curr.prezzoListino || 0);
-    if ((!listino || listino <= Number(curr.valore || 0)) && curr.isSpot) {
-      const tariffa = getTariffaUfficialeSpot(curr.copertura, curr.formatoSecondi || 20) || 9.00;
-      const sp = curr.spotTotali && curr.spotTotali > 0 ? curr.spotTotali : 60;
-      listino = Math.round(tariffa * sp);
+    if (curr.isSpot) {
+      const tariffa = curr.tariffaUnitaria || getTariffaUfficialeSpot(curr.copertura, curr.formatoSecondi || 20) || 9.00;
+      const paganti = curr.spotTotali && curr.spotTotali > 0 ? curr.spotTotali : 60;
+      const isScalaSconti = curr.modalitaVantaggio === 'SCALA_SCONTI' || (!curr.modalitaVantaggio && (curr.spotOmaggio || 0) === 0);
+      const omaggi = isScalaSconti ? 0 : (curr.spotOmaggio || 0);
+      const calcolato = Math.round(tariffa * (paganti + omaggi));
+      if (!listino || listino < calcolato) {
+        listino = calcolato;
+      }
     }
     return acc + (listino || Number(curr.valore || 0));
   }, 0);
@@ -4459,6 +4476,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           {(() => {
                             const isScalaSconti = it.modalitaVantaggio === 'SCALA_SCONTI' || (!it.modalitaVantaggio && (it.spotOmaggio || 0) === 0 && (it.scontoPercentuale || 0) > 0);
                             const currentSconto = it.scontoPercentuale !== undefined ? it.scontoPercentuale : getScontoVolumetricoListino(it.spotTotali || 60);
+                            const tariffaUnit = it.tariffaUnitaria || getTariffaUfficialeSpot(it.copertura, it.formatoSecondi || 20);
+                            const valoreOmaggiVoce = Math.round((it.spotOmaggio || 0) * tariffaUnit);
+                            const valorePagantiVoce = Math.round((it.spotTotali || 0) * tariffaUnit);
+                            const valoreTotaleErogato = valorePagantiVoce + valoreOmaggiVoce;
+                            const vantaggioReale = Math.max(0, valoreTotaleErogato - (it.valore || 0));
 
                             return (
                               <div style={{ marginBottom: '12px' }}>
@@ -4648,7 +4670,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                     </div>
 
                                     <div>
-                                      <label style={{ fontSize: '10px', color: '#fb7185', fontWeight: 800, display: 'block', marginBottom: '3px' }}>🎁 Spot OMAGGIO:</label>
+                                      <label style={{ fontSize: '10px', color: '#fb7185', fontWeight: 800, display: 'block', marginBottom: '3px' }}>
+                                        🎁 Spot OMAGGIO:
+                                        {valoreOmaggiVoce > 0 && <span style={{ color: '#fb7185', fontWeight: 800, marginLeft: '4px' }}>(Valore: € {valoreOmaggiVoce.toLocaleString('it-IT')})</span>}
+                                      </label>
                                       <input
                                         type="number"
                                         className="form-input"
@@ -4729,26 +4754,48 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                       </div>
                                     ) : (
                                       <div>
-                                        Totale Passaggi On-Air: <strong style={{ color: '#ffffff' }}>{(it.spotTotali || 0) + (it.spotOmaggio || 0)} passaggi</strong>
-                                        {' '}({it.spotTotali || 0} paganti
-                                        {(it.spotOmaggio || 0) > 0 && <span style={{ color: '#fb7185', fontWeight: 800 }}> + {it.spotOmaggio} in OMAGGIO</span>})
-                                        <div style={{ fontSize: '10px', color: '#fb7185', fontWeight: 700, marginTop: '2px' }}>
-                                          🎁 Vantaggio Promozionale: {it.spotOmaggio || 0} spot gratuiti inclusi nel pacchetto
+                                        <div>
+                                          Totale Passaggi On-Air: <strong style={{ color: '#ffffff' }}>{(it.spotTotali || 0) + (it.spotOmaggio || 0)} passaggi</strong>
+                                          {' '}({it.spotTotali || 0} a tariffa + <span style={{ color: '#fb7185', fontWeight: 800 }}>{it.spotOmaggio || 0} in OMAGGIO</span>)
+                                        </div>
+                                        <div style={{ fontSize: '11px', color: '#fb7185', fontWeight: 800, marginTop: '3px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                          <span>🎁 Valore Spot OMAGGIO in Regalo:</span>
+                                          <span style={{ background: 'rgba(244, 63, 94, 0.25)', border: '1px solid rgba(244, 63, 94, 0.5)', padding: '1px 6px', borderRadius: '4px', fontSize: '11.5px', color: '#ffffff' }}>
+                                            € {valoreOmaggiVoce.toLocaleString('it-IT', { minimumFractionDigits: 2 })} GRATIS
+                                          </span>
+                                          <span style={{ fontSize: '9.5px', color: '#fda4af', fontWeight: 600 }}>
+                                            ({it.spotOmaggio || 0} spot × € {tariffaUnit.toFixed(2)} abbuonati al 100%)
+                                          </span>
+                                        </div>
+                                        <div style={{ fontSize: '10.5px', color: '#38bdf8', fontWeight: 700, marginTop: '3px' }}>
+                                          💰 Vantaggio Riservato Totale: <strong style={{ color: '#38bdf8', fontSize: '12px' }}>€ {vantaggioReale.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</strong>
+                                          <span style={{ fontSize: '9.5px', color: '#94a3b8', marginLeft: '6px' }}>
+                                            (Valore totale: € {valoreTotaleErogato.toLocaleString('it-IT')} → Corrispettivo netto: € {(it.valore || 0).toLocaleString('it-IT')})
+                                          </span>
                                         </div>
                                       </div>
                                     )}
                                   </div>
 
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                      <span style={{ fontSize: '11px', color: '#94a3b8' }}>Listino Ufficiale (€):</span>
-                                      <input
-                                        type="number"
-                                        className="form-input"
-                                        style={{ fontSize: '12px', width: '110px', textAlign: 'right', padding: '4px 6px' }}
-                                        value={it.prezzoListino}
-                                        onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
-                                      />
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span style={{ fontSize: '10.5px', color: '#94a3b8' }}>
+                                          {!isScalaSconti && (it.spotOmaggio || 0) > 0 ? 'Listino Totale Erogato (€):' : 'Listino Ufficiale (€):'}
+                                        </span>
+                                        <input
+                                          type="number"
+                                          className="form-input"
+                                          style={{ fontSize: '12px', width: '110px', textAlign: 'right', padding: '4px 6px', fontWeight: 700 }}
+                                          value={it.prezzoListino}
+                                          onChange={e => updateQuoteItem(it.id, 'prezzoListino', Number(e.target.value))}
+                                        />
+                                      </div>
+                                      {!isScalaSconti && (it.spotOmaggio || 0) > 0 && (
+                                        <div style={{ fontSize: '9px', color: '#fb7185', fontWeight: 700 }}>
+                                          (Spazi € {valorePagantiVoce.toLocaleString('it-IT')} + Omaggi € {valoreOmaggiVoce.toLocaleString('it-IT')})
+                                        </div>
+                                      )}
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                       <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>Prezzo Riservato (€):</span>
@@ -4998,17 +5045,27 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               <div style={{ marginTop: '14px', background: 'rgba(0,0,0,0.35)', padding: '12px 16px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', gap: '20px' }}>
                   <div>
-                    <span style={{ fontSize: '11px', color: '#94a3b8' }}>Valore Totale Listino:</span>
+                    <span style={{ fontSize: '11px', color: '#94a3b8' }}>Valore Totale Listino (Erogato):</span>
                     <div style={{ fontSize: '14px', fontWeight: 700, color: '#cbd5e1', textDecoration: scontoApplicato > 0 ? 'line-through' : 'none' }}>
                       € {totaleListino.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                     </div>
+                    {totaleValoreOmaggi > 0 && (
+                      <div style={{ fontSize: '9px', color: '#fb7185', fontWeight: 700 }}>
+                        (inclusi € {totaleValoreOmaggi.toLocaleString('it-IT')} spot omaggio)
+                      </div>
+                    )}
                   </div>
                   {scontoApplicato > 0 && (
                     <div>
-                      <span style={{ fontSize: '11px', color: '#f43f5e' }}>Sconto Riservato Accordato:</span>
+                      <span style={{ fontSize: '11px', color: '#f43f5e' }}>Vantaggio Totale Accordato:</span>
                       <div style={{ fontSize: '14px', fontWeight: 800, color: '#f43f5e' }}>
                         - € {scontoApplicato.toLocaleString('it-IT', { minimumFractionDigits: 2 })} ({Math.round((scontoApplicato / (totaleListino || 1)) * 100)}%)
                       </div>
+                      {totaleValoreOmaggi > 0 && (
+                        <div style={{ fontSize: '9px', color: '#fda4af' }}>
+                          € {totaleValoreOmaggi.toLocaleString('it-IT')} omaggi + € {Math.max(0, scontoApplicato - totaleValoreOmaggi).toLocaleString('it-IT')} sconto
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -5733,9 +5790,10 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       }
 
                       const tariffaUff = isSpot ? (getTariffaUfficialeSpot(it.copertura, formato) || 9.00) : 0;
+                      const valoreOmaggiItem = isSpot ? Math.round(tariffaUff * omaggi) : 0;
                       const listinoEffettivo = (it.prezzoListino && it.prezzoListino > it.valore)
                         ? it.prezzoListino
-                        : (isSpot ? Math.round(tariffaUff * spotPaganti) : it.valore);
+                        : (isSpot ? Math.round(tariffaUff * (spotPaganti + omaggi)) : it.valore);
 
                       return (
                         <tr key={it.id} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
@@ -5752,8 +5810,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   SCALA SCONTI -{Math.round((1 - it.valore / listinoEffettivo) * 100)}%
                                 </span>
                               ) : omaggi > 0 ? (
-                                <span style={{ fontSize: '7.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 4px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                  + {omaggi} OMAGGIO
+                                <span style={{ fontSize: '7.5px', background: '#fef2f2', color: '#D43F4A', border: '1px solid #fecaca', padding: '1px 5px', borderRadius: '3px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                  + {omaggi} OMAGGIO (Valore € {valoreOmaggiItem.toLocaleString('it-IT')})
                                 </span>
                               ) : null}
                             </div>
@@ -5797,6 +5855,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right', color: '#94a3b8', verticalAlign: 'top', textDecoration: listinoEffettivo > it.valore ? 'line-through' : 'none' }}>
                           <div>€ {Number(listinoEffettivo).toLocaleString('it-IT', { minimumFractionDigits: 2 })}</div>
+                          {omaggi > 0 && (
+                            <div style={{ fontSize: '7.5px', color: '#D43F4A', fontWeight: 700 }}>
+                              (inclusi € {valoreOmaggiItem.toLocaleString('it-IT')} omaggio)
+                            </div>
+                          )}
                           {it.quantita && it.quantita > 1 && !isSpot ? (
                             <div style={{ fontSize: '8px', color: '#94a3b8' }}>
                               (€ {Number(it.prezzoUnitarioListino || (listinoEffettivo / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
@@ -5843,7 +5906,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 {/* COLONNA DESTRA: TOTALIZZATORE ECONOMICO AD ALTO CONTRASTO */}
                 <div style={{ border: '1px solid #cbd5e1', borderRadius: '6px', overflow: 'hidden' }}>
                   <div style={{ background: '#f1f5f9', padding: '6px 10px', display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#64748b' }}>
-                    <span>Valore Listino Ufficiale:</span>
+                    <span>Valore Listino Complessivo:</span>
                     <span style={{ fontWeight: 700, textDecoration: scontoApplicato > 0 ? 'line-through' : 'none' }}>
                       € {totaleListino.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                     </span>
@@ -5852,6 +5915,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     <div style={{ background: '#fef2f2', padding: '5px 10px', display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#D43F4A', fontWeight: 800 }}>
                       <span>Vantaggio Riservato Cliente:</span>
                       <span>- € {scontoApplicato.toLocaleString('it-IT', { minimumFractionDigits: 2 })} ({Math.round((scontoApplicato / (totaleListino || 1)) * 100)}%)</span>
+                    </div>
+                  )}
+                  {totaleValoreOmaggi > 0 && (
+                    <div style={{ background: '#fff1f2', padding: '3px 10px', fontSize: '8px', color: '#be123c', fontWeight: 700, borderTop: '1px dashed #fecaca' }}>
+                      🎁 Include € {totaleValoreOmaggi.toLocaleString('it-IT', { minimumFractionDigits: 2 })} di passaggi spot in OMAGGIO promozionale
                     </div>
                   )}
                   <div style={{ background: '#1e293b', color: '#ffffff', padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
