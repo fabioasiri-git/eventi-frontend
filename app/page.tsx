@@ -109,6 +109,80 @@ interface LeadRow {
 
 const INITIAL_LEADS_POOL: LeadRow[] = [
   {
+    id: 'lead-il-ponte-aste-2026',
+    nome_azienda_evento: "IL PONTE CASA D'ASTE S.R.L.",
+    referente: 'Direzione / Segreteria Eventi',
+    email: 'info@ponteonline.com',
+    telefono: '02 863141',
+    piva: '01481220133',
+    cf: '01481220133',
+    pec: '',
+    sdi: 'COCK52R',
+    indirizzo: 'Via Pontaccio, 12',
+    cap: '20121',
+    comune: 'Milano',
+    provincia: 'MI',
+    settore: "Case d'Aste / Arte e Antiquariato",
+    area_target: 'Radio Toscana Area 1 (FI - PO - PT)',
+    fase_commerciale: 'PREVENTIVO INVIATO',
+    colonna: 'PREVENTIVO INVIATO',
+    tipo_contratto: 'SPOT_TABELLARE',
+    valore_preventivo: 800,
+    valore_contratto: 0,
+    numero_preventivo: 'PREV-2026/008',
+    plafond_totale_spot: 140,
+    spot_rimasti: 140,
+    is_cambio_merce: false,
+    probabilita_chiusura: 90,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-10-27',
+    data_ultimo_invio: '2026-10-27',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'IN_ATTESA_COPY',
+    tipo_produzione_spot: 'SOLO_RT_RF',
+    periodo: "14 giorni prima dell'evento",
+    spot_giornalieri: 10,
+    stato_programmazione: 'IN_ATTESA_CONFERMA',
+    note: "Campagna Evento Aste: 10 passaggi/giorno per 14 gg Area 1 (140 spot da 20\") € 700 + Realizzazione spot studio € 100. Totale € 800 + IVA. Dati fiscali da QR Code Agenzia Entrate: P.IVA/CF 01481220133, SDI COCK52R.",
+    quote_items: [
+      {
+        id: 'it-ilponte-1',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        dettagli: '140 spot da 20\" (10 passaggi al giorno per 14 gg pre-evento)',
+        fascia: '07.00 – 21.00 a rotazione',
+        periodo: "14 giorni prima dell'evento",
+        periodoDaDefinire: true,
+        giorniTotali: 14,
+        spotGiornalieri: 10,
+        spotTotali: 140,
+        spotOmaggio: 0,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 44.44,
+        tariffaUnitaria: 9.00,
+        prezzoListino: 1260,
+        valore: 700,
+        isSpot: true
+      },
+      {
+        id: 'it-ilponte-2',
+        tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
+        copertura: 'Nostro Gruppo (Radio Toscana + Radio Firenze)',
+        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione nostro gruppo (Radio Toscana e Radio Firenze)',
+        fascia: 'Costo Una Tantum',
+        periodo: '',
+        prezzoListino: 100,
+        valore: 100,
+        quantita: 1,
+        prezzoUnitarioListino: 100,
+        prezzoUnitarioNetto: 100,
+        tipoProduzione: 'SOLO_RT_RF',
+        isSpot: false
+      }
+    ]
+  },
+  {
     id: 'lead-acque-spa-2026',
     nome_azienda_evento: 'ACQUE SPA',
     referente: 'Luca Bindi',
@@ -1761,6 +1835,60 @@ export default function LeadEngineDashboard() {
     setShowQuoteModal(true);
   }
 
+  // Precarica Preventivo Rapido Evento per Il Ponte Casa d'Aste S.r.l. (800€ + IVA)
+  function caricaOffertaIlPonte() {
+    resetQuoteBuilder();
+    setQNome("IL PONTE CASA D'ASTE S.R.L.");
+    setQReferente("Direzione / Segreteria Eventi");
+    setQIndirizzo("Via Pontaccio, 12");
+    setQComune("Milano");
+    setQProvincia("MI");
+    setQPiva("01481220133");
+    setQSdi("COCK52R");
+    setQEmail("info@ponteonline.com");
+    setQTelefono("02 863141");
+    setTipoAccordo('STANDARD');
+    setTerminiPagamento('Bonifico Bancario concordato');
+    setQuoteItems([
+      {
+        id: 'ilponte-spot-1',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        dettagli: '140 spot da 20\" (10 passaggi al giorno per 14 gg pre-evento)',
+        fascia: '07.00 – 21.00 a rotazione',
+        periodo: "14 giorni prima dell'evento",
+        periodoDaDefinire: true,
+        giorniTotali: 14,
+        spotGiornalieri: 10,
+        spotTotali: 140,
+        spotOmaggio: 0,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 44.44,
+        tariffaUnitaria: 9.00,
+        prezzoListino: 1260,
+        valore: 700,
+        isSpot: true
+      },
+      {
+        id: 'ilponte-prod-2',
+        tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
+        copertura: 'Nostro Gruppo (Radio Toscana + Radio Firenze)',
+        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione nostro gruppo (Radio Toscana e Radio Firenze)',
+        fascia: 'Costo Una Tantum',
+        periodo: '',
+        prezzoListino: 100,
+        valore: 100,
+        quantita: 1,
+        prezzoUnitarioListino: 100,
+        prezzoUnitarioNetto: 100,
+        tipoProduzione: 'SOLO_RT_RF',
+        isSpot: false
+      }
+    ]);
+    setShowQuoteModal(true);
+  }
+
   function resetQuoteBuilder() {
     setEditingLeadId(null);
     setQNome('');
@@ -2759,6 +2887,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
           </a>
           <button className="btn" onClick={() => alert('Cassaforte Cloud Supabase: system_vault connesso e sincronizzato!')}>
             🔒 Cloud Vault OK
+          </button>
+          <button
+            className="btn"
+            style={{ background: 'rgba(244, 63, 94, 0.15)', color: '#fb7185', border: '1px solid rgba(244, 63, 94, 0.4)', fontWeight: 700 }}
+            onClick={caricaOffertaIlPonte}
+            title="Precarica l'offerta 800€ (14 gg pre-evento Area 1 + Produzione) per Il Ponte Casa d'Aste"
+          >
+            🏛️ Offerta Il Ponte Aste (800€)
           </button>
           <button
             className="btn"
