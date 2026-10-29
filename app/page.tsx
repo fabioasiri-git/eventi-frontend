@@ -2573,6 +2573,46 @@ Grazie e buon lavoro!`;
     alert(`🎉 File Audio Ricevuto per "${lead.nome_azienda_evento}"!\n• Sbloccato per la Regia Broadcast On-Air\n• Semaforo verde 🟢 assegnato nel Palinsesto.`);
   }
 
+
+  // Salva Modifiche Contratto Attivo in-place (senza duplicare o azzerare)
+  function saveContractEdits() {
+    const targetLead = selectedLeadForContract || leads.find(l => l.nome_azienda_evento === contractData.committente);
+    if (!targetLead) {
+      alert('Impossibile identificare il contratto da aggiornare.');
+      return;
+    }
+
+    const hasSpots = (contractData.items && contractData.items.some(i => i.isSpot)) || (targetLead.quote_items && targetLead.quote_items.some(i => i.isSpot));
+    const totalSpots = (contractData.spotPaganti || 0) + (contractData.spotOmaggio || 0);
+
+    updateLeadsAndPersist(prev => prev.map(l => {
+      if (l.id === targetLead.id) {
+        return {
+          ...l,
+          nome_azienda_evento: contractData.committente || l.nome_azienda_evento,
+          referente: contractData.referente || l.referente,
+          piva: contractData.piva || l.piva,
+          sdi: contractData.sdi || l.sdi,
+          telefono: contractData.telefono || l.telefono,
+          email: contractData.email || l.email,
+          numero_contratto: contractData.numero || l.numero_contratto,
+          valore_contratto: contractData.totaleNetto || l.valore_contratto,
+          valore_preventivo: contractData.totaleNetto || l.valore_preventivo,
+          area_target: contractData.area || l.area_target,
+          data_inizio_trasmissione: contractData.dataDecorrenza === 'Periodo da definire' ? undefined : (contractData.dataDecorrenza || l.data_inizio_trasmissione),
+          data_fine_trasmissione: contractData.dataScadenza === 'Periodo da definire' ? undefined : (contractData.dataScadenza || l.data_fine_trasmissione),
+          plafond_totale_spot: hasSpots ? (totalSpots || l.plafond_totale_spot) : l.plafond_totale_spot,
+          quote_items: contractData.items && contractData.items.length > 0 ? contractData.items : l.quote_items,
+          note: `Contratto RMS aggiornato il ${new Date().toLocaleDateString('it-IT')}. ${contractData.noteContratto || ''}`
+        };
+      }
+      return l;
+    }));
+
+    alert(`✅ Modifiche al Contratto ${contractData.numero || targetLead.numero_contratto} per "${contractData.committente || targetLead.nome_azienda_evento}" salvate con successo!`);
+    setShowContractModal(false);
+  }
+
   // Conferma & Attiva Contratto: Passa a CONTRATTO ATTIVO e ripulisce il preventivatore
   function confirmAndActivateContract() {
     const clientName = contractData.committente.trim() || 'Nuovo Cliente Contratto';
@@ -3289,6 +3329,16 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   className="btn btn-xs"
                                   style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
                                   onClick={() => openContractForLead(l)}
+                                  title="Modifica il contratto, date di trasmissione, spot e condizioni economiche"
+                                  style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 800 }}
+                                >
+                                  ✏️ Modifica Contratto
+                                </button>
+                                <button
+                                  className="btn btn-xs"
+                                  style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}
+                                  onClick={() => openContractForLead(l)}
+                                  title="Visualizza e scarica il Contratto Ufficiale RMS in PDF A4"
                                 >
                                   📄 Contratto RMS
                                 </button>
@@ -6421,6 +6471,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       title="Archivia questo contratto nello storico contratti conclusi"
                     >
                       📁 Archivia come Concluso
+                    </button>
+                    <button
+                      className="btn btn-xs"
+                      onClick={saveContractEdits}
+                      style={{ background: '#10b981', color: '#ffffff', fontWeight: 800, borderColor: '#059669', boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)' }}
+                      title="Salva tutte le modifiche apportate a questo contratto attivo"
+                    >
+                      💾 Salva Modifiche Contratto
+                    </button>
+                    <button
+                      className="btn btn-xs"
+                      onClick={() => {
+                        const targetLead = selectedLeadForContract || leads.find(l => l.nome_azienda_evento === contractData.committente);
+                        if (targetLead) {
+                          setShowContractModal(false);
+                          openEditQuoteModal(targetLead);
+                        }
+                      }}
+                      style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', fontWeight: 700, borderColor: 'rgba(168, 85, 247, 0.4)' }}
+                      title="Riapri l'intera pianificazione nel Preventivatore per aggiungere o modificare voci e formati"
+                    >
+                      💼 Modifica nel Preventivatore
                     </button>
                   </>
                 ) : (
