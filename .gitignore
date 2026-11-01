@@ -44,3 +44,14 @@ next-env.d.ts
 # Cartelle di lavoro degli agenti (regola 4 di AGENTS.md)
 _scratch/
 _backup/
+
+# Profili browser e file di lavoro degli agenti (aggiunto da Claude 01/11/2026)
+**/edge_profile/
+**/chrome_profile/
+**/User Data/
+**/Cookies
+**/Cookies-journal
+**/Login Data*
+**/Web Data*
+**/Local State
+_scratch_*
