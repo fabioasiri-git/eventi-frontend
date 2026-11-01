@@ -1,30 +1,16 @@
 ---
-description: Inizio sessione. Ricostruisce cosa è stato fatto dall'ultima volta leggendo Git (fonte affidabile), HANDOFF.md e STATO_ATTUALE.md. Mostra git status. Non modifica nulla.
+description: Inizio sessione. Legge regole e note, mostra lo stato, propone il piano. Non modifica nulla.
 ---
 
 # INIZIO SESSIONE
 
-Va usato dopo che APRI_LAVORO_v3.bat è finito verde. Vale per il repository di questo workspace.
+Si usa dopo che Fabio ha lanciato APRI_LAVORO_v4 (finito in verde).
 
-## Regole
-- Mostra l'output reale di ogni comando. Se non riesci a eseguire o leggere qualcosa, scrivi NON VERIFICATO e spiega perché. Non riassumere a memoria e non dire "sessione allineata" senza prova.
-- NON modificare nulla. NON fare git pull, push, checkout, reset o commit.
-
-## 1. Git (fonte più affidabile di ciò che è stato fatto)
-Esegui e mostra l'output di:
-- `git status -sb`
-- `git log -5 --date=format:"%d/%m/%Y %H:%M" --pretty=format:"%h | %ad | %s" --stat`
-
-I commit creati da SALVA_E_CHIUDI hanno un messaggio del tipo "sync: sessione <NOME PC> <data> <ora>": da lì ricavi da quale PC e quando è stato fatto l'ultimo salvataggio, e dalle statistiche quali file sono stati toccati.
-
-## 2. Note di consegna
-- Leggi `.agents/HANDOFF.md` (se esiste) e riporta la sezione più recente con la sua data.
-- Leggi STATO_ATTUALE.md nella cartella cloud PROGETTI (percorso: %USERPROFILE%\CloudDrive\myfiles\PROGETTI). Se non riesci ad accedere alla cartella, dimmelo.
-
-## 3. Riassunto (tre blocchi)
-- **Ultimo salvataggio**: data, ora, PC e file modificati, ricavati dal log Git.
-- **Cosa dicono le note**: cosa riportano HANDOFF.md e STATO_ATTUALE.md. Segnala ogni discrepanza con il log Git (per esempio file modificati che le note non citano) e se le note sono più vecchie dell'ultimo commit.
-- **Prossimo passo proposto**.
-
-## 4. Fine
-Poi fermati e aspetta la mia conferma prima di lavorare.
+1. Leggi AGENTS.md (parte 1 e parte 2), la sezione piu' recente di HANDOFF.md e DECISIONI.md.
+2. Esegui e mostra l'output reale di: `git status -sb` e `git log -5 --oneline`. Non usare altri comandi git.
+3. Scrivi in massimo 10 righe:
+   - ultimo salvataggio (dal log git) e cosa dice HANDOFF.md;
+   - discrepanze tra HANDOFF.md e git (file cambiati non citati, note piu' vecchie dell'ultimo commit);
+   - file non salvati presenti ora.
+4. Chiedi a Fabio il compito di oggi, poi proponi il piano (passi, file, rischi) e aspetta "procedi".
+Non modificare nessun file in questo workflow.
