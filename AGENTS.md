@@ -2,6 +2,8 @@
 
 # REGOLE COMUNI PER GLI AGENTI (v1 - 01/11/2026)
 
+PERCORSI: lavora solo da P:\GD, P:\LEAD_ENGINE_RT, P:\ELISIR, P:\LINKEDIN. Non usare mai E:\..., C:\Progetti\... o C:\Elisir_di_Collina nei file, negli script o nelle istruzioni. A fine sessione scrivi anche una sezione in cima a G:\Il mio Drive\CONTROLLO\HANDOFF_GENERALE.md.
+
 Valgono per Antigravity e per qualsiasi agente AI, in tutti e 4 i progetti di Fabio
 (Generazione Dance, Lead Engine RT, Elisir di Collina, Linkedin Asiri).
 Le regole specifiche del progetto stanno nella seconda parte di AGENTS.md e NON sostituiscono queste.
