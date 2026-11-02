@@ -311,32 +311,34 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
   },
   {
     id: 'lead-firenze-fiera-castanea-2026',
-    nome_azienda_evento: 'FIRENZE FIERA SPA (Castanea Expo 2026)',
+    nome_azienda_evento: 'FIRENZE FIERA S.P.A. (Castanea Expo 2026)',
     referente: 'Tamara Mancini',
     email: 'mancini@firenzefiera.it',
     telefono: '055 49721',
     piva: '04933280481',
     sdi: 'M5UXCR1',
-    settore: 'Fiere & Congressi / Eventi Agroalimentari',
+    settore: 'Fiere & Congressi / Castanea Expo',
     comune: 'Firenze',
     provincia: 'FI',
     area_target: 'Radio Toscana Rete (Tutta la Toscana)',
     fase_commerciale: 'CONTRATTO ATTIVO',
+    colonna: 'CONTRATTO ATTIVO',
     tipo_contratto: 'SPECIAL_FORMAT',
     valore_preventivo: 1000,
     valore_contratto: 1000,
     numero_preventivo: 'PREV-2026/007',
-    numero_contratto: '2026/006-RMS',
+    numero_contratto: '2026/008-RMS',
     plafond_totale_spot: 100,
     spot_rimasti: 100,
     is_cambio_merce: false,
     probabilita_chiusura: 100,
     anno_riferimento: '2026',
     data_preventivo: '2026-10-12',
+    data_contratto: '2026-10-12',
     data_ultimo_invio: '2026-10-12',
     tipo_accordo: 'STANDARD',
     stato_produzione: 'PRODOTTO_APPROVATO',
-    copy_testo: 'Campagna promozionale Castanea Expo 2026 per Firenze Fiera: 10 giorni di campagna spot visitatori (10 spot/gg Rete 20", totale 100 passaggi) + n. 4 interviste ai protagonisti del settore.',
+    copy_testo: 'Campagna promozionale Castanea Expo 2026 per Firenze Fiera: 10 giorni di campagna spot visitatori (80 spot paganti + 20 spot OMAGGIO, totale 100 passaggi da 20" su Rete) + n. 4 interviste ai protagonisti del settore.',
     data_inizio_trasmissione: '2026-12-01',
     data_fine_trasmissione: '2026-12-10',
     spot_giornalieri: 10,
@@ -346,34 +348,38 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         id: 'it-ff-1',
         tipo: 'Spot Radiofonici Tabellari',
         copertura: 'Radio Toscana Rete (Tutta la Toscana)',
-        dettagli: '10 giorni di campagna spot dedicata ai visitatori (10 spot al giorno da 20", Totale 100 passaggi)',
-        fascia: '07:00 – 21:00 a rotazione',
-        periodo: 'Dal 01/12/2026 al 10/12/2026 (10 gg pre-evento)',
+        dettagli: '80 spot paganti + 20 spot OMAGGIO (Totale 100 passaggi da 20")',
+        fascia: 'Rotazione Generale Broadcast',
+        periodo: 'Dal 01/12/2026 al 10/12/2026',
         periodoDaDefinire: false,
+        dataInizio: '2026-12-01',
+        dataFine: '2026-12-10',
         prezzoListino: 1300,
-        valore: 600,
+        valore: 700,
         isSpot: true,
         spotGiornalieri: 10,
         giorniTotali: 10,
-        spotTotali: 100,
-        spotOmaggio: 0,
+        spotTotali: 80,
+        spotOmaggio: 20,
+        quantita: 80,
         formatoSecondi: 20
       },
       {
         id: 'it-ff-2',
-        tipo: 'Interviste / Rubriche Speciali On-Air',
+        tipo: 'Interviste Tematiche / Storytelling',
         copertura: 'Radio Toscana Rete (Tutta la Toscana)',
-        dettagli: 'n. 4 interviste ai protagonisti del settore, tra istituzioni e aziende espositrici di Castanea Expo 2026',
-        fascia: "All'interno dei programmi e notiziari",
-        periodo: 'Dal 01/12/2026 al 13/12/2026',
+        dettagli: 'n. 4 interviste on-air dedicate ai protagonisti del settore, tra istituzioni e aziende espositrici',
+        fascia: 'Rotazione concordata',
+        periodo: 'Castanea Expo 2026',
         prezzoListino: 600,
-        valore: 400,
+        valore: 300,
+        isSpot: false,
         quantita: 4,
-        prezzoUnitarioNetto: 100,
+        prezzoUnitarioNetto: 75,
         prezzoUnitarioListino: 150
       }
     ],
-    note: 'Contratto per FIRENZE FIERA SPA (Castanea Expo 2026) - Ipotesi n. 3 confermata. Referente: Tamara Mancini. Totale: € 1.000,00 + IVA comprensivo di: 1) n. 4 interviste ai protagonisti del settore (istituzioni e aziende); 2) 10 giorni di campagna spot visitatori da 10 spot/gg Rete 20" (Totale 100 passaggi).'
+    note: 'Commissione Radio Monte Serra S.r.l. n. 2026/008-RMS per FIRENZE FIERA S.P.A. (Castanea Expo 2026). Totale: € 1.000,00 + IVA comprensivo di: 1) 80 spot paganti + 20 spot OMAGGIO (Totale 100 passaggi da 20" su Rete); 2) n. 4 interviste ai protagonisti del settore. Pagamento: Bonifico bancario 30gg d.f. f.m. • [Campagna programmata dal 01/12/2026 al 10/12/2026 prima dell\'evento 11-13 Dicembre]'
   },
   {
     id: 'lead-fattoria-lavacchio-2026',
@@ -1317,6 +1323,7 @@ export default function LeadEngineDashboard() {
   // Bozza Contratto Monte Serra State
   const [contractData, setContractData] = useState({
     numero: '2026/001-RMS',
+    dataContratto: '',
     dataDecorrenza: '',
     dataScadenza: '',
     committente: '',
@@ -1667,7 +1674,7 @@ export default function LeadEngineDashboard() {
       addProportionalPage(canvas1, pdf, true);
       addProportionalPage(canvas2, pdf, false);
 
-      const todayStr = getTodayFilenameDate();
+      const todayStr = contractData.dataContratto ? contractData.dataContratto.replace(/\//g, '-') : getTodayFilenameDate();
       const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_').replace(/\s+/g, '_');
       const num = (contractData.numero || 'Ufficiale').replace(/[/\\?%*:|"<>]/g, '_');
       const filename = `Contratto_RMS_${num}_${sanitizedClient}_${todayStr}.pdf`;
@@ -1797,7 +1804,7 @@ export default function LeadEngineDashboard() {
       document.body.classList.remove('printing-proposal');
     }
     const sanitizedClient = (contractData.committente || 'Cliente').trim().replace(/[/\\?%*:|"<>]/g, '_');
-    const dateStr = new Date().toLocaleDateString('it-IT').replace(/\//g, '-');
+    const dateStr = (contractData.dataContratto || new Date().toLocaleDateString('it-IT')).replace(/\//g, '-');
     const originalTitle = document.title;
     document.title = `Contratto RMS - ${sanitizedClient} - ${dateStr}`;
     window.print();
@@ -2175,7 +2182,23 @@ export default function LeadEngineDashboard() {
       ? `${mainSpot?.formatoSecondi || 20}"`
       : (mainSpot?.tipo || 'Presenza On-Air');
 
+    const rawContractDate = lead.data_contratto || lead.data_preventivo;
+    let formattedContractDate = new Date().toLocaleDateString('it-IT');
+    if (rawContractDate) {
+      const s = String(rawContractDate).trim();
+      if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+        const [y, m, d] = s.split('T')[0].split('-');
+        formattedContractDate = `${d}/${m}/${y}`;
+      } else if (/^\d{2}\/\d{2}\/\d{4}/.test(s)) {
+        formattedContractDate = s;
+      } else {
+        const pd = new Date(s);
+        if (!isNaN(pd.getTime())) formattedContractDate = pd.toLocaleDateString('it-IT');
+      }
+    }
+
     setContractData({
+      dataContratto: formattedContractDate,
       numero: contractNum,
       dataDecorrenza: (mainSpot?.periodoDaDefinire || !mainSpot?.dataInizio)
         ? 'Periodo da definire'
@@ -2952,6 +2975,17 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
             title="Precarica l'offerta 800€ (14 gg pre-evento Area 1 + Produzione) per Il Ponte Casa d'Aste"
           >
             🏛️ Offerta Il Ponte Aste (800€)
+          </button>
+          <button
+            className="btn"
+            style={{ background: 'rgba(217, 119, 6, 0.15)', color: '#fbbf24', border: '1px solid rgba(217, 119, 6, 0.4)', fontWeight: 700 }}
+            onClick={() => {
+              const castanea = leads.find(l => l.id === 'lead-firenze-fiera-castanea-2026') || INITIAL_LEADS_POOL.find(l => l.id === 'lead-firenze-fiera-castanea-2026');
+              if (castanea) openContractForLead(castanea);
+            }}
+            title="Visualizza e stampa la Commissione Ufficiale RMS 2026/008-RMS per FIRENZE FIERA S.P.A. (Castanea Expo 2026)"
+          >
+            🌰 Contratto Castanea Expo (2026/008-RMS)
           </button>
           <button
             className="btn"
@@ -6581,7 +6615,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         COMMISSIONE PUBBLICITARIA — COPIA PER RADIO TOSCANA
                       </span>
                       <div style={{ fontSize: '11px', color: '#0f172a', fontWeight: 900 }}>
-                        N. Comm: <span style={{ color: '#D43F4A' }}>{contractData.numero}</span> • Data: {new Date().toLocaleDateString('it-IT')}
+                        N. Comm: <span style={{ color: '#D43F4A' }}>{contractData.numero}</span> • Data: {contractData.dataContratto || new Date().toLocaleDateString('it-IT')}
                       </div>
                       <div style={{ fontSize: '9px', color: '#475569' }}>Agente di Riferimento: <strong>Fabio Asiri</strong></div>
                     </div>
@@ -6772,7 +6806,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   {/* SOTTOSCRIZIONE ORDINARIA EMITTENTE & COMMITTENTE */}
                   <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '12px 16px', marginBottom: '14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '9px' }}>
-                      <div>Luogo e data: <strong>Firenze, lì {new Date().toLocaleDateString('it-IT')}</strong></div>
+                      <div>Luogo e data: <strong>Firenze, lì {contractData.dataContratto || new Date().toLocaleDateString('it-IT')}</strong></div>
                       <div style={{ fontSize: '8px', color: '#64748b' }}>Il presente rapporto è regolato dalle condizioni esposte e da quelle generali a tergo</div>
                     </div>
 
@@ -8096,7 +8130,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                   COMMISSIONE PUBBLICITARIA — COPIA PER RADIO TOSCANA
                 </span>
                 <div style={{ fontSize: '10.5px', color: '#0f172a', fontWeight: 900 }}>
-                  N. Comm: <span style={{ color: '#D43F4A' }}>{contractData.numero}</span> • Data: {new Date().toLocaleDateString('it-IT')}
+                  N. Comm: <span style={{ color: '#D43F4A' }}>{contractData.numero}</span> • Data: {contractData.dataContratto || new Date().toLocaleDateString('it-IT')}
                 </div>
                 <div style={{ fontSize: '8.5px', color: '#475569' }}>Agente: <strong>Fabio Asiri</strong></div>
               </div>
@@ -8287,7 +8321,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
             {/* SOTTOSCRIZIONE ORDINARIA EMITTENTE & COMMITTENTE */}
             <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '8px 12px', marginBottom: '8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', fontSize: '8.2px' }}>
-                <div>Luogo e data: <strong>Firenze, lì {new Date().toLocaleDateString('it-IT')}</strong></div>
+                <div>Luogo e data: <strong>Firenze, lì {contractData.dataContratto || new Date().toLocaleDateString('it-IT')}</strong></div>
                 <div style={{ fontSize: '7.2px', color: '#64748b' }}>Il presente rapporto è regolato dalle condizioni esposte e da quelle generali a tergo</div>
               </div>
 
