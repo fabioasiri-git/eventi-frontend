@@ -149,10 +149,10 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         id: 'it-ilponte-1',
         tipo: 'Spot Radiofonici Tabellari',
         copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
-        dettagli: '140 spot da 20\" (10 passaggi al giorno per 14 gg pre-evento)',
-        fascia: '07.00 – 21.00 a rotazione',
-        periodo: "14 giorni prima dell'evento",
-        periodoDaDefinire: true,
+        dettagli: '140 spot da 20" (Scala Sconti: -44.44% da Listino Ufficiale)',
+        fascia: '07:00 – 21:00 a rotazione',
+        periodo: "14 giorni prima dell'evento (10 spot/gg)",
+        periodoDaDefinire: false,
         giorniTotali: 14,
         spotGiornalieri: 10,
         spotTotali: 140,
@@ -169,9 +169,9 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         id: 'it-ilponte-2',
         tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
         copertura: 'Nostro Gruppo (Radio Toscana + Radio Firenze)',
-        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione nostro gruppo (Radio Toscana e Radio Firenze)',
-        fascia: 'Costo Una Tantum',
-        periodo: '',
+        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione emittenti toscane',
+        fascia: 'Produzione audio in studio',
+        periodo: 'Una tantum (Pre-campagna)',
         prezzoListino: 100,
         valore: 100,
         quantita: 1,
@@ -179,8 +179,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         prezzoUnitarioNetto: 100,
         tipoProduzione: 'SOLO_RT_RF',
         isSpot: false
-      }
-    ]
+      }    ]
   },
   {
     id: 'lead-acque-spa-2026',
@@ -1604,22 +1603,34 @@ export default function LeadEngineDashboard() {
       const page2 = document.getElementById('contract-page-2');
       if (!page1 || !page2) throw new Error('Pagine del contratto non trovate nel DOM');
 
-      // Cattura Pagina 1
+      if (typeof window !== 'undefined') window.scrollTo(0, 0);
+      const scrollH1 = Math.max(2500, (page1.scrollHeight || 0) + 500);
+      const scrollH2 = Math.max(2500, (page2.scrollHeight || 0) + 500);
+
+      // Cattura Pagina 1 a tutta altezza senza tagli viewport o sparizione firme
       const canvas1 = await html2canvas(page1, {
         scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: false
+        logging: false,
+        scrollY: 0,
+        scrollX: 0,
+        windowWidth: 1200,
+        windowHeight: scrollH1
       });
 
-      // Cattura Pagina 2
+      // Cattura Pagina 2 a tutta altezza
       const canvas2 = await html2canvas(page2, {
         scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: false
+        logging: false,
+        scrollY: 0,
+        scrollX: 0,
+        windowWidth: 1200,
+        windowHeight: scrollH2
       });
 
       // Helper: posiziona il canvas su A4 preservando esattamente l'aspect ratio (zero distorsioni) e con margini proporzionati
@@ -1679,12 +1690,17 @@ export default function LeadEngineDashboard() {
       const page = document.getElementById('printable-proposal-card') || document.getElementById('printable-proposal');
       if (!page) throw new Error('Elemento scheda proposta non trovato');
 
+      if (typeof window !== 'undefined') window.scrollTo(0, 0);
       const canvas = await html2canvas(page, {
         scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: false
+        logging: false,
+        scrollY: 0,
+        scrollX: 0,
+        windowWidth: 1200,
+        windowHeight: Math.max(2500, (page.scrollHeight || 0) + 500)
       });
 
       // Helper: posiziona il canvas su A4 preservando esattamente l'aspect ratio e posizionando la testata in cima
@@ -1848,16 +1864,16 @@ export default function LeadEngineDashboard() {
     setQEmail("info@ponteonline.com");
     setQTelefono("02 863141");
     setTipoAccordo('STANDARD');
-    setTerminiPagamento('Bonifico Bancario concordato');
+    setTerminiPagamento('Bonifico bancario 30gg d.f. f.m.');
     setQuoteItems([
       {
         id: 'ilponte-spot-1',
         tipo: 'Spot Radiofonici Tabellari',
         copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
-        dettagli: '140 spot da 20\" (10 passaggi al giorno per 14 gg pre-evento)',
-        fascia: '07.00 – 21.00 a rotazione',
-        periodo: "14 giorni prima dell'evento",
-        periodoDaDefinire: true,
+        dettagli: '140 spot da 20" (Scala Sconti: -44.44% da Listino Ufficiale)',
+        fascia: '07:00 – 21:00 a rotazione',
+        periodo: "14 giorni prima dell'evento (10 spot/gg)",
+        periodoDaDefinire: false,
         giorniTotali: 14,
         spotGiornalieri: 10,
         spotTotali: 140,
@@ -1874,9 +1890,10 @@ export default function LeadEngineDashboard() {
         id: 'ilponte-prod-2',
         tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
         copertura: 'Nostro Gruppo (Radio Toscana + Radio Firenze)',
-        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione nostro gruppo (Radio Toscana e Radio Firenze)',
-        fascia: 'Costo Una Tantum',
-        periodo: '',
+        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione emittenti toscane',
+        fascia: 'Produzione audio in studio',
+        periodo: 'Una tantum (Pre-campagna)',
+        periodoDaDefinire: false,
         prezzoListino: 100,
         valore: 100,
         quantita: 1,
@@ -2170,7 +2187,7 @@ export default function LeadEngineDashboard() {
       referente: lead.referente || 'Referente Aziendale',
       piva: lead.piva || '',
       sdi: (lead.sdi && lead.pec) ? `${lead.sdi} • ${lead.pec}` : (lead.sdi || lead.pec || ''),
-      indirizzo: [lead.indirizzo, [lead.cap, lead.comune].filter(Boolean).join(' '), lead.provincia ? `(${lead.provincia})` : ''].filter(Boolean).join(' - ') || [lead.comune, lead.provincia ? `(${lead.provincia})` : ''].filter(Boolean).join(' ') || 'Toscana',
+      indirizzo: [lead.indirizzo, [lead.cap, lead.comune, lead.provincia ? `(${lead.provincia})` : ''].filter(Boolean).join(' ')].filter(Boolean).join(' - ') || [lead.comune, lead.provincia ? `(${lead.provincia})` : ''].filter(Boolean).join(' ') || 'Toscana',
       telefono: lead.telefono || '',
       email: lead.email || '',
       mezzo: mezzoVal,
@@ -6380,6 +6397,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
               </div>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button
+                  className="btn btn-xs"
+                  onClick={handlePrintContract}
+                  style={{ background: 'rgba(255, 255, 255, 0.12)', color: '#f8fafc', fontWeight: 800, borderColor: 'rgba(255, 255, 255, 0.3)', padding: '5px 12px' }}
+                  title="Stampa direttamente con la stampante o salva in PDF dal browser (Ctrl+P)"
+                >
+                  🖨️ Stampa Contratto (Ctrl+P)
+                </button>
+                <button
                   className="btn btn-primary btn-xs"
                   onClick={downloadContractPdfDirect}
                   disabled={isDownloadingPdf}
@@ -6526,11 +6551,12 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 style={{
                   background: '#ffffff',
                   color: '#111111',
-                  padding: '24px 28px',
-                  minHeight: '272mm',
+                  padding: '22px 26px',
+                  minHeight: 'auto',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-between',
+                  justifyContent: 'flex-start',
+                  gap: '12px',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
                   borderRadius: '2px',
                   boxSizing: 'border-box',
@@ -6606,9 +6632,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             const mezzo = it.copertura?.includes('Firenze') && !it.copertura?.includes('Toscana')
                               ? 'Radio Firenze 88.7'
                               : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo));
-                            const isDaDefinire = it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire';
-                            const periodoDesc = isDaDefinire ? (it.periodo || 'Periodo da definire') : (it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`)));
-                            const fasciaDesc = isDaDefinire ? 'Rotazione concordata' : (it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato'));
+                            const isProdItem = !isSpot || it.tipo?.toLowerCase().includes('realizzazione') || it.tipo?.toLowerCase().includes('produzione');
+                            const isDaDefinire = !isProdItem && (it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire');
+                            const periodoDesc = isProdItem 
+                              ? (it.periodo || 'Una tantum (Pre-campagna)') 
+                              : (isDaDefinire ? (it.periodo || 'Periodo da definire') : (it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`))));
+                            const fasciaDesc = isProdItem 
+                              ? (it.fascia && it.fascia !== 'Rotazione concordata' ? it.fascia : 'Produzione audio in studio') 
+                              : (isDaDefinire ? 'Rotazione concordata' : (it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato')));
                             const formatoDesc = isSpot ? `${it.formatoSecondi || 20}"` : (it.tipo || 'Prestazione Pubblicitaria');
 
                             return (
@@ -8037,15 +8068,14 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
           id="contract-page-1"
           style={{
             width: '210mm',
-            height: '296mm',
-            maxHeight: '296mm',
+            minHeight: '290mm',
             boxSizing: 'border-box',
-            padding: '11mm 15mm',
+            padding: '10mm 14mm',
             background: '#ffffff',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
-            overflow: 'hidden'
+            justifyContent: 'flex-start',
+            gap: '8px'
           }}
         >
           <div>
@@ -8117,10 +8147,15 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                       const mezzo = it.copertura?.includes('Firenze') && !it.copertura?.includes('Toscana')
                         ? 'Radio Firenze 88.7'
                         : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo));
-                      const isDaDefinire = it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire';
+                      const isProdItem = !isSpot || it.tipo?.toLowerCase().includes('realizzazione') || it.tipo?.toLowerCase().includes('produzione');
+                      const isDaDefinire = !isProdItem && (it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire');
                       const formatoDesc = isSpot ? `${it.formatoSecondi || 20}"` : it.tipo;
-                      const periodoDesc = isDaDefinire ? (it.periodo || 'Periodo da definire') : (it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`)));
-                      const fasciaDesc = isDaDefinire ? 'Rotazione concordata' : (it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato'));
+                      const periodoDesc = isProdItem 
+                        ? (it.periodo || 'Una tantum (Pre-campagna)') 
+                        : (isDaDefinire ? (it.periodo || 'Periodo da definire') : (it.periodo || (it.dataInizio && it.dataFine ? `Dal ${it.dataInizio} al ${it.dataFine}` : (contractData.dataDecorrenza === 'Periodo da definire' ? 'Periodo da definire' : `Dal ${contractData.dataDecorrenza} al ${contractData.dataScadenza}`))));
+                      const fasciaDesc = isProdItem 
+                        ? (it.fascia && it.fascia !== 'Rotazione concordata' ? it.fascia : 'Produzione audio in studio') 
+                        : (isDaDefinire ? 'Rotazione concordata' : (it.fascia || (isSpot ? '07:00 – 21:00 (Rotazione)' : 'Palinsesto concordato')));
 
                       return (
                         <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
