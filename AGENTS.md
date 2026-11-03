@@ -58,8 +58,15 @@ Mai attivare cron o invii programmati senza conferma di Fabio.
 - Le decisioni di Fabio vanno in `DECISIONI.md`: data + decisione in una riga.
 
 ## 8. Confini
-- Lavora solo nel repository aperto. Non toccare altri progetti, i loro database, la cartella cloud PROGETTI, gli script di sincronizzazione (.bat/.ps1 in PROGETTI).
+- Lavora solo nel repository aperto e nella sua cartella dati dichiarata in DECISIONI.md (se esiste).
+  Non toccare il resto di PROGETTI, gli script di sincronizzazione (.bat/.ps1), `_v4`, gli altri progetti e i loro database.
 - Ogni progetto usa solo il proprio database Supabase.
+- Regole per la cartella dati condivisa (la sincronizzazione cloud replica anche cancellazioni ed errori su tutti i PC):
+  - 8a. Mai cancellare: i file in piu' si spostano in `_da_verificare/`.
+  - 8b. Un PC alla volta: il file `_IN_USO.txt` contiene "IN USO DA <NOMEPC> <data ora>" oppure "LIBERO". Prima di lavorarci, se dice IN USO da un altro PC fermati; altrimenti scrivi IN USO. A fine lavoro riscrivi LIBERO.
+  - 8c. Niente Git e niente codice dentro PROGETTI.
+  - 8d. Gli originali locali restano intatti finche' il conteggio nel cloud (confronto per hash) non corrisponde; poi diventano archivio in sola lettura.
+  - 8e. Il percorso non si scrive mai nel codice: si legge da `ARCHIVIO_DIR` in `.env.local` di ogni PC.
 
 ## 9. Robustezza
 - Ogni chiamata di rete: timeout massimo 15 secondi, massimo 3 tentativi, poi fermati e riporta l'errore.

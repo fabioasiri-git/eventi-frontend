@@ -13,23 +13,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Titolo obbligatorio' }, { status: 400 });
     }
 
-    // 1. Crea la card
-    const cardParams = new URLSearchParams({
-      key: apiKey,
-      token: token,
+    // 1. Crea la card su Trello inviando i campi nel body JSON (evita 414 URI Too Long)
+    const cardPayload: any = {
       idList: targetListId,
       name: title,
       desc: description || '',
       pos: 'top',
-    });
+    };
 
-    if (dueDate) {
-      cardParams.append('due', dueDate);
+    if (dueDate && String(dueDate).trim()) {
+      const cleanDue = String(dueDate).trim().split(' ')[0];
+      if (/^\d{4}-\d{2}-\d{2}/.test(cleanDue)) {
+        cardPayload.due = `${cleanDue}T18:00:00.000Z`;
+      }
     }
 
-    const resCard = await fetch(`https://api.trello.com/1/cards?${cardParams.toString()}`, {
+    const resCard = await fetch(`https://api.trello.com/1/cards?key=${apiKey}&token=${token}`, {
       method: 'POST',
-      headers: { 'Accept': 'application/json' },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(cardPayload)
     });
 
     if (!resCard.ok) {
@@ -43,16 +48,16 @@ export async function POST(request: Request) {
 
     // 2. Crea la checklist operativa per Edi
     try {
-      const chkParams = new URLSearchParams({
-        key: apiKey,
-        token: token,
-        idCard: cardId,
-        name: 'Checklist Produzione Spot Audio',
-      });
-
-      const resChk = await fetch(`https://api.trello.com/1/checklists?${chkParams.toString()}`, {
+      const resChk = await fetch(`https://api.trello.com/1/checklists?key=${apiKey}&token=${token}`, {
         method: 'POST',
-        headers: { 'Accept': 'application/json' },
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          idCard: cardId,
+          name: 'Checklist Produzione Spot Audio'
+        })
       });
 
       if (resChk.ok) {
@@ -68,15 +73,16 @@ export async function POST(request: Request) {
         ];
 
         for (const item of checkItems) {
-          const itemParams = new URLSearchParams({
-            key: apiKey,
-            token: token,
-            name: item,
-            pos: 'bottom'
-          });
-          await fetch(`https://api.trello.com/1/checklists/${chkId}/checkItems?${itemParams.toString()}`, {
+          await fetch(`https://api.trello.com/1/checklists/${chkId}/checkItems?key=${apiKey}&token=${token}`, {
             method: 'POST',
-            headers: { 'Accept': 'application/json' },
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: item,
+              pos: 'bottom'
+            })
           });
         }
       }

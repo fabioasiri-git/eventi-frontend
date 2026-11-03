@@ -19,6 +19,12 @@ export async function POST(request: Request) {
 
     // 1. Registra in Supabase dashboard_leads
     if (SUPABASE_SERVICE_ROLE_KEY) {
+      // Filtro anti-spam: scarta stringhe casuali da bot
+      const isRandomBot = /^[a-zA-Z]{15,}$/.test(azienda.trim()) && !azienda.includes(' ');
+      if (isRandomBot) {
+        return NextResponse.json({ success: true, leadId: 'ignored-spam' });
+      }
+
       const leadData = {
         id: leadId,
         nome_azienda_evento: azienda,
@@ -29,13 +35,13 @@ export async function POST(request: Request) {
         comune: 'Toscana',
         provincia: 'FI',
         area_target: 'Radio Toscana (Rete Regionale)',
-        fase_commerciale: 'PREVENTIVO INVIATO',
-        colonna: 'PREVENTIVO INVIATO',
+        fase_commerciale: 'IN QUALIFICAZIONE',
+        colonna: 'IN QUALIFICAZIONE',
         tipo_contratto: 'SPOT_TABELLARE',
-        valore_preventivo: 1000,
-        probabilita_chiusura: 70,
+        valore_preventivo: 0,
+        probabilita_chiusura: 20,
         anno_riferimento: '2026',
-        data_preventivo: timestamp.split('T')[0],
+        data_preventivo: '',
         copy_testo: `Lead da Landing Pubblicità (${source || 'Inbound Web'}). Obiettivo: ${obiettivo || 'Campagna Radio'}. Note: ${note || 'Nessuna nota aggiuntiva'}.`,
         quote_items: [],
         note: `Inbound Landing Web. Campagna: ${utm_campaign || 'Diretta'}. Richiesta ricevuta il ${new Date().toLocaleString('it-IT')}.`
