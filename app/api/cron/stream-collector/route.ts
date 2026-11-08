@@ -103,14 +103,27 @@ function fetchIcyMetadata(streamUrl: string, timeoutMs = 5000): Promise<{ artist
             const metaStr = metaBuf.toString('utf-8');
             res.destroy();
 
-            if (metaStr.includes("StreamTitle='") && metaStr.includes("Song*")) {
+            if (metaStr.includes("StreamTitle='")) {
               const content = metaStr.split("StreamTitle='")[1]?.split("';")[0];
               if (content) {
-                const parts = content.split("*");
-                if (parts.length >= 3 && parts[0] === "Song") {
+                if (content.includes("Song*")) {
+                  const parts = content.split("*");
+                  if (parts.length >= 3 && parts[0] === "Song") {
+                    return resolve({
+                      title: parts[1].trim(),
+                      artist: parts[2].trim()
+                    });
+                  }
+                } else if (content.includes(" - ")) {
+                  const parts = content.split(" - ");
                   return resolve({
-                    title: parts[1].trim(),
-                    artist: parts[2].trim()
+                    artist: parts[0].trim(),
+                    title: parts.slice(1).join(" - ").trim()
+                  });
+                } else if (content.trim().length > 0) {
+                  return resolve({
+                    artist: "",
+                    title: content.trim()
                   });
                 }
               }
@@ -238,17 +251,72 @@ async function pollDimensioneSuonoSoft() {
   return { inserted: false, reason: "no_metadata" };
 }
 
+// 6. One Dance (Fluidstream ICY)
+async function pollOneDance() {
+  const meta = await fetchIcyMetadata("https://ice04.fluidstream.net/rn1_2.aac");
+  if (meta && meta.artist && meta.title) {
+    return await insertSpin("One Dance", meta.artist, meta.title);
+  }
+  return { inserted: false, reason: "no_metadata" };
+}
+
+// 7. Kisstory (Planet Radio REST API)
+async function pollKisstory() {
+  try {
+    const res = await fetch("https://listenapi.planetradio.co.uk/api9.2/nowplaying/ki2", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      cache: "no-store",
+    });
+    if (!res.ok) return { inserted: false, reason: `http_${res.status}` };
+    const data = await res.json();
+    const artist = (data.ArtistName || "").trim();
+    const title = (data.TrackTitle || "").trim();
+    if (!artist || !title) return { inserted: false, reason: "empty_metadata" };
+    return await insertSpin("Kisstory", artist, title);
+  } catch (err: any) {
+    return { inserted: false, reason: err.message };
+  }
+}
+
+// 8. Radio Studio Piu (DNAS 7.html)
+async function pollStudioPiu() {
+  try {
+    const res = await fetch("http://77.241.4.100:8010/7.html", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      cache: "no-store",
+    });
+    if (!res.ok) return { inserted: false, reason: `http_${res.status}` };
+    const html = await res.text();
+    const m = html.match(/<body>(.*?)<\/body>/i);
+    const content = m ? m[1] : html;
+    const parts = content.split(",");
+    if (parts.length >= 7) {
+      const raw = parts.slice(6).join(",").trim();
+      if (raw.includes(" - ")) {
+        const [artist, ...rest] = raw.split(" - ");
+        return await insertSpin("Radio Studio Piu", artist.trim(), rest.join(" - ").trim());
+      }
+    }
+    return { inserted: false, reason: "invalid_format" };
+  } catch (err: any) {
+    return { inserted: false, reason: err.message };
+  }
+}
+
 export async function GET(request: Request) {
   const startTime = Date.now();
   console.log(`[Stream Collector] Starting polling cycle...`);
 
-  const [discoradio, m2o, toscana, firenze, rdsRelax, dss] = await Promise.all([
+  const [discoradio, m2o, toscana, firenze, rdsRelax, dss, oneDance, kisstory, studioPiu] = await Promise.all([
     pollDiscoradio(),
     pollM2o(),
     pollRadioToscana(),
     pollRadioFirenze(),
     pollRdsRelax(),
-    pollDimensioneSuonoSoft()
+    pollDimensioneSuonoSoft(),
+    pollOneDance(),
+    pollKisstory(),
+    pollStudioPiu()
   ]);
 
   const durationMs = Date.now() - startTime;
@@ -258,7 +326,10 @@ export async function GET(request: Request) {
     "Radio Toscana": toscana,
     "Radio Firenze": firenze,
     "RDS Relax": rdsRelax,
-    "Dimensione Suono Soft": dss
+    "Dimensione Suono Soft": dss,
+    "One Dance": oneDance,
+    "Kisstory": kisstory,
+    "Radio Studio Piu": studioPiu
   };
 
   return NextResponse.json({
