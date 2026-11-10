@@ -109,6 +109,97 @@ interface LeadRow {
 
 const INITIAL_LEADS_POOL: LeadRow[] = [
   {
+    id: 'lead-bolzano-special-guest-2026',
+    nome_azienda_evento: 'AZIENDA DI SOGGIORNO E TURISMO DI BOLZANO',
+    referente: 'Direzione Promozione & Marketing Turistico',
+    email: 'info@bolzano-bozen.it',
+    telefono: '0471 307000',
+    piva: '00136120219',
+    cf: '00136120219',
+    pec: 'info@pec.bolzano-bozen.it',
+    sdi: '3IF5Y6',
+    indirizzo: 'Via Alto Adige, 60 / Piazza Walther, 8',
+    cap: '39100',
+    comune: 'Bolzano',
+    provincia: 'BZ',
+    settore: 'Turismo & Promozione Territoriale / Bolzano Special Guest',
+    area_target: 'Radio Toscana Rete (Tutta la Toscana)',
+    fase_commerciale: 'CONTRATTO ATTIVO',
+    colonna: 'CONTRATTO ATTIVO',
+    tipo_contratto: 'SPECIAL_FORMAT',
+    valore_preventivo: 1500,
+    valore_contratto: 1500,
+    numero_preventivo: 'PREV-2026/010',
+    numero_contratto: '2026/012-RMS',
+    plafond_totale_spot: 56,
+    spot_rimasti: 56,
+    is_cambio_merce: false,
+    probabilita_chiusura: 100,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-11-10',
+    data_contratto: '2026-11-10',
+    data_ultimo_invio: '2026-11-10',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'PRODOTTO_APPROVATO',
+    periodo: "1 settimana a scelta dell'Ente (Periodo concordato)",
+    spot_giornalieri: 8,
+    stato_programmazione: 'IN_PALINSESTO',
+    copy_testo: "Progetto Radio Toscana Special Guest: BOLZANO. 1 settimana dedicata con 19 spazi informativi e interviste a ospiti dell'Ente (3 al giorno Lun-Ven, 2 Sab-Dom) + Speciale sabato ore 12:40 di 6 min + Podcast sito e post Facebook + Campagna spot 8 passaggi/giorno su Rete Toscana (56 spot da 20\").",
+    quote_items: [
+      {
+        id: 'it-bz-1',
+        tipo: 'Spot Radiofonici Tabellari (Rete Regionale)',
+        copertura: 'Radio Toscana Rete (Tutta la Toscana)',
+        dettagli: '56 spot da 20\" (8 passaggi al giorno per 7 giorni nella settimana Special Guest)',
+        fascia: '07:00 – 19:00 a rotazione omogenea',
+        periodo: "1 settimana a scelta dell'Ente (Periodo concordato)",
+        periodoDaDefinire: false,
+        giorniTotali: 7,
+        spotGiornalieri: 8,
+        spotTotali: 56,
+        spotOmaggio: 0,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 3.85,
+        tariffaUnitaria: 13.00,
+        prezzoListino: 728,
+        valore: 700,
+        isSpot: true
+      },
+      {
+        id: 'it-bz-2',
+        tipo: 'Format Special Guest (Spazi Informativi & Interviste)',
+        copertura: 'Radio Toscana Rete (Tutta la Toscana)',
+        dettagli: "Settimana Special Guest dedicata a Bolzano: 3 spazi informativi giornalieri (max 3 min) Lun-Ven + 2 spazi Sab-Dom con interviste a ospiti indicati dall'Ente (Totale 19 spazi on-air)",
+        fascia: 'Mattina e Pomeriggio',
+        periodo: 'Nella settimana Special Guest',
+        periodoDaDefinire: false,
+        prezzoListino: 1200,
+        valore: 500,
+        quantita: 19,
+        prezzoUnitarioListino: 63.15,
+        prezzoUnitarioNetto: 26.31,
+        isSpot: false
+      },
+      {
+        id: 'it-bz-3',
+        tipo: 'Speciale Sabato 6 min + Podcast Sito + Social Facebook',
+        copertura: 'Radio Toscana Multicanale (On-Air + Web + Social)',
+        dettagli: 'Sabato ore 12:40 speciale di sintesi di 6 min in onda + caricamento podcast audio su sito Radio Toscana + diffusione post pagina Facebook ufficiale',
+        fascia: 'Sabato ore 12:40 & Multicanale',
+        periodo: 'Sabato della settimana Special Guest',
+        periodoDaDefinire: false,
+        prezzoListino: 400,
+        valore: 300,
+        quantita: 1,
+        prezzoUnitarioListino: 400,
+        prezzoUnitarioNetto: 300,
+        isSpot: false
+      }
+    ],
+    note: "Commissione Radio Monte Serra S.r.l. n. 2026/012-RMS per AZIENDA DI SOGGIORNO E TURISMO DI BOLZANO. Progetto Special Guest Bolzano: 1 settimana con 19 interviste/spazi informativi + trasmissione speciale sabato 12:40 + podcast web e post FB + 56 spot 20\" su Rete Toscana. Totale: € 1.500,00 + IVA."
+  },
+  {
     id: 'lead-il-ponte-aste-2026',
     nome_azienda_evento: "IL PONTE CASA D'ASTE S.R.L.",
     referente: 'Direzione / Segreteria Eventi',
@@ -1858,6 +1949,75 @@ export default function LeadEngineDashboard() {
     setShowQuoteModal(true);
   }
 
+  // Precarica Progetto Special Guest Bolzano (1.500€ + IVA)
+  function caricaOffertaBolzano() {
+    resetQuoteBuilder();
+    setQNome("AZIENDA DI SOGGIORNO E TURISMO DI BOLZANO");
+    setQReferente("Direzione Promozione & Marketing Turistico");
+    setQIndirizzo("Via Alto Adige, 60 / Piazza Walther, 8");
+    setQComune("Bolzano");
+    setQProvincia("BZ");
+    setQPiva("00136120219");
+    setQSdi("3IF5Y6");
+    setQEmail("info@bolzano-bozen.it");
+    setQTelefono("0471 307000");
+    setTipoAccordo('STANDARD');
+    setTerminiPagamento('Bonifico bancario 30gg d.f. f.m.');
+    setQuoteItems([
+      {
+        id: 'bolzano-spot-1',
+        tipo: 'Spot Radiofonici Tabellari (Rete Regionale)',
+        copertura: 'Radio Toscana Rete (Tutta la Toscana)',
+        dettagli: '56 spot da 20" (8 passaggi al giorno per 7 giorni nella settimana Special Guest)',
+        fascia: '07:00 – 19:00 a rotazione omogenea',
+        periodo: "1 settimana a scelta dell'Ente (Periodo concordato)",
+        periodoDaDefinire: false,
+        giorniTotali: 7,
+        spotGiornalieri: 8,
+        spotTotali: 56,
+        spotOmaggio: 0,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 3.85,
+        tariffaUnitaria: 13.00,
+        prezzoListino: 728,
+        valore: 700,
+        isSpot: true
+      },
+      {
+        id: 'bolzano-format-2',
+        tipo: 'Format Special Guest (Spazi Informativi & Interviste)',
+        copertura: 'Radio Toscana Rete (Tutta la Toscana)',
+        dettagli: "Settimana Special Guest dedicata a Bolzano: 3 spazi informativi giornalieri (max 3 min) Lun-Ven + 2 spazi Sab-Dom con interviste a ospiti indicati dall'Ente (Totale 19 spazi on-air)",
+        fascia: 'Mattina e Pomeriggio',
+        periodo: 'Nella settimana Special Guest',
+        periodoDaDefinire: false,
+        prezzoListino: 1200,
+        valore: 500,
+        quantita: 19,
+        prezzoUnitarioListino: 63.15,
+        prezzoUnitarioNetto: 26.31,
+        isSpot: false
+      },
+      {
+        id: 'bolzano-speciale-3',
+        tipo: 'Speciale Sabato 6 min + Podcast Sito + Social Facebook',
+        copertura: 'Radio Toscana Multicanale (On-Air + Web + Social)',
+        dettagli: 'Sabato ore 12:40 speciale di sintesi di 6 min in onda + caricamento podcast audio su sito Radio Toscana + diffusione post pagina Facebook ufficiale',
+        fascia: 'Sabato ore 12:40 & Multicanale',
+        periodo: 'Sabato della settimana Special Guest',
+        periodoDaDefinire: false,
+        prezzoListino: 400,
+        valore: 300,
+        quantita: 1,
+        prezzoUnitarioListino: 400,
+        prezzoUnitarioNetto: 300,
+        isSpot: false
+      }
+    ]);
+    setShowQuoteModal(true);
+  }
+
   // Precarica Preventivo Rapido Evento per Il Ponte Casa d'Aste S.r.l. (800€ + IVA)
   function caricaOffertaIlPonte() {
     resetQuoteBuilder();
@@ -2975,6 +3135,17 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
             title="Precarica l'offerta 800€ (14 gg pre-evento Area 1 + Produzione) per Il Ponte Casa d'Aste"
           >
             🏛️ Offerta Il Ponte Aste (800€)
+          </button>
+          <button
+            className="btn"
+            style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', fontWeight: 700 }}
+            onClick={() => {
+              const bz = leads.find(l => l.id === 'lead-bolzano-special-guest-2026') || INITIAL_LEADS_POOL.find(l => l.id === 'lead-bolzano-special-guest-2026');
+              if (bz) openContractForLead(bz);
+            }}
+            title="Visualizza e stampa la Commissione Ufficiale RMS 2026/012-RMS per AZIENDA DI SOGGIORNO E TURISMO DI BOLZANO"
+          >
+            🏔️ Contratto Bolzano Special Guest (1.500€)
           </button>
           <button
             className="btn"
