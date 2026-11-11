@@ -109,6 +109,60 @@ interface LeadRow {
 
 const INITIAL_LEADS_POOL: LeadRow[] = [
   {
+    id: 'lead-castel-del-piano-capodanno-2026',
+    nome_azienda_evento: 'COMUNE DI CASTEL DEL PIANO (Capodanno in Piazza)',
+    referente: 'Arianna Arezzini (Vicesindaco / Assessore)',
+    email: 'comune.casteldelpiano@postacert.toscana.it',
+    telefono: '',
+    piva: '00117250530',
+    cf: '00117250530',
+    pec: 'comune.casteldelpiano@postacert.toscana.it',
+    sdi: 'UFMKEW',
+    indirizzo: 'Via Guglielmo Marconi, 9',
+    cap: '58033',
+    comune: 'Castel del Piano',
+    provincia: 'GR',
+    settore: 'Ente Pubblico / Evento Capodanno in Piazza',
+    area_target: 'Radio Toscana Rete (Tutta la Toscana)',
+    fase_commerciale: 'PREVENTIVO INVIATO',
+    colonna: 'PREVENTIVO INVIATO',
+    tipo_contratto: 'SPECIAL_FORMAT',
+    valore_preventivo: 3650,
+    valore_contratto: 0,
+    numero_preventivo: 'PREV-2026/011',
+    plafond_totale_spot: 0,
+    spot_rimasti: 0,
+    is_cambio_merce: false,
+    probabilita_chiusura: 85,
+    anno_riferimento: '2026',
+    data_preventivo: '2026-11-11',
+    data_ultimo_invio: '2026-11-11',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'PRODOTTO_APPROVATO',
+    periodo: '31 dicembre 2026 – 1° gennaio 2027 • Piazza Madonna, Castel del Piano (Monte Amiata)',
+    spot_giornalieri: 0,
+    stato_programmazione: 'IN_ATTESA_CONFERMA',
+    copy_testo: "Capodanno in Piazza a Castel del Piano (Piazza Madonna – Monte Amiata): Intrattenimento musicale 22:00–01:00 con DJ set Remo Giugni + Diretta radiofonica su Radio Toscana 22:00–24:00 con presentazione e conduzione di Giulia Quercioli + Promozione radiofonica evento (Senza service tecnico). Pagamento anticipato 1–10 dicembre 2026.",
+    quote_items: [
+      {
+        id: 'it-cdp-1',
+        tipo: 'Intrattenimento Radiofonico e Musicale (Capodanno in Piazza)',
+        copertura: 'Radio Toscana Rete + Live Piazza Madonna (Castel del Piano)',
+        dettagli: 'Intrattenimento musicale 22:00–01:00 (DJ set Remo Giugni) + Diretta radiofonica 22:00–24:00 (conduzione Giulia Quercioli) + Promozione radiofonica evento (Senza service tecnico)',
+        fascia: '22:00 – 01:00 Live / 22:00 – 24:00 Diretta',
+        periodo: '31 dicembre 2026 – 1° gennaio 2027',
+        periodoDaDefinire: false,
+        prezzoListino: 3650,
+        valore: 3650,
+        quantita: 1,
+        prezzoUnitarioListino: 3650,
+        prezzoUnitarioNetto: 3650,
+        isSpot: false
+      }
+    ],
+    note: "Proposta Evento PREV-2026/011 per Comune di Castel del Piano (Alla c.a. Arianna Arezzini) — Capodanno in Piazza Madonna, Castel del Piano (Monte Amiata), 31/12/2026 – 01/01/2027. Totale: € 3.650,00 + IVA. Pagamento anticipato dall'1 al 10 dicembre 2026."
+  },
+  {
     id: 'lead-bolzano-special-guest-2026',
     nome_azienda_evento: 'AZIENDA DI SOGGIORNO E TURISMO DI BOLZANO',
     referente: 'Direzione Promozione & Marketing Turistico',
@@ -1949,6 +2003,40 @@ export default function LeadEngineDashboard() {
     setShowQuoteModal(true);
   }
 
+  // Precarica Proposta Evento Capodanno in Piazza - Comune di Castel del Piano (3.650€ + IVA)
+  function caricaOffertaCapodannoCastelDelPiano() {
+    resetQuoteBuilder();
+    setQNome("COMUNE DI CASTEL DEL PIANO (Capodanno in Piazza)");
+    setQReferente("Arianna Arezzini (Vicesindaco / Assessore)");
+    setQIndirizzo("Via Guglielmo Marconi, 9");
+    setQComune("Castel del Piano");
+    setQProvincia("GR");
+    setQPiva("00117250530");
+    setQSdi("UFMKEW");
+    setQEmail("comune.casteldelpiano@postacert.toscana.it");
+    setQTelefono("");
+    setTipoAccordo('STANDARD');
+    setTerminiPagamento("Anticipato, dall'1 al 10 dicembre 2026");
+    setQuoteItems([
+      {
+        id: 'cdp-intrattenimento-1',
+        tipo: 'Intrattenimento Radiofonico e Musicale (Capodanno in Piazza)',
+        copertura: 'Radio Toscana Rete + Live Piazza Madonna (Castel del Piano)',
+        dettagli: 'Intrattenimento musicale 22:00–01:00 (DJ set Remo Giugni) + Diretta radiofonica 22:00–24:00 (conduzione Giulia Quercioli) + Promozione radiofonica evento (Senza service tecnico)',
+        fascia: '22:00 – 01:00 Live / 22:00 – 24:00 Diretta',
+        periodo: '31 dicembre 2026 – 1° gennaio 2027',
+        periodoDaDefinire: false,
+        prezzoListino: 3650,
+        valore: 3650,
+        quantita: 1,
+        prezzoUnitarioListino: 3650,
+        prezzoUnitarioNetto: 3650,
+        isSpot: false
+      }
+    ]);
+    setShowQuoteModal(true);
+  }
+
   // Precarica Progetto Special Guest Bolzano (1.500€ + IVA)
   function caricaOffertaBolzano() {
     resetQuoteBuilder();
@@ -3136,6 +3224,24 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
           >
             🏛️ Offerta Il Ponte Aste (800€)
           </button>
+          <button
+            className="btn"
+            style={{ background: 'rgba(212, 63, 74, 0.18)', color: '#fda4af', border: '1px solid rgba(212, 63, 74, 0.5)', fontWeight: 700 }}
+            onClick={caricaOffertaCapodannoCastelDelPiano}
+            title="Precarica Proposta Evento Capodanno in Piazza (3.650€ + IVA) per Comune di Castel del Piano"
+          >
+            🎆 Proposta Capodanno Castel del Piano (3.650€)
+          </button>
+          <a
+            href="/Proposta_Evento_Capodanno_Castel_del_Piano_2026.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn"
+            style={{ background: 'rgba(255, 255, 255, 0.08)', color: '#f8fafc', border: '1px solid rgba(255, 255, 255, 0.25)', fontWeight: 700, textDecoration: 'none' }}
+            title="Apri PDF Ufficiale allineato al layout Radio Toscana — Capodanno Castel del Piano"
+          >
+            📄 PDF Capodanno A4
+          </a>
           <button
             className="btn"
             style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', fontWeight: 700 }}
