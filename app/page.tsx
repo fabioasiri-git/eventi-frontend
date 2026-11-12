@@ -142,7 +142,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     periodo: '31 dicembre 2026 – 1° gennaio 2027 • Piazza Madonna, Castel del Piano (Monte Amiata)',
     spot_giornalieri: 0,
     stato_programmazione: 'IN_ATTESA_CONFERMA',
-    copy_testo: "Capodanno in Piazza a Castel del Piano (Piazza Madonna – Monte Amiata): Intrattenimento musicale 22:00–01:00 con DJ set Remo Giugni + Diretta radiofonica su Radio Toscana 22:00–24:00 con presentazione e conduzione di Giulia Quercioli + Promozione radiofonica evento (Senza service tecnico). Pagamento anticipato 1–10 dicembre 2026.",
+    copy_testo: "Capodanno in Piazza a Castel del Piano (Piazza Madonna – Monte Amiata): Intrattenimento musicale 22:00–01:00 con DJ set Remo Giugni + Diretta radiofonica su Radio Toscana 22:00–24:00 con presentazione e conduzione di Giulia Quercioli + Promozione radiofonica evento (Senza service tecnico). Pagamento come da determina.",
     quote_items: [
       {
         id: 'it-cdp-1',
@@ -160,7 +160,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         isSpot: false
       }
     ],
-    note: "Proposta Evento PREV-2026/011 per Comune di Castel del Piano (Alla c.a. Arianna Arezzini) — Capodanno in Piazza Madonna, Castel del Piano (Monte Amiata), 31/12/2026 – 01/01/2027. Totale: € 3.650,00 + IVA. Pagamento anticipato dall'1 al 10 dicembre 2026."
+    note: "Proposta Evento PREV-2026/011 per Comune di Castel del Piano (Alla c.a. Arianna Arezzini) — Capodanno in Piazza Madonna, Castel del Piano (Monte Amiata), 31/12/2026 – 01/01/2027. Totale: € 3.650,00 + IVA. Pagamento come da determina."
   },
   {
     id: 'lead-bolzano-special-guest-2026',
@@ -2016,7 +2016,7 @@ export default function LeadEngineDashboard() {
     setQEmail("comune.casteldelpiano@postacert.toscana.it");
     setQTelefono("");
     setTipoAccordo('STANDARD');
-    setTerminiPagamento("Anticipato, dall'1 al 10 dicembre 2026");
+    setTerminiPagamento("Come da determina");
     setQuoteItems([
       {
         id: 'cdp-intrattenimento-1',
