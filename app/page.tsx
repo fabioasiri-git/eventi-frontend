@@ -147,23 +147,47 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     copy_testo: "Campagna Radiofonica COMBO SERVICE SRL (Mail Boxes Etc. MBE 0348 Firenze Viale Europa 201): Abbinata congiunta Radio Toscana Area 1 + Radio Firenze. Totale 880 spot da 20\" (640 paganti + 240 omaggio), 20 passaggi al giorno (10 RT Area 1 + 10 RF) dall'11/11 al 24/12. Realizzazione spot compresa. Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm.",
     quote_items: [
       {
-        id: 'combo-abbinata-1',
+        id: 'combo-rt-area1',
         tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Toscana Area 1 + Radio Firenze',
-        dettagli: '880 passaggi totali da 20\" in abbinata: 440 spot Radio Toscana Area 1 (320 paganti + 120 omaggio) + 440 spot Radio Firenze (320 paganti + 120 omaggio) • 20 passaggi/giorno (10 RT + 10 RF)',
-        fascia: '10 passaggi/gg RT + 10 passaggi/gg RF a rotazione',
-        periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        dettagli: '320 spot paganti + 124 spot OMAGGIO (Totale 444 passaggi da 20")',
+        fascia: '12 spot/gg a rotazione',
+        periodo: 'Dal 18/11/2026 al 24/12/2026 (37 gg)',
         periodoDaDefinire: false,
-        giorniTotali: 44,
-        spotGiornalieri: 20,
-        spotTotali: 640,
-        spotOmaggio: 240,
+        dataInizio: '2026-11-18',
+        dataFine: '2026-12-24',
+        giorniTotali: 37,
+        spotGiornalieri: 12,
+        spotTotali: 320,
+        spotOmaggio: 124,
         formatoSecondi: 20,
         modalitaVantaggio: 'SCALA_SCONTI',
-        scontoPercentuale: 26.23,
-        tariffaUnitaria: 11.25,
-        prezzoListino: 4880,
-        valore: 3600,
+        scontoPercentuale: 25,
+        tariffaUnitaria: 9.00,
+        prezzoListino: 3996,
+        valore: 2100,
+        isSpot: true
+      },
+      {
+        id: 'combo-rf-887',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Firenze 88.7',
+        dettagli: '320 spot paganti + 124 spot OMAGGIO (Totale 444 passaggi da 20")',
+        fascia: '12 spot/gg a rotazione',
+        periodo: 'Dal 18/11/2026 al 24/12/2026 (37 gg)',
+        periodoDaDefinire: false,
+        dataInizio: '2026-11-18',
+        dataFine: '2026-12-24',
+        giorniTotali: 37,
+        spotGiornalieri: 12,
+        spotTotali: 320,
+        spotOmaggio: 124,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 25,
+        tariffaUnitaria: 7.50,
+        prezzoListino: 3330,
+        valore: 1500,
         isSpot: true
       },
       {
@@ -1058,6 +1082,91 @@ export default function LeadEngineDashboard() {
       tipoProduzione: 'SOLO_RT_RF'
     }
   ]);
+
+    // Funzione per aprire/aggiungere un Canale separato per Radio Firenze 88.7
+  function addSeparateRadioFirenzeChannel(sourceItem?: QuoteLineItem) {
+    const defaultDataInizio = sourceItem?.dataInizio || '2026-11-18';
+    const defaultDataFine = sourceItem?.dataFine || '2026-12-24';
+    const defaultGiorni = sourceItem?.giorniTotali || 37;
+    const defaultGiornalieri = sourceItem?.spotGiornalieri || 12;
+    const defaultTotali = sourceItem?.spotTotali || 320;
+    const defaultOmaggio = sourceItem?.spotOmaggio || 124;
+    const formato = sourceItem?.formatoSecondi || 20;
+
+    const tariffaRF = getTariffaUfficialeSpot('Radio Firenze 88.7 FM', formato) || 7.50;
+    const listinoRF = Math.round(tariffaRF * (defaultTotali + defaultOmaggio));
+    const valoreRF = sourceItem?.valore ? Math.round(sourceItem.valore * 0.42) : 1500;
+
+    addQuoteItem(
+      'Spot Radiofonici Tabellari',
+      'Radio Firenze 88.7',
+      `${defaultGiornalieri} spot/gg per ${defaultGiorni} gg (${defaultTotali} spot paganti + ${defaultOmaggio} OMAGGIO da ${formato}")`,
+      '07.00 – 21.00 a rotazione',
+      sourceItem?.periodo || (defaultDataInizio && defaultDataFine ? `Dal ${defaultDataInizio} al ${defaultDataFine} (${defaultGiorni} gg)` : 'Periodo da definire'),
+      listinoRF,
+      valoreRF,
+      {
+        isSpot: true,
+        dataInizio: defaultDataInizio,
+        dataFine: defaultDataFine,
+        periodoDaDefinire: sourceItem?.periodoDaDefinire || false,
+        spotGiornalieri: defaultGiornalieri,
+        giorniTotali: defaultGiorni,
+        spotTotali: defaultTotali,
+        spotOmaggio: defaultOmaggio,
+        formatoSecondi: formato,
+        modalitaVantaggio: sourceItem?.modalitaVantaggio || 'SCALA_SCONTI'
+      }
+    );
+  }
+
+  // Funzione per separare una linea congiunta in Due Canali Distinti (Radio Toscana + Radio Firenze)
+  function splitCombinedItemIntoTwoChannels(itemId: string) {
+    setQuoteItems(prev => {
+      const idx = prev.findIndex(i => i.id === itemId);
+      if (idx === -1) return prev;
+      const item = prev[idx];
+      const formato = item.formatoSecondi || 20;
+      const rtTariffa = getTariffaUfficialeSpot('Radio Toscana Area 1', formato) || 9.00;
+      const halfPaganti = Math.round((item.spotTotali || 640) / 2);
+      const halfOmaggi = Math.round((item.spotOmaggio || 240) / 2);
+      const halfDaily = Math.max(1, Math.round((item.spotGiornalieri || 20) / 2));
+      const rtListino = Math.round(rtTariffa * (halfPaganti + halfOmaggi));
+      const halfValore = Math.round((item.valore || 3600) * (2100 / 3600));
+
+      const rtItem: QuoteLineItem = {
+        ...item,
+        id: `it-rt-${Date.now()}`,
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        spotTotali: halfPaganti,
+        spotOmaggio: halfOmaggi,
+        spotGiornalieri: halfDaily,
+        valore: halfValore,
+        prezzoListino: rtListino,
+        dettagli: `${halfDaily} spot/gg per ${item.giorniTotali || 37} gg (${halfPaganti} spot paganti + ${halfOmaggi} OMAGGIO da ${formato}")`
+      };
+
+      const rfTariffa = getTariffaUfficialeSpot('Radio Firenze 88.7 FM', formato) || 7.50;
+      const rfListino = Math.round(rfTariffa * (halfPaganti + halfOmaggi));
+      const rfValore = (item.valore || 3600) - halfValore;
+
+      const rfItem: QuoteLineItem = {
+        ...item,
+        id: `it-rf-${Date.now() + 1}`,
+        copertura: 'Radio Firenze 88.7',
+        spotTotali: halfPaganti,
+        spotOmaggio: halfOmaggi,
+        spotGiornalieri: halfDaily,
+        valore: rfValore,
+        prezzoListino: rfListino,
+        dettagli: `${halfDaily} spot/gg per ${item.giorniTotali || 37} gg (${halfPaganti} spot paganti + ${halfOmaggi} OMAGGIO da ${formato}")`
+      };
+
+      const newArr = [...prev];
+      newArr.splice(idx, 1, rtItem, rfItem);
+      return newArr;
+    });
+  }
 
   function addQuoteItem(
     tipo: string,
@@ -4904,6 +5013,54 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   >
                     + Radio Firenze 88.7 FM
                   </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{ background: 'rgba(168, 85, 247, 0.25)', color: '#d8b4fe', border: '1.5px solid #c084fc', fontWeight: 900 }}
+                    onClick={() => {
+                      addQuoteItem(
+                        'Spot Radiofonici Tabellari',
+                        'Radio Toscana Area 1 (FI - PO - PT)',
+                        '12 spot/gg per 37 gg (320 spot paganti + 124 OMAGGIO da 20")',
+                        '07.00 – 21.00 a rotazione',
+                        'Dal 18/11/2026 al 24/12/2026 (37 gg)',
+                        3996,
+                        2100,
+                        {
+                          isSpot: true,
+                          dataInizio: '2026-11-18',
+                          dataFine: '2026-12-24',
+                          spotGiornalieri: 12,
+                          giorniTotali: 37,
+                          spotTotali: 320,
+                          spotOmaggio: 124,
+                          formatoSecondi: 20
+                        }
+                      );
+                      addQuoteItem(
+                        'Spot Radiofonici Tabellari',
+                        'Radio Firenze 88.7',
+                        '12 spot/gg per 37 gg (320 spot paganti + 124 OMAGGIO da 20")',
+                        '07.00 – 21.00 a rotazione',
+                        'Dal 18/11/2026 al 24/12/2026 (37 gg)',
+                        3330,
+                        1500,
+                        {
+                          isSpot: true,
+                          dataInizio: '2026-11-18',
+                          dataFine: '2026-12-24',
+                          spotGiornalieri: 12,
+                          giorniTotali: 37,
+                          spotTotali: 320,
+                          spotOmaggio: 124,
+                          formatoSecondi: 20
+                        }
+                      );
+                    }}
+                    title="Apre due canali separati: Canale 1 Radio Toscana Area 1 + Canale 2 Radio Firenze 88.7"
+                  >
+                    📻 + Abbinata 2 Canali (Area 1 + Radio Firenze)
+                  </button>
                 </div>
 
                 {/* RIGA 2: REALIZZAZIONE SPOT AUDIO */}
@@ -5134,6 +5291,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       {/* SELETTORE A BOTTONI MULTI-SELEZIONE (AREA 1, AREA 2, AREA 3 + RADIO FIRENZE) */}
                       {!isProdItem && (() => {
                         const curCop = (it.copertura || '').toLowerCase();
+                        const isPureRF = curCop.includes('firenze') && !curCop.includes('toscana');
+                        const isCombined = curCop.includes('firenze') && curCop.includes('toscana');
                         const isRete = curCop.includes('rete') || curCop.includes('tutta la toscana');
                         const hasRF = curCop.includes('firenze') || curCop.includes('rf') || curCop.includes('combinata');
                         const hasArea1 = isRete || curCop.includes('area 1') || curCop.includes('fi - po');
@@ -5236,26 +5395,50 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
                               <span style={{ color: 'rgba(255,255,255,0.25)', margin: '0 2px' }}>|</span>
 
-                              {/* RADIO FIRENZE (ABBINABILE CON QUALSIASI AREA O STANDALONE) */}
-                              <button
-                                type="button"
-                                onClick={() => updateQuoteItem(it.id, 'copertura', toggleBacinoCoverage(it.copertura || '', 'rf'))}
-                                style={{
-                                  fontSize: '11.5px',
-                                  padding: '5px 13px',
-                                  borderRadius: '6px',
-                                  border: hasRF ? '1.5px solid #c084fc' : '1px solid rgba(192, 132, 252, 0.35)',
-                                  background: hasRF ? 'rgba(168, 85, 247, 0.35)' : 'rgba(168, 85, 247, 0.08)',
-                                  color: hasRF ? '#ffffff' : '#d8b4fe',
-                                  fontWeight: hasRF ? 900 : 700,
-                                  cursor: 'pointer',
-                                  transition: 'all 0.15s ease',
-                                  boxShadow: hasRF ? '0 0 12px rgba(168, 85, 247, 0.35)' : 'none'
-                                }}
-                                title="Attiva / Disattiva Radio Firenze 88.7 FM in abbinata"
-                              >
-                                {hasRF ? '✓ ' : '+ '}Radio Firenze 88.7
-                              </button>
+                              {/* RADIO FIRENZE: APRE SECONDO CANALE SEPARATO (DUE RADIO = DUE CANALI DISTINTI) */}
+                              {isPureRF ? (
+                                <span style={{ fontSize: '11.5px', padding: '5px 12px', borderRadius: '6px', background: 'rgba(168, 85, 247, 0.35)', color: '#ffffff', border: '1.5px solid #c084fc', fontWeight: 900 }}>
+                                  ✓ Canale Radio Firenze 88.7
+                                </span>
+                              ) : isCombined ? (
+                                <button
+                                  type="button"
+                                  onClick={() => splitCombinedItemIntoTwoChannels(it.id)}
+                                  style={{
+                                    fontSize: '11.5px',
+                                    padding: '5px 12px',
+                                    borderRadius: '6px',
+                                    border: '1.5px solid #f43f5e',
+                                    background: 'rgba(244, 63, 94, 0.25)',
+                                    color: '#ffffff',
+                                    fontWeight: 900,
+                                    cursor: 'pointer',
+                                    boxShadow: '0 0 10px rgba(244, 63, 94, 0.4)'
+                                  }}
+                                  title="Separa in 2 canali distinti con programmazioni e spot/giorno indipendenti"
+                                >
+                                  ↔ Separa in 2 Canali (RT + RF 88.7)
+                                </button>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => addSeparateRadioFirenzeChannel(it)}
+                                  style={{
+                                    fontSize: '11.5px',
+                                    padding: '5px 13px',
+                                    borderRadius: '6px',
+                                    border: '1.5px solid #c084fc',
+                                    background: 'rgba(168, 85, 247, 0.2)',
+                                    color: '#e9d5ff',
+                                    fontWeight: 900,
+                                    cursor: 'pointer',
+                                    transition: 'all 0.15s ease'
+                                  }}
+                                  title="Apre un secondo canale separato per Radio Firenze 88.7 con programmazione indipendente"
+                                >
+                                  + Apri Canale Radio Firenze 88.7
+                                </button>
+                              )}
                             </div>
                           </div>
                         );
