@@ -1112,30 +1112,76 @@ export default function LeadEngineDashboard() {
     setQuoteItems(prev => [...prev, newItem]);
   }
 
-  // Funzione di utilità per determinare i passaggi giornalieri di uno spot
-  function getDailySpots(it: any): number {
-    if (it.spotGiornalieri && it.spotGiornalieri > 0) return it.spotGiornalieri;
+  // Funzione di utilità avanzata per determinare con precisione assoluta i passaggi giornalieri di uno spot
+  function getDailySpots(it?: any, contractDataRef?: any): number {
+    const item = it || {};
+    const cData = contractDataRef || {};
 
-    const tot = (it.spotTotali || 0) + (it.spotOmaggio || 0) || it.quantita || 0;
+    if (item.spotGiornalieri && Number(item.spotGiornalieri) > 0) return Number(item.spotGiornalieri);
+    if (item.spot_giornalieri && Number(item.spot_giornalieri) > 0) return Number(item.spot_giornalieri);
 
-    // Se ci sono dataInizio e dataFine
-    if (it.dataInizio && it.dataFine && tot > 0) {
-      try {
-        const d1 = new Date(it.dataInizio);
-        const d2 = new Date(it.dataFine);
-        const diffTime = Math.abs(d2.getTime() - d1.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        if (diffDays > 0) return Math.round(tot / diffDays);
-      } catch (e) {}
+    let tot = (Number(item.spotTotali) || 0) + (Number(item.spotOmaggio) || 0) || Number(item.quantita) || 0;
+    if (!tot && cData) {
+      tot = Number(cData.spotTotali) || ((Number(cData.spotPaganti) || Number(cData.quantitaSpot) || 0) + (Number(cData.spotOmaggio) || 0));
     }
 
-    if (it.giorniTotali && it.giorniTotali > 0 && tot > 0) {
-      return Math.round(tot / it.giorniTotali);
+    const fullText = `${item.periodo || ''} ${item.dettagli || ''} ${item.fascia || ''} ${item.note || ''} ${cData.dataDecorrenza || ''} ${cData.dataScadenza || ''} ${cData.noteContratto || ''}`;
+
+    // 1. Cerca indicazione esplicita dei giorni tra parentesi o nel testo, es: "(37 gg)", "(37 giorni)", "37 gg"
+    const mDays = fullText.match(/\(?(\d+)\s*(?:gg|giorni)\)?/i);
+    if (mDays && tot > 0) {
+      const days = parseInt(mDays[1], 10);
+      if (days > 0 && days <= 365) return Math.round(tot / days);
     }
 
-    const text = `${it.dettagli || ''} ${it.fascia || ''} ${it.periodo || ''} ${it.note || ''}`.toLowerCase();
-    const m = text.match(/(\d+)\s*(?:passaggi|spot|pp)(?:\s*(?:al|\/)\s*giorno|\s*al\s*dì|\/gg)?/);
-    if (m && parseInt(m[1], 10) > 0 && parseInt(m[1], 10) <= 100) return parseInt(m[1], 10);
+    // Helper per parsing sicuro di date sia in formato DD/MM/YYYY sia YYYY-MM-DD
+    function parseDateSafe(s: any): Date | null {
+      if (!s || typeof s !== 'string') return null;
+      const str = s.trim();
+      // Formato YYYY-MM-DD
+      const mIso = str.match(/(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
+      if (mIso) {
+        return new Date(parseInt(mIso[1], 10), parseInt(mIso[2], 10) - 1, parseInt(mIso[3], 10));
+      }
+      // Formato DD/MM/YYYY o DD-MM-YYYY
+      const mIt = str.match(/(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})/);
+      if (mIt) {
+        let yr = parseInt(mIt[3], 10);
+        if (yr < 100) yr += 2000;
+        return new Date(yr, parseInt(mIt[2], 10) - 1, parseInt(mIt[1], 10));
+      }
+      return null;
+    }
+
+    let d1 = parseDateSafe(item.dataInizio) || parseDateSafe(cData.dataDecorrenza);
+    let d2 = parseDateSafe(item.dataFine) || parseDateSafe(cData.dataScadenza);
+
+    if ((!d1 || !d2) && fullText) {
+      const foundDates = fullText.match(/(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})/g);
+      if (foundDates && foundDates.length >= 2) {
+        d1 = parseDateSafe(foundDates[0]);
+        d2 = parseDateSafe(foundDates[1]);
+      }
+    }
+
+    if (d1 && d2 && tot > 0) {
+      const diffTime = Math.abs(d2.getTime() - d1.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      if (diffDays > 0 && diffDays <= 365) {
+        return Math.round(tot / diffDays);
+      }
+    }
+
+    if (item.giorniTotali && Number(item.giorniTotali) > 0 && tot > 0) {
+      return Math.round(tot / Number(item.giorniTotali));
+    }
+
+    // 3. Cerca menzioni esplicite tipo "20 passaggi/giorno", "10 spot al giorno", "12 pp al dì"
+    const mExpl = fullText.match(/(\d+)\s*(?:passaggi|spot|pp)\s*(?:al|\/)\s*(?:giorno|dì|gg)/i);
+    if (mExpl) {
+      const val = parseInt(mExpl[1], 10);
+      if (val > 0 && val <= 100) return val;
+    }
 
     return 0;
   }
@@ -7397,12 +7443,22 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             <td style={{ padding: '8px 10px', fontWeight: 700, color: '#D43F4A' }}>{contractData.mezzo}</td>
                             <td style={{ padding: '8px 10px', fontWeight: 800 }}>{contractData.formato}</td>
                             <td style={{ padding: '8px 10px' }}>
-                              <strong>{contractData.spotPaganti || contractData.quantitaSpot} spot a tariffa</strong>
-                              {(contractData.spotOmaggio || 0) > 0 && (
-                                <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 5px', borderRadius: '3px', marginLeft: '5px', display: 'inline-block' }}>
-                                  + {contractData.spotOmaggio} OMAGGIO
-                                </span>
-                              )}
+                              {(() => {
+                                const dailyFallback = getDailySpots(null, contractData);
+                                return dailyFallback > 0 ? (
+                                  <div style={{ fontSize: '10.5px', fontWeight: 900, color: '#D43F4A', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                    <span>📻</span> {dailyFallback} PASSAGGI AL GIORNO
+                                  </div>
+                                ) : null;
+                              })()}
+                              <div style={{ fontWeight: 700 }}>
+                                <strong>{contractData.spotPaganti || contractData.quantitaSpot} spot a tariffa</strong>
+                                {(contractData.spotOmaggio || 0) > 0 && (
+                                  <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 5px', borderRadius: '3px', marginLeft: '5px', display: 'inline-block' }}>
+                                    + {contractData.spotOmaggio} OMAGGIO
+                                  </span>
+                                )}
+                              </div>
                               <div style={{ fontSize: '8.5px', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>
                                 Totale: {contractData.spotTotali || ((contractData.spotPaganti || contractData.quantitaSpot) + (contractData.spotOmaggio || 0))} passaggi on-air
                               </div>
@@ -7414,7 +7470,17 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 <>Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong></>
                               )}
                             </td>
-                            <td style={{ padding: '8px 10px' }}>07:00 – 21:00 (Rotazione)</td>
+                            <td style={{ padding: '8px 10px', fontSize: '8.5px' }}>
+                              {(() => {
+                                const dailyFallback = getDailySpots(null, contractData);
+                                return dailyFallback > 0 ? (
+                                  <div style={{ fontWeight: 800, color: '#D43F4A', marginBottom: '2px' }}>
+                                    {dailyFallback} passaggi al giorno
+                                  </div>
+                                ) : null;
+                              })()}
+                              <div style={{ color: '#475569' }}>07:00 – 21:00 (Rotazione)</div>
+                            </td>
                             <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
                               € {(Number(contractData.prezzoSpazi) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                             </td>
@@ -7435,9 +7501,20 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   </div>
 
                   {/* AGEVOLAZIONE COMMERCIALE OMAGGI IN CONTRATTO */}
-                  {(contractData.spotOmaggio || 0) > 0 && (
+                  {((contractData.spotOmaggio || 0) > 0 || getDailySpots(contractData.items?.[0] || null, contractData) > 0) && (
                     <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '4px', padding: '6px 10px', marginBottom: '12px', fontSize: '8.5px', color: '#991b1b', lineHeight: 1.35 }}>
-                      <strong>Agevolazione Commerciale Promozionale:</strong> La presente commissione include <strong>{contractData.spotOmaggio} passaggi spot a titolo di OMAGGIO</strong> regolarmente inseriti nella pianificazione on-air sopraindicata, concessi a titolo promozionale dall&apos;Emittente senza alcun addebito economico per il committente.
+                      <strong>Pianificazione &amp; Condizioni di Trasmissione:</strong>
+                      {(contractData.spotOmaggio || 0) > 0 && (
+                        <span> La presente commissione include <strong>{contractData.spotOmaggio} passaggi spot a titolo di OMAGGIO</strong> concessi a titolo promozionale senza alcun addebito.</span>
+                      )}
+                      {(() => {
+                        const dSpots = getDailySpots(contractData.items?.[0] || null, contractData);
+                        return dSpots > 0 ? (
+                          <div style={{ marginTop: '2px', fontWeight: 800 }}>
+                            • <strong>Pressione giornaliera garantita:</strong> n. {dSpots} passaggi/giorno distribuiti nella fascia oraria on-air (07:00 – 21:00 a rotazione).
+                          </div>
+                        ) : null;
+                      })()}
                     </div>
                   )}
 
@@ -8015,35 +8092,57 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                     </tr>
                   </thead>
                   <tbody>
-                    {(selectedLeadForProposalEmail.quote_items && selectedLeadForProposalEmail.quote_items.length > 0 ? selectedLeadForProposalEmail.quote_items : quoteItems).map((it, idx) => (
-                      <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#fff' : '#f8fafc' }}>
-                        <td style={{ padding: '6px 10px', fontWeight: 700 }}>
-                          {it.tipo}
-                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
-                            <span style={{ marginLeft: '6px', fontSize: '8.5px', background: '#e0f2fe', color: '#0369a1', padding: '1px 5px', borderRadius: '3px', fontWeight: 800 }}>
-                              Qtà: {it.quantita}
-                            </span>
-                          ) : null}
-                        </td>
-                        <td style={{ padding: '6px 10px' }}>{it.copertura}</td>
-                        <td style={{ padding: '6px 10px', color: '#64748b' }}>
-                          <div>{it.dettagli}</div>
-                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
-                            <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 600, marginTop: '2px' }}>
-                              • {it.quantita} prestazioni a € {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })} cad.
-                            </div>
-                          ) : null}
-                        </td>
-                        <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 800 }}>
-                          <div>€ {it.valore?.toLocaleString('it-IT')}</div>
-                          {it.quantita && it.quantita > 1 && !it.isSpot ? (
-                            <div style={{ fontSize: '8px', color: '#64748b', fontWeight: 500 }}>
-                              (€ {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
-                            </div>
-                          ) : null}
-                        </td>
-                      </tr>
-                    ))}
+                    {(selectedLeadForProposalEmail.quote_items && selectedLeadForProposalEmail.quote_items.length > 0 ? selectedLeadForProposalEmail.quote_items : quoteItems).map((it, idx) => {
+                      const daily = getDailySpots(it, contractData);
+                      return (
+                        <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                          <td style={{ padding: '6px 10px', fontWeight: 700 }}>
+                            <div>{it.tipo}</div>
+                            {daily > 0 && (
+                              <div style={{ marginTop: '3px' }}>
+                                <span style={{ fontSize: '9px', fontWeight: 900, background: '#fee2e2', color: '#991b1b', border: '1.5px solid #ef4444', padding: '1px 6px', borderRadius: '3px', display: 'inline-block' }}>
+                                  📻 {daily} PASSAGGI AL GIORNO
+                                </span>
+                              </div>
+                            )}
+                            {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                              <span style={{ marginLeft: '6px', fontSize: '8.5px', background: '#e0f2fe', color: '#0369a1', padding: '1px 5px', borderRadius: '3px', fontWeight: 800 }}>
+                                Qtà: {it.quantita}
+                              </span>
+                            ) : null}
+                          </td>
+                          <td style={{ padding: '6px 10px' }}>
+                            <div style={{ fontWeight: 700, color: '#D43F4A' }}>{it.copertura}</div>
+                            {daily > 0 && (
+                              <div style={{ fontSize: '8.5px', color: '#991b1b', fontWeight: 800, marginTop: '2px' }}>
+                                • {daily} passaggi/giorno garantiti
+                              </div>
+                            )}
+                          </td>
+                          <td style={{ padding: '6px 10px', color: '#64748b' }}>
+                            <div>{it.dettagli}</div>
+                            {daily > 0 && (
+                              <div style={{ fontSize: '8.5px', color: '#991b1b', fontWeight: 800, marginTop: '2px' }}>
+                                • Pressione on-air: {daily} passaggi al giorno (rotazione 07:00 – 21:00)
+                              </div>
+                            )}
+                            {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                              <div style={{ fontSize: '8.5px', color: '#0284c7', fontWeight: 600, marginTop: '2px' }}>
+                                • {it.quantita} prestazioni a € {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })} cad.
+                              </div>
+                            ) : null}
+                          </td>
+                          <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 800 }}>
+                            <div>€ {it.valore?.toLocaleString('it-IT')}</div>
+                            {it.quantita && it.quantita > 1 && !it.isSpot ? (
+                              <div style={{ fontSize: '8px', color: '#64748b', fontWeight: 500 }}>
+                                (€ {Number(it.prezzoUnitarioNetto || (it.valore / it.quantita)).toLocaleString('it-IT', { minimumFractionDigits: 2 })}/cad.)
+                              </div>
+                            ) : null}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -8930,12 +9029,22 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                       <td style={{ padding: '6px 8px', fontWeight: 700, color: '#D43F4A' }}>{contractData.mezzo}</td>
                       <td style={{ padding: '6px 8px', fontWeight: 800 }}>{contractData.formato}</td>
                       <td style={{ padding: '6px 8px' }}>
-                        <strong>{contractData.spotPaganti || contractData.quantitaSpot} spot a tariffa</strong>
-                        {(contractData.spotOmaggio || 0) > 0 && (
-                          <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 4px', borderRadius: '3px', marginLeft: '4px', display: 'inline-block' }}>
-                            + {contractData.spotOmaggio} OMAGGIO
-                          </span>
-                        )}
+                        {(() => {
+                          const dailyFallback = getDailySpots(null, contractData);
+                          return dailyFallback > 0 ? (
+                            <div style={{ fontSize: '9.5px', fontWeight: 900, color: '#D43F4A', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                              <span>📻</span> {dailyFallback} PASSAGGI AL GIORNO
+                            </div>
+                          ) : null;
+                        })()}
+                        <div style={{ fontWeight: 700 }}>
+                          <strong>{contractData.spotPaganti || contractData.quantitaSpot} spot a tariffa</strong>
+                          {(contractData.spotOmaggio || 0) > 0 && (
+                            <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 4px', borderRadius: '3px', marginLeft: '4px', display: 'inline-block' }}>
+                              + {contractData.spotOmaggio} OMAGGIO
+                            </span>
+                          )}
+                        </div>
                         <div style={{ fontSize: '7.8px', fontWeight: 800, color: '#0f172a', marginTop: '1px' }}>
                           Totale: {contractData.spotTotali || ((contractData.spotPaganti || contractData.quantitaSpot) + (contractData.spotOmaggio || 0))} passaggi on-air
                         </div>
@@ -8947,7 +9056,17 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                           <>Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong></>
                         )}
                       </td>
-                      <td style={{ padding: '6px 8px' }}>07:00 – 21:00 (Rotazione)</td>
+                      <td style={{ padding: '6px 8px', fontSize: '7.8px' }}>
+                        {(() => {
+                          const dailyFallback = getDailySpots(null, contractData);
+                          return dailyFallback > 0 ? (
+                            <div style={{ fontWeight: 800, color: '#D43F4A', marginBottom: '1px' }}>
+                              {dailyFallback} passaggi al giorno
+                            </div>
+                          ) : null;
+                        })()}
+                        <div style={{ color: '#475569' }}>07:00 – 21:00 (Rotazione)</div>
+                      </td>
                       <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, fontSize: '9px' }}>
                         € {contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                       </td>
@@ -8968,9 +9087,20 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
             </div>
 
             {/* AGEVOLAZIONE COMMERCIALE OMAGGI IN CONTRATTO */}
-            {(contractData.spotOmaggio || 0) > 0 && (
+            {((contractData.spotOmaggio || 0) > 0 || getDailySpots(contractData.items?.[0] || null, contractData) > 0) && (
               <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '4px', padding: '5px 8px', marginBottom: '8px', fontSize: '7.8px', color: '#991b1b', lineHeight: 1.3 }}>
-                <strong>Agevolazione Commerciale Promozionale:</strong> La presente commissione include <strong>{contractData.spotOmaggio} passaggi spot a titolo di OMAGGIO</strong> regolarmente inseriti nella pianificazione on-air sopraindicata, concessi a titolo promozionale dall&apos;Emittente senza alcun addebito economico per il committente.
+                <strong>Pianificazione &amp; Condizioni di Trasmissione:</strong>
+                {(contractData.spotOmaggio || 0) > 0 && (
+                  <span> La commissione include <strong>{contractData.spotOmaggio} passaggi spot a titolo di OMAGGIO</strong> senza alcun addebito.</span>
+                )}
+                {(() => {
+                  const dSpots = getDailySpots(contractData.items?.[0] || null, contractData);
+                  return dSpots > 0 ? (
+                    <div style={{ marginTop: '2px', fontWeight: 800 }}>
+                      • <strong>Pressione giornaliera garantita:</strong> n. {dSpots} passaggi/giorno (07:00 – 21:00 a rotazione).
+                    </div>
+                  ) : null;
+                })()}
               </div>
             )}
 
