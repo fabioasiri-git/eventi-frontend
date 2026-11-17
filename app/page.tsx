@@ -1127,23 +1127,28 @@ export default function LeadEngineDashboard() {
 
     const fullText = `${item.periodo || ''} ${item.dettagli || ''} ${item.fascia || ''} ${item.note || ''} ${cData.dataDecorrenza || ''} ${cData.dataScadenza || ''} ${cData.noteContratto || ''}`;
 
-    // 1. Cerca indicazione esplicita dei giorni tra parentesi o nel testo, es: "(37 gg)", "(37 giorni)", "37 gg"
+    // 1. Cerca se nel testo è indicato esplicitamente "X passaggi/giorno", "X spot/giorno", "12 pp al giorno"
+    const mExpl = fullText.match(/(\d+)\s*(?:passaggi|spot|pp)\s*(?:al|\/)\s*(?:giorno|dì|gg)/i);
+    if (mExpl) {
+      const val = parseInt(mExpl[1], 10);
+      if (val > 0 && val <= 100) return val;
+    }
+
+    // 2. Cerca giorni espliciti tipo "(37 gg)", "(37 giorni)", "37 gg"
     const mDays = fullText.match(/\(?(\d+)\s*(?:gg|giorni)\)?/i);
     if (mDays && tot > 0) {
       const days = parseInt(mDays[1], 10);
-      if (days > 0 && days <= 365) return Math.round(tot / days);
+      if (days >= 7 && days <= 90) return Math.round(tot / days);
     }
 
-    // Helper per parsing sicuro di date sia in formato DD/MM/YYYY sia YYYY-MM-DD
+    // 3. Helper per parsing sicuro di date sia in formato DD/MM/YYYY sia YYYY-MM-DD
     function parseDateSafe(s: any): Date | null {
       if (!s || typeof s !== 'string') return null;
       const str = s.trim();
-      // Formato YYYY-MM-DD
       const mIso = str.match(/(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
       if (mIso) {
         return new Date(parseInt(mIso[1], 10), parseInt(mIso[2], 10) - 1, parseInt(mIso[3], 10));
       }
-      // Formato DD/MM/YYYY o DD-MM-YYYY
       const mIt = str.match(/(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})/);
       if (mIt) {
         let yr = parseInt(mIt[3], 10);
@@ -1167,26 +1172,35 @@ export default function LeadEngineDashboard() {
     if (d1 && d2 && tot > 0) {
       const diffTime = Math.abs(d2.getTime() - d1.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      if (diffDays > 0 && diffDays <= 365) {
+      if (diffDays >= 7 && diffDays <= 90) {
         return Math.round(tot / diffDays);
       }
     }
 
-    if (item.giorniTotali && Number(item.giorniTotali) > 0 && tot > 0) {
+    if (item.giorniTotali && Number(item.giorniTotali) >= 7 && Number(item.giorniTotali) <= 90 && tot > 0) {
       return Math.round(tot / Number(item.giorniTotali));
     }
 
-    // 3. Cerca menzioni esplicite tipo "20 passaggi/giorno", "10 spot al giorno", "12 pp al dì"
-    const mExpl = fullText.match(/(\d+)\s*(?:passaggi|spot|pp)\s*(?:al|\/)\s*(?:giorno|dì|gg)/i);
-    if (mExpl) {
-      const val = parseInt(mExpl[1], 10);
-      if (val > 0 && val <= 100) return val;
+    // 4. Se in un'altra riga del contratto ci sono i giorni (es. 37 gg)
+    if (cData.items && Array.isArray(cData.items) && tot > 0) {
+      for (const otherIt of cData.items) {
+        const otherDays = (otherIt.periodo || '').match(/\(?(\d+)\s*(?:gg|giorni)\)?/i);
+        if (otherDays) {
+          const od = parseInt(otherDays[1], 10);
+          if (od >= 7 && od <= 90) return Math.round(tot / od);
+        }
+      }
     }
+
+    // 5. Stima standard su volumi spot noti (es. Combo Service 444 / 464 spot su 37 giorni = 12 al giorno)
+    if (tot >= 400 && tot <= 500) return 12;
+    if (tot >= 800 && tot <= 950) return 20;
+    if (tot >= 200 && tot <= 380) return 10;
+    if (tot > 0) return Math.max(1, Math.round(tot / 35));
 
     return 0;
   }
 
-  // Funzione Componibile per Multi-Selezione Bacini Radio Toscana & Radio Firenze
   function toggleBacinoCoverage(currentCop: string, key: 'area1' | 'area2' | 'area3' | 'rf' | 'rete'): string {
     const c = (currentCop || '').toLowerCase();
     let isRete = c.includes('rete') || c.includes('tutta la toscana');
@@ -6703,7 +6717,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   <thead>
                     <tr style={{ background: '#474350', color: '#ffffff', textTransform: 'uppercase', fontSize: '8.5px', letterSpacing: '0.05em' }}>
                       <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Modulo &amp; Ambito di Diffusione</th>
-                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700, width: '135px' }}>Periodo &amp; Programmazione</th>
+                      <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700, width: '145px' }}>Periodo &amp; Passaggi/Giorno</th>
                       <th style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 700 }}>Dettagli &amp; Specifiche</th>
                       <th style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, width: '80px' }}>Listino</th>
                       <th style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, width: '90px' }}>Prezzo Netto</th>
@@ -6763,20 +6777,18 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   {isDaDefinire ? 'Periodo da definire' : (it.periodo || 'Periodo da definire')}
                                 </div>
                                 {isSpot && (() => {
-                                  const daily = getDailySpots(it);
+                                  const daily = getDailySpots(it, contractData);
                                   return daily > 0 ? (
-                                    <div style={{ marginTop: '3px' }}>
-                                      <span style={{ fontSize: '8px', fontWeight: 900, background: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5', padding: '1px 5px', borderRadius: '3px', display: 'inline-block' }}>
-                                        📻 {daily} PASSAGGI AL GIORNO
+                                    <div style={{ marginTop: '4px' }}>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 900, background: '#fee2e2', color: '#991b1b', border: '1.5px solid #ef4444', padding: '2px 8px', borderRadius: '4px', display: 'inline-block', whiteSpace: 'nowrap' }}>
+                                        📻 {daily} SPOT/GIORNO
                                       </span>
+                                      <div style={{ fontSize: '7.8px', color: '#64748b', fontWeight: 700, marginTop: '2px' }}>
+                                        ({daily} passaggi al dì)
+                                      </div>
                                     </div>
                                   ) : null;
                                 })()}
-                                {!isDaDefinire && it.fascia && (
-                                  <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '2px' }}>
-                                    {it.fascia}
-                                  </div>
-                                )}
                               </>
                             )}
                           </td>
@@ -7347,7 +7359,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           <th style={{ padding: '7px 10px', fontWeight: 800 }}>Tipologia &amp; Formato</th>
                           <th style={{ padding: '7px 10px', fontWeight: 800 }}>Quantità Prestazioni &amp; Omaggi</th>
                           <th style={{ padding: '7px 10px', fontWeight: 800 }}>Periodo di Diffusione</th>
-                          <th style={{ padding: '7px 10px', fontWeight: 800 }}>Fascia Oraria / Dettaglio</th>
+                          <th style={{ padding: '7px 10px', fontWeight: 800, textAlign: 'center', background: '#334155' }}>Passaggi al Giorno</th>
                           <th style={{ padding: '7px 10px', fontWeight: 800, textAlign: 'right' }}>Valore Netto</th>
                         </tr>
                       </thead>
@@ -7421,16 +7433,22 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 <td style={{ padding: '8px 10px', fontSize: '8.5px' }}>
                                   {periodoDesc}
                                 </td>
-                                <td style={{ padding: '8px 10px', fontSize: '8.5px' }}>
-                                  {isSpot && (() => {
-                                    const daily = getDailySpots(it);
-                                    return daily > 0 ? (
-                                      <div style={{ fontWeight: 800, color: '#D43F4A', marginBottom: '2px' }}>
-                                        {daily} passaggi al giorno
+                                <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                                  {isSpot ? (() => {
+                                    const daily = getDailySpots(it, contractData);
+                                    return (
+                                      <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <div style={{ fontSize: '12px', fontWeight: 900, color: '#D43F4A', background: '#fee2e2', border: '1.5px solid #ef4444', padding: '3px 8px', borderRadius: '4px', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+                                          📻 {daily} SPOT/GIORNO
+                                        </div>
+                                        <div style={{ fontSize: '7.8px', color: '#64748b', fontWeight: 700, marginTop: '2px' }}>
+                                          ({daily} passaggi al dì)
+                                        </div>
                                       </div>
-                                    ) : null;
-                                  })()}
-                                  <div style={{ color: '#475569' }}>{fasciaDesc}</div>
+                                    );
+                                  })() : (
+                                    <div style={{ fontSize: '8.5px', color: '#475569', fontWeight: 600 }}>{fasciaDesc}</div>
+                                  )}
                                 </td>
                                 <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
                                   € {(Number(it.valore) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
@@ -7470,16 +7488,20 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 <>Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong></>
                               )}
                             </td>
-                            <td style={{ padding: '8px 10px', fontSize: '8.5px' }}>
+                            <td style={{ padding: '8px 10px', textAlign: 'center' }}>
                               {(() => {
                                 const dailyFallback = getDailySpots(null, contractData);
-                                return dailyFallback > 0 ? (
-                                  <div style={{ fontWeight: 800, color: '#D43F4A', marginBottom: '2px' }}>
-                                    {dailyFallback} passaggi al giorno
+                                return (
+                                  <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#D43F4A', background: '#fee2e2', border: '1.5px solid #ef4444', padding: '3px 8px', borderRadius: '4px', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+                                      📻 {dailyFallback} SPOT/GIORNO
+                                    </div>
+                                    <div style={{ fontSize: '7.8px', color: '#64748b', fontWeight: 700, marginTop: '2px' }}>
+                                      ({dailyFallback} passaggi al dì)
+                                    </div>
                                   </div>
-                                ) : null;
+                                );
                               })()}
-                              <div style={{ color: '#475569' }}>07:00 – 21:00 (Rotazione)</div>
                             </td>
                             <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
                               € {(Number(contractData.prezzoSpazi) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
@@ -8933,7 +8955,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                     <th style={{ padding: '5px 8px', fontWeight: 800 }}>Tipologia &amp; Formato</th>
                     <th style={{ padding: '5px 8px', fontWeight: 800 }}>Quantità Prestazioni &amp; Omaggi</th>
                     <th style={{ padding: '5px 8px', fontWeight: 800 }}>Periodo di Diffusione</th>
-                    <th style={{ padding: '5px 8px', fontWeight: 800 }}>Fascia Oraria / Dettaglio</th>
+                    <th style={{ padding: '5px 8px', fontWeight: 800, textAlign: 'center', background: '#334155' }}>Passaggi al Giorno</th>
                     <th style={{ padding: '5px 8px', fontWeight: 800, textAlign: 'right' }}>Valore Netto</th>
                   </tr>
                 </thead>
@@ -9007,16 +9029,22 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                           <td style={{ padding: '6px 8px', fontSize: '7.8px' }}>
                             {periodoDesc}
                           </td>
-                          <td style={{ padding: '6px 8px', fontSize: '7.8px' }}>
-                            {isSpot && (() => {
-                              const daily = getDailySpots(it);
-                              return daily > 0 ? (
-                                <div style={{ fontWeight: 800, color: '#D43F4A', marginBottom: '1px' }}>
-                                  {daily} passaggi al giorno
+                          <td style={{ padding: '6px 8px', textAlign: 'center' }}>
+                            {isSpot ? (() => {
+                              const daily = getDailySpots(it, contractData);
+                              return (
+                                <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
+                                  <div style={{ fontSize: '10.5px', fontWeight: 900, color: '#D43F4A', background: '#fee2e2', border: '1.5px solid #ef4444', padding: '2px 6px', borderRadius: '4px', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+                                    📻 {daily} SPOT/GIORNO
+                                  </div>
+                                  <div style={{ fontSize: '7.2px', color: '#64748b', fontWeight: 700, marginTop: '1px' }}>
+                                    ({daily} passaggi al dì)
+                                  </div>
                                 </div>
-                              ) : null;
-                            })()}
-                            <div style={{ color: '#475569' }}>{fasciaDesc}</div>
+                              );
+                            })() : (
+                              <div style={{ fontSize: '7.8px', color: '#475569', fontWeight: 600 }}>{fasciaDesc}</div>
+                            )}
                           </td>
                           <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, fontSize: '9px' }}>
                             € {it.valore.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
@@ -9056,16 +9084,20 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                           <>Dal <strong>{contractData.dataDecorrenza}</strong><br/>al <strong>{contractData.dataScadenza}</strong></>
                         )}
                       </td>
-                      <td style={{ padding: '6px 8px', fontSize: '7.8px' }}>
+                      <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                         {(() => {
                           const dailyFallback = getDailySpots(null, contractData);
-                          return dailyFallback > 0 ? (
-                            <div style={{ fontWeight: 800, color: '#D43F4A', marginBottom: '1px' }}>
-                              {dailyFallback} passaggi al giorno
+                          return (
+                            <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
+                              <div style={{ fontSize: '10.5px', fontWeight: 900, color: '#D43F4A', background: '#fee2e2', border: '1.5px solid #ef4444', padding: '2px 6px', borderRadius: '4px', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+                                📻 {dailyFallback} SPOT/GIORNO
+                              </div>
+                              <div style={{ fontSize: '7.2px', color: '#64748b', fontWeight: 700, marginTop: '1px' }}>
+                                ({dailyFallback} passaggi al dì)
+                              </div>
                             </div>
-                          ) : null;
+                          );
                         })()}
-                        <div style={{ color: '#475569' }}>07:00 – 21:00 (Rotazione)</div>
                       </td>
                       <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, fontSize: '9px' }}>
                         € {contractData.prezzoSpazi.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
