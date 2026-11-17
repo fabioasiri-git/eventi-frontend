@@ -7667,14 +7667,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 </td>
                                 <td style={{ padding: '8px 10px' }}>
                                   {isSpot ? (() => {
-                                    const daily = getDailySpots(it);
                                     return (
                                       <>
-                                        {daily > 0 && (
-                                          <div style={{ fontSize: '10.5px', fontWeight: 900, color: '#D43F4A', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                            <span>📻</span> {daily} PASSAGGI AL GIORNO
-                                          </div>
-                                        )}
                                         <div style={{ fontWeight: 700 }}>
                                           <strong>{it.spotTotali || paganti} spot a tariffa</strong>
                                           {omaggi > 0 && (
@@ -7730,14 +7724,6 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             <td style={{ padding: '8px 10px', fontWeight: 700, color: '#D43F4A' }}>{contractData.mezzo}</td>
                             <td style={{ padding: '8px 10px', fontWeight: 800 }}>{contractData.formato}</td>
                             <td style={{ padding: '8px 10px' }}>
-                              {(() => {
-                                const dailyFallback = getDailySpots(null, contractData);
-                                return dailyFallback > 0 ? (
-                                  <div style={{ fontSize: '10.5px', fontWeight: 900, color: '#D43F4A', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                    <span>📻</span> {dailyFallback} PASSAGGI AL GIORNO
-                                  </div>
-                                ) : null;
-                              })()}
                               <div style={{ fontWeight: 700 }}>
                                 <strong>{contractData.spotPaganti || contractData.quantitaSpot} spot a tariffa</strong>
                                 {(contractData.spotOmaggio || 0) > 0 && (
@@ -9263,14 +9249,8 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                           </td>
                           <td style={{ padding: '6px 8px' }}>
                             {isSpot ? (() => {
-                              const daily = getDailySpots(it);
                               return (
                                 <>
-                                  {daily > 0 && (
-                                    <div style={{ fontSize: '9.5px', fontWeight: 900, color: '#D43F4A', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                      <span>📻</span> {daily} PASSAGGI AL GIORNO
-                                    </div>
-                                  )}
                                   <div style={{ fontWeight: 700 }}>
                                     <strong>{it.spotTotali || paganti} spot a tariffa</strong>
                                     {omaggi > 0 && (
@@ -9326,14 +9306,6 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                       <td style={{ padding: '6px 8px', fontWeight: 700, color: '#D43F4A' }}>{contractData.mezzo}</td>
                       <td style={{ padding: '6px 8px', fontWeight: 800 }}>{contractData.formato}</td>
                       <td style={{ padding: '6px 8px' }}>
-                        {(() => {
-                          const dailyFallback = getDailySpots(null, contractData);
-                          return dailyFallback > 0 ? (
-                            <div style={{ fontSize: '9.5px', fontWeight: 900, color: '#D43F4A', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                              <span>📻</span> {dailyFallback} PASSAGGI AL GIORNO
-                            </div>
-                          ) : null;
-                        })()}
                         <div style={{ fontWeight: 700 }}>
                           <strong>{contractData.spotPaganti || contractData.quantitaSpot} spot a tariffa</strong>
                           {(contractData.spotOmaggio || 0) > 0 && (
