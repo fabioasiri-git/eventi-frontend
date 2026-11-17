@@ -5601,42 +5601,75 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
 
                             return (
                               <div style={{ marginBottom: '12px' }}>
-                                {/* SPUNTA SPOT OMAGGIO: SÌ O NO PER APRIRE O MENO IL BOX */}
+                                {/* TOGGLE A DUE OPZIONI */}
                                 <div style={{
                                   background: 'rgba(15, 23, 42, 0.7)',
-                                  border: (it.spotOmaggio || 0) > 0 ? '1.5px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.12)',
+                                  border: '1px solid rgba(255, 255, 255, 0.12)',
                                   borderRadius: '8px',
-                                  padding: '10px 14px',
+                                  padding: '10px 12px',
                                   marginBottom: '10px'
                                 }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}>
-                                      <input
-                                        type="checkbox"
-                                        checked={(it.spotOmaggio || 0) > 0}
-                                        onChange={e => {
-                                          if (e.target.checked) {
-                                            handleSpotFieldChange(it.id, { spotOmaggio: 20, modalitaVantaggio: 'SPOT_OMAGGIO' });
-                                          } else {
-                                            handleSpotFieldChange(it.id, { spotOmaggio: 0, modalitaVantaggio: 'SCALA_SCONTI' });
-                                          }
-                                        }}
-                                        style={{ width: '18px', height: '18px', accentColor: '#ef4444', cursor: 'pointer' }}
-                                      />
-                                      <span style={{ fontSize: '11.5px', fontWeight: 900, color: (it.spotOmaggio || 0) > 0 ? '#fca5a5' : '#ffffff' }}>
-                                        🎁 Includi Spot OMAGGIO (Spunta Sì / No per aprire il box)
-                                      </span>
-                                    </label>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                    <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                      Formula di Agevolazione Commerciale:
+                                    </span>
                                     <span style={{
-                                      fontSize: '9.5px',
+                                      fontSize: '10px',
                                       fontWeight: 800,
                                       padding: '2px 8px',
                                       borderRadius: '4px',
-                                      background: (it.spotOmaggio || 0) > 0 ? 'rgba(239, 68, 68, 0.25)' : 'rgba(56, 189, 248, 0.2)',
-                                      color: (it.spotOmaggio || 0) > 0 ? '#fca5a5' : '#38bdf8'
+                                      background: isScalaSconti ? 'rgba(56, 189, 248, 0.2)' : 'rgba(244, 63, 94, 0.2)',
+                                      color: isScalaSconti ? '#38bdf8' : '#fb7185',
+                                      border: isScalaSconti ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(244, 63, 94, 0.4)'
                                     }}>
-                                      {(it.spotOmaggio || 0) > 0 ? `🎁 Box OMAGGI APERTO (+${it.spotOmaggio} omaggio)` : '✓ ZERO OMAGGI (Box Chiuso)'}
+                                      {isScalaSconti ? '📉 MODALITÀ 1: SCALA SCONTI (% su Listino)' : '🎁 MODALITÀ 2: SPOT OMAGGIO (Passaggi Gratuiti)'}
                                     </span>
+                                  </div>
+
+                                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSpotFieldChange(it.id, { modalitaVantaggio: 'SCALA_SCONTI', spotOmaggio: 0 })}
+                                      style={{
+                                        padding: '9px 12px',
+                                        borderRadius: '6px',
+                                        fontSize: '11px',
+                                        fontWeight: 800,
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: '2px',
+                                        border: isScalaSconti ? '2px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.12)',
+                                        background: isScalaSconti ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.03)',
+                                        color: isScalaSconti ? '#ffffff' : '#94a3b8'
+                                      }}
+                                    >
+                                      <span style={{ color: isScalaSconti ? '#38bdf8' : '#cbd5e1' }}>📉 1. SCALA SCONTI</span>
+                                      <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.85 }}>Sconto % su Listino Ufficiale (Zero Omaggi)</span>
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSpotFieldChange(it.id, { modalitaVantaggio: 'SPOT_OMAGGIO', scontoPercentuale: 0 })}
+                                      style={{
+                                        padding: '9px 12px',
+                                        borderRadius: '6px',
+                                        fontSize: '11px',
+                                        fontWeight: 800,
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: '2px',
+                                        border: !isScalaSconti ? '2px solid #fb7185' : '1px solid rgba(255, 255, 255, 0.12)',
+                                        background: !isScalaSconti ? 'rgba(244, 63, 94, 0.25)' : 'rgba(255, 255, 255, 0.03)',
+                                        color: !isScalaSconti ? '#ffffff' : '#94a3b8'
+                                      }}
+                                    >
+                                      <span style={{ color: !isScalaSconti ? '#fb7185' : '#cbd5e1' }}>🎁 2. SPOT OMAGGIO</span>
+                                      <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.85 }}>Passaggi Extra Gratuiti (Nessuno Sconto %)</span>
+                                    </button>
                                   </div>
                                 </div>
 
