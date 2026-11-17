@@ -109,6 +109,102 @@ interface LeadRow {
 
 const INITIAL_LEADS_POOL: LeadRow[] = [
   {
+    id: 'lead-combo-service-mbe-2024',
+    nome_azienda_evento: 'COMBO SERVICE S.R.L. (Mail Boxes Etc. MBE 0348)',
+    referente: 'Direzione Commerciale MBE 0348',
+    email: 'mbe348@mbe.it',
+    telefono: '055 6533238',
+    piva: '05056040487',
+    cf: '05056040487',
+    pec: 'comboservice@pec.it',
+    sdi: 'M5UXCR1',
+    indirizzo: 'Viale Europa, 201',
+    cap: '50126',
+    comune: 'Firenze',
+    provincia: 'FI',
+    settore: 'Servizi alle Imprese / Spedizioni & Grafica (MBE)',
+    area_target: 'Radio Toscana + Radio Firenze (Area 1 FI-PO-PT)',
+    fase_commerciale: 'PREVENTIVO INVIATO',
+    colonna: 'PREVENTIVO INVIATO',
+    tipo_contratto: 'SPOT_TABELLARE',
+    valore_preventivo: 3600,
+    valore_contratto: 3600,
+    numero_preventivo: 'PREV-2024/MBE348',
+    numero_contratto: '2024/MBE-0348',
+    plafond_totale_spot: 880,
+    spot_rimasti: 880,
+    is_cambio_merce: false,
+    probabilita_chiusura: 95,
+    anno_riferimento: '2026',
+    data_preventivo: '2024-10-11',
+    data_contratto: '2024-10-11',
+    data_ultimo_invio: '2024-10-11',
+    tipo_accordo: 'STANDARD',
+    stato_produzione: 'PRODOTTO_APPROVATO',
+    periodo: '11/11 – 24/12 (Campagna Autunno/Natale) • 10 passaggi/giorno',
+    spot_giornalieri: 20,
+    stato_programmazione: 'IN_ATTESA_CONFERMA',
+    copy_testo: "Campagna Radiofonica COMBO SERVICE SRL (Mail Boxes Etc. MBE 0348 Firenze Viale Europa 201): 880 spot totali da 20\" (440 spot Radio Toscana Area 1 di cui 120 omaggio + 440 spot Radio Firenze di cui 120 omaggio). 10 passaggi/giorno dall'11/11 al 24/12. Realizzazione spot compresa. Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm.",
+    quote_items: [
+      {
+        id: 'combo-rt-1',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        dettagli: '320 spot paganti + 120 spot omaggio (Totale 440 passaggi da 20\" - 10 spot/gg)',
+        fascia: '10 passaggi al giorno a rotazione',
+        periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
+        periodoDaDefinire: false,
+        giorniTotali: 44,
+        spotGiornalieri: 10,
+        spotTotali: 320,
+        spotOmaggio: 120,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 27.27,
+        tariffaUnitaria: 6.56,
+        prezzoListino: 2880,
+        valore: 2100,
+        isSpot: true
+      },
+      {
+        id: 'combo-rf-2',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Firenze 88.7 / 95.4 MHz',
+        dettagli: '320 spot paganti + 120 spot omaggio (Totale 440 passaggi da 20\" - 10 spot/gg)',
+        fascia: '10 passaggi al giorno a rotazione',
+        periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
+        periodoDaDefinire: false,
+        giorniTotali: 44,
+        spotGiornalieri: 10,
+        spotTotali: 320,
+        spotOmaggio: 120,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 25.0,
+        tariffaUnitaria: 4.69,
+        prezzoListino: 2000,
+        valore: 1500,
+        isSpot: true
+      },
+      {
+        id: 'combo-prod-3',
+        tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
+        copertura: 'Radio Toscana + Radio Firenze',
+        dettagli: 'Realizzazione copy + produzione audio in studio compresa nel pacchetto promozionale',
+        fascia: 'Produzione audio in studio',
+        periodo: 'Una tantum',
+        periodoDaDefinire: false,
+        prezzoListino: 100,
+        valore: 0,
+        quantita: 1,
+        prezzoUnitarioListino: 100,
+        prezzoUnitarioNetto: 0,
+        isSpot: false
+      }
+    ],
+    note: "Contratto 2024 Combo Service S.r.l. (MBE 0348 - Firenze Viale Europa 201) sottoscritto il 11/10/2024. Totale 880 spot (320+120 omaggio RT + 320+120 omaggio RF), 10 passaggi/giorno dal 11/11 al 24/12. Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm. PDF Originale: /Contratto_Combo_Service_2024.pdf"
+  },
+  {
     id: 'lead-castel-del-piano-capodanno-2026',
     nome_azienda_evento: 'COMUNE DI CASTEL DEL PIANO (Capodanno in Piazza)',
     referente: 'Arianna Arezzini (Vicesindaco / Assessore)',
@@ -2003,6 +2099,82 @@ export default function LeadEngineDashboard() {
     setShowQuoteModal(true);
   }
 
+  // Precarica Contratto 2024 Combo Service S.r.l. (MBE 0348) per Modifica / Rinnovo (3.600€ + IVA)
+  function caricaOffertaComboService() {
+    resetQuoteBuilder();
+    setEditingLeadId('lead-combo-service-mbe-2024');
+    setQNome("COMBO SERVICE S.R.L. (Mail Boxes Etc. MBE 0348)");
+    setQReferente("Direzione Commerciale MBE 0348");
+    setQIndirizzo("Viale Europa, 201");
+    setQComune("Firenze");
+    setQProvincia("FI");
+    setQPiva("05056040487");
+    setQSdi("M5UXCR1");
+    setQEmail("mbe348@mbe.it");
+    setQTelefono("055 6533238");
+    setTipoAccordo('STANDARD');
+    setTerminiPagamento('BONIFICO 30 GG. DF. FM.');
+    setCurrentQuoteNumber('PREV-2024/MBE348');
+    setQuoteItems([
+      {
+        id: 'combo-rt-1',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
+        dettagli: '320 spot paganti + 120 spot omaggio (Totale 440 passaggi da 20" - 10 spot/gg)',
+        fascia: '10 passaggi al giorno a rotazione',
+        periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
+        periodoDaDefinire: false,
+        giorniTotali: 44,
+        spotGiornalieri: 10,
+        spotTotali: 320,
+        spotOmaggio: 120,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 27.27,
+        tariffaUnitaria: 6.56,
+        prezzoListino: 2880,
+        valore: 2100,
+        isSpot: true
+      },
+      {
+        id: 'combo-rf-2',
+        tipo: 'Spot Radiofonici Tabellari',
+        copertura: 'Radio Firenze 88.7 / 95.4 MHz',
+        dettagli: '320 spot paganti + 120 spot omaggio (Totale 440 passaggi da 20" - 10 spot/gg)',
+        fascia: '10 passaggi al giorno a rotazione',
+        periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
+        periodoDaDefinire: false,
+        giorniTotali: 44,
+        spotGiornalieri: 10,
+        spotTotali: 320,
+        spotOmaggio: 120,
+        formatoSecondi: 20,
+        modalitaVantaggio: 'SCALA_SCONTI',
+        scontoPercentuale: 25.0,
+        tariffaUnitaria: 4.69,
+        prezzoListino: 2000,
+        valore: 1500,
+        isSpot: true
+      },
+      {
+        id: 'combo-prod-3',
+        tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
+        copertura: 'Radio Toscana + Radio Firenze',
+        dettagli: 'Realizzazione copy + produzione audio in studio compresa nel pacchetto promozionale',
+        fascia: 'Produzione audio in studio',
+        periodo: 'Una tantum',
+        periodoDaDefinire: false,
+        prezzoListino: 100,
+        valore: 0,
+        quantita: 1,
+        prezzoUnitarioListino: 100,
+        prezzoUnitarioNetto: 0,
+        isSpot: false
+      }
+    ]);
+    setShowQuoteModal(true);
+  }
+
   // Precarica Proposta Evento Capodanno in Piazza - Comune di Castel del Piano (3.650€ + IVA)
   function caricaOffertaCapodannoCastelDelPiano() {
     resetQuoteBuilder();
@@ -3139,6 +3311,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
   // Filtraggio per Anno Selezionato
   const filteredLeads = leads.filter(l => {
     if (selectedYear === 'ALL') return true;
+    if (l.id === 'lead-combo-service-mbe-2024' && (selectedYear === '2026' || selectedYear === '2024')) return true;
     return (l.anno_riferimento || '2026') === selectedYear;
   });
 
@@ -3224,6 +3397,24 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
           >
             🏛️ Offerta Il Ponte Aste (800€)
           </button>
+          <button
+            className="btn"
+            style={{ background: 'rgba(59, 130, 246, 0.18)', color: '#93c5fd', border: '1px solid rgba(59, 130, 246, 0.5)', fontWeight: 700 }}
+            onClick={caricaOffertaComboService}
+            title="Carica il Contratto 2024 di Combo Service Srl (MBE 0348) nel Preventivatore per modificarlo"
+          >
+            📦 Modifica Combo Service 2024 (3.600€)
+          </button>
+          <a
+            href="/Contratto_Combo_Service_2024.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn"
+            style={{ background: 'rgba(255, 255, 255, 0.08)', color: '#f8fafc', border: '1px solid rgba(255, 255, 255, 0.25)', fontWeight: 700, textDecoration: 'none' }}
+            title="Visualizza il Contratto Originale 2024 firmato di Combo Service Srl (MBE 0348)"
+          >
+            📄 PDF Combo 2024
+          </a>
           <button
             className="btn"
             style={{ background: 'rgba(212, 63, 74, 0.18)', color: '#fda4af', border: '1px solid rgba(212, 63, 74, 0.5)', fontWeight: 700 }}
