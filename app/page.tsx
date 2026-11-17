@@ -150,7 +150,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         id: 'combo-rt-area1',
         tipo: 'Spot Radiofonici Tabellari',
         copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
-        dettagli: '320 spot paganti + 124 spot OMAGGIO (Totale 444 passaggi da 20")',
+        dettagli: '444 spot da 20" a tariffa (12 spot/giorno)',
         fascia: '12 spot/gg a rotazione',
         periodo: 'Dal 18/11/2026 al 24/12/2026 (37 gg)',
         periodoDaDefinire: false,
@@ -158,8 +158,8 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         dataFine: '2026-12-24',
         giorniTotali: 37,
         spotGiornalieri: 12,
-        spotTotali: 320,
-        spotOmaggio: 124,
+        spotTotali: 444,
+        spotOmaggio: 0,
         formatoSecondi: 20,
         modalitaVantaggio: 'SCALA_SCONTI',
         scontoPercentuale: 25,
@@ -172,7 +172,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         id: 'combo-rf-887',
         tipo: 'Spot Radiofonici Tabellari',
         copertura: 'Radio Firenze 88.7',
-        dettagli: '320 spot paganti + 124 spot OMAGGIO (Totale 444 passaggi da 20")',
+        dettagli: '444 spot da 20" a tariffa (12 spot/giorno)',
         fascia: '12 spot/gg a rotazione',
         periodo: 'Dal 18/11/2026 al 24/12/2026 (37 gg)',
         periodoDaDefinire: false,
@@ -180,8 +180,8 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         dataFine: '2026-12-24',
         giorniTotali: 37,
         spotGiornalieri: 12,
-        spotTotali: 320,
-        spotOmaggio: 124,
+        spotTotali: 444,
+        spotOmaggio: 0,
         formatoSecondi: 20,
         modalitaVantaggio: 'SCALA_SCONTI',
         scontoPercentuale: 25,
@@ -189,24 +189,9 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         prezzoListino: 3330,
         valore: 1500,
         isSpot: true
-      },
-      {
-        id: 'combo-prod-2',
-        tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
-        copertura: 'Radio Toscana + Radio Firenze',
-        dettagli: 'Realizzazione copy + produzione audio in studio compresa nel pacchetto promozionale',
-        fascia: 'Produzione audio in studio',
-        periodo: 'Una tantum',
-        periodoDaDefinire: false,
-        prezzoListino: 100,
-        valore: 0,
-        quantita: 1,
-        prezzoUnitarioListino: 100,
-        prezzoUnitarioNetto: 0,
-        isSpot: false
       }
     ],
-    note: "Contratto 2024 Combo Service S.r.l. (MBE 0348 - Firenze Viale Europa 201) sottoscritto il 11/10/2024 con pacchetto congiunto: Radio Toscana Area 1 + Radio Firenze. Totale 880 spot (640 paganti + 240 omaggio), 20 passaggi/giorno (10 RT + 10 RF) dal 11/11 al 24/12. Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm. PDF Originale: /Contratto_Combo_Service_2024.pdf"
+    note: "Contratto Combo Service S.r.l. (MBE 0348 - Firenze Viale Europa 201): pacchetto congiunto Radio Toscana Area 1 + Radio Firenze 88.7. Totale 888 spot a tariffa (Zero omaggi). Spot audio del cliente già in archivio (nessuna produzione). Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm. PDF Originale: /Contratto_Combo_Service_2024.pdf"
   },
   {
     id: 'lead-castel-del-piano-capodanno-2026',
@@ -1089,8 +1074,8 @@ export default function LeadEngineDashboard() {
     const defaultDataFine = sourceItem?.dataFine || '2026-12-24';
     const defaultGiorni = sourceItem?.giorniTotali || 37;
     const defaultGiornalieri = sourceItem?.spotGiornalieri || 12;
-    const defaultTotali = sourceItem?.spotTotali || 320;
-    const defaultOmaggio = sourceItem?.spotOmaggio || 124;
+    const defaultTotali = sourceItem?.spotTotali || 444;
+    const defaultOmaggio = sourceItem?.spotOmaggio || 0;
     const formato = sourceItem?.formatoSecondi || 20;
 
     const tariffaRF = getTariffaUfficialeSpot('Radio Firenze 88.7 FM', formato) || 7.50;
@@ -5021,7 +5006,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       addQuoteItem(
                         'Spot Radiofonici Tabellari',
                         'Radio Toscana Area 1 (FI - PO - PT)',
-                        '12 spot/gg per 37 gg (320 spot paganti + 124 OMAGGIO da 20")',
+                        '12 spot/gg per 37 gg (444 spot da 20" a tariffa)',
                         '07.00 – 21.00 a rotazione',
                         'Dal 18/11/2026 al 24/12/2026 (37 gg)',
                         3996,
@@ -5032,15 +5017,15 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           dataFine: '2026-12-24',
                           spotGiornalieri: 12,
                           giorniTotali: 37,
-                          spotTotali: 320,
-                          spotOmaggio: 124,
+                          spotTotali: 444,
+                          spotOmaggio: 0,
                           formatoSecondi: 20
                         }
                       );
                       addQuoteItem(
                         'Spot Radiofonici Tabellari',
                         'Radio Firenze 88.7',
-                        '12 spot/gg per 37 gg (320 spot paganti + 124 OMAGGIO da 20")',
+                        '12 spot/gg per 37 gg (444 spot da 20" a tariffa)',
                         '07.00 – 21.00 a rotazione',
                         'Dal 18/11/2026 al 24/12/2026 (37 gg)',
                         3330,
@@ -5051,8 +5036,8 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                           dataFine: '2026-12-24',
                           spotGiornalieri: 12,
                           giorniTotali: 37,
-                          spotTotali: 320,
-                          spotOmaggio: 124,
+                          spotTotali: 444,
+                          spotOmaggio: 0,
                           formatoSecondi: 20
                         }
                       );
@@ -7706,7 +7691,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   </div>
 
                   {/* AGEVOLAZIONE COMMERCIALE OMAGGI IN CONTRATTO */}
-                  {((contractData.spotOmaggio || 0) > 0 || getDailySpots(contractData.items?.[0] || null, contractData) > 0) && (
+                  {(contractData.spotOmaggio || 0) > 0 && (
                     <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '4px', padding: '6px 10px', marginBottom: '12px', fontSize: '8.5px', color: '#991b1b', lineHeight: 1.35 }}>
                       <strong>Pianificazione &amp; Condizioni di Trasmissione:</strong>
                       {(contractData.spotOmaggio || 0) > 0 && (
@@ -9302,7 +9287,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
             </div>
 
             {/* AGEVOLAZIONE COMMERCIALE OMAGGI IN CONTRATTO */}
-            {((contractData.spotOmaggio || 0) > 0 || getDailySpots(contractData.items?.[0] || null, contractData) > 0) && (
+            {(contractData.spotOmaggio || 0) > 0 && (
               <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '4px', padding: '5px 8px', marginBottom: '8px', fontSize: '7.8px', color: '#991b1b', lineHeight: 1.3 }}>
                 <strong>Pianificazione &amp; Condizioni di Trasmissione:</strong>
                 {(contractData.spotOmaggio || 0) > 0 && (
