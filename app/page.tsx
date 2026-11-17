@@ -5095,8 +5095,24 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 </div>
 
                 {/* RIGA 2: REALIZZAZIONE SPOT AUDIO (CI PUÒ ESSERE O NO: SE NO NON C'È NULLA, SE C'È: OMAGGIO, 100 O 169) */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', width: '130px' }}>Produzione Spot:</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer', background: quoteItems.some(it => !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione')) ? 'rgba(212, 63, 74, 0.3)' : 'rgba(255,255,255,0.06)', padding: '3px 8px', borderRadius: '4px', border: quoteItems.some(it => !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione')) ? '1.5px solid #ef4444' : '1px solid rgba(255,255,255,0.15)' }}>
+                    <input
+                      type="checkbox"
+                      checked={quoteItems.some(it => !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione'))}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setOrAddProduzioneSpot('OMAGGIO');
+                        } else {
+                          setQuoteItems(prev => prev.filter(it => !it.tipoProduzione && !it.tipo.toLowerCase().includes('produzione') && !it.tipo.toLowerCase().includes('realizzazione')));
+                        }
+                      }}
+                      style={{ width: '15px', height: '15px', accentColor: '#ef4444', cursor: 'pointer' }}
+                    />
+                    <span style={{ fontSize: '11px', fontWeight: 900, color: quoteItems.some(it => !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione')) ? '#fca5a5' : '#ffffff' }}>
+                      🎙️ Produzione Spot: {quoteItems.some(it => !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione')) ? 'SÌ' : 'NO'}
+                    </span>
+                  </label>
                   <button
                     type="button"
                     className="btn btn-xs"
@@ -5297,11 +5313,11 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 </div>
               </div>
 
-              {/* LISTA EDITABILE DEI MODULI */}
+              {/* LISTA EDITABILE DEI MODULI (SPOT TABELLARI, FORMAT, EVENTI) */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {quoteItems.map((it, idx) => {
-                  const isProdItem = !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione');
-                  const isSpotItem = (it.isSpot || it.tipo.toLowerCase().includes('spot')) && !isProdItem;
+                {quoteItems.filter(it => !it.tipoProduzione && !it.tipo.toLowerCase().includes('produzione') && !it.tipo.toLowerCase().includes('realizzazione')).map((it, idx) => {
+                  const isProdItem = false;
+                  const isSpotItem = (it.isSpot || it.tipo.toLowerCase().includes('spot'));
 
                   return (
                     <div
@@ -6258,6 +6274,184 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   );
                 })}
               </div>
+
+              {/* BOX DEDICATO IN FONDO: SPUNTA SPOT SÌ / NO (SE NO NON SI AGGIUNGE NULLA, SE SÌ SI APRE OMAGGIO, 100 E 169) */}
+              {(() => {
+                const prodItem = quoteItems.find(it => !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione'));
+                const hasProd = Boolean(prodItem);
+                const selectedTipo = prodItem?.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || prodItem?.valore === 169
+                  ? 'DIRITTI_LIBERI_TOSCANA'
+                  : (prodItem?.tipoProduzione === 'OMAGGIO' || (prodItem?.valore === 0 && hasProd)
+                    ? 'OMAGGIO'
+                    : 'SOLO_RT_RF');
+
+                return (
+                  <div style={{
+                    marginTop: '14px',
+                    background: hasProd ? 'rgba(212, 63, 74, 0.12)' : 'rgba(15, 23, 42, 0.7)',
+                    border: hasProd ? '2px solid rgba(212, 63, 74, 0.5)' : '1.5px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '8px',
+                    padding: '14px',
+                    boxShadow: hasProd ? '0 0 15px rgba(212, 63, 74, 0.15)' : 'none'
+                  }}>
+                    {/* SPUNTA PRINCIPALE: SPOT SÌ O NO */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                      <label style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', cursor: 'pointer', userSelect: 'none' }}>
+                        <input
+                          type="checkbox"
+                          checked={hasProd}
+                          onChange={e => {
+                            if (e.target.checked) {
+                              setOrAddProduzioneSpot('OMAGGIO');
+                            } else {
+                              setQuoteItems(prev => prev.filter(it => !it.tipoProduzione && !it.tipo.toLowerCase().includes('produzione') && !it.tipo.toLowerCase().includes('realizzazione')));
+                            }
+                          }}
+                          style={{ width: '22px', height: '22px', accentColor: '#ef4444', cursor: 'pointer' }}
+                        />
+                        <div>
+                          <div style={{ fontSize: '13.5px', fontWeight: 900, color: hasProd ? '#fca5a5' : '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span>🎙️ REALIZZAZIONE / PRODUZIONE SPOT AUDIO:</span>
+                            <span style={{
+                              background: hasProd ? '#10b981' : 'rgba(255,255,255,0.1)',
+                              color: hasProd ? '#ffffff' : '#94a3b8',
+                              padding: '2px 8px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              fontWeight: 900
+                            }}>
+                              {hasProd ? '✓ SÌ (BOX APERTO)' : '✕ NO (NESSUNO SPOT / USA VECCHI)'}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '3px' }}>
+                            {hasProd 
+                              ? 'Spunta attiva: scegli sotto tra OMAGGIO (€0), Nostro Gruppo (€100) o Diritti Liberi (€169)'
+                              : 'Se deselezionato (NO): il cliente usa spot già registrati / forniti da sé (non si aggiunge nulla al contratto)'}
+                          </div>
+                        </div>
+                      </label>
+
+                      <span style={{
+                        fontSize: '11px',
+                        fontWeight: 800,
+                        padding: '4px 10px',
+                        borderRadius: '4px',
+                        background: hasProd ? 'rgba(239, 68, 68, 0.25)' : 'rgba(255, 255, 255, 0.05)',
+                        color: hasProd ? '#fca5a5' : '#64748b',
+                        border: hasProd ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)'
+                      }}>
+                        {hasProd 
+                          ? (selectedTipo === 'OMAGGIO' ? '🎁 PRODUZIONE IN OMAGGIO (€0)' : selectedTipo === 'SOLO_RT_RF' ? '📻 NOSTRO GRUPPO (€100)' : '📡 DIRITTI LIBERI (€169)')
+                          : '✕ NESSUNA SPESA PRODUZIONE SPOT'}
+                      </span>
+                    </div>
+
+                    {/* SE SÌ: SI APRE IL BOX CON LE 3 OPZIONI (OMAGGIO, 100 E 169) */}
+                    {hasProd && (
+                      <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px dashed rgba(212, 63, 74, 0.35)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 800, color: '#f8fafc', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                          Seleziona l'opzione desiderata:
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
+                          {/* OPZIONE 1: OMAGGIO */}
+                          <label style={{
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            cursor: 'pointer',
+                            color: selectedTipo === 'OMAGGIO' ? '#ffffff' : '#94a3b8',
+                            fontWeight: 800,
+                            background: selectedTipo === 'OMAGGIO' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(0,0,0,0.3)',
+                            border: selectedTipo === 'OMAGGIO' ? '2px solid #10b981' : '1px solid rgba(255,255,255,0.1)',
+                            padding: '12px 14px',
+                            borderRadius: '6px'
+                          }}>
+                            <input
+                              type="radio"
+                              name="scelta-prod-spot"
+                              checked={selectedTipo === 'OMAGGIO'}
+                              onChange={() => setOrAddProduzioneSpot('OMAGGIO')}
+                            />
+                            <div>
+                              <div style={{ color: selectedTipo === 'OMAGGIO' ? '#34d399' : '#e2e8f0' }}>🎁 Spot in OMAGGIO (€ 0,00)</div>
+                              <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 500, marginTop: '2px' }}>Incluso nel pacchetto commerciale</div>
+                            </div>
+                          </label>
+
+                          {/* OPZIONE 2: NOSTRO GRUPPO (€100) */}
+                          <label style={{
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            cursor: 'pointer',
+                            color: selectedTipo === 'SOLO_RT_RF' ? '#ffffff' : '#94a3b8',
+                            fontWeight: 800,
+                            background: selectedTipo === 'SOLO_RT_RF' ? 'rgba(212, 63, 74, 0.25)' : 'rgba(0,0,0,0.3)',
+                            border: selectedTipo === 'SOLO_RT_RF' ? '2px solid #D43F4A' : '1px solid rgba(255,255,255,0.1)',
+                            padding: '12px 14px',
+                            borderRadius: '6px'
+                          }}>
+                            <input
+                              type="radio"
+                              name="scelta-prod-spot"
+                              checked={selectedTipo === 'SOLO_RT_RF'}
+                              onChange={() => setOrAddProduzioneSpot('SOLO_RT_RF')}
+                            />
+                            <div>
+                              <div style={{ color: selectedTipo === 'SOLO_RT_RF' ? '#fca5a5' : '#e2e8f0' }}>📻 Nostro Gruppo (€ 100,00)</div>
+                              <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 500, marginTop: '2px' }}>Radio Toscana + Radio Firenze</div>
+                            </div>
+                          </label>
+
+                          {/* OPZIONE 3: DIRITTI LIBERI TOSCANA (€169) */}
+                          <label style={{
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            cursor: 'pointer',
+                            color: selectedTipo === 'DIRITTI_LIBERI_TOSCANA' ? '#ffffff' : '#94a3b8',
+                            fontWeight: 800,
+                            background: selectedTipo === 'DIRITTI_LIBERI_TOSCANA' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(0,0,0,0.3)',
+                            border: selectedTipo === 'DIRITTI_LIBERI_TOSCANA' ? '2px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                            padding: '12px 14px',
+                            borderRadius: '6px'
+                          }}>
+                            <input
+                              type="radio"
+                              name="scelta-prod-spot"
+                              checked={selectedTipo === 'DIRITTI_LIBERI_TOSCANA'}
+                              onChange={() => setOrAddProduzioneSpot('DIRITTI_LIBERI_TOSCANA')}
+                            />
+                            <div>
+                              <div style={{ color: selectedTipo === 'DIRITTI_LIBERI_TOSCANA' ? '#7dd3fc' : '#e2e8f0' }}>📡 Tutte le Radio Toscana (€ 169,00)</div>
+                              <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 500, marginTop: '2px' }}>Diritti Liberi per tutte le emittenti toscane</div>
+                            </div>
+                          </label>
+                        </div>
+
+                        {/* SPECIFICHE DETTAGLI ITEM ATTIVO */}
+                        {prodItem && (
+                          <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontSize: '10.5px', color: '#94a3b8', fontWeight: 700 }}>Note / Dettagli Produzione:</span>
+                            <input
+                              type="text"
+                              className="form-input"
+                              style={{ fontSize: '11px', flex: 1, padding: '5px 8px' }}
+                              value={prodItem.dettagli || ''}
+                              onChange={e => updateQuoteItem(prodItem.id, 'dettagli', e.target.value)}
+                              placeholder="Specifiche tecniche produzione spot audio..."
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* RIEPILOGO TOTALI E SCONTO COMMERCIALE */}
               <div style={{ marginTop: '14px', background: 'rgba(0,0,0,0.35)', padding: '12px 16px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
