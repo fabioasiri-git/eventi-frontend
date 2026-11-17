@@ -123,7 +123,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     comune: 'Firenze',
     provincia: 'FI',
     settore: 'Servizi alle Imprese / Spedizioni & Grafica (MBE)',
-    area_target: 'Radio Toscana + Radio Firenze (Area 1 FI-PO-PT)',
+    area_target: 'Radio Toscana Area 1 + Radio Firenze',
     fase_commerciale: 'PREVENTIVO INVIATO',
     colonna: 'PREVENTIVO INVIATO',
     tipo_contratto: 'SPOT_TABELLARE',
@@ -141,53 +141,33 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
     data_ultimo_invio: '2024-10-11',
     tipo_accordo: 'STANDARD',
     stato_produzione: 'PRODOTTO_APPROVATO',
-    periodo: '11/11 – 24/12 (Campagna Autunno/Natale) • 10 passaggi/giorno',
+    periodo: '11/11 – 24/12 (Campagna Autunno/Natale) • 20 passaggi/giorno congiunti',
     spot_giornalieri: 20,
     stato_programmazione: 'IN_ATTESA_CONFERMA',
-    copy_testo: "Campagna Radiofonica COMBO SERVICE SRL (Mail Boxes Etc. MBE 0348 Firenze Viale Europa 201): 880 spot totali da 20\" (440 spot Radio Toscana Area 1 di cui 120 omaggio + 440 spot Radio Firenze di cui 120 omaggio). 10 passaggi/giorno dall'11/11 al 24/12. Realizzazione spot compresa. Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm.",
+    copy_testo: "Campagna Radiofonica COMBO SERVICE SRL (Mail Boxes Etc. MBE 0348 Firenze Viale Europa 201): Abbinata congiunta Radio Toscana Area 1 + Radio Firenze. Totale 880 spot da 20\" (640 paganti + 240 omaggio), 20 passaggi al giorno (10 RT Area 1 + 10 RF) dall'11/11 al 24/12. Realizzazione spot compresa. Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm.",
     quote_items: [
       {
-        id: 'combo-rt-1',
+        id: 'combo-abbinata-1',
         tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
-        dettagli: '320 spot paganti + 120 spot omaggio (Totale 440 passaggi da 20\" - 10 spot/gg)',
-        fascia: '10 passaggi al giorno a rotazione',
+        copertura: 'Radio Toscana Area 1 + Radio Firenze',
+        dettagli: '880 passaggi totali da 20\" in abbinata: 440 spot Radio Toscana Area 1 (320 paganti + 120 omaggio) + 440 spot Radio Firenze (320 paganti + 120 omaggio) • 20 passaggi/giorno (10 RT + 10 RF)',
+        fascia: '10 passaggi/gg RT + 10 passaggi/gg RF a rotazione',
         periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
         periodoDaDefinire: false,
         giorniTotali: 44,
-        spotGiornalieri: 10,
-        spotTotali: 320,
-        spotOmaggio: 120,
+        spotGiornalieri: 20,
+        spotTotali: 640,
+        spotOmaggio: 240,
         formatoSecondi: 20,
         modalitaVantaggio: 'SCALA_SCONTI',
-        scontoPercentuale: 27.27,
-        tariffaUnitaria: 6.56,
-        prezzoListino: 2880,
-        valore: 2100,
+        scontoPercentuale: 26.23,
+        tariffaUnitaria: 11.25,
+        prezzoListino: 4880,
+        valore: 3600,
         isSpot: true
       },
       {
-        id: 'combo-rf-2',
-        tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Firenze 88.7 / 95.4 MHz',
-        dettagli: '320 spot paganti + 120 spot omaggio (Totale 440 passaggi da 20\" - 10 spot/gg)',
-        fascia: '10 passaggi al giorno a rotazione',
-        periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
-        periodoDaDefinire: false,
-        giorniTotali: 44,
-        spotGiornalieri: 10,
-        spotTotali: 320,
-        spotOmaggio: 120,
-        formatoSecondi: 20,
-        modalitaVantaggio: 'SCALA_SCONTI',
-        scontoPercentuale: 25.0,
-        tariffaUnitaria: 4.69,
-        prezzoListino: 2000,
-        valore: 1500,
-        isSpot: true
-      },
-      {
-        id: 'combo-prod-3',
+        id: 'combo-prod-2',
         tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
         copertura: 'Radio Toscana + Radio Firenze',
         dettagli: 'Realizzazione copy + produzione audio in studio compresa nel pacchetto promozionale',
@@ -202,7 +182,7 @@ const INITIAL_LEADS_POOL: LeadRow[] = [
         isSpot: false
       }
     ],
-    note: "Contratto 2024 Combo Service S.r.l. (MBE 0348 - Firenze Viale Europa 201) sottoscritto il 11/10/2024. Totale 880 spot (320+120 omaggio RT + 320+120 omaggio RF), 10 passaggi/giorno dal 11/11 al 24/12. Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm. PDF Originale: /Contratto_Combo_Service_2024.pdf"
+    note: "Contratto 2024 Combo Service S.r.l. (MBE 0348 - Firenze Viale Europa 201) sottoscritto il 11/10/2024 con pacchetto congiunto: Radio Toscana Area 1 + Radio Firenze. Totale 880 spot (640 paganti + 240 omaggio), 20 passaggi/giorno (10 RT + 10 RF) dal 11/11 al 24/12. Totale € 3.600,00 + IVA. Pagamento: Bonifico 30 gg df fm. PDF Originale: /Contratto_Combo_Service_2024.pdf"
   },
   {
     id: 'lead-castel-del-piano-capodanno-2026',
@@ -1138,6 +1118,12 @@ export default function LeadEngineDashboard() {
     const f = formatoSec === 10 ? 10 : (formatoSec === 30 ? 30 : 20);
     const cop = (copertura || '').toLowerCase();
     
+    // Area 1 Toscana + Radio Firenze Combinata
+    if ((cop.includes('area 1') && (cop.includes('firenze') || cop.includes('rf'))) || cop.includes('area 1 + radio firenze')) {
+      if (f === 10) return 12.50; // 6.50 + 6.00
+      if (f === 30) return 20.50; // 11.00 + 9.50
+      return 16.50; // 9.00 + 7.50 (20")
+    }
     // Area 1 + Area 2 Combinata
     if ((cop.includes('area 1') && cop.includes('area 2')) || cop.includes('area 1+2') || cop.includes('area 1 + 2')) {
       if (f === 10) return 10.00; // 6.50 + 3.50
@@ -2117,47 +2103,27 @@ export default function LeadEngineDashboard() {
     setCurrentQuoteNumber('PREV-2024/MBE348');
     setQuoteItems([
       {
-        id: 'combo-rt-1',
+        id: 'combo-abbinata-1',
         tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Toscana Area 1 (FI - PO - PT)',
-        dettagli: '320 spot paganti + 120 spot omaggio (Totale 440 passaggi da 20" - 10 spot/gg)',
-        fascia: '10 passaggi al giorno a rotazione',
+        copertura: 'Radio Toscana Area 1 + Radio Firenze',
+        dettagli: '880 passaggi totali da 20" in abbinata: 440 spot Radio Toscana Area 1 (320 paganti + 120 omaggio) + 440 spot Radio Firenze (320 paganti + 120 omaggio) • 20 passaggi/giorno (10 RT + 10 RF)',
+        fascia: '10 passaggi/gg RT + 10 passaggi/gg RF a rotazione',
         periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
         periodoDaDefinire: false,
         giorniTotali: 44,
-        spotGiornalieri: 10,
-        spotTotali: 320,
-        spotOmaggio: 120,
+        spotGiornalieri: 20,
+        spotTotali: 640,
+        spotOmaggio: 240,
         formatoSecondi: 20,
         modalitaVantaggio: 'SCALA_SCONTI',
-        scontoPercentuale: 27.27,
-        tariffaUnitaria: 6.56,
-        prezzoListino: 2880,
-        valore: 2100,
+        scontoPercentuale: 26.23,
+        tariffaUnitaria: 11.25,
+        prezzoListino: 4880,
+        valore: 3600,
         isSpot: true
       },
       {
-        id: 'combo-rf-2',
-        tipo: 'Spot Radiofonici Tabellari',
-        copertura: 'Radio Firenze 88.7 / 95.4 MHz',
-        dettagli: '320 spot paganti + 120 spot omaggio (Totale 440 passaggi da 20" - 10 spot/gg)',
-        fascia: '10 passaggi al giorno a rotazione',
-        periodo: '11/11 – 24/12 (Periodo Autunno/Natale)',
-        periodoDaDefinire: false,
-        giorniTotali: 44,
-        spotGiornalieri: 10,
-        spotTotali: 320,
-        spotOmaggio: 120,
-        formatoSecondi: 20,
-        modalitaVantaggio: 'SCALA_SCONTI',
-        scontoPercentuale: 25.0,
-        tariffaUnitaria: 4.69,
-        prezzoListino: 2000,
-        valore: 1500,
-        isSpot: true
-      },
-      {
-        id: 'combo-prod-3',
+        id: 'combo-prod-2',
         tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
         copertura: 'Radio Toscana + Radio Firenze',
         dettagli: 'Realizzazione copy + produzione audio in studio compresa nel pacchetto promozionale',
@@ -5010,12 +4976,14 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             { val: 'Radio Toscana Area 3 (AR - SI - GR)', short: 'Area 3 (Sud)' },
                             { val: 'Radio Toscana Area 1+2 (FI-PO-PT + LI-PI-LU)', short: 'Area 1+2' },
                             { val: 'Radio Firenze 95.4 FM', short: 'Radio Firenze 95.4' },
+                            { val: 'Radio Toscana Area 1 + Radio Firenze', short: 'RT Area 1 + RF' },
                             { val: 'RT + RF Combinata (Rete + Firenze)', short: 'RT + RF Combinata' }
                           ].map(opt => {
                             const curCop = (it.copertura || '').toLowerCase();
                             const active = it.copertura === opt.val ||
                               (opt.short === 'Area 2 (Costa)' && (curCop.includes('area 2') || curCop.includes('costa') || curCop.includes('pisa'))) ||
-                              (opt.short === 'Area 1 (FI-PO-PT)' && (curCop.includes('area 1') || curCop.includes('fi - po'))) ||
+                              (opt.short === 'RT Area 1 + RF' && curCop.includes('area 1') && (curCop.includes('firenze') || curCop.includes('rf'))) ||
+                              (opt.short === 'Area 1 (FI-PO-PT)' && (curCop.includes('area 1') || curCop.includes('fi - po')) && !(curCop.includes('firenze') || curCop.includes('rf'))) ||
                               (opt.short === 'Area 3 (Sud)' && (curCop.includes('area 3') || curCop.includes('sud'))) ||
                               (opt.short === 'RT Rete (Toscana)' && (curCop.includes('rete') && !curCop.includes('combinata'))) ||
                               (opt.short === 'Radio Firenze 95.4' && (curCop.includes('firenze') && !curCop.includes('combinata'))) ||
@@ -7133,7 +7101,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                             const tot = isSpot ? (paganti + omaggi) : (it.quantita || 1);
                             const mezzo = it.copertura?.includes('Firenze') && !it.copertura?.includes('Toscana')
                               ? 'Radio Firenze 88.7'
-                              : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo));
+                              : (it.copertura?.includes('Combinata') || (it.copertura?.includes('Toscana') && it.copertura?.includes('Firenze')) || it.copertura?.includes('Area 1 + Radio Firenze') ? 'Radio Toscana Area 1 + Radio Firenze' : (it.copertura || contractData.mezzo));
                             const isProdItem = !isSpot || it.tipo?.toLowerCase().includes('realizzazione') || it.tipo?.toLowerCase().includes('produzione');
                             const isDaDefinire = !isProdItem && (it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire');
                             const periodoDesc = isProdItem 
@@ -8648,7 +8616,7 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                       const tot = isSpot ? (paganti + omaggi) : (it.quantita || 1);
                       const mezzo = it.copertura?.includes('Firenze') && !it.copertura?.includes('Toscana')
                         ? 'Radio Firenze 88.7'
-                        : (it.copertura?.includes('Combinata') ? 'Radio Toscana + Radio Firenze' : (it.copertura || contractData.mezzo));
+                        : (it.copertura?.includes('Combinata') || (it.copertura?.includes('Toscana') && it.copertura?.includes('Firenze')) || it.copertura?.includes('Area 1 + Radio Firenze') ? 'Radio Toscana Area 1 + Radio Firenze' : (it.copertura || contractData.mezzo));
                       const isProdItem = !isSpot || it.tipo?.toLowerCase().includes('realizzazione') || it.tipo?.toLowerCase().includes('produzione');
                       const isDaDefinire = !isProdItem && (it.periodoDaDefinire || it.periodo?.toLowerCase().includes('definire') || contractData.dataDecorrenza === 'Periodo da definire');
                       const formatoDesc = isSpot ? `${it.formatoSecondi || 20}"` : it.tipo;
