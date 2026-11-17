@@ -1196,7 +1196,7 @@ export default function LeadEngineDashboard() {
       return `${rtPart} + Radio Firenze`;
     }
     if (rtPart) return rtPart;
-    if (hasRF) return 'Radio Firenze 95.4 FM';
+    if (hasRF) return 'Radio Firenze 88.7 FM';
     return 'Radio Toscana Area 1 (FI - PO - PT)';
   }
 
@@ -4796,7 +4796,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                     style={{ background: 'rgba(234, 179, 8, 0.15)', color: '#eab308', border: '1px solid rgba(234, 179, 8, 0.3)', fontWeight: 700 }}
                     onClick={() => addQuoteItem(
                       'Spot Radiofonici Tabellari',
-                      'Radio Firenze 95.4 FM',
+                      'Radio Firenze 88.7 FM',
                       '7 spot/gg per 14 gg (98 spot paganti da 20")',
                       '07.00 – 21.00 a rotazione',
                       'Dal 15/09/2026 al 28/09/2026 (14 gg)',
@@ -4814,7 +4814,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                       }
                     )}
                   >
-                    + Radio Firenze 95.4 FM
+                    + Radio Firenze 88.7 FM
                   </button>
                 </div>
 
@@ -5164,9 +5164,9 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   transition: 'all 0.15s ease',
                                   boxShadow: hasRF ? '0 0 12px rgba(168, 85, 247, 0.35)' : 'none'
                                 }}
-                                title="Attiva / Disattiva Radio Firenze 88.7 / 95.4 MHz in abbinata"
+                                title="Attiva / Disattiva Radio Firenze 88.7 FM in abbinata"
                               >
-                                {hasRF ? '✓ ' : '+ '}Radio Firenze (88.7 / 95.4)
+                                {hasRF ? '✓ ' : '+ '}Radio Firenze 88.7
                               </button>
                             </div>
                           </div>
@@ -6041,7 +6041,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                 </p>
                 <div style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                   <span>🎯 <strong>Obiettivo:</strong> Notorietà &amp; Conversione</span>
-                  <span>📍 <strong>Bacini:</strong> Rete Toscana, Area 1 (FI-PO-PT), Area 2 (Costa), Area 3 (Sud), Radio Firenze 95.4 FM, RT+RF Combinata</span>
+                  <span>📍 <strong>Bacini:</strong> Rete Toscana, Area 1 (FI-PO-PT), Area 2 (Costa), Area 3 (Sud), Radio Firenze 88.7 FM, RT+RF Combinata</span>
                 </div>
               </div>
 
