@@ -1112,53 +1112,131 @@ export default function LeadEngineDashboard() {
     setQuoteItems(prev => [...prev, newItem]);
   }
 
+  // Funzione Componibile per Multi-Selezione Bacini Radio Toscana & Radio Firenze
+  function toggleBacinoCoverage(currentCop: string, key: 'area1' | 'area2' | 'area3' | 'rf' | 'rete'): string {
+    const c = (currentCop || '').toLowerCase();
+    let isRete = c.includes('rete') || c.includes('tutta la toscana');
+    let hasRF = c.includes('firenze') || c.includes('rf') || c.includes('combinata');
+    let hasArea1 = isRete || c.includes('area 1') || c.includes('fi - po');
+    let hasArea2 = isRete || c.includes('area 2') || c.includes('costa') || c.includes('pisa') || c.includes('li-pi-lu');
+    let hasArea3 = isRete || c.includes('area 3') || c.includes('sud') || c.includes('ar - si');
+
+    if (key === 'rete') {
+      if (isRete) {
+        isRete = false;
+        hasArea1 = true;
+        hasArea2 = false;
+        hasArea3 = false;
+      } else {
+        isRete = true;
+        hasArea1 = true;
+        hasArea2 = true;
+        hasArea3 = true;
+      }
+    } else if (key === 'rf') {
+      hasRF = !hasRF;
+    } else if (key === 'area1') {
+      if (isRete) {
+        isRete = false;
+        hasArea1 = false;
+        hasArea2 = true;
+        hasArea3 = true;
+      } else {
+        hasArea1 = !hasArea1;
+      }
+    } else if (key === 'area2') {
+      if (isRete) {
+        isRete = false;
+        hasArea1 = true;
+        hasArea2 = false;
+        hasArea3 = true;
+      } else {
+        hasArea2 = !hasArea2;
+      }
+    } else if (key === 'area3') {
+      if (isRete) {
+        isRete = false;
+        hasArea1 = true;
+        hasArea2 = true;
+        hasArea3 = false;
+      } else {
+        hasArea3 = !hasArea3;
+      }
+    }
+
+    if (hasArea1 && hasArea2 && hasArea3) {
+      isRete = true;
+    }
+
+    if (!hasArea1 && !hasArea2 && !hasArea3 && !hasRF) {
+      hasArea1 = true;
+    }
+
+    let rtPart = '';
+    if (isRete) {
+      rtPart = 'Radio Toscana Rete (Tutta la Toscana)';
+    } else if (hasArea1 && hasArea2) {
+      rtPart = 'Radio Toscana Area 1+2 (FI-PO-PT + LI-PI-LU)';
+    } else if (hasArea1 && hasArea3) {
+      rtPart = 'Radio Toscana Area 1+3 (FI-PO-PT + AR-SI-GR)';
+    } else if (hasArea2 && hasArea3) {
+      rtPart = 'Radio Toscana Area 2+3 (Costa + Sud)';
+    } else if (hasArea1) {
+      rtPart = 'Radio Toscana Area 1 (FI - PO - PT)';
+    } else if (hasArea2) {
+      rtPart = 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)';
+    } else if (hasArea3) {
+      rtPart = 'Radio Toscana Area 3 (AR - SI - GR)';
+    }
+
+    if (rtPart && hasRF) {
+      if (isRete) {
+        return 'RT + RF Combinata (Rete + Firenze)';
+      }
+      return `${rtPart} + Radio Firenze`;
+    }
+    if (rtPart) return rtPart;
+    if (hasRF) return 'Radio Firenze 95.4 FM';
+    return 'Radio Toscana Area 1 (FI - PO - PT)';
+  }
+
   // TARIFFE UFFICIALI RADIO TOSCANA & RADIO FIRENZE DA LISTINO DEPOSITATO TOSCANA COMUNICA SRL
   // TARIFFE UFFICIALI RADIO TOSCANA & RADIO FIRENZE DA LISTINO DEPOSITATO
   function getTariffaUfficialeSpot(copertura: string, formatoSec: number = 20): number {
     const f = formatoSec === 10 ? 10 : (formatoSec === 30 ? 30 : 20);
     const cop = (copertura || '').toLowerCase();
-    
-    // Area 1 Toscana + Radio Firenze Combinata
-    if ((cop.includes('area 1') && (cop.includes('firenze') || cop.includes('rf'))) || cop.includes('area 1 + radio firenze')) {
-      if (f === 10) return 12.50; // 6.50 + 6.00
-      if (f === 30) return 20.50; // 11.00 + 9.50
-      return 16.50; // 9.00 + 7.50 (20")
+
+    const isRete = cop.includes('rete') || cop.includes('tutta la toscana');
+    const hasRF = cop.includes('firenze') || cop.includes('rf') || cop.includes('combinata');
+    const hasArea1 = !isRete && (cop.includes('area 1') || cop.includes('fi - po'));
+    const hasArea2 = !isRete && (cop.includes('area 2') || cop.includes('costa') || cop.includes('pisa') || cop.includes('li-pi-lu'));
+    const hasArea3 = !isRete && (cop.includes('area 3') || cop.includes('sud') || cop.includes('ar - si'));
+
+    // Base RF tariff (10": 6.00, 20": 7.50, 30": 9.50)
+    const rfTariff = f === 10 ? 6.00 : (f === 30 ? 9.50 : 7.50);
+
+    // Se Rete Regionale
+    if (isRete) {
+      const reteTariff = f === 10 ? 9.00 : (f === 30 ? 16.00 : 13.00);
+      return hasRF ? (reteTariff + rfTariff) : reteTariff;
     }
-    // Area 1 + Area 2 Combinata
-    if ((cop.includes('area 1') && cop.includes('area 2')) || cop.includes('area 1+2') || cop.includes('area 1 + 2')) {
-      if (f === 10) return 10.00; // 6.50 + 3.50
-      if (f === 30) return 16.50; // 11.00 + 5.50
-      return 13.50; // 9.00 + 4.50 (20")
+
+    // Calcolo additivo aree Radio Toscana
+    let rtTariff = 0;
+    if (hasArea1) rtTariff += (f === 10 ? 6.50 : (f === 30 ? 11.00 : 9.00));
+    if (hasArea2) rtTariff += (f === 10 ? 3.50 : (f === 30 ? 5.50 : 4.50));
+    if (hasArea3) rtTariff += (f === 10 ? 3.50 : (f === 30 ? 5.50 : 4.50));
+
+    if (rtTariff > 0) {
+      return hasRF ? (rtTariff + rfTariff) : rtTariff;
     }
-    if (cop.includes('area 1')) {
-      if (f === 10) return 6.50;
-      if (f === 30) return 11.00;
-      return 9.00; // 20"
+
+    if (hasRF) {
+      return rfTariff;
     }
-    if (cop.includes('area 2')) {
-      if (f === 10) return 3.50;
-      if (f === 30) return 5.50;
-      return 4.50; // 20"
-    }
-    if (cop.includes('area 3')) {
-      if (f === 10) return 3.50;
-      if (f === 30) return 5.50;
-      return 4.50; // 20"
-    }
-    if (cop.includes('firenze 95.4') || cop.includes('radio firenze')) {
-      if (f === 10) return 6.00;
-      if (f === 30) return 9.50;
-      return 7.50; // 20"
-    }
-    if (cop.includes('combinata') || cop.includes('rt + rf')) {
-      if (f === 10) return 15.00; // 9.00 + 6.00
-      if (f === 30) return 25.50; // 16.00 + 9.50
-      return 20.50; // 13.00 + 7.50
-    }
-    // Default: Rete (Tutta la Toscana)
-    if (f === 10) return 9.00;
-    if (f === 30) return 16.00;
-    return 13.00; // 20"
+
+    // Default Fallback: Rete
+    return f === 10 ? 9.00 : (f === 30 ? 16.00 : 13.00);
   }
 
   // SCALA SCONTI UFFICIALE DEPOSITATA RADIO TOSCANA & RADIO FIRENZE
@@ -4965,52 +5043,135 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         </button>
                       </div>
 
-                      {/* SELETTORE A BOTTONI 1-CLIC PER BACINO / AREA EMITTENTE */}
-                      {!isProdItem && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '10px', background: 'rgba(0,0,0,0.2)', padding: '6px 10px', borderRadius: '6px' }}>
-                          <span style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bacino di Trasmissione:</span>
-                          {[
-                            { val: 'Radio Toscana Rete (Tutta la Toscana)', short: 'RT Rete (Toscana)' },
-                            { val: 'Radio Toscana Area 1 (FI - PO - PT)', short: 'Area 1 (FI-PO-PT)' },
-                            { val: 'Radio Toscana Area 2 (Costa: LI - PI - LU - MS)', short: 'Area 2 (Costa)' },
-                            { val: 'Radio Toscana Area 3 (AR - SI - GR)', short: 'Area 3 (Sud)' },
-                            { val: 'Radio Toscana Area 1+2 (FI-PO-PT + LI-PI-LU)', short: 'Area 1+2' },
-                            { val: 'Radio Firenze 95.4 FM', short: 'Radio Firenze 95.4' },
-                            { val: 'Radio Toscana Area 1 + Radio Firenze', short: 'RT Area 1 + RF' },
-                            { val: 'RT + RF Combinata (Rete + Firenze)', short: 'RT + RF Combinata' }
-                          ].map(opt => {
-                            const curCop = (it.copertura || '').toLowerCase();
-                            const active = it.copertura === opt.val ||
-                              (opt.short === 'Area 2 (Costa)' && (curCop.includes('area 2') || curCop.includes('costa') || curCop.includes('pisa'))) ||
-                              (opt.short === 'RT Area 1 + RF' && curCop.includes('area 1') && (curCop.includes('firenze') || curCop.includes('rf'))) ||
-                              (opt.short === 'Area 1 (FI-PO-PT)' && (curCop.includes('area 1') || curCop.includes('fi - po')) && !(curCop.includes('firenze') || curCop.includes('rf'))) ||
-                              (opt.short === 'Area 3 (Sud)' && (curCop.includes('area 3') || curCop.includes('sud'))) ||
-                              (opt.short === 'RT Rete (Toscana)' && (curCop.includes('rete') && !curCop.includes('combinata'))) ||
-                              (opt.short === 'Radio Firenze 95.4' && (curCop.includes('firenze') && !curCop.includes('combinata'))) ||
-                              (opt.short === 'RT + RF Combinata' && curCop.includes('combinata'));
-                            return (
+                      {/* SELETTORE A BOTTONI MULTI-SELEZIONE (AREA 1, AREA 2, AREA 3 + RADIO FIRENZE) */}
+                      {!isProdItem && (() => {
+                        const curCop = (it.copertura || '').toLowerCase();
+                        const isRete = curCop.includes('rete') || curCop.includes('tutta la toscana');
+                        const hasRF = curCop.includes('firenze') || curCop.includes('rf') || curCop.includes('combinata');
+                        const hasArea1 = isRete || curCop.includes('area 1') || curCop.includes('fi - po');
+                        const hasArea2 = isRete || curCop.includes('area 2') || curCop.includes('costa') || curCop.includes('pisa') || curCop.includes('li-pi-lu');
+                        const hasArea3 = isRete || curCop.includes('area 3') || curCop.includes('sud') || curCop.includes('ar - si');
+
+                        const tariffaCurrent = getTariffaUfficialeSpot(it.copertura || '', it.formatoSecondi || 20);
+
+                        return (
+                          <div style={{ marginBottom: '12px', background: 'rgba(0,0,0,0.25)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                📻 Bacini &amp; Emittenti (Componibili in multi-selezione):
+                              </span>
+                              <span style={{ fontSize: '10.5px', color: '#94a3b8' }}>
+                                Copertura: <strong style={{ color: '#ffffff' }}>{it.copertura || 'Radio Toscana Rete'}</strong> • Listino {it.formatoSecondi || 20}&quot;: <strong style={{ color: '#34d399' }}>€ {tariffaCurrent.toFixed(2)}</strong>
+                              </span>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                              {/* RT AREA 1 */}
                               <button
-                                key={opt.val}
                                 type="button"
-                                onClick={() => updateQuoteItem(it.id, 'copertura', opt.val)}
+                                onClick={() => updateQuoteItem(it.id, 'copertura', toggleBacinoCoverage(it.copertura || '', 'area1'))}
                                 style={{
-                                  fontSize: '11px',
-                                  padding: '4px 9px',
-                                  borderRadius: '5px',
-                                  border: active ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
-                                  background: active ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255,255,255,0.04)',
-                                  color: active ? '#ffffff' : '#94a3b8',
-                                  fontWeight: active ? 800 : 500,
+                                  fontSize: '11.5px',
+                                  padding: '5px 11px',
+                                  borderRadius: '6px',
+                                  border: hasArea1 && !isRete ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.15)',
+                                  background: hasArea1 && !isRete ? 'rgba(56, 189, 248, 0.28)' : 'rgba(255,255,255,0.04)',
+                                  color: hasArea1 && !isRete ? '#ffffff' : '#94a3b8',
+                                  fontWeight: hasArea1 && !isRete ? 800 : 500,
                                   cursor: 'pointer',
                                   transition: 'all 0.15s ease'
                                 }}
+                                title="Attiva / Disattiva Radio Toscana Area 1 (Firenze - Prato - Pistoia)"
                               >
-                                {active ? '✓ ' : ''}{opt.short}
+                                {hasArea1 && !isRete ? '✓ ' : '+ '}Area 1 (FI-PO-PT)
                               </button>
-                            );
-                          })}
-                        </div>
-                      )}
+
+                              {/* RT AREA 2 */}
+                              <button
+                                type="button"
+                                onClick={() => updateQuoteItem(it.id, 'copertura', toggleBacinoCoverage(it.copertura || '', 'area2'))}
+                                style={{
+                                  fontSize: '11.5px',
+                                  padding: '5px 11px',
+                                  borderRadius: '6px',
+                                  border: hasArea2 && !isRete ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.15)',
+                                  background: hasArea2 && !isRete ? 'rgba(56, 189, 248, 0.28)' : 'rgba(255,255,255,0.04)',
+                                  color: hasArea2 && !isRete ? '#ffffff' : '#94a3b8',
+                                  fontWeight: hasArea2 && !isRete ? 800 : 500,
+                                  cursor: 'pointer',
+                                  transition: 'all 0.15s ease'
+                                }}
+                                title="Attiva / Disattiva Radio Toscana Area 2 (Costa: Livorno - Pisa - Lucca - Massa)"
+                              >
+                                {hasArea2 && !isRete ? '✓ ' : '+ '}Area 2 (Costa)
+                              </button>
+
+                              {/* RT AREA 3 */}
+                              <button
+                                type="button"
+                                onClick={() => updateQuoteItem(it.id, 'copertura', toggleBacinoCoverage(it.copertura || '', 'area3'))}
+                                style={{
+                                  fontSize: '11.5px',
+                                  padding: '5px 11px',
+                                  borderRadius: '6px',
+                                  border: hasArea3 && !isRete ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.15)',
+                                  background: hasArea3 && !isRete ? 'rgba(56, 189, 248, 0.28)' : 'rgba(255,255,255,0.04)',
+                                  color: hasArea3 && !isRete ? '#ffffff' : '#94a3b8',
+                                  fontWeight: hasArea3 && !isRete ? 800 : 500,
+                                  cursor: 'pointer',
+                                  transition: 'all 0.15s ease'
+                                }}
+                                title="Attiva / Disattiva Radio Toscana Area 3 (Sud: Arezzo - Siena - Grosseto)"
+                              >
+                                {hasArea3 && !isRete ? '✓ ' : '+ '}Area 3 (Sud)
+                              </button>
+
+                              {/* RT RETE (TUTTA LA TOSCANA) */}
+                              <button
+                                type="button"
+                                onClick={() => updateQuoteItem(it.id, 'copertura', toggleBacinoCoverage(it.copertura || '', 'rete'))}
+                                style={{
+                                  fontSize: '11.5px',
+                                  padding: '5px 11px',
+                                  borderRadius: '6px',
+                                  border: isRete ? '1.5px solid #f59e0b' : '1px solid rgba(255,255,255,0.15)',
+                                  background: isRete ? 'rgba(245, 158, 11, 0.28)' : 'rgba(255,255,255,0.04)',
+                                  color: isRete ? '#fbbf24' : '#94a3b8',
+                                  fontWeight: isRete ? 800 : 500,
+                                  cursor: 'pointer',
+                                  transition: 'all 0.15s ease'
+                                }}
+                                title="Seleziona l'intera copertura regionale di Radio Toscana (Area 1 + 2 + 3)"
+                              >
+                                {isRete ? '✓ ' : ''}RT Rete (Tutta la Toscana)
+                              </button>
+
+                              <span style={{ color: 'rgba(255,255,255,0.25)', margin: '0 2px' }}>|</span>
+
+                              {/* RADIO FIRENZE (ABBINABILE CON QUALSIASI AREA O STANDALONE) */}
+                              <button
+                                type="button"
+                                onClick={() => updateQuoteItem(it.id, 'copertura', toggleBacinoCoverage(it.copertura || '', 'rf'))}
+                                style={{
+                                  fontSize: '11.5px',
+                                  padding: '5px 13px',
+                                  borderRadius: '6px',
+                                  border: hasRF ? '1.5px solid #c084fc' : '1px solid rgba(192, 132, 252, 0.35)',
+                                  background: hasRF ? 'rgba(168, 85, 247, 0.35)' : 'rgba(168, 85, 247, 0.08)',
+                                  color: hasRF ? '#ffffff' : '#d8b4fe',
+                                  fontWeight: hasRF ? 900 : 700,
+                                  cursor: 'pointer',
+                                  transition: 'all 0.15s ease',
+                                  boxShadow: hasRF ? '0 0 12px rgba(168, 85, 247, 0.35)' : 'none'
+                                }}
+                                title="Attiva / Disattiva Radio Firenze 88.7 / 95.4 MHz in abbinata"
+                              >
+                                {hasRF ? '✓ ' : '+ '}Radio Firenze (88.7 / 95.4)
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       {/* BLOCCO DEDICATO PIANIFICAZIONE SPOT: DATE O PERIODO DA DEFINIRE */}
                       {isSpotItem && (
