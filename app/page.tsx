@@ -54,7 +54,7 @@ interface QuoteLineItem {
   modalitaVantaggio?: 'SCALA_SCONTI' | 'SPOT_OMAGGIO';
   scontoPercentuale?: number;
   // Specifiche Produzione Audio Spot (Solo RT+RF 100€ vs Diritti Liberi 169€)
-  tipoProduzione?: 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA';
+  tipoProduzione?: 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA' | 'OMAGGIO';
   tariffaUnitaria?: number;
 }
 
@@ -1054,17 +1054,6 @@ export default function LeadEngineDashboard() {
       spotTotali: 140,
       spotOmaggio: 14,
       formatoSecondi: 20
-    },
-    {
-      id: 'it-2',
-      tipo: 'Realizzazione Spot Audio',
-      copertura: 'Diffusione Radio Toscana + Radio Firenze',
-      dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
-      fascia: 'Costo Una Tantum',
-      periodo: '',
-      prezzoListino: 100,
-      valore: 100,
-      tipoProduzione: 'SOLO_RT_RF'
     }
   ]);
 
@@ -1617,10 +1606,78 @@ export default function LeadEngineDashboard() {
     }));
   }
 
-  function handleProduzioneChange(id: string, tipoProd: 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA') {
+  function setOrAddProduzioneSpot(tipoProd: 'OMAGGIO' | 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA') {
+    setQuoteItems(prev => {
+      const existingIdx = prev.findIndex(it => !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione'));
+      
+      const payload: Partial<QuoteLineItem> = tipoProd === 'OMAGGIO' ? {
+        tipo: 'Realizzazione Spot Audio (In Omaggio)',
+        copertura: 'Nostro Gruppo (Radio Toscana + Radio Firenze)',
+        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione (Inclusa nel pacchetto a titolo promozionale)',
+        fascia: 'Costo Una Tantum',
+        periodo: '',
+        prezzoListino: 100,
+        valore: 0,
+        tipoProduzione: 'OMAGGIO',
+        isSpot: false
+      } : tipoProd === 'SOLO_RT_RF' ? {
+        tipo: 'Realizzazione Spot Audio (Nostro Gruppo)',
+        copertura: 'Nostro Gruppo (Radio Toscana + Radio Firenze)',
+        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione nostro gruppo (Radio Toscana e Radio Firenze)',
+        fascia: 'Costo Una Tantum',
+        periodo: '',
+        prezzoListino: 100,
+        valore: 100,
+        tipoProduzione: 'SOLO_RT_RF',
+        isSpot: false
+      } : {
+        tipo: 'Realizzazione Spot Audio (Diritti Liberi)',
+        copertura: 'Tutte le Radio della Toscana (Diritti Liberi)',
+        dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione per tutte le radio della Toscana',
+        fascia: 'Costo Una Tantum',
+        periodo: '',
+        prezzoListino: 169,
+        valore: 169,
+        tipoProduzione: 'DIRITTI_LIBERI_TOSCANA',
+        isSpot: false
+      };
+
+      if (existingIdx !== -1) {
+        return prev.map((it, i) => i === existingIdx ? { ...it, ...payload } : it);
+      } else {
+        const newItem: QuoteLineItem = {
+          id: `prod-${Date.now()}`,
+          tipo: payload.tipo!,
+          copertura: payload.copertura!,
+          dettagli: payload.dettagli!,
+          fascia: payload.fascia!,
+          periodo: payload.periodo!,
+          prezzoListino: payload.prezzoListino!,
+          valore: payload.valore!,
+          tipoProduzione: payload.tipoProduzione,
+          isSpot: false
+        };
+        return [...prev, newItem];
+      }
+    });
+  }
+
+  function handleProduzioneChange(id: string, tipoProd: 'SOLO_RT_RF' | 'DIRITTI_LIBERI_TOSCANA' | 'OMAGGIO') {
     setQuoteItems(prev => prev.map(it => {
       if (it.id !== id) return it;
-      if (tipoProd === 'SOLO_RT_RF') {
+      if (tipoProd === 'OMAGGIO') {
+        return {
+          ...it,
+          tipoProduzione: 'OMAGGIO',
+          tipo: 'Realizzazione Spot Audio (In Omaggio)',
+          copertura: 'Nostro Gruppo (Radio Toscana + Radio Firenze)',
+          dettagli: 'Realizzazione copy + Registrazione speaker in studio + Diritti di diffusione (Inclusa nel pacchetto a titolo promozionale)',
+          fascia: 'Costo Una Tantum',
+          periodo: '',
+          prezzoListino: 100,
+          valore: 0
+        };
+      } else if (tipoProd === 'SOLO_RT_RF') {
         return {
           ...it,
           tipoProduzione: 'SOLO_RT_RF',
@@ -2593,17 +2650,6 @@ export default function LeadEngineDashboard() {
         spotTotali: 140,
         spotOmaggio: 14,
         formatoSecondi: 20
-      },
-      {
-        id: 'it-2',
-        tipo: 'Realizzazione Spot Audio',
-        copertura: 'Diffusione Radio Toscana + Radio Firenze',
-        dettagli: 'Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane',
-        fascia: 'Costo Una Tantum',
-        periodo: '',
-        prezzoListino: 100,
-        valore: 100,
-        tipoProduzione: 'SOLO_RT_RF'
       }
     ]);
   }
@@ -5048,43 +5094,63 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                   </button>
                 </div>
 
-                {/* RIGA 2: REALIZZAZIONE SPOT AUDIO */}
+                {/* RIGA 2: REALIZZAZIONE SPOT AUDIO (CI PUÒ ESSERE O NO: SE NO NON C'È NULLA, SE C'È: OMAGGIO, 100 O 169) */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
                   <span style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', width: '130px' }}>Produzione Spot:</span>
                   <button
                     type="button"
                     className="btn btn-xs"
-                    style={{ background: 'rgba(212, 63, 74, 0.15)', color: '#f87171', border: '1px solid rgba(212, 63, 74, 0.35)', fontWeight: 700 }}
-                    onClick={() => addQuoteItem(
-                      'Realizzazione Spot Audio',
-                      'Diffusione Radio Toscana + Radio Firenze',
-                      'Realizzazione copy + Registrazione in studio + Diritti di diffusione (Radio Toscana e Radio Firenze)',
-                      'Costo Una Tantum',
-                      '',
-                      100,
-                      100,
-                      { tipoProduzione: 'SOLO_RT_RF' }
-                    )}
+                    style={{
+                      background: quoteItems.some(it => it.tipoProduzione === 'OMAGGIO' || (it.valore === 0 && (it.tipo?.toLowerCase().includes('realizzazione') || it.tipo?.toLowerCase().includes('produzione')))) ? 'rgba(16, 185, 129, 0.35)' : 'rgba(16, 185, 129, 0.15)',
+                      color: quoteItems.some(it => it.tipoProduzione === 'OMAGGIO' || (it.valore === 0 && (it.tipo?.toLowerCase().includes('realizzazione') || it.tipo?.toLowerCase().includes('produzione')))) ? '#34d399' : '#a7f3d0',
+                      border: quoteItems.some(it => it.tipoProduzione === 'OMAGGIO' || (it.valore === 0 && (it.tipo?.toLowerCase().includes('realizzazione') || it.tipo?.toLowerCase().includes('produzione')))) ? '1.5px solid #10b981' : '1px solid rgba(16, 185, 129, 0.35)',
+                      fontWeight: 800
+                    }}
+                    onClick={() => setOrAddProduzioneSpot('OMAGGIO')}
+                    title="Aggiunge / imposta la produzione dello spot audio in OMAGGIO (€0)"
                   >
-                    + Spot Nostro Gruppo (€100)
+                    🎁 + Spot in Omaggio (€0)
                   </button>
                   <button
                     type="button"
                     className="btn btn-xs"
-                    style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 700 }}
-                    onClick={() => addQuoteItem(
-                      'Realizzazione Spot Audio (Diritti Liberi)',
-                      'Diffusione Emittenti Toscana',
-                      'Realizzazione copy + Registrazione in studio + Diritti di diffusione per emittenti toscane',
-                      'Costo Una Tantum',
-                      '',
-                      169,
-                      169,
-                      { tipoProduzione: 'DIRITTI_LIBERI_TOSCANA' }
-                    )}
+                    style={{
+                      background: quoteItems.some(it => (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) && it.tipoProduzione !== 'OMAGGIO') ? 'rgba(212, 63, 74, 0.35)' : 'rgba(212, 63, 74, 0.15)',
+                      color: quoteItems.some(it => (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) && it.tipoProduzione !== 'OMAGGIO') ? '#fca5a5' : '#f87171',
+                      border: quoteItems.some(it => (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) && it.tipoProduzione !== 'OMAGGIO') ? '1.5px solid #ef4444' : '1px solid rgba(212, 63, 74, 0.35)',
+                      fontWeight: 800
+                    }}
+                    onClick={() => setOrAddProduzioneSpot('SOLO_RT_RF')}
+                    title="Aggiunge / imposta produzione spot Nostro Gruppo (€100)"
                   >
-                    + Spot Tutte le Radio della Toscana (€169)
+                    📻 + Spot Nostro Gruppo (€100)
                   </button>
+                  <button
+                    type="button"
+                    className="btn btn-xs"
+                    style={{
+                      background: quoteItems.some(it => it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? 'rgba(59, 130, 246, 0.35)' : 'rgba(59, 130, 246, 0.15)',
+                      color: quoteItems.some(it => it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '#93c5fd' : '#60a5fa',
+                      border: quoteItems.some(it => it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '1.5px solid #38bdf8' : '1px solid rgba(59, 130, 246, 0.3)',
+                      fontWeight: 800
+                    }}
+                    onClick={() => setOrAddProduzioneSpot('DIRITTI_LIBERI_TOSCANA')}
+                    title="Aggiunge / imposta produzione spot con Diritti Liberi per tutte le emittenti toscane (€169)"
+                  >
+                    📡 + Spot Tutte le Radio (€169)
+                  </button>
+
+                  {quoteItems.some(it => !!it.tipoProduzione || it.tipo.toLowerCase().includes('produzione') || it.tipo.toLowerCase().includes('realizzazione')) && (
+                    <button
+                      type="button"
+                      className="btn btn-xs"
+                      style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', fontWeight: 700, marginLeft: '6px' }}
+                      onClick={() => setQuoteItems(prev => prev.filter(it => !it.tipoProduzione && !it.tipo.toLowerCase().includes('produzione') && !it.tipo.toLowerCase().includes('realizzazione')))}
+                      title="Rimuovi voce realizzazione spot (il cliente usa spot vecchi/già registrati)"
+                    >
+                      ✕ Nessuno Spot (Usa Vecchi)
+                    </button>
+                  )}
                 </div>
 
                 {/* RIGA 3: FORMAT & EVENTI LISTINO UFFICIALE RADIO TOSCANA */}
@@ -5932,36 +5998,68 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                         </div>
                       )}
 
-                      {/* BLOCCO DEDICATO PRODUZIONE AUDIO: SOLO RT+RF (100€) VS DIRITTI LIBERI TOSCANA (169€) */}
+                      {/* BLOCCO DEDICATO PRODUZIONE AUDIO: OMAGGIO (0€) VS SOLO RT+RF (100€) VS DIRITTI LIBERI TOSCANA (169€) */}
                       {isProdItem && (
                         <div style={{ background: 'rgba(71, 67, 80, 0.4)', border: '1px solid rgba(212, 63, 74, 0.35)', borderRadius: '6px', padding: '12px', marginBottom: '12px' }}>
-                          <div style={{ fontSize: '11px', fontWeight: 800, color: '#f8fafc', marginBottom: '8px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-                            Ambito di Diffusione e Diritti Spot (Selezione con Spunta):
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
+                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#f8fafc', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                              Ambito di Diffusione e Diritti Spot (Selezione con Spunta):
+                            </div>
+                            <span style={{ fontSize: '10px', color: '#cbd5e1', fontWeight: 600 }}>
+                              Scegli tra Omaggio (€0), Nostro Gruppo (€100) o Diritti Liberi (€169)
+                            </span>
                           </div>
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '10px' }}>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '8px' }}>
+                            {/* OPZIONE 1: OMAGGIO (€0) */}
                             <label style={{
-                              fontSize: '12px',
+                              fontSize: '11.5px',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '8px',
                               cursor: 'pointer',
-                              color: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? '#ffffff' : '#94a3b8',
+                              color: (it.tipoProduzione === 'OMAGGIO' || it.valore === 0) ? '#ffffff' : '#94a3b8',
                               fontWeight: 700,
-                              background: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? 'rgba(212, 63, 74, 0.25)' : 'rgba(0,0,0,0.25)',
-                              border: (it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100) ? '1px solid #D43F4A' : '1px solid rgba(255,255,255,0.1)',
+                              background: (it.tipoProduzione === 'OMAGGIO' || it.valore === 0) ? 'rgba(16, 185, 129, 0.25)' : 'rgba(0,0,0,0.25)',
+                              border: (it.tipoProduzione === 'OMAGGIO' || it.valore === 0) ? '1.5px solid #10b981' : '1px solid rgba(255,255,255,0.1)',
                               padding: '10px 12px',
                               borderRadius: '6px'
                             }}>
                               <input
                                 type="radio"
                                 name={`tipoProd-${it.id}`}
-                                checked={it.tipoProduzione === 'SOLO_RT_RF' || it.valore === 100}
+                                checked={it.tipoProduzione === 'OMAGGIO' || it.valore === 0}
+                                onChange={() => handleProduzioneChange(it.id, 'OMAGGIO')}
+                              />
+                              🎁 Spot in OMAGGIO (€ 0,00)
+                            </label>
+
+                            {/* OPZIONE 2: NOSTRO GRUPPO (€100) */}
+                            <label style={{
+                              fontSize: '11.5px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              cursor: 'pointer',
+                              color: (it.tipoProduzione === 'SOLO_RT_RF' || (it.valore === 100 && it.tipoProduzione !== 'OMAGGIO')) ? '#ffffff' : '#94a3b8',
+                              fontWeight: 700,
+                              background: (it.tipoProduzione === 'SOLO_RT_RF' || (it.valore === 100 && it.tipoProduzione !== 'OMAGGIO')) ? 'rgba(212, 63, 74, 0.25)' : 'rgba(0,0,0,0.25)',
+                              border: (it.tipoProduzione === 'SOLO_RT_RF' || (it.valore === 100 && it.tipoProduzione !== 'OMAGGIO')) ? '1.5px solid #D43F4A' : '1px solid rgba(255,255,255,0.1)',
+                              padding: '10px 12px',
+                              borderRadius: '6px'
+                            }}>
+                              <input
+                                type="radio"
+                                name={`tipoProd-${it.id}`}
+                                checked={it.tipoProduzione === 'SOLO_RT_RF' || (it.valore === 100 && it.tipoProduzione !== 'OMAGGIO')}
                                 onChange={() => handleProduzioneChange(it.id, 'SOLO_RT_RF')}
                               />
-                              Spot Nostro Gruppo: Radio Toscana + Radio Firenze (€ 100,00 + IVA)
+                              📻 Nostro Gruppo: RT + RF (€ 100,00)
                             </label>
+
+                            {/* OPZIONE 3: DIRITTI LIBERI TOSCANA (€169) */}
                             <label style={{
-                              fontSize: '12px',
+                              fontSize: '11.5px',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '8px',
@@ -5969,7 +6067,7 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                               color: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '#ffffff' : '#94a3b8',
                               fontWeight: 700,
                               background: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? 'rgba(56, 189, 248, 0.25)' : 'rgba(0,0,0,0.25)',
-                              border: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                              border: (it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169) ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
                               padding: '10px 12px',
                               borderRadius: '6px'
                             }}>
@@ -5979,13 +6077,16 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 checked={it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA' || it.valore === 169}
                                 onChange={() => handleProduzioneChange(it.id, 'DIRITTI_LIBERI_TOSCANA')}
                               />
-                              Spot per Tutte le Radio della Toscana (€ 169,00 + IVA)
+                              📡 Tutte le Radio della Toscana (€ 169,00)
                             </label>
                           </div>
+
                           <div style={{ fontSize: '10.5px', color: '#cbd5e1', marginTop: '8px', background: 'rgba(0,0,0,0.2)', padding: '8px 10px', borderRadius: '4px', lineHeight: 1.45 }}>
                             {it.tipoProduzione === 'DIRITTI_LIBERI_TOSCANA'
-                              ? 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per emittenti toscane.'
-                              : 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per la messa in onda riservata alle frequenze di Radio Toscana e Radio Firenze.'}
+                              ? 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per tutte le emittenti toscane.'
+                              : (it.tipoProduzione === 'OMAGGIO' || it.valore === 0)
+                                ? 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale compresa a titolo promozionale / OMAGGIO (Valore di listino € 100 abbuonato al 100%).'
+                                : 'Comprende: Realizzazione copy (testo) + Registrazione in studio professionale + Diritti di diffusione per la messa in onda riservata alle frequenze di Radio Toscana e Radio Firenze.'}
                           </div>
                         </div>
                       )}
