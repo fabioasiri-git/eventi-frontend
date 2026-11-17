@@ -1112,6 +1112,34 @@ export default function LeadEngineDashboard() {
     setQuoteItems(prev => [...prev, newItem]);
   }
 
+  // Funzione di utilità per determinare i passaggi giornalieri di uno spot
+  function getDailySpots(it: any): number {
+    if (it.spotGiornalieri && it.spotGiornalieri > 0) return it.spotGiornalieri;
+
+    const tot = (it.spotTotali || 0) + (it.spotOmaggio || 0) || it.quantita || 0;
+
+    // Se ci sono dataInizio e dataFine
+    if (it.dataInizio && it.dataFine && tot > 0) {
+      try {
+        const d1 = new Date(it.dataInizio);
+        const d2 = new Date(it.dataFine);
+        const diffTime = Math.abs(d2.getTime() - d1.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        if (diffDays > 0) return Math.round(tot / diffDays);
+      } catch (e) {}
+    }
+
+    if (it.giorniTotali && it.giorniTotali > 0 && tot > 0) {
+      return Math.round(tot / it.giorniTotali);
+    }
+
+    const text = `${it.dettagli || ''} ${it.fascia || ''} ${it.periodo || ''} ${it.note || ''}`.toLowerCase();
+    const m = text.match(/(\d+)\s*(?:passaggi|spot|pp)(?:\s*(?:al|\/)\s*giorno|\s*al\s*dì|\/gg)?/);
+    if (m && parseInt(m[1], 10) > 0 && parseInt(m[1], 10) <= 100) return parseInt(m[1], 10);
+
+    return 0;
+  }
+
   // Funzione Componibile per Multi-Selezione Bacini Radio Toscana & Radio Firenze
   function toggleBacinoCoverage(currentCop: string, key: 'area1' | 'area2' | 'area3' | 'rf' | 'rete'): string {
     const c = (currentCop || '').toLowerCase();
@@ -5251,14 +5279,28 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   ✓ Date fisse e fasce orarie obbligate sono <strong>ESCLUSE</strong>
                                 </span>
                               </div>
-                              <input
-                                type="text"
-                                className="form-input"
-                                style={{ fontSize: '13px', width: '100%', padding: '6px 10px', fontWeight: 700, color: '#38bdf8', borderColor: '#38bdf8', background: 'rgba(0,0,0,0.35)' }}
-                                value={it.periodo || 'Periodo da definire'}
-                                placeholder="es. Periodo da definire (oppure testo libero personalizzato)"
-                                onChange={e => handleSpotFieldChange(it.id, { periodo: e.target.value })}
-                              />
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px', gap: '10px' }}>
+                                <input
+                                  type="text"
+                                  className="form-input"
+                                  style={{ fontSize: '12px', width: '100%', padding: '6px 10px', fontWeight: 700, color: '#38bdf8', borderColor: '#38bdf8', background: 'rgba(0,0,0,0.35)' }}
+                                  value={it.periodo || 'Periodo da definire'}
+                                  placeholder="es. Periodo da definire (oppure testo libero personalizzato)"
+                                  onChange={e => handleSpotFieldChange(it.id, { periodo: e.target.value })}
+                                />
+                                <div>
+                                  <input
+                                    type="number"
+                                    className="form-input"
+                                    style={{ fontSize: '12px', width: '100%', padding: '6px 10px', fontWeight: 900, color: '#f43f5e', borderColor: '#f43f5e', background: 'rgba(0,0,0,0.35)' }}
+                                    value={it.spotGiornalieri || (it.giorniTotali && it.giorniTotali > 0 && it.spotTotali ? Math.round((it.spotTotali + (it.spotOmaggio || 0)) / it.giorniTotali) : 10)}
+                                    min={1}
+                                    title="Pressione giornaliera: quanti passaggi al giorno"
+                                    placeholder="Passaggi/giorno"
+                                    onChange={e => handleSpotFieldChange(it.id, { spotGiornalieri: Number(e.target.value) })}
+                                  />
+                                </div>
+                              </div>
                             </div>
                           ) : (
                             /* SE DATE FISSE: MOSTRA DATA INIZIO, DATA FINE, FASCIA ORARIA, SPOT/GIORNO */
@@ -6674,6 +6716,16 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                 <div style={{ fontWeight: 800, color: isDaDefinire ? '#D43F4A' : '#1e293b', fontSize: '10px' }}>
                                   {isDaDefinire ? 'Periodo da definire' : (it.periodo || 'Periodo da definire')}
                                 </div>
+                                {isSpot && (() => {
+                                  const daily = getDailySpots(it);
+                                  return daily > 0 ? (
+                                    <div style={{ marginTop: '3px' }}>
+                                      <span style={{ fontSize: '8px', fontWeight: 900, background: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5', padding: '1px 5px', borderRadius: '3px', display: 'inline-block' }}>
+                                        📻 {daily} PASSAGGI AL GIORNO
+                                      </span>
+                                    </div>
+                                  ) : null;
+                                })()}
                                 {!isDaDefinire && it.fascia && (
                                   <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '2px' }}>
                                     {it.fascia}
@@ -7287,19 +7339,29 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   )}
                                 </td>
                                 <td style={{ padding: '8px 10px' }}>
-                                  {isSpot ? (
-                                    <>
-                                      <strong>{it.spotTotali || paganti} spot a tariffa</strong>
-                                      {omaggi > 0 && (
-                                        <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 5px', borderRadius: '3px', marginLeft: '5px', display: 'inline-block' }}>
-                                          + {omaggi} OMAGGIO
-                                        </span>
-                                      )}
-                                      <div style={{ fontSize: '8.5px', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>
-                                        Totale: {tot} passaggi on-air
-                                      </div>
-                                    </>
-                                  ) : (
+                                  {isSpot ? (() => {
+                                    const daily = getDailySpots(it);
+                                    return (
+                                      <>
+                                        {daily > 0 && (
+                                          <div style={{ fontSize: '10.5px', fontWeight: 900, color: '#D43F4A', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                            <span>📻</span> {daily} PASSAGGI AL GIORNO
+                                          </div>
+                                        )}
+                                        <div style={{ fontWeight: 700 }}>
+                                          <strong>{it.spotTotali || paganti} spot a tariffa</strong>
+                                          {omaggi > 0 && (
+                                            <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 5px', borderRadius: '3px', marginLeft: '5px', display: 'inline-block' }}>
+                                              + {omaggi} OMAGGIO
+                                            </span>
+                                          )}
+                                        </div>
+                                        <div style={{ fontSize: '8.5px', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>
+                                          Totale: {tot} passaggi on-air
+                                        </div>
+                                      </>
+                                    );
+                                  })() : (
                                     <div>
                                       <strong>{it.quantita && it.quantita > 1 ? `${it.quantita} prestazioni / passaggi` : '1 prestazione'}</strong>
                                       {it.prezzoUnitarioNetto ? (
@@ -7314,7 +7376,15 @@ Tel: 347/6818595 | Email: commerciale@radiotoscana.it`);
                                   {periodoDesc}
                                 </td>
                                 <td style={{ padding: '8px 10px', fontSize: '8.5px' }}>
-                                  {fasciaDesc}
+                                  {isSpot && (() => {
+                                    const daily = getDailySpots(it);
+                                    return daily > 0 ? (
+                                      <div style={{ fontWeight: 800, color: '#D43F4A', marginBottom: '2px' }}>
+                                        {daily} passaggi al giorno
+                                      </div>
+                                    ) : null;
+                                  })()}
+                                  <div style={{ color: '#475569' }}>{fasciaDesc}</div>
                                 </td>
                                 <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, fontSize: '10px' }}>
                                   € {(Number(it.valore) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
@@ -8802,19 +8872,29 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                             )}
                           </td>
                           <td style={{ padding: '6px 8px' }}>
-                            {isSpot ? (
-                              <>
-                                <strong>{it.spotTotali || paganti} spot a tariffa</strong>
-                                {omaggi > 0 && (
-                                  <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 4px', borderRadius: '3px', marginLeft: '4px', display: 'inline-block' }}>
-                                    + {omaggi} OMAGGIO
-                                  </span>
-                                )}
-                                <div style={{ fontSize: '7.8px', fontWeight: 800, color: '#0f172a', marginTop: '1px' }}>
-                                  Totale: {tot} passaggi on-air
-                                </div>
-                              </>
-                            ) : (
+                            {isSpot ? (() => {
+                              const daily = getDailySpots(it);
+                              return (
+                                <>
+                                  {daily > 0 && (
+                                    <div style={{ fontSize: '9.5px', fontWeight: 900, color: '#D43F4A', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                      <span>📻</span> {daily} PASSAGGI AL GIORNO
+                                    </div>
+                                  )}
+                                  <div style={{ fontWeight: 700 }}>
+                                    <strong>{it.spotTotali || paganti} spot a tariffa</strong>
+                                    {omaggi > 0 && (
+                                      <span style={{ color: '#b91c1c', fontWeight: 900, background: '#fee2e2', border: '1px solid #fca5a5', padding: '1px 4px', borderRadius: '3px', marginLeft: '4px', display: 'inline-block' }}>
+                                        + {omaggi} OMAGGIO
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div style={{ fontSize: '7.8px', fontWeight: 800, color: '#0f172a', marginTop: '1px' }}>
+                                    Totale: {tot} passaggi on-air
+                                  </div>
+                                </>
+                              );
+                            })() : (
                               <div>
                                 <strong>{it.quantita && it.quantita > 1 ? `${it.quantita} prestazioni / passaggi` : '1 prestazione'}</strong>
                                 {it.prezzoUnitarioNetto ? (
@@ -8829,7 +8909,15 @@ commerciale@radiotoscana.it - Tel. 347 6818595`}
                             {periodoDesc}
                           </td>
                           <td style={{ padding: '6px 8px', fontSize: '7.8px' }}>
-                            {fasciaDesc}
+                            {isSpot && (() => {
+                              const daily = getDailySpots(it);
+                              return daily > 0 ? (
+                                <div style={{ fontWeight: 800, color: '#D43F4A', marginBottom: '1px' }}>
+                                  {daily} passaggi al giorno
+                                </div>
+                              ) : null;
+                            })()}
+                            <div style={{ color: '#475569' }}>{fasciaDesc}</div>
                           </td>
                           <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, fontSize: '9px' }}>
                             € {it.valore.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
